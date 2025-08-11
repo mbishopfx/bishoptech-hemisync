@@ -33,6 +33,7 @@ export default function GeneratePage() {
   const [error, setError] = useState(null);
   const [guidance, setGuidance] = useState(null);
   const [voice, setVoice] = useState('alloy');
+  const [voiceMixDb, setVoiceMixDb] = useState(-16);
   const [ttsUrl, setTtsUrl] = useState(null);
   const [mp3Url, setMp3Url] = useState(null);
   const [mixing, setMixing] = useState(false);
@@ -42,6 +43,11 @@ export default function GeneratePage() {
   const timersRef = useRef([]);
   const [combinedUrl, setCombinedUrl] = useState(null);
   const [analytics, setAnalytics] = useState(null);
+  const [overlayUrl, setOverlayUrl] = useState(null);
+  const [musicTrack, setMusicTrack] = useState('track1');
+  const [overlayBand, setOverlayBand] = useState('alpha');
+  const [overlayTempo, setOverlayTempo] = useState(120);
+  const [overlayDb, setOverlayDb] = useState(-10);
 
   const onGenerate = async () => {
     setLoading(true); setError(null); setAudioUrl(null); setCombinedUrl(null); setGuidance(null);
@@ -58,7 +64,7 @@ export default function GeneratePage() {
           breathGuide: breath ? { enabled: true, pattern, bpm: Number(breathBpm) || undefined } : undefined,
           background: background ? { type: 'ocean', mixDb: Number(bgLevel) } : undefined,
           ducking: { enabled: true, bedPercentWhileTalking: Number(duckPercent) || 0.75, attackMs: Number(duckAttack)||40, releaseMs: Number(duckRelease)||220 },
-          tts: { voice }
+          tts: { voice, mixDb: Number(voiceMixDb) }
         })
       });
       const cj = await comb.json();
@@ -111,6 +117,20 @@ export default function GeneratePage() {
     setMixing(false);
   };
 
+  const onMakeOverlay = async () => {
+    setLoading(true); setError(null); setOverlayUrl(null);
+    try {
+      const resp = await fetch('/api/audio/overlay', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ track: musicTrack, band: overlayBand, bpm: Number(overlayTempo)||120, overlayDb: Number(overlayDb), baseFreqHz: Number(baseFreq)||240, lengthSec: Number(lengthSec)||undefined })
+      });
+      const json = await resp.json();
+      if (!resp.ok || !json.ok) throw new Error(json.error || 'Overlay generation failed');
+      setOverlayUrl(json.wav);
+    } catch (e) { setError(e.message); }
+    finally { setLoading(false); }
+  };
+
   return (
     <main className="mx-auto max-w-[1200px] p-6">
       <FrequencyBackground />
@@ -118,7 +138,7 @@ export default function GeneratePage() {
       <GlitchTitle text="HemiSync Session Generator" />
       <p className="mb-6 text-center text-white/80">Create a 5-minute hemispheric synchronization session with guided cues and analytics.</p>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <div className="space-y-4">
             <label className="block text-sm text-white/80">Journal (optional)</label>
@@ -194,21 +214,58 @@ export default function GeneratePage() {
                 <option value="verse">Verse</option>
                 <option value="sage">Sage</option>
               </Select>
+              <div className="mt-2 grid grid-cols-2 gap-2 items-center">
+                <label className="text-sm text-white/80">Voice Mix (dB)</label>
+                <Input type="number" step={1} value={voiceMixDb} onChange={(e)=>setVoiceMixDb(e.target.value)} />
+              </div>
             </div>
 
             <Button onClick={onGenerate} disabled={loading}>
               {loading ? 'Generating...' : 'Generate Session'}
             </Button>
+            <div className="pt-2 border-t border-white/10" />
+            <div className="space-y-2">
+              <h3 className="text-white font-medium">Music Overlay (no TTS)</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-sm text-white/80">Music Track</label>
+                  <Select value={musicTrack} onChange={(e)=>setMusicTrack(e.target.value)}>
+                    <option value="track1">Track 1</option>
+                    <option value="track2">Track 2</option>
+                    <option value="track3">Track 3</option>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm text-white/80">Band</label>
+                  <Select value={overlayBand} onChange={(e)=>setOverlayBand(e.target.value)}>
+                    <option value="alpha">Alpha</option>
+                    <option value="theta">Theta</option>
+                    <option value="delta">Delta</option>
+                    <option value="beta">Beta</option>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm text-white/80">Tempo (BPM)</label>
+                  <Input type="number" value={overlayTempo} onChange={(e)=>setOverlayTempo(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-sm text-white/80">Overlay Level (dB)</label>
+                  <Input type="number" step={1} value={overlayDb} onChange={(e)=>setOverlayDb(e.target.value)} />
+                </div>
+              </div>
+              <Button onClick={onMakeOverlay} disabled={loading}>{loading ? 'Processing...' : 'Make Overlay'}</Button>
+            </div>
             {error && <p className="text-sm text-red-300">{error}</p>}
           </div>
         </Card>
 
-        <Card>
+        <Card className="lg:col-span-2">
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-white">Preview</h2>
             {combinedUrl || audioUrl || ttsUrl ? (
               <div className="space-y-3">
                 {combinedUrl && <audio controls className="w-full" src={combinedUrl} />}
+                {overlayUrl && <audio controls className="w-full" src={overlayUrl} />}
                 {audioUrl && <audio ref={bedRef} controls className="w-full" src={audioUrl} />}
                 {ttsUrl && <audio ref={ttsRef} controls className="w-full" src={ttsUrl} />}
                 {combinedUrl && (
@@ -246,7 +303,7 @@ export default function GeneratePage() {
           </div>
         </Card>
 
-        <Card>
+        <Card className="lg:col-span-3">
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-white">Session Analytics</h2>
             {analytics ? (

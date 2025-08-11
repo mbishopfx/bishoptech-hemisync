@@ -138,7 +138,7 @@ export async function POST(req) {
       }
       if (sr !== sampleRate) { l = resampleLinear(l, sr, sampleRate); r = resampleLinear(r, sr, sampleRate); }
       const start = Math.min(totalFrames-1, Math.max(0, Math.floor((s.atSec||0) * sampleRate)));
-      const gain = dbToGain(-12);
+      const gain = dbToGain(typeof tts?.mixDb === 'number' ? tts.mixDb : -16);
       for (let i = 0; i < l.length && start + i < totalFrames; i++) {
         voiceL[start+i] += gain * l[i];
         voiceR[start+i] += gain * r[i];

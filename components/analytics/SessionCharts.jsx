@@ -38,7 +38,7 @@ export function SessionCharts({ analytics }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 col-span-2">
       <div className="flex items-center justify-end gap-2">
         <button onClick={exportCSV} className="rounded-md bg-sky-400/90 px-3 py-1 text-sm font-medium text-slate-900 hover:bg-sky-300">Export CSV</button>
         <button onClick={exportJSON} className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20">Export JSON</button>
