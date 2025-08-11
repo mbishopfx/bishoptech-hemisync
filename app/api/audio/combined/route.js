@@ -97,7 +97,8 @@ export async function POST(req) {
       model: 'gpt-4o-mini',
       messages: [ { role: 'system', content: system }, { role: 'user', content: userMsg } ],
       temperature: 0.6,
-      response_format: { type: 'json_object' }
+      response_format: { type: 'json_object' },
+      max_tokens: 3000
     });
     const guidance = JSON.parse(r.choices?.[0]?.message?.content || '{}');
     let stages = Array.isArray(guidance?.stages) ? guidance.stages : [];

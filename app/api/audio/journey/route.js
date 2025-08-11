@@ -21,7 +21,7 @@ Output strict JSON: { stages:[{name, durationSec, script}], tone, bandIntent }. 
     messages: [ { role: 'system', content: system }, { role: 'user', content: user } ],
     temperature: 0.6,
     // push high token allowance to enable rich scripts
-    max_output_tokens: 4000,
+    max_tokens: 4000,
     response_format: { type: 'json_object' }
   });
   const guidance = JSON.parse(r.choices?.[0]?.message?.content || '{}');
