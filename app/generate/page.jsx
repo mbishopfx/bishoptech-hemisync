@@ -314,7 +314,7 @@ export default function GeneratePage() {
           </div>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-1 max-w-full">
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-white">Preview</h2>
             {combinedUrl || audioUrl || ttsUrl ? (
@@ -358,17 +358,6 @@ export default function GeneratePage() {
               </div>
             ) : <p className="text-white/70">No audio yet. Generate to preview.</p>}
             <p className="text-xs text-white/60">Tip: Large sessions may take time and memory in development. Consider starting at 180–300s.</p>
-            {guidance && (
-              <div className="mt-2 rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white/90 max-h-64 overflow-auto">
-                <h3 className="mb-1 font-medium">Guidance</h3>
-                {Array.isArray(guidance.stages) && guidance.stages.map((s, i) => (
-                  <div key={i} className="mb-3">
-                    <div className="text-white/70">{s.name} — t={s.atSec}s • {s.durationSec}s</div>
-                    <div>{s.script}</div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </Card>
 

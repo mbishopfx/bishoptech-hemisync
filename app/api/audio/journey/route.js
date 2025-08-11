@@ -14,8 +14,10 @@ export const runtime = 'nodejs';
 async function buildStages(client, { userText, trackTitle, targetSec, bandIntent }) {
   const system = `You are the Master-Level Gateway Experience Architect. Design a stage-based script with precise timing for hemispheric synchronization.
 Principles: induction → resonance → focus stabilization → exploration → integration/return. Use safety-first, neutral language. Include brief [pause Xs] tags.
-Output strict JSON: { stages:[{name, durationSec, script}], tone, bandIntent }. Keep total duration ≈ ${targetSec}s.`;
-  const user = `User context: ${userText || ''}\nTrack: ${trackTitle}\nBand intent: ${bandIntent}. Focus on deeper self-understanding and calm, clear awareness.`;
+Output strict JSON: { stages:[{name, durationSec, script}], tone, bandIntent }. Keep total duration ≈ ${targetSec}s.
+
+User Journal (append and reflect this intent in the guidance): ${userText || ''}`;
+  const user = `Track: ${trackTitle}\nBand intent: ${bandIntent}. Focus on deeper self-understanding and calm, clear awareness.`;
   const r = await client.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [ { role: 'system', content: system }, { role: 'user', content: user } ],

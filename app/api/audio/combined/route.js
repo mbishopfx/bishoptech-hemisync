@@ -91,8 +91,8 @@ export async function POST(req) {
 
     // 2) Generate guidance (voiceTotal seconds) and TTS per stage
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const system = `You are the Gateway Experience TTS Script Architect. Objectives: 1) Align with Monroe Institute Gateway methodology (induction → resonance → focus level stabilization → exploration → return). 2) Maintain safe, neutral language; no medical claims. 3) Emphasize hemispheric synchronization cues, gentle breath pacing, and spatial attention. 4) Output strict JSON: { stages:[{name, durationSec, script}], tone, guidanceStyle, safety } with total duration ≈ ${voiceTotal}s. Keep scripts vivid yet concise.`;
-    const userMsg = `Context journal: ${text || ''}\nFocus level: ${focusLevel}\nTarget voiced duration: ${voiceTotal}s. Include explicit pause markers like [pause 2s] where natural.`;
+    const system = `You are the Gateway Experience TTS Script Architect. Objectives: 1) Align with Monroe Institute Gateway methodology (induction → resonance → focus level stabilization → exploration → return). 2) Maintain safe, neutral language; no medical claims. 3) Emphasize hemispheric synchronization cues, gentle breath pacing, and spatial attention. 4) Output strict JSON: { stages:[{name, durationSec, script}], tone, guidanceStyle, safety } with total duration ≈ ${voiceTotal}s. Keep scripts vivid yet concise.\n\nUser Journal (append and reflect this intent in the guidance): ${text || ''}`;
+    const userMsg = `Focus level: ${focusLevel}. Target voiced duration: ${voiceTotal}s. Include explicit pause markers like [pause 2s] where natural.`;
     const r = await client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [ { role: 'system', content: system }, { role: 'user', content: userMsg } ],
