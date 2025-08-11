@@ -23,12 +23,18 @@ export default function GeneratePage() {
   const [pattern, setPattern] = useState('coherent-5.5');
   const [background, setBackground] = useState(false);
   const [bgLevel, setBgLevel] = useState(-22);
+  const [baseFreq, setBaseFreq] = useState(240);
+  const [breathBpm, setBreathBpm] = useState(5.5);
+  const [duckPercent, setDuckPercent] = useState(0.75);
+  const [duckAttack, setDuckAttack] = useState(40);
+  const [duckRelease, setDuckRelease] = useState(220);
   const [audioUrl, setAudioUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [guidance, setGuidance] = useState(null);
   const [voice, setVoice] = useState('alloy');
   const [ttsUrl, setTtsUrl] = useState(null);
+  const [mp3Url, setMp3Url] = useState(null);
   const [mixing, setMixing] = useState(false);
   const [mixState, setMixState] = useState({ ctx: null, srcA: null, srcB: null });
   const bedRef = useRef(null);
@@ -43,11 +49,22 @@ export default function GeneratePage() {
       // Single server-side combined render: 5 minutes total with ~2.5 minutes guidance
       const comb = await fetch('/api/audio/combined', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: journal, focusLevel: focus, lengthSec: 300, background: background ? { type: 'ocean', mixDb: Number(bgLevel) } : undefined })
+        body: JSON.stringify({
+          text: journal,
+          focusLevel: focus,
+          lengthSec: Number(lengthSec) || 300,
+          baseFreqHz: Number(baseFreq) || undefined,
+          entrainmentModes: { binaural: true, monaural, isochronic },
+          breathGuide: breath ? { enabled: true, pattern, bpm: Number(breathBpm) || undefined } : undefined,
+          background: background ? { type: 'ocean', mixDb: Number(bgLevel) } : undefined,
+          ducking: { enabled: true, bedPercentWhileTalking: Number(duckPercent) || 0.75, attackMs: Number(duckAttack)||40, releaseMs: Number(duckRelease)||220 },
+          tts: { voice }
+        })
       });
       const cj = await comb.json();
       if (!comb.ok || !cj.ok) throw new Error(cj.error || 'Failed to render combined audio');
       setCombinedUrl(cj.wav);
+      if (cj.mp3) setMp3Url(cj.mp3);
       if (Array.isArray(cj.stages)) setGuidance({ stages: cj.stages });
       if (cj.analytics) setAnalytics(cj.analytics);
     } catch (e) {
@@ -98,7 +115,7 @@ export default function GeneratePage() {
     <main className="mx-auto max-w-[1200px] p-6">
       <FrequencyBackground />
       <ThemeToggle />
-      <HeroImage />
+      <GlitchTitle text="HemiSync Session Generator" />
       <p className="mb-6 text-center text-white/80">Create a 5-minute hemispheric synchronization session with guided cues and analytics.</p>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -115,8 +132,16 @@ export default function GeneratePage() {
               <option value="F21">F21 – Boundary</option>
             </Select>
 
-            <label className="block text-sm text-white/80">Length (fixed at 300s)</label>
-            <Input type="number" value={lengthSec} disabled />
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-sm text-white/80">Length (seconds)</label>
+                <Input type="number" min={60} max={1800} value={lengthSec} onChange={(e)=>setLengthSec(e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-sm text-white/80">Base Frequency (Hz)</label>
+                <Input type="number" min={100} max={400} value={baseFreq} onChange={(e)=>setBaseFreq(e.target.value)} />
+              </div>
+            </div>
 
             <div className="flex flex-col gap-3 py-2">
               <Switch checked={isochronic} onChange={setIsochronic} label="Isochronic pulses" />
@@ -140,8 +165,36 @@ export default function GeneratePage() {
                   <option value="box">Box 4-4-4-4</option>
                   <option value="4-7-8">4-7-8</option>
                 </Select>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <label className="text-sm text-white/80">Coherent BPM</label>
+                  <Input type="number" step={0.1} value={breathBpm} onChange={(e)=>setBreathBpm(e.target.value)} />
+                </div>
               </div>
             )}
+
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="block text-sm text-white/80">Duck while TTS</label>
+                <Input type="number" min={0.5} max={1} step={0.01} value={duckPercent} onChange={(e)=>setDuckPercent(e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-sm text-white/80">Attack (ms)</label>
+                <Input type="number" min={5} max={300} value={duckAttack} onChange={(e)=>setDuckAttack(e.target.value)} />
+              </div>
+              <div>
+                <label className="block text-sm text-white/80">Release (ms)</label>
+                <Input type="number" min={5} max={800} value={duckRelease} onChange={(e)=>setDuckRelease(e.target.value)} />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm text-white/80">TTS Voice</label>
+              <Select value={voice} onChange={(e)=>setVoice(e.target.value)}>
+                <option value="alloy">Alloy</option>
+                <option value="verse">Verse</option>
+                <option value="sage">Sage</option>
+              </Select>
+            </div>
 
             <Button onClick={onGenerate} disabled={loading}>
               {loading ? 'Generating...' : 'Generate Session'}
@@ -158,6 +211,18 @@ export default function GeneratePage() {
                 {combinedUrl && <audio controls className="w-full" src={combinedUrl} />}
                 {audioUrl && <audio ref={bedRef} controls className="w-full" src={audioUrl} />}
                 {ttsUrl && <audio ref={ttsRef} controls className="w-full" src={ttsUrl} />}
+                {combinedUrl && (
+                  <div className="flex gap-2">
+                    <a
+                      href={combinedUrl}
+                      download={`hemisync-${focus}-${lengthSec}s.wav`}
+                      className="rounded-md bg-sky-400/90 px-3 py-1 text-sm font-medium text-slate-900 hover:bg-sky-300"
+                    >Download WAV</a>
+                    {mp3Url && (
+                      <a href={mp3Url} download={`hemisync-${focus}-${lengthSec}s.mp3`} className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20">Download MP3</a>
+                    )}
+                  </div>
+                )}
                 {audioUrl && (ttsUrl || guidance) && (
                   <div className="flex gap-2">
                     <button onClick={playBoth} disabled={mixing} className="rounded-md bg-cyan-500 px-3 py-1 text-sm text-slate-900 disabled:opacity-60">Play Both</button>

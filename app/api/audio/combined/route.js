@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { pickPreset } from '@/lib/audio/presets';
 import { generateBreathEnvelope } from '@/lib/audio/breath';
-import { synthesizeBinaural, encodeWavStereo } from '@/lib/audio/synth';
+import { synthesizeBinaural, encodeWavStereo, encodeMp3Stereo } from '@/lib/audio/synth';
 import { generateOceanBackground } from '@/lib/audio/background';
 import { WaveFile } from 'wavefile';
 
@@ -53,7 +53,9 @@ export async function POST(req) {
       baseFreqHz,
       entrainmentModes = { binaural: true, monaural: true, isochronic: false },
       breathGuide,
-      background
+      background,
+      ducking = { enabled: true, bedPercentWhileTalking: 0.75, attackMs: 50, releaseMs: 200 },
+      tts = { voice: 'alloy' }
     } = body || {};
 
     const totalLength = Number(lengthSec) || 300;
@@ -65,7 +67,7 @@ export async function POST(req) {
 
     let breath = null;
     if (breathGuide?.enabled) {
-      const envelope = generateBreathEnvelope(breathGuide.pattern || 'coherent-5.5', 44100, totalLength);
+      const envelope = generateBreathEnvelope(breathGuide.pattern || 'coherent-5.5', 44100, totalLength, breathGuide?.bpm);
       breath = { envelope, depth: 0.1 };
     }
 
@@ -89,8 +91,8 @@ export async function POST(req) {
 
     // 2) Generate guidance (voiceTotal seconds) and TTS per stage
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const system = `You are a gentle meditation guide. Create a stage-based script: induction, deepening, exploration, return. Keep calm language, no medical claims. Output JSON: { stages:[{name, durationSec, script}], tone } with total duration ≈ ${voiceTotal}s.`;
-    const userMsg = `User journal/context: ${text || ''}. Focus level: ${focusLevel}. Target voiced duration: ${voiceTotal}s. Include brief breath cues and pauses.`;
+    const system = `You are the Gateway Experience TTS Script Architect. Objectives: 1) Align with Monroe Institute Gateway methodology (induction → resonance → focus level stabilization → exploration → return). 2) Maintain safe, neutral language; no medical claims. 3) Emphasize hemispheric synchronization cues, gentle breath pacing, and spatial attention. 4) Output strict JSON: { stages:[{name, durationSec, script}], tone, guidanceStyle, safety } with total duration ≈ ${voiceTotal}s. Keep scripts vivid yet concise.`;
+    const userMsg = `Context journal: ${text || ''}\nFocus level: ${focusLevel}\nTarget voiced duration: ${voiceTotal}s. Include explicit pause markers like [pause 2s] where natural.`;
     const r = await client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [ { role: 'system', content: system }, { role: 'user', content: userMsg } ],
@@ -120,7 +122,7 @@ export async function POST(req) {
     for (const s of stages) {
       const script = (s.script || '').toString().slice(0, 4000);
       if (!script) continue;
-      const tt = await client.audio.speech.create({ model: 'gpt-4o-mini-tts', voice: 'alloy', input: script, response_format: 'wav' });
+      const tt = await client.audio.speech.create({ model: 'gpt-4o-mini-tts', voice: tts?.voice || 'alloy', input: script, response_format: 'wav' });
       const arrayBuffer = await tt.arrayBuffer();
       const buf = Buffer.from(arrayBuffer);
       const wav = new WaveFile(buf);
@@ -143,22 +145,23 @@ export async function POST(req) {
       }
     }
 
-    // Apply global bed attenuation (reduce beats by 10%)
-    const baseBedGain = 0.9;
+    // Apply global bed attenuation (reduce beats slightly for headroom)
+    const baseBedGain = 0.92;
     for (let i = 0; i < totalFrames; i++) {
       bedL[i] *= baseBedGain;
       bedR[i] *= baseBedGain;
     }
 
-    // 4) Duck bed by 20% (i.e., multiply by 0.8) when voice present, with smoothing; collect envelope at 1 Hz
-    const attackMs = 50, releaseMs = 50;
+    // 4) Duck bed while voice present, default to 25% reduction (0.75 multiplier), with smoothing; collect envelope at 1 Hz
+    const targetBed = ducking?.bedPercentWhileTalking ?? 0.75;
+    const attackMs = ducking?.attackMs ?? 40, releaseMs = ducking?.releaseMs ?? 220;
     const aA = 1 - Math.exp(-1 / (sampleRate * (attackMs/1000)));
     const aR = 1 - Math.exp(-1 / (sampleRate * (releaseMs/1000)));
     let env = 1.0; // 1.0 normal, 0.8 ducked
     const duckEnvSeries = new Array(totalLength).fill(1.0);
     for (let i = 0; i < totalFrames; i++) {
       const present = Math.max(Math.abs(voiceL[i]), Math.abs(voiceR[i])) > 1e-4;
-      const target = present ? 0.8 : 1.0;
+      const target = present ? targetBed : 1.0;
       const a = target < env ? aA : aR; // faster to duck
       env = env + (target - env) * a;
       bedL[i] *= env;
@@ -219,10 +222,15 @@ export async function POST(req) {
     bandSeries.forEach(b => { coverage[b] = (coverage[b] || 0) + 1; });
     Object.keys(coverage).forEach(k => coverage[k] = Number((coverage[k] / totalLength * 100).toFixed(1)));
 
-    // 8) Encode final WAV
+    // 8) Encode final WAV/MP3
     const wavBuf = encodeWavStereo({ left: bedL, right: bedR, sampleRate });
+    let mp3B64 = null;
+    try {
+      const mp3Buf = encodeMp3Stereo({ left: bedL, right: bedR, sampleRate, kbps: 160 });
+      mp3B64 = `data:audio/mpeg;base64,${mp3Buf.toString('base64')}`;
+    } catch {}
     const b64 = `data:audio/wav;base64,${wavBuf.toString('base64')}`;
-    return NextResponse.json({ ok: true, wav: b64, stages, analytics: { lengthSec: totalLength, sampleRate, deltaHzSeries, duckEnvSeries, baseFreqHz: baseFreqHz || preset.carriers.leftHz, baseBedGain, voicePresence, bedRms, voiceRms, coverage } });
+    return NextResponse.json({ ok: true, wav: b64, mp3: mp3B64, stages, analytics: { lengthSec: totalLength, sampleRate, deltaHzSeries, duckEnvSeries, baseFreqHz: baseFreqHz || preset.carriers.leftHz, baseBedGain, voicePresence, bedRms, voiceRms, coverage } });
   } catch (err) {
     return NextResponse.json({ error: err.message || 'Internal error' }, { status: 500 });
   }

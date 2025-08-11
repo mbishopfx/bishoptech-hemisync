@@ -20,8 +20,29 @@ export function SessionCharts({ analytics }) {
 
   if (!analytics) return null;
 
+  const exportCSV = () => {
+    const header = ['s','deltaHz','duck','voice','bedRms','voiceRms'];
+    const rows = data.map(d => [d.s,d.deltaHz,d.duck,d.voice,d.bedRms,d.voiceRms]);
+    const csv = [header.join(','), ...rows.map(r=>r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'session-analytics.csv'; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportJSON = () => {
+    const blob = new Blob([JSON.stringify(analytics, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'session-analytics.json'; a.click(); URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-end gap-2">
+        <button onClick={exportCSV} className="rounded-md bg-sky-400/90 px-3 py-1 text-sm font-medium text-slate-900 hover:bg-sky-300">Export CSV</button>
+        <button onClick={exportJSON} className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20">Export JSON</button>
+      </div>
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="glass-dark rounded-xl p-4">
         <h3 className="mb-2 text-white">Delta Frequency (binaural difference)</h3>
         <div className="h-56">
