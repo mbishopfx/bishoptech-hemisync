@@ -8,9 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SessionCharts } from '@/components/analytics/SessionCharts';
-import { FrequencyBackground } from '@/components/visuals/FrequencyBackground';
-import { GlitchTitle } from '@/components/visuals/GlitchTitle';
-import { HeroImage } from '@/components/visuals/HeroImage';
+import { TechGridBackground } from '@/components/visuals/TechGridBackground';
 import { Accordion } from '@/components/ui/accordion';
 
 export default function GeneratePage() {
@@ -48,6 +46,7 @@ export default function GeneratePage() {
   const [overlayBand, setOverlayBand] = useState('alpha');
   const [overlayTempo, setOverlayTempo] = useState(120);
   const [overlayDb, setOverlayDb] = useState(-10);
+  const [journey, setJourney] = useState([]);
 
   const onGenerate = async () => {
     setLoading(true); setError(null); setAudioUrl(null); setCombinedUrl(null); setGuidance(null);
@@ -131,12 +130,55 @@ export default function GeneratePage() {
     finally { setLoading(false); }
   };
 
+  const onGenerateJourney = async () => {
+    setLoading(true); setError(null); setJourney([]);
+    try {
+      const resp = await fetch('/api/audio/journey', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: journal,
+          perTrackSec: Number(lengthSec) || 300,
+          baseFreqHz: Number(baseFreq) || 240,
+          breathGuide: breath ? { enabled: true, pattern, bpm: Number(breathBpm) || undefined } : undefined,
+          background: background ? { type: 'ocean', mixDb: Number(bgLevel) } : undefined,
+          ducking: { bedPercentWhileTalking: Number(duckPercent)||0.75, attackMs: Number(duckAttack)||40, releaseMs: Number(duckRelease)||220 },
+          tts: { voice, mixDb: Number(voiceMixDb) },
+          modes: { binaural: true, monaural, isochronic }
+        })
+      });
+      const json = await resp.json();
+      if (!resp.ok || !json.ok) throw new Error(json.error || 'Journey generation failed');
+      setJourney(json.tracks || []);
+    } catch (e) { setError(e.message); }
+    finally { setLoading(false); }
+  };
+
   return (
     <main className="mx-auto max-w-[1200px] p-6">
-      <FrequencyBackground />
+      <TechGridBackground />
       <ThemeToggle />
-      <GlitchTitle text="HemiSync Session Generator" />
-      <p className="mb-6 text-center text-white/80">Create a 5-minute hemispheric synchronization session with guided cues and analytics.</p>
+      <Card className="mb-6">
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-white">Important: About HemiSync and Gateway Practice</h2>
+          <p className="text-white/80">
+            Binaural and isochronic entrainment can support relaxation, focused attention, and meditative depth by
+            presenting low-frequency differences between ears. Results vary by individual. Many users report calmer
+            mood, improved sleep hygiene, and better concentration with regular practice. These techniques are not
+            medical treatments and do not replace professional care.
+          </p>
+          <ul className="ml-5 list-disc space-y-1 text-white/75">
+            <li>Use high‑quality stereo headphones at comfortable volume. Do not listen while driving or operating machinery.</li>
+            <li>If you have a history of seizures, pacemaker/arrhythmia, or other neurological concerns, consult a clinician before use.</li>
+            <li>Deep states can evoke strong emotions or drowsiness. If uncomfortable, stop the session and ground (open eyes, breathe, hydrate).</li>
+            <li>Gateway-style practice benefits from consistency: brief daily sessions often outperform sporadic long sessions.</li>
+          </ul>
+          <p className="text-white/75">
+            Evidence suggests entrainment can nudge brain rhythms toward alpha (relaxation), theta (deep meditation),
+            and delta (restorative states). Experiences are subjective and no specific outcome is guaranteed. Proceed thoughtfully and
+            track how you feel over time.
+          </p>
+        </div>
+      </Card>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
@@ -220,9 +262,14 @@ export default function GeneratePage() {
               </div>
             </div>
 
-            <Button onClick={onGenerate} disabled={loading}>
-              {loading ? 'Generating...' : 'Generate Session'}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={onGenerate} disabled={loading}>
+                {loading ? 'Generating…' : 'Generate Session'}
+              </Button>
+              <Button onClick={onGenerateJourney} disabled={loading}>
+                {loading ? 'Working…' : 'Generate Master Journey (5 tracks)'}
+              </Button>
+            </div>
             <div className="pt-2 border-t border-white/10" />
             <div className="space-y-2">
               <h3 className="text-white font-medium">Music Overlay (no TTS)</h3>
@@ -284,6 +331,20 @@ export default function GeneratePage() {
                   <div className="flex gap-2">
                     <button onClick={playBoth} disabled={mixing} className="rounded-md bg-cyan-500 px-3 py-1 text-sm text-slate-900 disabled:opacity-60">Play Both</button>
                     <button onClick={stopBoth} className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20">Stop</button>
+                  </div>
+                )}
+                {journey && journey.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <h3 className="text-white font-medium">Journey Tracks</h3>
+                    {journey.map((t, i) => (
+                      <div key={i} className="flex items-center justify-between rounded-md border border-white/10 bg-white/5 p-3">
+                        <div className="text-white/90">{t.title}</div>
+                        <div className="flex gap-2">
+                          {t.wav && <a href={t.wav} download={`journey-${i+1}.wav`} className="rounded-md bg-sky-400/90 px-3 py-1 text-sm font-medium text-slate-900 hover:bg-sky-300">WAV</a>}
+                          {t.mp3 && <a href={t.mp3} download={`journey-${i+1}.mp3`} className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20">MP3</a>}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
