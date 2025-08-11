@@ -157,8 +157,8 @@ export default function GeneratePage() {
     <main className="mx-auto max-w-[1200px] p-6">
       <TechGridBackground />
       <ThemeToggle />
-      <Card className="mb-6">
-        <div className="space-y-2">
+      <Card className="mb-6 glass-emphasis">
+        <div className="space-y-3">
           <h2 className="text-xl font-semibold text-white">Important: About HemiSync and Gateway Practice</h2>
           <p className="text-white/80">
             Binaural and isochronic entrainment can support relaxation, focused attention, and meditative depth by
@@ -177,6 +177,14 @@ export default function GeneratePage() {
             and delta (restorative states). Experiences are subjective and no specific outcome is guaranteed. Proceed thoughtfully and
             track how you feel over time.
           </p>
+          <div className="mt-3 rounded-md border border-white/10 bg-white/5 p-3">
+            <p className="text-sm text-white/80">
+              Disclaimer: This program is custom-built by <a href="https://bishoptech.dev" target="_blank" rel="noreferrer" className="text-sky-300 underline">BishopTech.dev</a> to expand upon
+              established Gateway methods and explore the unique access potential observed with this technology. The creator has personally
+              tested and experienced benefits, and we aim to make thoughtful, responsible access available to everyone. This is educational
+              and wellness-oriented software, not a medical device.
+            </p>
+          </div>
         </div>
       </Card>
 

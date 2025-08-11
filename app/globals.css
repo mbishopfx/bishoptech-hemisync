@@ -44,6 +44,19 @@ html, body, #__next {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Emphasized glass card with subtle glow */
+.glass-emphasis {
+  background: linear-gradient(
+      180deg,
+      rgba(8, 17, 35, 0.7),
+      rgba(6, 14, 30, 0.55)
+    );
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  box-shadow:
+    0 10px 30px rgba(2, 6, 23, 0.6),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
 /* Gentle animated waves background */
 .waves {
   position: fixed;
