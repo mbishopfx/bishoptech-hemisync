@@ -3,6 +3,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { WaveFile } from 'wavefile';
 import { synthesizeBinaural, encodeWavStereo, encodeMp3Stereo } from '@/lib/audio/synth';
+import { spawn } from 'child_process';
+import ffmpegPath from 'ffmpeg-static';
 
 function dbToGain(db) { return Math.pow(10, db / 20); }
 
@@ -72,11 +74,51 @@ export async function POST(req) {
       band === 'alpha' ? 10 : band === 'theta' ? 6 : band === 'delta' ? 3 : band === 'beta' ? 16 : 10
     );
 
-    // 1) Load background WAV from /audio
+    // 1) Resolve background file from /audio (supports .wav or .mp3). If 'trackN', pick Nth file.
     const audioDir = path.join(process.cwd(), 'audio');
-    const filePath = path.join(audioDir, `${track}.wav`);
-    const file = await fs.readFile(filePath);
-    const music = wavToFloat32Stereo(file);
+    async function resolveTrack() {
+      // if direct file exists
+      const direct = path.join(audioDir, track);
+      try { const st = await fs.stat(direct); if (st.isFile()) return direct; } catch {}
+      // try with common extensions
+      for (const ext of ['.wav', '.mp3']) {
+        const p = path.join(audioDir, `${track}${ext}`);
+        try { const st = await fs.stat(p); if (st.isFile()) return p; } catch {}
+      }
+      // if pattern trackN, list files and pick Nth
+      const m = /^track(\d+)$/i.exec(String(track));
+      if (m) {
+        const idx = Math.max(1, parseInt(m[1], 10));
+        const files = (await fs.readdir(audioDir)).filter(f => /\.(wav|mp3)$/i.test(f)).sort();
+        if (files.length >= idx) return path.join(audioDir, files[idx - 1]);
+      }
+      throw new Error(`Audio track not found: ${track}`);
+    }
+
+    const resolvedPath = await resolveTrack();
+
+    async function loadAsFloat32Stereo(p) {
+      if (/\.wav$/i.test(p)) {
+        const file = await fs.readFile(p);
+        return wavToFloat32Stereo(file);
+      }
+      if (/\.mp3$/i.test(p)) {
+        if (!ffmpegPath) throw new Error('ffmpeg binary not available to decode mp3');
+        // decode mp3 to wav via ffmpeg pipe
+        const chunks = [];
+        await new Promise((resolve, reject) => {
+          const child = spawn(ffmpegPath, ['-hide_banner', '-loglevel', 'error', '-i', p, '-f', 'wav', 'pipe:1']);
+          child.stdout.on('data', (d) => chunks.push(Buffer.from(d)));
+          child.on('error', reject);
+          child.on('close', (code) => code === 0 ? resolve() : reject(new Error(`ffmpeg exit ${code}`)));
+        });
+        const wavBuf = Buffer.concat(chunks);
+        return wavToFloat32Stereo(wavBuf);
+      }
+      throw new Error('Unsupported audio format');
+    }
+
+    const music = await loadAsFloat32Stereo(resolvedPath);
 
     const targetRate = 44100;
     let musL = music.left, musR = music.right;
