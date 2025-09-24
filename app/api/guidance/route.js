@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { getLogger } from '@/lib/logging/logger';
+import { createPortalClient } from '@/lib/openai/client';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -13,7 +14,7 @@ export async function POST(req) {
     if (!text || typeof text !== 'string') {
       return NextResponse.json({ error: 'text is required' }, { status: 400 });
     }
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const client = createPortalClient();
     const system = `You are a gentle, non-clinical meditation guide. Create a short, stage-based spoken guidance script aligned to hemispheric synchronization (induction → deepening → exploration → return). Avoid medical claims. Keep language calm and permissive. Output strictly JSON with keys: stages (array of { name, atSec, durationSec, script }), tone, reminders.`;
     const user = `User journal/context: ${text}\nFocus level: ${focusLevel}\nLength: ${lengthSec}s\nConstraints: Use simple sentences, about 30-50 words per minute. No coercive language. Include brief breath cues. Align with Alpha/Theta themes for relaxation/expansion.`;
     const r = await client.chat.completions.create({

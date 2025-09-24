@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server';
 import { validate, GenerateAudioInputSchema } from '@/lib/validation/schemas';
 import { pickPreset } from '@/lib/audio/presets';
 import { generateBreathEnvelope } from '@/lib/audio/breath';
-import { synthesizeBinaural, encodeWavStereo, encodeMp3Stereo } from '@/lib/audio/synth';
+import {
+  buildSessionBed,
+  encodeOutputs
+} from '@/lib/audio/engine/pipeline';
 import { generateOceanBackground } from '@/lib/audio/background';
 import { getLogger } from '@/lib/logging/logger';
 
@@ -31,29 +34,22 @@ export async function POST(req) {
       background = generateOceanBackground(44100, input.lengthSec, { mixDb: input.background.mixDb ?? -22 });
     }
 
-    const { left, right, sampleRate } = synthesizeBinaural({
+    const bed = await buildSessionBed({
       lengthSec: input.lengthSec,
       sampleRate: 44100,
-      baseFreqHz: input.baseFreqHz || preset.carriers.leftHz,
-      deltaHzFrom: deltaFrom,
-      deltaHzTo: deltaTo,
+      focusPreset: preset,
+      baseFreqHz: input.baseFreqHz,
+      deltaOverrides: { from: deltaFrom, to: deltaTo },
       noise: preset.noise,
       breath,
-      modes: { ...{ binaural: true, monaural: false, isochronic: false }, ...(input.entrainmentModes || {}), ...(preset.modes || {}) },
-      background
+      background,
+      modes: { ...{ binaural: true, monaural: false, isochronic: false }, ...(input.entrainmentModes || {}), ...(preset.modes || {}) }
     });
 
-    const wav = encodeWavStereo({ left, right, sampleRate });
-    let mp3B64 = null;
-    try {
-      const mp3 = encodeMp3Stereo({ left, right, sampleRate });
-      mp3B64 = `data:audio/mpeg;base64,${mp3.toString('base64')}`;
-    } catch (e) {
-      // MP3 encoding failed; continue with WAV only
-    }
+    const { wavBuffer, mp3Buffer } = await encodeOutputs({ left: bed.left, right: bed.right, sampleRate: bed.sampleRate, withMp3: true });
 
-    // Return as inline data for MVP; later, store in Supabase and return signed URLs
-    const wavB64 = `data:audio/wav;base64,${wav.toString('base64')}`;
+    const wavB64 = `data:audio/wav;base64,${wavBuffer.toString('base64')}`;
+    const mp3B64 = mp3Buffer ? `data:audio/mpeg;base64,${mp3Buffer.toString('base64')}` : null;
 
     return NextResponse.json({ ok: true, presetUsed: preset, wav: wavB64, mp3: mp3B64 });
   } catch (err) {
