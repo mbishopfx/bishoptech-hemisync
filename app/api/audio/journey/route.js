@@ -96,8 +96,6 @@ export async function POST(req) {
             modes
           });
 
-      const totalFrames = Math.floor(sampleRate * totalLength);
-
       let sum = stages.reduce((a,s)=>a+(s.durationSec||0),0);
       sum = sum || Math.floor(totalLength/2);
       const totalGap = Math.max(0, totalLength - sum);
