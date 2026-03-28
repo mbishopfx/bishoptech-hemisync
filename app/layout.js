@@ -1,8 +1,5 @@
 import './globals.css';
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'edge';
-
 export const metadata = {
   title: 'HemiSync App',
   description: 'AI journaling and hemispheric synchronization audio sessions'
@@ -21,4 +18,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-

@@ -45,17 +45,6 @@ export const defaultSessionSpec = {
         pattern: defaultJourney.breathPattern || 'coherent-5.5',
         depth: 0.12
       }
-    },
-    {
-      id: 'layer-voice',
-      type: 'voice',
-      params: {
-        enabled: true,
-        voice: 'alloy',
-        mixDb: -16,
-        guidanceMode: 'hybrid',
-        style: defaultJourney.guidanceStyle
-      }
     }
   ],
   stages: defaultJourney.stages

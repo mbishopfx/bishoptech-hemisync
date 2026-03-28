@@ -8,8 +8,8 @@ import {
   encodeOutputs
 } from '@/lib/audio/engine/pipeline';
 import { pickPreset } from '@/lib/audio/presets';
-import { spawn } from 'child_process';
-import ffmpegPath from 'ffmpeg-static';
+import { persistRenderArtifacts } from '@/lib/audio/render-artifacts';
+import { resolveExportProfile } from '@/lib/audio/export-profiles';
 
 function makeBeatGate(sampleRate, lengthSec, bpm) {
   const total = Math.floor(sampleRate * lengthSec);
@@ -29,6 +29,15 @@ function makeBeatGate(sampleRate, lengthSec, bpm) {
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
+function resolveInsideAudioDir(audioDir, candidate) {
+  const resolved = path.resolve(audioDir, candidate);
+  const base = path.resolve(audioDir);
+  if (resolved !== base && !resolved.startsWith(`${base}${path.sep}`)) {
+    throw new Error('Invalid audio path');
+  }
+  return resolved;
+}
+
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -38,9 +47,11 @@ export async function POST(req) {
       bpm = 120,
       overlayDb = -10,
       baseFreqHz = 240,
+      exportProfile: exportProfileId = 'premium',
       lengthSec // optional; default to full track length
     } = body || {};
 
+    const exportProfile = resolveExportProfile(exportProfileId);
     const preset = pickPreset({ focusLevel: 'F12' });
     const bandHz = typeof band === 'number' ? band : (
       band === 'alpha' ? 10 : band === 'theta' ? 6 : band === 'delta' ? 3 : band === 'beta' ? 16 : 10
@@ -50,11 +61,11 @@ export async function POST(req) {
     const audioDir = path.join(process.cwd(), 'audio');
     async function resolveTrack() {
       // if direct file exists
-      const direct = path.join(audioDir, track);
+      const direct = resolveInsideAudioDir(audioDir, String(track));
       try { const st = await fs.stat(direct); if (st.isFile()) return direct; } catch {}
       // try with common extensions
       for (const ext of ['.wav', '.mp3']) {
-        const p = path.join(audioDir, `${track}${ext}`);
+        const p = resolveInsideAudioDir(audioDir, `${track}${ext}`);
         try { const st = await fs.stat(p); if (st.isFile()) return p; } catch {}
       }
       // if pattern trackN, list files and pick Nth
@@ -69,7 +80,7 @@ export async function POST(req) {
 
     const resolvedPath = await resolveTrack();
 
-    const targetRate = 44100;
+    const targetRate = exportProfile.sampleRate;
     const imported = await importStereoBed({ filePath: resolvedPath, sampleRate: targetRate, targetLengthSec: lengthSec });
     const totalLength = lengthSec ? Math.floor(lengthSec) : Math.floor(imported.left.length / targetRate);
     const totalFrames = totalLength * targetRate;
@@ -91,7 +102,6 @@ export async function POST(req) {
     for (let i = 0; i < bed.left.length; i++) { bed.left[i] *= gate[i]; bed.right[i] *= gate[i]; }
 
     // 3) Mix music with overlay
-    const ovGain = dbToGain(overlayDb);
     const outL = new Float32Array(totalFrames);
     const outR = new Float32Array(totalFrames);
     for (let i = 0; i < totalFrames; i++) {
@@ -107,14 +117,30 @@ export async function POST(req) {
     });
 
     // 4) Encode
-    const { wavBuffer, mp3Buffer } = await encodeOutputs({ left: outL, right: outR, sampleRate: targetRate, withMp3: true });
-    const wavB64 = `data:audio/wav;base64,${wavBuffer.toString('base64')}`;
-    const mp3B64 = mp3Buffer ? `data:audio/mpeg;base64,${mp3Buffer.toString('base64')}` : null;
+    const { wavBuffer, mp3Buffer, mastering } = await encodeOutputs({
+      left: outL,
+      right: outR,
+      sampleRate: targetRate,
+      wavBitDepthCode: exportProfile.wavBitDepthCode,
+      withMp3: true,
+      kbps: exportProfile.mp3Kbps,
+      masteringProfile: exportProfile.mastering
+    });
+    const artifacts = await persistRenderArtifacts({
+      baseName: `${path.basename(resolvedPath, path.extname(resolvedPath))}-${bandHz}hz-overlay`,
+      wavBuffer,
+      mp3Buffer
+    });
 
-    return NextResponse.json({ ok: true, wav: wavB64, mp3: mp3B64, meta: { bandHz, bpm, overlayDb, lengthSec: totalLength } });
+    return NextResponse.json({
+      ok: true,
+      artifactId: artifacts.artifactId,
+      assets: artifacts.files,
+      wav: artifacts.files.wav?.url || null,
+      mp3: artifacts.files.mp3?.url || null,
+      meta: { bandHz, bpm, overlayDb, lengthSec: totalLength, exportProfile: exportProfile.id, mastering }
+    });
   } catch (err) {
     return NextResponse.json({ error: err.message || 'Internal error' }, { status: 500 });
   }
 }
-
-

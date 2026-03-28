@@ -1,10 +1,10 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 // Fullscreen animated tech grid with subtle mouse parallax
 export function TechGridBackground() {
   const canvasRef = useRef(null);
-  const [pointer, setPointer] = useState({ x: 0.5, y: 0.5 });
+  const pointerRef = useRef({ x: 0.5, y: 0.5 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -40,6 +40,7 @@ export function TechGridBackground() {
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, width, height);
 
+      const pointer = pointerRef.current;
       const offsetX = Math.sin(t) * 16 + (pointer.x - 0.5) * 20;
       const offsetY = Math.cos(t * 0.9) * 16 + (pointer.y - 0.5) * 20;
 
@@ -82,7 +83,7 @@ export function TechGridBackground() {
 
     const onMove = (e) => {
       const x = e.clientX / width; const y = e.clientY / height;
-      setPointer({ x, y });
+      pointerRef.current = { x, y };
     };
     window.addEventListener('mousemove', onMove);
 
@@ -97,5 +98,4 @@ export function TechGridBackground() {
     <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 -z-10" />
   );
 }
-
 

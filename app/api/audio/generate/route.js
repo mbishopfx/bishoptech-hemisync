@@ -7,6 +7,7 @@ import { persistRenderArtifacts } from '@/lib/audio/render-artifacts';
 import { getLogger } from '@/lib/logging/logger';
 import { buildJourneyBlueprint, buildJourneyAnalytics } from '@/lib/audio/journeys';
 import { buildBackgroundLayer } from '@/lib/audio/background-layer';
+import { resolveExportProfile } from '@/lib/audio/export-profiles';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -17,6 +18,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const input = validate(GenerateAudioInputSchema, body);
+    const exportProfile = resolveExportProfile(input.exportProfile);
     const journey = buildJourneyBlueprint({
       journeyPresetId: input.journeyPresetId,
       totalLengthSec: input.lengthSec,
@@ -30,7 +32,7 @@ export async function POST(req) {
     if (input.breathGuide?.enabled) {
       const envelope = generateBreathEnvelope(
         input.breathGuide.pattern || journey.breathPattern || 'coherent-5.5',
-        44100,
+        exportProfile.sampleRate,
         journey.totalLengthSec,
         input.breathGuide?.bpm
       );
@@ -39,13 +41,13 @@ export async function POST(req) {
 
     const background = await buildBackgroundLayer({
       background: input.background || journey.background,
-      sampleRate: 44100,
+      sampleRate: exportProfile.sampleRate,
       lengthSec: journey.totalLengthSec
     });
 
     const bed = await buildSessionBed({
       lengthSec: journey.totalLengthSec,
-      sampleRate: 44100,
+      sampleRate: exportProfile.sampleRate,
       focusPreset: {
         ...preset,
         carriers: { ...preset.carriers, leftHz: journey.baseFreqHz },
@@ -58,11 +60,14 @@ export async function POST(req) {
       modes: { ...{ binaural: true, monaural: false, isochronic: false }, ...(preset.modes || {}), ...(input.entrainmentModes || {}) }
     });
 
-    const { wavBuffer, mp3Buffer } = await encodeOutputs({
+    const { wavBuffer, mp3Buffer, mastering } = await encodeOutputs({
       left: bed.left,
       right: bed.right,
       sampleRate: bed.sampleRate,
-      withMp3: true
+      wavBitDepthCode: exportProfile.wavBitDepthCode,
+      withMp3: true,
+      kbps: exportProfile.mp3Kbps,
+      masteringProfile: exportProfile.mastering
     });
     const artifacts = await persistRenderArtifacts({
       baseName: journey.name || input.focusLevel || input.programPreset || 'generated-session',
@@ -73,21 +78,18 @@ export async function POST(req) {
     return NextResponse.json({
       ok: true,
       presetUsed: preset,
+      exportProfile: exportProfile.id,
       journey,
       stages: journey.stages,
       analytics: buildJourneyAnalytics({
         journey,
         program: {
-          bedPostDuck: { left: bed.left, right: bed.right },
-          voiceTracks: {
-            left: new Float32Array(bed.left.length),
-            right: new Float32Array(bed.right.length)
-          },
-          duckEnvSeries: new Array(Math.ceil(bed.left.length / bed.sampleRate)).fill(1)
+          bedPostDuck: { left: bed.left, right: bed.right }
         },
         sampleRate: bed.sampleRate,
         baseFreqHz: journey.baseFreqHz
       }),
+      mastering,
       artifactId: artifacts.artifactId,
       assets: artifacts.files,
       wav: artifacts.files.wav?.url || null,

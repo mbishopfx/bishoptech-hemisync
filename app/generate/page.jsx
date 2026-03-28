@@ -41,12 +41,12 @@ export default function GeneratePage() {
             {
               title: '2. Chat with the Session Architect',
               content:
-                'Describe mood, progression, narration density, or stage timing. The AI updates the session spec and keeps the blueprint coherent.'
+                'Describe mood, progression, stage timing, delta ramps, or ambience. The AI updates the session spec and keeps the blueprint coherent.'
             },
             {
               title: '3. Render Your Session',
               content:
-                'When satisfied, render a full staged WAV/MP3 with narration, analytics, downloadable artifacts, and a clearer stage timeline.'
+                'When satisfied, render a full staged WAV/MP3 with premium mastering, analytics, downloadable artifacts, and a clearer stage timeline.'
             },
             {
               title: '4. Best Practices',

@@ -70,12 +70,12 @@ function toStageMinutes(seconds) {
 export function SessionLab() {
   const toneReady = useToneReady();
   const [spec, setSpec] = useState(defaultSessionSpec);
-  const [intent, setIntent] = useState('Guide a polished induction into theta, then return clear and steady.');
+  const [intent, setIntent] = useState('Build a polished alpha-to-theta session with a soft middle hold and a clean, steady return.');
   const [status, setStatus] = useState('Idle');
   const [playing, setPlaying] = useState(false);
   const [rendering, setRendering] = useState(false);
   const [renderResult, setRenderResult] = useState(null);
-  const [chatInput, setChatInput] = useState('Keep this at 15 minutes, make the theta hold softer, and leave more silence between cues.');
+  const [chatInput, setChatInput] = useState('Keep this at 15 minutes, make the theta hold softer, and smooth the return back into alpha.');
   const [chatHistory, setChatHistory] = useState([]);
   const [sessionId, setSessionId] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -230,15 +230,6 @@ export function SessionLab() {
             params: {
               ...layer.params,
               pattern: nextJourney.breathPattern || layer.params.pattern
-            }
-          };
-        }
-        if (layer.type === 'voice') {
-          return {
-            ...layer,
-            params: {
-              ...layer.params,
-              style: nextJourney.guidanceStyle || layer.params.style
             }
           };
         }
@@ -453,11 +444,10 @@ export function SessionLab() {
   const handleGenerate = async () => {
     try {
       setRendering(true);
-      setStatus('Rendering staged journey…');
+      setStatus('Rendering premium beats…');
 
       const breath = getLayer('breath');
       const background = getLayer('background');
-      const voice = getLayer('voice');
 
       const backgroundPayload = background
         ? background.params.sourceType === 'asset'
@@ -466,9 +456,7 @@ export function SessionLab() {
         : undefined;
 
       const body = {
-        text: intent,
         journeyPresetId: spec.journeyPresetId,
-        journeyName: selectedJourney?.name,
         focusLevel: spec.focusLevel,
         lengthSec: spec.lengthSec,
         baseFreqHz: spec.baseFreqHz,
@@ -481,18 +469,10 @@ export function SessionLab() {
               bpm: spec.breathRate ? Number((spec.breathRate * 60).toFixed(2)) : undefined
             }
           : undefined,
-        background: backgroundPayload,
-        guidanceMode: voice?.params?.guidanceMode || 'hybrid',
-        tts: voice
-          ? {
-              enabled: voice.params.enabled !== false,
-              voice: voice.params.voice || 'alloy',
-              mixDb: voice.params.mixDb ?? -16
-            }
-          : { enabled: false }
+        background: backgroundPayload
       };
 
-      const response = await fetch('/api/audio/combined', {
+      const response = await fetch('/api/audio/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -507,9 +487,7 @@ export function SessionLab() {
         mp3: data.mp3,
         analytics: data.analytics,
         stages: data.stages,
-        guidanceStages: data.guidanceStages,
-        journey: data.journey,
-        guidanceMeta: data.guidanceMeta
+        journey: data.journey
       });
       setStatus('Render complete');
     } catch (err) {
@@ -544,7 +522,7 @@ export function SessionLab() {
           <div className="space-y-2">
             <h3 className="text-white font-medium">Track Blueprint</h3>
             <p className="text-sm text-white/70">
-              Start from a preset journey, then tune stage lengths, delta targets, and guidance density for a production-ready render.
+              Start from a preset journey, then tune stage lengths, delta targets, breath pacing, and ambient layers for a production-ready render.
             </p>
           </div>
 
@@ -616,26 +594,7 @@ export function SessionLab() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Guidance Mode</label>
-              <Select
-                value={getLayer('voice')?.params?.guidanceMode || 'hybrid'}
-                onChange={(e) => updateLayerParams('voice', { guidanceMode: e.target.value })}
-              >
-                <option value="hybrid">Hybrid AI + preset</option>
-                <option value="preset">Preset only</option>
-                <option value="ai">AI-first</option>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Voice Mix (dB)</label>
-              <Input
-                type="number"
-                value={getLayer('voice')?.params?.mixDb ?? -16}
-                onChange={(e) => updateLayerParams('voice', { mixDb: Number(e.target.value) })}
-              />
-            </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
             <div>
               <label className="text-xs uppercase tracking-wide text-white/60">Breath Pattern</label>
               <Select
@@ -697,7 +656,7 @@ export function SessionLab() {
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <h4 className="text-white font-medium">Stage Blueprint</h4>
-              <p className="text-xs text-white/60">Each stage drives timing, band intent, and narration windows.</p>
+              <p className="text-xs text-white/60">Each stage drives timing, band intent, and how the frequency path evolves.</p>
             </div>
             <div className="space-y-4">
               {spec.stages.map((stage, index) => (
@@ -712,7 +671,7 @@ export function SessionLab() {
                     </div>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <div className="xl:col-span-2">
                       <label className="text-xs uppercase tracking-wide text-white/60">Stage Name</label>
                       <Input value={stage.name} onChange={(e) => updateStage(index, { name: e.target.value })} />
@@ -735,17 +694,6 @@ export function SessionLab() {
                         <option value="delta">delta</option>
                         <option value="beta">beta</option>
                         <option value="gamma">gamma</option>
-                      </Select>
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Guidance Density</label>
-                      <Select
-                        value={stage.guidanceDensity || 'medium'}
-                        onChange={(e) => updateStage(index, { guidanceDensity: e.target.value })}
-                      >
-                        <option value="light">light</option>
-                        <option value="medium">medium</option>
-                        <option value="high">high</option>
                       </Select>
                     </div>
                   </div>
@@ -808,7 +756,7 @@ export function SessionLab() {
               </label>
             </Button>
             <p className="text-xs text-white/60">
-              Uploaded sources stay in your private Supabase bucket. Use them as research beds or reference narration while keeping final presets curated.
+              Uploaded sources stay in your private Supabase bucket. Use them as reference beds or external material while keeping the final session focused on pure entrainment.
             </p>
             <div className="space-y-2 max-h-40 overflow-auto">
               {uploadedFiles.length === 0 && <p className="text-sm text-white/50">No custom sources yet.</p>}
@@ -826,7 +774,7 @@ export function SessionLab() {
           </div>
 
           <div className="space-y-3">
-            <label className="text-xs uppercase tracking-wide text-white/60">Session Intent / Guidance Notes</label>
+            <label className="text-xs uppercase tracking-wide text-white/60">Session Intent / Sound Design Notes</label>
             <Textarea value={intent} onChange={(e) => setIntent(e.target.value)} rows={5} placeholder="How should this session feel and progress?" />
           </div>
 
@@ -859,7 +807,7 @@ export function SessionLab() {
             ))}
           </div>
           <div className="space-y-3">
-            <Textarea rows={3} value={chatInput} onChange={(e) => setChatInput(e.target.value)} placeholder="Ask for staging or guidance adjustments…" />
+            <Textarea rows={3} value={chatInput} onChange={(e) => setChatInput(e.target.value)} placeholder="Ask for stage, delta, or ambience adjustments…" />
             <div className="flex justify-end">
               <Button onClick={handleChatSend}>Send to Session Architect</Button>
             </div>
@@ -875,7 +823,7 @@ export function SessionLab() {
             className="space-y-4"
           >
             <p className="text-sm text-white/70">
-              Render the full 15-minute staged journey with narration, ducking, delta analytics, and downloadable artifacts.
+              Render the full staged beats session with high-quality mastering, delta analytics, and downloadable artifacts.
             </p>
             <Button onClick={handleGenerate} disabled={rendering}>
               {rendering ? 'Rendering…' : 'Generate Journey'}
@@ -901,11 +849,6 @@ export function SessionLab() {
                     </a>
                   )}
                 </div>
-                {renderResult.guidanceMeta && (
-                  <p className="text-xs text-white/60">
-                    Guidance mode: {renderResult.guidanceMeta.modeUsed} · Voice rendered: {renderResult.guidanceMeta.voiceRendered ? 'yes' : 'no'}
-                  </p>
-                )}
                 {renderResult.stages?.length > 0 && (
                   <div className="space-y-3 rounded-xl border border-white/10 bg-white/5 p-4">
                     <h4 className="text-white font-medium">Rendered Stage Plan</h4>
