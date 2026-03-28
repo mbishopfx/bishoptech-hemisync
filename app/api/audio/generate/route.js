@@ -8,6 +8,7 @@ import { getLogger } from '@/lib/logging/logger';
 import { buildJourneyBlueprint, buildJourneyAnalytics } from '@/lib/audio/journeys';
 import { buildBackgroundLayer } from '@/lib/audio/background-layer';
 import { resolveExportProfile } from '@/lib/audio/export-profiles';
+import { resolvePublicUrl } from '@/lib/http/public-url';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -74,6 +75,17 @@ export async function POST(req) {
       wavBuffer,
       mp3Buffer
     });
+    const assets = Object.fromEntries(
+      Object.entries(artifacts.files).map(([format, file]) => [
+        format,
+        file
+          ? {
+              ...file,
+              url: resolvePublicUrl(req, file.url)
+            }
+          : file
+      ])
+    );
 
     return NextResponse.json({
       ok: true,
@@ -91,9 +103,9 @@ export async function POST(req) {
       }),
       mastering,
       artifactId: artifacts.artifactId,
-      assets: artifacts.files,
-      wav: artifacts.files.wav?.url || null,
-      mp3: artifacts.files.mp3?.url || null
+      assets,
+      wav: assets.wav?.url || null,
+      mp3: assets.mp3?.url || null
     });
   } catch (err) {
     logger.error({ err }, 'audio generate error');

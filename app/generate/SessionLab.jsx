@@ -13,6 +13,7 @@ import { FocusPresets } from '@/lib/audio/presets';
 import { AmbientAssetOptions, buildAmbientAssetUrl } from '@/lib/audio/assets';
 import { JourneyPresetOptions, buildJourneyBlueprint } from '@/lib/audio/journeys';
 import { SessionCharts } from '@/components/analytics/SessionCharts';
+import { resolveBackendAssetUrl, toBackendUrl } from '@/lib/frontend/backend-url';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -417,7 +418,7 @@ export function SessionLab() {
 
     try {
       setStatus('Contacting Session Architect…');
-      const response = await fetch('/api/chat', {
+      const response = await fetch(toBackendUrl('/api/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -475,7 +476,7 @@ export function SessionLab() {
         background: backgroundPayload
       };
 
-      const response = await fetch('/api/audio/generate', {
+      const response = await fetch(toBackendUrl('/api/audio/generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -486,8 +487,8 @@ export function SessionLab() {
       }
 
       setRenderResult({
-        wav: data.wav,
-        mp3: data.mp3,
+        wav: resolveBackendAssetUrl(data.wav),
+        mp3: resolveBackendAssetUrl(data.mp3),
         analytics: data.analytics,
         stages: data.stages,
         journey: data.journey

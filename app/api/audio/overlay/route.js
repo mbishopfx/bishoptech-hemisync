@@ -10,6 +10,7 @@ import {
 import { pickPreset } from '@/lib/audio/presets';
 import { persistRenderArtifacts } from '@/lib/audio/render-artifacts';
 import { resolveExportProfile } from '@/lib/audio/export-profiles';
+import { resolvePublicUrl } from '@/lib/http/public-url';
 
 function makeBeatGate(sampleRate, lengthSec, bpm) {
   const total = Math.floor(sampleRate * lengthSec);
@@ -131,13 +132,24 @@ export async function POST(req) {
       wavBuffer,
       mp3Buffer
     });
+    const assets = Object.fromEntries(
+      Object.entries(artifacts.files).map(([format, file]) => [
+        format,
+        file
+          ? {
+              ...file,
+              url: resolvePublicUrl(req, file.url)
+            }
+          : file
+      ])
+    );
 
     return NextResponse.json({
       ok: true,
       artifactId: artifacts.artifactId,
-      assets: artifacts.files,
-      wav: artifacts.files.wav?.url || null,
-      mp3: artifacts.files.mp3?.url || null,
+      assets,
+      wav: assets.wav?.url || null,
+      mp3: assets.mp3?.url || null,
       meta: { bandHz, bpm, overlayDb, lengthSec: totalLength, exportProfile: exportProfile.id, mastering }
     });
   } catch (err) {

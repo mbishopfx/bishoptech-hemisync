@@ -9,6 +9,7 @@ import {
 import { FocusPresets } from '@/lib/audio/presets';
 import { persistRenderArtifacts } from '@/lib/audio/render-artifacts';
 import { resolveExportProfile } from '@/lib/audio/export-profiles';
+import { resolvePublicUrl } from '@/lib/http/public-url';
 
 async function buildRandomizedBed({ totalLength, sampleRate, baseFreqHz, modes, breath, background }) {
   const segmentTargets = [
@@ -123,14 +124,25 @@ export async function POST(req) {
         wavBuffer,
         mp3Buffer
       });
+      const assets = Object.fromEntries(
+        Object.entries(artifacts.files).map(([format, file]) => [
+          format,
+          file
+            ? {
+                ...file,
+                url: resolvePublicUrl(req, file.url)
+              }
+            : file
+        ])
+      );
 
       results.push({
         key: tr.key,
         title: tr.title,
         artifactId: artifacts.artifactId,
-        assets: artifacts.files,
-        wav: artifacts.files.wav?.url || null,
-        mp3: artifacts.files.mp3?.url || null,
+        assets,
+        wav: assets.wav?.url || null,
+        mp3: assets.mp3?.url || null,
         stages: [],
         analytics: { lengthSec: totalLength, sampleRate, bandIntent: tr.bandIntent, mastering }
       });
