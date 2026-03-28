@@ -87,7 +87,9 @@ export async function POST(req) {
 
 Rules:
 - Keep language calm, encouraging, professional.
-- Focus on describing binaural ramps, background textures, breath cues, guidance themes.
+- Prefer strong staged journey design for 15-minute renders.
+- Focus on journeyPresetId, stage timing, stage goals, delta ramps, background textures, breath cues, and guidance themes.
+- Use stages[*].brainState, stages[*].focusLevel, stages[*].deltaHz, and stages[*].guidanceDensity when helpful.
 - Keep specPatch minimal; only include keys that changed.
 - If specPatch is empty, return {}.
 - specPatch should follow the SessionSpec schema.`;
@@ -147,5 +149,4 @@ Spec patch: ${JSON.stringify(entry.specPatch)}`
     return NextResponse.json({ error: err.message || 'Chat error' }, { status: 500 });
   }
 }
-
 

@@ -36,17 +36,17 @@ export default function GeneratePage() {
             {
               title: '1. Design in the Lab',
               content:
-                'Use the TahoeOS Session Lab preview to audition binaural blends, tweak breath guidance, and upload custom beds.'
+                'Start from a 15-minute staged journey preset, then tune stage durations, brain-state ramps, breath cues, and bundled ambient beds.'
             },
             {
               title: '2. Chat with the Session Architect',
               content:
-                'Describe mood, progression, or narration style. The AI updates the spec and stores revisions in Supabase.'
+                'Describe mood, progression, narration density, or stage timing. The AI updates the session spec and keeps the blueprint coherent.'
             },
             {
               title: '3. Render Your Session',
               content:
-                'When satisfied, click Generate Session to render a long-form WAV/MP3 with analytics and Supabase storage.'
+                'When satisfied, render a full staged WAV/MP3 with narration, analytics, downloadable artifacts, and a clearer stage timeline.'
             },
             {
               title: '4. Best Practices',
@@ -59,4 +59,3 @@ export default function GeneratePage() {
     </main>
   );
 }
-

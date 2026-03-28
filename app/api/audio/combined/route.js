@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { validate, CombinedAudioInputSchema } from '@/lib/validation/schemas';
 import { pickPreset } from '@/lib/audio/presets';
 import { generateBreathEnvelope } from '@/lib/audio/breath';
 import {
@@ -8,99 +9,157 @@ import {
   mixProgram,
   encodeOutputs
 } from '@/lib/audio/engine/pipeline';
-import { generateOceanBackground } from '@/lib/audio/background';
+import { persistRenderArtifacts } from '@/lib/audio/render-artifacts';
+import { getLogger } from '@/lib/logging/logger';
+import {
+  buildJourneyBlueprint,
+  buildGuidanceCueStages,
+  buildFallbackGuidanceScript,
+  buildJourneyAnalytics
+} from '@/lib/audio/journeys';
+import { buildBackgroundLayer } from '@/lib/audio/background-layer';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
+function buildSilentVoice(totalFrames) {
+  return {
+    voiceL: new Float32Array(totalFrames),
+    voiceR: new Float32Array(totalFrames)
+  };
+}
+
+async function enrichGuidanceStagesWithAi({ client, guidanceStages, journey, intentText }) {
+  const stagePayload = guidanceStages.map((stage) => ({
+    id: stage.id,
+    name: stage.name,
+    voiceBudgetSec: stage.durationSec,
+    brainState: stage.brainState,
+    focusLevel: stage.focusLevel,
+    goal: stage.goal,
+    notes: stage.notes,
+    guidanceDensity: stage.guidanceDensity
+  }));
+
+  const system = `You write sparse, polished narration cues for stage-based hemispheric synchronization tracks. Return strict JSON in the shape { stages:[{ id, script }] }.
+Rules:
+- Keep the provided stage order and IDs.
+- Each script must fit comfortably inside the stage's voiceBudgetSec.
+- Use calm, safe, non-clinical language.
+- No medical claims, no coercive phrasing.
+- Use short [pause 2s] style tags sparingly.`;
+  const user = `Journey: ${journey.name}\nSummary: ${journey.summary}\nGuidance style: ${journey.guidanceStyle}\nIntent: ${intentText || 'Calm, focused awareness.'}\nStages: ${JSON.stringify(stagePayload)}`;
+
+  const response = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      { role: 'system', content: system },
+      { role: 'user', content: user }
+    ],
+    temperature: 0.5,
+    response_format: { type: 'json_object' },
+    max_tokens: 2200
+  });
+  const parsed = JSON.parse(response.choices?.[0]?.message?.content || '{}');
+  const scriptsById = new Map((parsed?.stages || []).map((stage) => [stage.id, stage.script]));
+
+  return guidanceStages.map((stage) => ({
+    ...stage,
+    script: scriptsById.get(stage.id) || buildFallbackGuidanceScript({ journey, stage, intentText })
+  }));
+}
+
 export async function POST(req) {
+  const logger = getLogger();
+
   try {
     const body = await req.json();
-    const {
-      text,
-      focusLevel = 'F12',
-      lengthSec = 300,
-      baseFreqHz,
-      entrainmentModes = { binaural: true, monaural: true, isochronic: false },
-      breathGuide,
-      background,
-      ducking = { enabled: true, bedPercentWhileTalking: 0.75, attackMs: 50, releaseMs: 200 },
-      tts = { voice: 'alloy' }
-    } = body || {};
-
-    const totalLength = Number(lengthSec) || 300;
-    const voiceTotal = Math.floor(totalLength / 2); // 50% guidance = 2.5 minutes for 5-minute bed
-
-    const preset = pickPreset({ focusLevel });
+    const input = validate(CombinedAudioInputSchema, body);
+    const journey = buildJourneyBlueprint({
+      journeyPresetId: input.journeyPresetId,
+      totalLengthSec: input.lengthSec,
+      baseFreqHz: input.baseFreqHz,
+      focusLevel: input.focusLevel,
+      stages: input.stageBlueprint,
+      journeyName: input.journeyName
+    });
+    const preset = pickPreset({ programPreset: input.programPreset, focusLevel: journey.focusLevel });
     const sampleRate = 44100;
 
-    const breath = breathGuide?.enabled
+    const breath = input.breathGuide?.enabled
       ? {
           envelope: generateBreathEnvelope(
-            breathGuide.pattern || 'coherent-5.5',
+            input.breathGuide.pattern || journey.breathPattern || 'coherent-5.5',
             sampleRate,
-            totalLength,
-            breathGuide?.bpm
+            journey.totalLengthSec,
+            input.breathGuide?.bpm
           ),
           depth: 0.1
         }
       : null;
 
-    const backgroundLayer = background?.type === 'ocean'
-      ? generateOceanBackground(sampleRate, totalLength, { mixDb: background.mixDb ?? -22 })
-      : null;
+    const backgroundLayer = await buildBackgroundLayer({
+      background: input.background || journey.background,
+      sampleRate,
+      lengthSec: journey.totalLengthSec
+    });
 
     const bed = await buildSessionBed({
-      lengthSec: totalLength,
+      lengthSec: journey.totalLengthSec,
       sampleRate,
-      focusPreset: preset,
-      baseFreqHz,
+      focusPreset: {
+        ...preset,
+        carriers: { ...preset.carriers, leftHz: journey.baseFreqHz },
+        deltaHzPath: journey.deltaHzPath
+      },
+      baseFreqHz: journey.baseFreqHz,
       noise: preset.noise,
       breath,
       background: null,
-      modes: { ...{ binaural: true, monaural: true, isochronic: false }, ...(entrainmentModes || {}), ...(preset.modes || {}) }
+      modes: { ...{ binaural: true, monaural: true, isochronic: false }, ...(preset.modes || {}), ...(input.entrainmentModes || {}) }
     });
 
-    // 2) Generate guidance (voiceTotal seconds) and TTS per stage
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const system = `You are the Gateway Experience TTS Script Architect. Objectives: 1) Align with Monroe Institute Gateway methodology (induction → resonance → focus level stabilization → exploration → return). 2) Maintain safe, neutral language; no medical claims. 3) Emphasize hemispheric synchronization cues, gentle breath pacing, and spatial attention. 4) Output strict JSON: { stages:[{name, durationSec, script}], tone, guidanceStyle, safety } with total duration ≈ ${voiceTotal}s. Keep scripts vivid yet concise.\n\nUser Journal (append and reflect this intent in the guidance): ${text || ''}`;
-    const userMsg = `Focus level: ${focusLevel}. Target voiced duration: ${voiceTotal}s. Include explicit pause markers like [pause 2s] where natural.`;
-    const r = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [ { role: 'system', content: system }, { role: 'user', content: userMsg } ],
-      temperature: 0.6,
-      response_format: { type: 'json_object' },
-      max_tokens: 3000
-    });
-    const guidance = JSON.parse(r.choices?.[0]?.message?.content || '{}');
-    let stages = Array.isArray(guidance?.stages) ? guidance.stages : [];
-    // Normalize durations to voiceTotal
-    let sum = stages.reduce((a,s)=>a+(s.durationSec||0),0);
-    if (sum > 0 && Math.abs(sum - voiceTotal) > 10) {
-      const scale = voiceTotal / sum; stages = stages.map(s => ({...s, durationSec: Math.max(1, Math.round((s.durationSec||0)*scale)) }));
-      sum = stages.reduce((a,s)=>a+(s.durationSec||0),0);
+    let guidanceStages = buildGuidanceCueStages(journey).map((stage) => ({
+      ...stage,
+      script: stage.script || buildFallbackGuidanceScript({ journey, stage, intentText: input.text })
+    }));
+
+    const openAiAvailable = Boolean(process.env.OPENAI_API_KEY);
+    const shouldUseAiGuidance = openAiAvailable && input.guidanceMode !== 'preset';
+    const shouldRenderVoice = openAiAvailable && input.tts?.enabled !== false;
+    const client = openAiAvailable ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+
+    if (shouldUseAiGuidance && client) {
+      try {
+        guidanceStages = await enrichGuidanceStagesWithAi({
+          client,
+          guidanceStages,
+          journey,
+          intentText: input.text
+        });
+      } catch (error) {
+        logger.warn({ err: error }, 'ai guidance fallback');
+      }
     }
-    // Distribute across the bed with gaps
-    const totalGap = Math.max(0, totalLength - sum);
-    const gaps = stages.length + 1;
-    const gapPer = gaps > 0 ? Math.floor(totalGap / gaps) : 0;
-    let cursor = gapPer;
-    stages = stages.map(s => { const st = { ...s, atSec: cursor|0 }; cursor += (s.durationSec||0) + gapPer; return st; });
 
-    // 3) Synthesize TTS per stage, mix into voice arrays at positions
-    // Render TTS and mix
-    const { voiceL, voiceR } = await renderAndMixVoice({
-      stages,
-      sampleRate,
-      totalLengthSec: totalLength,
-      ttsClient: client,
-      voiceOptions: { voice: tts?.voice, mixDb: tts?.mixDb }
-    });
+    const voice = shouldRenderVoice && client
+      ? await renderAndMixVoice({
+          stages: guidanceStages,
+          sampleRate,
+          totalLengthSec: journey.totalLengthSec,
+          ttsClient: client,
+          voiceOptions: {
+            voice: input.tts?.voice || 'alloy',
+            mixDb: input.tts?.mixDb ?? -16,
+            model: input.tts?.model || 'gpt-4o-mini-tts'
+          }
+        })
+      : buildSilentVoice(Math.floor(sampleRate * journey.totalLengthSec));
 
     const program = mixProgram({
       bed,
-      voice: { voiceL, voiceR },
-      ducking,
+      voice,
+      ducking: { enabled: true, bedPercentWhileTalking: 0.75, attackMs: 50, releaseMs: 200, ...(input.ducking || {}) },
       backgroundLayers: backgroundLayer ? [backgroundLayer] : [],
       baseBedGain: 0.92
     });
@@ -112,85 +171,36 @@ export async function POST(req) {
       withMp3: true,
       kbps: 160
     });
-
-    const deltaHzSeries = new Array(totalLength).fill(0);
-    const defaultDelta = [
-      { at: 0, hz: 10 },
-      { at: totalLength, hz: 6 }
-    ];
-    const path = Array.isArray(preset.deltaHzPath) && preset.deltaHzPath.length > 0
-      ? preset.deltaHzPath
-      : defaultDelta;
-    const maxAt = Math.max(...path.map(p => p.at || 0)) || 1;
-    // Scale times to totalLength
-    const scaled = path.map(p => ({ at: Math.round((p.at || 0) / maxAt * totalLength), hz: p.hz }));
-    for (let s = 0; s < totalLength; s++) {
-      const t = s;
-      let i1 = 0;
-      for (let k = 0; k < scaled.length; k++) { if (scaled[k].at <= t) i1 = k; }
-      const i2 = Math.min(scaled.length - 1, i1 + 1);
-      const p1 = scaled[i1], p2 = scaled[i2];
-      const span = Math.max(1, p2.at - p1.at);
-      const f = Math.min(1, Math.max(0, (t - p1.at) / span));
-      deltaHzSeries[s] = Number((p1.hz + (p2.hz - p1.hz) * f).toFixed(2));
-    }
-
-    // 6b) Voice presence and RMS per second
-    const voicePresence = new Array(totalLength).fill(0);
-    const bedRms = new Array(totalLength).fill(0);
-    const voiceRms = new Array(totalLength).fill(0);
-    const bedL = program.bedPostDuck.left;
-    const bedR = program.bedPostDuck.right;
-    const voiceTrackL = program.voiceTracks.left;
-    const voiceTrackR = program.voiceTracks.right;
-    const totalFrames = bedL.length;
-    for (let s = 0; s < totalLength; s++) {
-      const start = s * sampleRate;
-      const end = Math.min(totalFrames, start + sampleRate);
-      let sumB = 0, sumV = 0, present = 0;
-      for (let i = start; i < end; i++) {
-        const vb = (bedL[i] * bedL[i] + bedR[i] * bedR[i]) * 0.5;
-        const vv = (voiceTrackL[i] * voiceTrackL[i] + voiceTrackR[i] * voiceTrackR[i]) * 0.5;
-        sumB += vb; sumV += vv;
-        if (vv > 1e-6) present = 1;
-      }
-      const n = Math.max(1, end - start);
-      bedRms[s] = Number(Math.sqrt(sumB / n).toFixed(4));
-      voiceRms[s] = Number(Math.sqrt(sumV / n).toFixed(4));
-      voicePresence[s] = present;
-    }
-
-    // 7) Band classification and summary coverage
-    const classify = (hz) => hz < 4 ? 'delta' : hz < 8 ? 'theta' : hz < 13 ? 'alpha' : hz < 30 ? 'beta' : 'gamma';
-    const bandSeries = deltaHzSeries.map(hz => classify(hz));
-    const coverage = { delta: 0, theta: 0, alpha: 0, beta: 0, gamma: 0 };
-    bandSeries.forEach(b => { coverage[b] = (coverage[b] || 0) + 1; });
-    Object.keys(coverage).forEach(k => coverage[k] = Number((coverage[k] / totalLength * 100).toFixed(1)));
-
-    const wavB64 = `data:audio/wav;base64,${wavBuffer.toString('base64')}`;
-    const mp3B64 = mp3Buffer ? `data:audio/mpeg;base64,${mp3Buffer.toString('base64')}` : null;
+    const artifacts = await persistRenderArtifacts({
+      baseName: `${journey.name || journey.id}-guided`,
+      wavBuffer,
+      mp3Buffer
+    });
 
     return NextResponse.json({
       ok: true,
-      wav: wavB64,
-      mp3: mp3B64,
-      stages,
-      analytics: {
-        lengthSec: totalLength,
+      artifactId: artifacts.artifactId,
+      assets: artifacts.files,
+      wav: artifacts.files.wav?.url || null,
+      mp3: artifacts.files.mp3?.url || null,
+      journey,
+      stages: journey.stages,
+      guidanceStages,
+      analytics: buildJourneyAnalytics({
+        journey,
+        program,
         sampleRate,
-        deltaHzSeries,
-        duckEnvSeries: program.duckEnvSeries,
-        baseFreqHz: baseFreqHz || preset.carriers.leftHz,
-        baseBedGain: 0.92,
-        voicePresence,
-        bedRms,
-        voiceRms,
-        coverage
+        baseFreqHz: journey.baseFreqHz
+      }),
+      guidanceMeta: {
+        modeRequested: input.guidanceMode,
+        modeUsed: shouldUseAiGuidance ? 'ai' : 'preset',
+        voiceRendered: shouldRenderVoice
       }
     });
   } catch (err) {
-    return NextResponse.json({ error: err.message || 'Internal error' }, { status: 500 });
+    logger.error({ err }, 'audio combined error');
+    const status = err.status || 500;
+    return NextResponse.json({ error: err.message || 'Internal error' }, { status });
   }
 }
-
-

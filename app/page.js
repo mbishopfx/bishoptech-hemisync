@@ -8,9 +8,8 @@ export default function Page() {
             Open Session Generator
           </a>
         </p>
-        <p className="mt-6 text-white/60">API endpoints (POST): <code className="text-sky-300">/api/journal</code>, <code className="text-sky-300">/api/guidance</code>, <code className="text-sky-300">/api/audio/generate</code>.</p>
+        <p className="mt-6 text-white/60">API endpoints (POST): <code className="text-sky-300">/api/journal</code>, <code className="text-sky-300">/api/guidance</code>, <code className="text-sky-300">/api/audio/generate</code>, <code className="text-sky-300">/api/audio/combined</code>.</p>
       </div>
     </main>
   );
 }
-
