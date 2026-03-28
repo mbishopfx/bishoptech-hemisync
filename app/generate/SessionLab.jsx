@@ -409,6 +409,9 @@ export function SessionLab() {
     if (!chatInput.trim()) return;
 
     const prompt = chatInput.trim();
+    const promptWithIntent = intent.trim()
+      ? `${prompt}\n\nCurrent session intent:\n${intent.trim()}`
+      : prompt;
     setChatHistory((prev) => [...prev, { role: 'user', content: prompt }]);
     setChatInput('');
 
@@ -418,7 +421,7 @@ export function SessionLab() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt,
+          prompt: promptWithIntent,
           sessionId,
           sessionSpec: spec,
           sessionName: selectedJourney?.name || 'Session Lab Journey',

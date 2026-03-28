@@ -35,8 +35,9 @@ export function TechGridBackground() {
 
       // Background gradient
       const g = ctx.createLinearGradient(0, 0, width, height);
-      g.addColorStop(0, 'rgba(2, 6, 23, 0.95)');
-      g.addColorStop(1, 'rgba(11, 19, 43, 0.98)');
+      g.addColorStop(0, 'rgba(7, 9, 13, 0.95)');
+      g.addColorStop(0.55, 'rgba(15, 22, 32, 0.97)');
+      g.addColorStop(1, 'rgba(20, 35, 48, 0.98)');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, width, height);
 
@@ -46,7 +47,7 @@ export function TechGridBackground() {
 
       // Grid lines
       ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)'; // sky-400 alpha
+      ctx.strokeStyle = 'rgba(127, 213, 223, 0.12)';
       ctx.beginPath();
       for (let x = (offsetX % spacing) - spacing; x < width + spacing; x += spacing) {
         ctx.moveTo(x, 0);
@@ -60,7 +61,7 @@ export function TechGridBackground() {
 
       // Pulsing nodes on intersections
       const pulse = (Math.sin(t * 2) + 1) * 0.5; // 0..1
-      ctx.fillStyle = 'rgba(14, 165, 233, 0.18)';
+      ctx.fillStyle = 'rgba(214, 183, 109, 0.16)';
       for (let x = (offsetX % spacing); x < width; x += spacing * 4) {
         for (let y = (offsetY % spacing); y < height; y += spacing * 4) {
           ctx.beginPath();
@@ -98,4 +99,3 @@ export function TechGridBackground() {
     <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 -z-10" />
   );
 }
-

@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['lamejs', 'wavefile']
-  }
+  output: 'standalone',
+  serverExternalPackages: ['lamejs', 'wavefile']
 };
 
 module.exports = nextConfig;
-
