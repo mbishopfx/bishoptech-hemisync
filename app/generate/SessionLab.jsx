@@ -232,6 +232,42 @@ export function SessionLab() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
+    async function loadTemplateSamples() {
+      try {
+        const response = await fetch('/api/template-samples', { cache: 'no-store' });
+        const data = await response.json();
+        if (!response.ok || !data.ok || cancelled) {
+          return;
+        }
+
+        const nextCache = Object.fromEntries(
+          Object.entries(data.samples || {}).map(([templateId, sample]) => [
+            templateId,
+            {
+              wav: sample.wavUrl || sample.wav || null,
+              mp3: sample.mp3Url || sample.mp3 || null,
+              durationSec: sample.sampleLengthSec || sample.durationSec || 120,
+              preRendered: true
+            }
+          ])
+        );
+
+        setSampleCache((prev) => ({ ...nextCache, ...prev }));
+      } catch (error) {
+        console.warn('Template sample manifest unavailable', error);
+      }
+    }
+
+    loadTemplateSamples();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!rendering) {
       return undefined;
     }

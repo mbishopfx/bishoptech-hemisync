@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "node .next/standalone/server.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prerender:samples": "node scripts/prerender-template-samples.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.44.0",
