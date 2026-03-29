@@ -19,8 +19,8 @@ const monoFont = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: 'HemiSync Studio',
-  description: 'Premium beats-only hemispheric synchronization sessions with staged entrainment, ambient beds, and mastered export.'
+  title: 'HemiSync',
+  description: 'Consumer-friendly HemiSync beat sessions for focus, recovery, creative drift, and deep calm.'
 };
 
 export default function RootLayout({ children }) {

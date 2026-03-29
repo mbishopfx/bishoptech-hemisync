@@ -2,23 +2,17 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { createClient } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { defaultSessionSpec } from './chatspec';
+import { consumerTemplateOptions, defaultSessionSpec } from './chatspec';
 import { FocusPresets } from '@/lib/audio/presets';
 import { AmbientAssetOptions, buildAmbientAssetUrl } from '@/lib/audio/assets';
 import { JourneyPresetOptions, buildJourneyBlueprint } from '@/lib/audio/journeys';
 import { SessionCharts } from '@/components/analytics/SessionCharts';
 import { resolveBackendAssetUrl, toBackendUrl } from '@/lib/frontend/backend-url';
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const DEMO_USER_ID = process.env.NEXT_PUBLIC_DEMO_USER_ID;
-const RENDER_BUCKET = DEMO_USER_ID ? `renders-${DEMO_USER_ID}` : null;
 
 let toneModulePromise;
 function loadToneModule() {
@@ -71,21 +65,15 @@ function toStageMinutes(seconds) {
 export function SessionLab() {
   const toneReady = useToneReady();
   const [spec, setSpec] = useState(defaultSessionSpec);
-  const [intent, setIntent] = useState('Build a polished alpha-to-theta session with a soft middle hold and a clean, steady return.');
+  const [intent, setIntent] = useState('Build a calm HemiSync reset with a soft descent, gentle middle hold, and a clean clear return.');
   const [status, setStatus] = useState('Idle');
   const [playing, setPlaying] = useState(false);
   const [rendering, setRendering] = useState(false);
   const [renderResult, setRenderResult] = useState(null);
-  const [chatInput, setChatInput] = useState('Keep this at 15 minutes, make the theta hold softer, and smooth the return back into alpha.');
+  const [chatInput, setChatInput] = useState('Keep this soothing, lower the middle section slightly, and make the return very gentle.');
   const [chatHistory, setChatHistory] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
   const stopHandlesRef = useRef([]);
-
-  const supabase = useMemo(() => {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
-    return createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }, []);
 
   const getLayer = (type) => spec.layers.find((layer) => layer.type === type);
 
@@ -98,8 +86,16 @@ export function SessionLab() {
     return JourneyPresetOptions.find((preset) => preset.id === spec.journeyPresetId) || JourneyPresetOptions[0];
   }, [spec.journeyPresetId]);
 
+  const selectedTemplate = useMemo(() => {
+    return (
+      consumerTemplateOptions.find((template) => template.journeyPresetId === spec.journeyPresetId) ||
+      consumerTemplateOptions[0]
+    );
+  }, [spec.journeyPresetId]);
+
   const selectedBackgroundLayer = getLayer('background');
   const selectedBackgroundSource = selectedBackgroundLayer?.params?.sourceType || 'none';
+  const selectedAmbientAsset = AmbientAssetOptions.find((asset) => asset.id === selectedBackgroundLayer?.params?.assetId);
 
   useEffect(() => {
     return () => {
@@ -155,10 +151,10 @@ export function SessionLab() {
     }));
   };
 
-  const rebalanceStages = () => {
+  const syncJourneyToLength = (nextLengthSec = spec.lengthSec) => {
     const nextJourney = buildJourneyBlueprint({
       journeyPresetId: spec.journeyPresetId,
-      totalLengthSec: spec.lengthSec,
+      totalLengthSec: nextLengthSec,
       baseFreqHz: spec.baseFreqHz,
       focusLevel: spec.focusLevel,
       stages: spec.stages,
@@ -189,6 +185,10 @@ export function SessionLab() {
         return layer;
       })
     }));
+  };
+
+  const rebalanceStages = () => {
+    syncJourneyToLength(spec.lengthSec);
   };
 
   const applyJourneyPreset = (journeyPresetId, preserveDuration = false) => {
@@ -262,9 +262,17 @@ export function SessionLab() {
     });
   };
 
+  const applyConsumerTemplate = (template) => {
+    applyJourneyPreset(template.journeyPresetId);
+    setIntent(template.intent);
+    setChatInput(template.chatPrompt);
+    setRenderResult(null);
+    setStatus(`${template.title} template ready`);
+  };
+
   const startPreview = async () => {
     if (!toneReady) {
-      setStatus('Tone engine not ready yet');
+      setStatus('Audio preview is still loading');
       return;
     }
 
@@ -384,28 +392,6 @@ export function SessionLab() {
     stopPreviewInternal();
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!supabase || !RENDER_BUCKET) {
-      setStatus('Supabase client missing; check environment keys.');
-      return;
-    }
-
-    setStatus('Uploading file…');
-    const path = `uploads/${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage.from(RENDER_BUCKET).upload(path, file, { upsert: true });
-    if (error) {
-      setStatus(`Upload failed: ${error.message}`);
-      return;
-    }
-
-    const { data: signed } = await supabase.storage.from(RENDER_BUCKET).createSignedUrl(path, 3600);
-    setUploadedFiles((prev) => [{ name: file.name, path, url: signed?.signedUrl }, ...prev]);
-    setStatus('File uploaded');
-  };
-
   const handleChatSend = async () => {
     if (!chatInput.trim()) return;
 
@@ -417,7 +403,7 @@ export function SessionLab() {
     setChatInput('');
 
     try {
-      setStatus('Contacting Session Architect…');
+      setStatus('Adjusting your HemiSync…');
       const response = await fetch(toBackendUrl('/api/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -425,7 +411,7 @@ export function SessionLab() {
           prompt: promptWithIntent,
           sessionId,
           sessionSpec: spec,
-          sessionName: selectedJourney?.name || 'Session Lab Journey',
+          sessionName: selectedTemplate?.title || selectedJourney?.name || 'HemiSync Session',
           email: 'demo@tahoeos.local'
         })
       });
@@ -438,7 +424,7 @@ export function SessionLab() {
       if (data.reply) {
         setChatHistory((prev) => [...prev, { role: 'assistant', content: data.reply }]);
       }
-      setStatus('Session Architect updated the plan');
+      setStatus('Session updated');
     } catch (err) {
       console.error(err);
       setStatus(`Chat failed: ${err.message}`);
@@ -448,7 +434,7 @@ export function SessionLab() {
   const handleGenerate = async () => {
     try {
       setRendering(true);
-      setStatus('Rendering premium beats…');
+      setStatus('Rendering your HemiSync…');
 
       const breath = getLayer('breath');
       const background = getLayer('background');
@@ -507,14 +493,14 @@ export function SessionLab() {
       <Card className="glass-emphasis border border-white/10 p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold text-white">Session Lab</h2>
+            <h2 className="text-xl font-semibold text-white">Your HemiSync Builder</h2>
             <p className="text-sm text-white/70">
-              Build polished 15-minute phased journeys with stronger blueprints, bundled ambient beds, and stage-aware analytics.
+              Choose a template, shape the ritual, preview the feel, and render a premium HemiSync session without getting buried in technical controls.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Button onClick={playing ? stopPreview : startPreview} disabled={!toneReady}>
-              {toneReady ? (playing ? 'Stop Preview' : 'Play Preview') : 'Loading Audio Engine…'}
+              {toneReady ? (playing ? 'Stop Preview' : 'Preview HemiSync') : 'Loading Audio Engine…'}
             </Button>
             <span className="text-sm text-white/60">{status}</span>
           </div>
@@ -524,316 +510,413 @@ export function SessionLab() {
       <div className="grid gap-6 xl:grid-cols-3">
         <Card className="glass p-6 space-y-6 xl:col-span-2">
           <div className="space-y-2">
-            <h3 className="text-white font-medium">Track Blueprint</h3>
+            <p className="section-label">Step 1</p>
+            <h3 className="text-white font-medium">Choose the HemiSync you want today</h3>
             <p className="text-sm text-white/70">
-              Start from a preset journey, then tune stage lengths, delta targets, breath pacing, and ambient layers for a production-ready render.
+              Start with a ready-made session type. Templates keep the path simple, while the advanced controls stay available if you want to fine tune the signal.
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Journey Preset</label>
-              <Select value={spec.journeyPresetId} onChange={(e) => applyJourneyPreset(e.target.value)}>
-                {JourneyPresetOptions.map((preset) => (
-                  <option key={preset.id} value={preset.id}>
-                    {preset.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Focus Level</label>
-              <Select
-                value={spec.focusLevel}
-                onChange={(e) => setSpec((prev) => ({ ...prev, focusLevel: e.target.value }))}
-              >
-                {Object.keys(FocusPresets).map((focusLevel) => (
-                  <option key={focusLevel} value={focusLevel}>
-                    {focusLevel} – {FocusPresets[focusLevel].description}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Session Length (minutes)</label>
-              <Input
-                type="number"
-                min={5}
-                max={30}
-                value={Math.round(spec.lengthSec / 60)}
-                onChange={(e) => setSpec((prev) => ({ ...prev, lengthSec: Number(e.target.value || 15) * 60 }))}
-              />
-            </div>
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Carrier Frequency</label>
-              <Input
-                type="number"
-                min={100}
-                max={500}
-                value={spec.baseFreqHz}
-                onChange={(e) => {
-                  const value = Number(e.target.value || spec.baseFreqHz);
-                  setSpec((prev) => ({ ...prev, baseFreqHz: value }));
-                  updateLayerParams('binaural', { baseFreqHz: value });
-                }}
-              />
-            </div>
+            {consumerTemplateOptions.map((template) => {
+              const isActive = selectedTemplate?.id === template.id;
+
+              return (
+                <button
+                  key={template.id}
+                  type="button"
+                  onClick={() => applyConsumerTemplate(template)}
+                  className={`rounded-[1.5rem] border p-5 text-left transition-all ${
+                    isActive
+                      ? 'border-[rgba(214,183,109,0.4)] bg-[linear-gradient(180deg,rgba(240,216,157,0.12),rgba(127,213,223,0.07))] shadow-[0_16px_50px_rgba(0,0,0,0.22)]'
+                      : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.07]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="section-label">{template.shortLabel}</p>
+                    <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-white/60">
+                      15 min base
+                    </span>
+                  </div>
+                  <h4 className="display-type mt-4 text-3xl leading-none text-[var(--text-primary)]">{template.title}</h4>
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)]">{template.useCase}</p>
+                  <p className="mt-4 text-xs leading-6 text-[var(--text-muted)]">{template.bestFor}</p>
+                </button>
+              );
+            })}
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-medium text-white">{selectedJourney?.name}</p>
-                <p className="text-sm text-white/65">{selectedJourney?.summary}</p>
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-2">
+                <p className="section-label">Current Template</p>
+                <h4 className="display-type text-3xl text-[var(--text-primary)]">{selectedTemplate?.title}</h4>
+                <p className="max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">
+                  {selectedTemplate?.description}
+                </p>
               </div>
               <Button variant="secondary" onClick={rebalanceStages}>
-                Rebalance to {Math.round(spec.lengthSec / 60)} min
+                Refresh Timing
               </Button>
             </div>
-            <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/60">
-              <span>Stage total: {minutesFromSeconds(stageTotalSec)} min</span>
-              <span>Target: {minutesFromSeconds(spec.lengthSec)} min</span>
-              <span>Breath: {getLayer('breath')?.params?.pattern || 'coherent-5.5'}</span>
-              <span>Default bed: {selectedJourney?.background?.type === 'asset' ? selectedJourney?.background?.assetId : 'ocean'}</span>
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+              <div className="rounded-[1.25rem] border border-white/10 bg-black/10 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Best For</p>
+                <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{selectedTemplate?.bestFor}</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-white/10 bg-black/10 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Ritual</p>
+                <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{selectedTemplate?.ritual}</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-white/10 bg-black/10 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Flow</p>
+                <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">
+                  {spec.stages.length} stages across {minutesFromSeconds(spec.lengthSec)} minutes.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Breath Pattern</label>
-              <Select
-                value={getLayer('breath')?.params?.pattern || 'coherent-5.5'}
-                onChange={(e) => updateLayerParams('breath', { pattern: e.target.value })}
-              >
-                <option value="coherent-5.5">Coherent 5.5</option>
-                <option value="box">Box 4-4-4-4</option>
-                <option value="4-7-8">4-7-8</option>
-              </Select>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="section-label">Step 2</p>
+              <h3 className="text-white font-medium">Set the basics</h3>
             </div>
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Background Source</label>
-              <Select value={selectedBackgroundSource} onChange={(e) => setBackgroundSource(e.target.value)}>
-                <option value="none">None</option>
-                <option value="asset">Bundled ambient asset</option>
-                <option value="ocean">Procedural ocean</option>
-              </Select>
-            </div>
-          </div>
 
-          {selectedBackgroundSource === 'asset' && selectedBackgroundLayer && (
+            <div className="flex flex-wrap gap-3">
+              {[10, 15, 20, 30].map((minutes) => {
+                const isActive = Math.round(spec.lengthSec / 60) === minutes;
+                return (
+                  <button
+                    key={minutes}
+                    type="button"
+                    onClick={() => syncJourneyToLength(minutes * 60)}
+                    className={`rounded-full border px-4 py-2 text-sm transition-all ${
+                      isActive
+                        ? 'border-[rgba(214,183,109,0.35)] bg-[rgba(214,183,109,0.14)] text-[var(--text-primary)]'
+                        : 'border-white/10 bg-white/[0.04] text-white/70 hover:bg-white/[0.08]'
+                    }`}
+                  >
+                    {minutes} min
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="text-xs uppercase tracking-wide text-white/60">Ambient Asset</label>
+                <label className="text-xs uppercase tracking-wide text-white/60">Session Length (minutes)</label>
+                <Input
+                  type="number"
+                  min={5}
+                  max={30}
+                  value={Math.round(spec.lengthSec / 60)}
+                  onChange={(e) => syncJourneyToLength(Number(e.target.value || 15) * 60)}
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wide text-white/60">Depth Mode</label>
                 <Select
-                  value={selectedBackgroundLayer.params.assetId || 'lumina'}
-                  onChange={(e) => updateLayerParams('background', { assetId: e.target.value })}
+                  value={spec.focusLevel}
+                  onChange={(e) => setSpec((prev) => ({ ...prev, focusLevel: e.target.value }))}
                 >
-                  {AmbientAssetOptions.map((asset) => (
-                    <option key={asset.id} value={asset.id}>
-                      {asset.name} — {asset.summary}
+                  {Object.keys(FocusPresets).map((focusLevel) => (
+                    <option key={focusLevel} value={focusLevel}>
+                      {focusLevel} – {FocusPresets[focusLevel].description}
                     </option>
                   ))}
                 </Select>
               </div>
               <div>
-                <label className="text-xs uppercase tracking-wide text-white/60">Background Mix (dB)</label>
+                <label className="text-xs uppercase tracking-wide text-white/60">Breath Pattern</label>
+                <Select
+                  value={getLayer('breath')?.params?.pattern || 'coherent-5.5'}
+                  onChange={(e) => updateLayerParams('breath', { pattern: e.target.value })}
+                >
+                  <option value="coherent-5.5">Coherent 5.5</option>
+                  <option value="box">Box 4-4-4-4</option>
+                  <option value="4-7-8">4-7-8</option>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-wide text-white/60">Background Source</label>
+                <Select value={selectedBackgroundSource} onChange={(e) => setBackgroundSource(e.target.value)}>
+                  <option value="none">Pure carrier only</option>
+                  <option value="asset">Bundled atmosphere</option>
+                  <option value="ocean">Procedural ocean</option>
+                </Select>
+              </div>
+            </div>
+
+            {selectedBackgroundSource === 'asset' && selectedBackgroundLayer && (
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wide text-white/60">Included Atmosphere</label>
+                  <Select
+                    value={selectedBackgroundLayer.params.assetId || 'lumina'}
+                    onChange={(e) => updateLayerParams('background', { assetId: e.target.value })}
+                  >
+                    {AmbientAssetOptions.map((asset) => (
+                      <option key={asset.id} value={asset.id}>
+                        {asset.name} — {asset.summary}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wide text-white/60">Atmosphere Mix (dB)</label>
+                  <Input
+                    type="number"
+                    value={selectedBackgroundLayer.params.mixDb ?? -24}
+                    onChange={(e) => updateLayerParams('background', { mixDb: Number(e.target.value) })}
+                  />
+                </div>
+              </div>
+            )}
+
+            {selectedBackgroundSource === 'ocean' && selectedBackgroundLayer && (
+              <div>
+                <label className="text-xs uppercase tracking-wide text-white/60">Ocean Mix (dB)</label>
                 <Input
                   type="number"
                   value={selectedBackgroundLayer.params.mixDb ?? -24}
                   onChange={(e) => updateLayerParams('background', { mixDb: Number(e.target.value) })}
                 />
               </div>
-            </div>
-          )}
-
-          {selectedBackgroundSource === 'ocean' && selectedBackgroundLayer && (
-            <div>
-              <label className="text-xs uppercase tracking-wide text-white/60">Ocean Mix (dB)</label>
-              <Input
-                type="number"
-                value={selectedBackgroundLayer.params.mixDb ?? -24}
-                onChange={(e) => updateLayerParams('background', { mixDb: Number(e.target.value) })}
-              />
-            </div>
-          )}
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <h4 className="text-white font-medium">Stage Blueprint</h4>
-              <p className="text-xs text-white/60">Each stage drives timing, band intent, and how the frequency path evolves.</p>
-            </div>
-            <div className="space-y-4">
-              {spec.stages.map((stage, index) => (
-                <div key={stage.id || index} className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-medium text-white">{formatClock(stage.atSec)} → {formatClock(stage.atSec + stage.durationSec)}</p>
-                      <p className="text-xs text-white/55">Stage {index + 1}</p>
-                    </div>
-                    <div className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-100">
-                      {stage.focusLevel} · {stage.brainState}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    <div className="xl:col-span-2">
-                      <label className="text-xs uppercase tracking-wide text-white/60">Stage Name</label>
-                      <Input value={stage.name} onChange={(e) => updateStage(index, { name: e.target.value })} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Duration (min)</label>
-                      <Input
-                        type="number"
-                        min={0.25}
-                        step="0.25"
-                        value={toStageMinutes(stage.durationSec)}
-                        onChange={(e) => updateStage(index, { durationSec: Math.max(15, Math.round(Number(e.target.value || 0.25) * 60)) })}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Brain State</label>
-                      <Select value={stage.brainState} onChange={(e) => updateStage(index, { brainState: e.target.value })}>
-                        <option value="alpha">alpha</option>
-                        <option value="theta">theta</option>
-                        <option value="delta">delta</option>
-                        <option value="beta">beta</option>
-                        <option value="gamma">gamma</option>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Stage Focus</label>
-                      <Select value={stage.focusLevel} onChange={(e) => updateStage(index, { focusLevel: e.target.value })}>
-                        <option value="F10">F10</option>
-                        <option value="F12">F12</option>
-                        <option value="F15">F15</option>
-                        <option value="F21">F21</option>
-                      </Select>
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Δf Start</label>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={stage.deltaHz?.from ?? ''}
-                        onChange={(e) => updateStage(index, { deltaHz: { from: Number(e.target.value) } })}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Δf End</label>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={stage.deltaHz?.to ?? ''}
-                        onChange={(e) => updateStage(index, { deltaHz: { to: Number(e.target.value) } })}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-wide text-white/60">Carrier (Hz)</label>
-                      <Input
-                        type="number"
-                        value={stage.carrierHz ?? spec.baseFreqHz}
-                        onChange={(e) => updateStage(index, { carrierHz: Number(e.target.value) })}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs uppercase tracking-wide text-white/60">Stage Goal</label>
-                    <Input value={stage.goal || ''} onChange={(e) => updateStage(index, { goal: e.target.value })} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        <Card className="glass p-6 space-y-6">
-          <div className="space-y-3">
-            <h3 className="text-white font-medium">Resources & Notes</h3>
-            <Button asChild variant="secondary" className="w-full justify-center">
-              <label className="cursor-pointer">
-                Upload MP3 / WAV
-                <input type="file" accept="audio/mpeg,audio/wav" className="hidden" onChange={handleFileUpload} />
-              </label>
-            </Button>
-            <p className="text-xs text-white/60">
-              Uploaded sources stay in your private Supabase bucket. Use them as reference beds or external material while keeping the final session focused on pure entrainment.
-            </p>
-            <div className="space-y-2 max-h-40 overflow-auto">
-              {uploadedFiles.length === 0 && <p className="text-sm text-white/50">No custom sources yet.</p>}
-              {uploadedFiles.map((file) => (
-                <div key={file.path} className="rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white/80">
-                  <p className="font-medium">{file.name}</p>
-                  {file.url && (
-                    <a href={file.url} target="_blank" rel="noreferrer" className="text-xs text-sky-300 underline">
-                      Preview / Download
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <label className="text-xs uppercase tracking-wide text-white/60">Session Intent / Sound Design Notes</label>
-            <Textarea value={intent} onChange={(e) => setIntent(e.target.value)} rows={5} placeholder="How should this session feel and progress?" />
-          </div>
-
-          <div className="space-y-3 rounded-xl border border-white/10 bg-white/5 p-4">
-            <h4 className="text-white font-medium">Bundled Ambient Beds</h4>
-            <div className="space-y-3">
-              {AmbientAssetOptions.map((asset) => (
-                <div key={asset.id} className="rounded-lg border border-white/10 bg-black/10 p-3">
-                  <p className="text-sm font-medium text-white">{asset.name}</p>
-                  <p className="text-xs text-white/60">{asset.summary}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="glass p-6 space-y-4">
-          <h3 className="text-white font-medium">Session Architect Chat</h3>
-          <div className="space-y-3 max-h-72 overflow-auto rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white/80">
-            {chatHistory.length === 0 && (
-              <p className="text-white/60">No messages yet. Ask for blueprint adjustments and the AI architect will patch the session spec.</p>
             )}
-            {chatHistory.map((message, index) => (
-              <div key={index} className="space-y-1">
-                <p className="text-xs uppercase tracking-wide text-white/50">{message.role}</p>
-                <p>{message.content}</p>
-              </div>
-            ))}
           </div>
+
           <div className="space-y-3">
-            <Textarea rows={3} value={chatInput} onChange={(e) => setChatInput(e.target.value)} placeholder="Ask for stage, delta, or ambience adjustments…" />
-            <div className="flex justify-end">
-              <Button onClick={handleChatSend}>Send to Session Architect</Button>
-            </div>
+            <label className="text-xs uppercase tracking-wide text-white/60">Session Intention</label>
+            <Textarea
+              value={intent}
+              onChange={(e) => setIntent(e.target.value)}
+              rows={4}
+              placeholder="What do you want this HemiSync session to feel like?"
+            />
           </div>
+
+          <details className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5">
+            <summary className="cursor-pointer list-none">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="section-label">Advanced</p>
+                  <h4 className="text-white font-medium">Fine tune the signal path</h4>
+                </div>
+                <span className="text-xs uppercase tracking-[0.14em] text-white/45">Expand</span>
+              </div>
+            </summary>
+
+            <div className="mt-6 space-y-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="text-xs uppercase tracking-wide text-white/60">Journey Preset</label>
+                  <Select value={spec.journeyPresetId} onChange={(e) => applyJourneyPreset(e.target.value)}>
+                    {JourneyPresetOptions.map((preset) => (
+                      <option key={preset.id} value={preset.id}>
+                        {preset.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wide text-white/60">Carrier Frequency</label>
+                  <Input
+                    type="number"
+                    min={100}
+                    max={500}
+                    value={spec.baseFreqHz}
+                    onChange={(e) => {
+                      const value = Number(e.target.value || spec.baseFreqHz);
+                      setSpec((prev) => ({ ...prev, baseFreqHz: value }));
+                      updateLayerParams('binaural', { baseFreqHz: value });
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <h4 className="text-white font-medium">Stage Blueprint</h4>
+                  <p className="text-xs text-white/60">
+                    For advanced users who want to adjust stage timing, brainwave ranges, and carrier movement.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  {spec.stages.map((stage, index) => (
+                    <div key={stage.id || index} className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-medium text-white">
+                            {formatClock(stage.atSec)} → {formatClock(stage.atSec + stage.durationSec)}
+                          </p>
+                          <p className="text-xs text-white/55">Stage {index + 1}</p>
+                        </div>
+                        <div className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-100">
+                          {stage.focusLevel} · {stage.brainState}
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        <div className="xl:col-span-2">
+                          <label className="text-xs uppercase tracking-wide text-white/60">Stage Name</label>
+                          <Input value={stage.name} onChange={(e) => updateStage(index, { name: e.target.value })} />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-wide text-white/60">Duration (min)</label>
+                          <Input
+                            type="number"
+                            min={0.25}
+                            step="0.25"
+                            value={toStageMinutes(stage.durationSec)}
+                            onChange={(e) =>
+                              updateStage(index, {
+                                durationSec: Math.max(15, Math.round(Number(e.target.value || 0.25) * 60))
+                              })
+                            }
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-wide text-white/60">Brain State</label>
+                          <Select value={stage.brainState} onChange={(e) => updateStage(index, { brainState: e.target.value })}>
+                            <option value="alpha">alpha</option>
+                            <option value="theta">theta</option>
+                            <option value="delta">delta</option>
+                            <option value="beta">beta</option>
+                            <option value="gamma">gamma</option>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        <div>
+                          <label className="text-xs uppercase tracking-wide text-white/60">Stage Focus</label>
+                          <Select value={stage.focusLevel} onChange={(e) => updateStage(index, { focusLevel: e.target.value })}>
+                            <option value="F10">F10</option>
+                            <option value="F12">F12</option>
+                            <option value="F15">F15</option>
+                            <option value="F21">F21</option>
+                          </Select>
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-wide text-white/60">Δf Start</label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={stage.deltaHz?.from ?? ''}
+                            onChange={(e) => updateStage(index, { deltaHz: { from: Number(e.target.value) } })}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-wide text-white/60">Δf End</label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={stage.deltaHz?.to ?? ''}
+                            onChange={(e) => updateStage(index, { deltaHz: { to: Number(e.target.value) } })}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-wide text-white/60">Carrier (Hz)</label>
+                          <Input
+                            type="number"
+                            value={stage.carrierHz ?? spec.baseFreqHz}
+                            onChange={(e) => updateStage(index, { carrierHz: Number(e.target.value) })}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs uppercase tracking-wide text-white/60">Stage Goal</label>
+                        <Input value={stage.goal || ''} onChange={(e) => updateStage(index, { goal: e.target.value })} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-white font-medium">Personalize in plain language</h4>
+                <div className="space-y-3 max-h-72 overflow-auto rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white/80">
+                  {chatHistory.length === 0 && (
+                    <p className="text-white/60">
+                      No messages yet. Ask for a softer descent, a deeper middle section, or a gentler return.
+                    </p>
+                  )}
+                  {chatHistory.map((message, index) => (
+                    <div key={index} className="space-y-1">
+                      <p className="text-xs uppercase tracking-wide text-white/50">{message.role}</p>
+                      <p>{message.content}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  <Textarea
+                    rows={3}
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder="Describe how you want the session to feel…"
+                  />
+                  <div className="flex justify-end">
+                    <Button onClick={handleChatSend}>Update My HemiSync</Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
         </Card>
 
-        <Card className="glass p-6 space-y-4">
-          <h3 className="text-white font-medium">Render & Download</h3>
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-4"
-          >
+        <div className="space-y-6">
+          <Card className="glass p-6 space-y-4">
+            <p className="section-label">At a Glance</p>
+            <h3 className="display-type text-3xl text-[var(--text-primary)]">{selectedTemplate?.title}</h3>
+            <p className="text-sm leading-7 text-[var(--text-secondary)]">{selectedTemplate?.useCase}</p>
+
+            <div className="grid gap-3">
+              <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Length</p>
+                <p className="mt-2 text-sm text-[var(--text-secondary)]">{minutesFromSeconds(spec.lengthSec)} minutes</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Atmosphere</p>
+                <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                  {selectedBackgroundSource === 'asset'
+                    ? selectedAmbientAsset?.name || 'Bundled atmosphere'
+                    : selectedBackgroundSource === 'ocean'
+                      ? 'Procedural ocean'
+                      : 'Pure carrier only'}
+                </p>
+              </div>
+              <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Breath</p>
+                <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                  {getLayer('breath')?.params?.pattern || 'coherent-5.5'}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="glass p-6 space-y-4">
+            <p className="section-label">Step 3</p>
+            <h3 className="text-white font-medium">Render and download</h3>
             <p className="text-sm text-white/70">
-              Render the full staged beats session with high-quality mastering, delta analytics, and downloadable artifacts.
+              When the template feels right, generate the full HemiSync session with premium mastering and downloadable files.
             </p>
             <Button onClick={handleGenerate} disabled={rendering}>
-              {rendering ? 'Rendering…' : 'Generate Journey'}
+              {rendering ? 'Rendering…' : 'Generate My HemiSync'}
             </Button>
+
             {renderResult && (
-              <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-4"
+              >
+                <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4">
+                  <p className="text-sm text-white/70">Now playing</p>
+                  <p className="mt-2 text-lg text-white">{renderResult.journey?.name || selectedTemplate?.title}</p>
+                </div>
                 <audio controls className="w-full" src={renderResult.wav} />
                 <div className="flex flex-wrap gap-3">
                   <a
@@ -858,18 +941,35 @@ export function SessionLab() {
                     <h4 className="text-white font-medium">Rendered Stage Plan</h4>
                     <div className="space-y-2">
                       {renderResult.stages.map((stage) => (
-                        <div key={stage.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/10 px-3 py-2 text-sm text-white/85">
+                        <div
+                          key={stage.id}
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/10 px-3 py-2 text-sm text-white/85"
+                        >
                           <span>{stage.name}</span>
-                          <span className="text-white/60">{formatClock(stage.atSec)} · {minutesFromSeconds(stage.durationSec)} min · {stage.brainState}</span>
+                          <span className="text-white/60">
+                            {formatClock(stage.atSec)} · {minutesFromSeconds(stage.durationSec)} min · {stage.brainState}
+                          </span>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
             )}
-          </motion.div>
-        </Card>
+          </Card>
+
+          <Card className="glass p-6 space-y-4">
+            <h3 className="text-white font-medium">Included atmospheres</h3>
+            <div className="space-y-3">
+              {AmbientAssetOptions.map((asset) => (
+                <div key={asset.id} className="rounded-lg border border-white/10 bg-black/10 p-3">
+                  <p className="text-sm font-medium text-white">{asset.name}</p>
+                  <p className="text-xs text-white/60">{asset.summary}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
       </div>
 
       {renderResult?.analytics && <SessionCharts analytics={renderResult.analytics} />}

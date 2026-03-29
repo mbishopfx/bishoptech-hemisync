@@ -6,16 +6,16 @@ import { SessionLab } from './SessionLab';
 
 const guideCards = [
   {
-    title: 'Design the Arc',
-    body: 'Choose a preset, rebalance to length, and shape the delta path so the session actually travels somewhere.'
+    title: 'Pick a Ready-Made HemiSync',
+    body: 'Start with a session built for deep focus, creative drift, recovery, or a full-body reset.'
   },
   {
-    title: 'Tune the Atmosphere',
-    body: 'Preview carriers with bundled ambience, set breath pacing, and keep the mix controlled before the full render.'
+    title: 'Adjust the Ritual',
+    body: 'Set the session length, choose an atmosphere, and keep the sound calm, premium, and personal.'
   },
   {
-    title: 'Render for Delivery',
-    body: 'Export premium masters with analytics and artifacts ready for web playback or downstream mobile clients.'
+    title: 'Preview, Render, Replay',
+    body: 'Test the feel in-browser, then generate a finished HemiSync session you can download and keep.'
   }
 ];
 
@@ -28,17 +28,17 @@ export default function GeneratePage() {
         <div className="grid gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:px-10 lg:py-10">
           <div className="space-y-6">
             <div className="flex flex-wrap gap-3">
-              <span className="signal-chip">Session Design</span>
-              <span className="signal-chip">Premium Mastering</span>
-              <span className="signal-chip">Beats-Only Flow</span>
+              <span className="signal-chip">Consumer HemiSync Flow</span>
+              <span className="signal-chip">Template-First Builder</span>
+              <span className="signal-chip">Premium Beat Sessions</span>
             </div>
             <div className="space-y-4">
-              <p className="section-label">Generator</p>
+              <p className="section-label">Build Your Session</p>
               <h1 className="display-type text-5xl leading-none text-[var(--text-primary)] sm:text-6xl">
-                Build the session like a signal engineer, not a prompt toy.
+                Start with the feeling you want, then let HemiSync handle the structure.
               </h1>
               <p className="max-w-3xl text-base leading-7 text-[var(--text-secondary)]">
-                The lab keeps the creative controls close to the signal path: stage timing, carrier choices, delta transitions, breath pacing, ambience, analytics, and mastered export.
+                This builder is designed to get someone from idea to finished session quickly. Templates come first. Advanced signal tuning stays available, but out of the way until you actually want it.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -49,9 +49,14 @@ export default function GeneratePage() {
           </div>
 
           <Card className="border border-white/10 bg-black/20 p-6">
-            <h2 className="display-type text-3xl text-[var(--text-primary)]">Safety and Use</h2>
-            <p className="mt-4 text-sm leading-7 text-[var(--text-secondary)]">
-              Use quality headphones, stay seated, and never listen while driving or operating machinery. Anyone with neurological or psychiatric concerns should use clinical judgment and professional advice first. These sessions are for relaxation and focus exploration, not medical treatment.
+            <h2 className="display-type text-3xl text-[var(--text-primary)]">Simple Flow</h2>
+            <div className="mt-4 space-y-3 text-sm leading-7 text-[var(--text-secondary)]">
+              <p>1. Choose a HemiSync template.</p>
+              <p>2. Set your session length and atmosphere.</p>
+              <p>3. Preview, render, and download your session.</p>
+            </div>
+            <p className="mt-5 text-xs leading-6 text-[var(--text-muted)]">
+              Headphones recommended. These sessions are for relaxation, focus, and recovery support, not medical treatment.
             </p>
           </Card>
         </div>
