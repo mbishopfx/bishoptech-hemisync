@@ -4,26 +4,26 @@ import { Card } from '@/components/ui/card';
 import { consumerTemplateOptions } from './generate/chatspec';
 
 const assurancePoints = [
-  'Premium beats-only renders with clean stereo carrier differences and staged frequency arcs.',
+  '30 curated beats-only templates with clean stereo carrier differences and staged frequency arcs.',
   'Headphone-first sessions for focus, reset, creativity, and recovery.',
-  'Premium WAV and MP3 exports when you are ready to keep a session.'
+  '2 minute carrier samples plus premium WAV and MP3 exports when you are ready to keep a session.'
 ];
 
 const processSteps = [
   {
     step: '01',
     title: 'Choose Your HemiSync',
-    body: 'Start with a session built for focus, creative drift, recovery, or a full-body reset.'
+    body: 'Start with one of 30 curated templates built for focus, creative drift, recovery, sleep prep, and reset.'
   },
   {
     step: '02',
-    title: 'Shape the Feel',
-    body: 'Set the length, ambience, and breath pacing without needing to think like an audio engineer.'
+    title: 'Hear the Sample',
+    body: 'Open a 2 minute carrier preview to judge the state before you commit to the full render.'
   },
   {
     step: '03',
     title: 'Render and Keep It',
-    body: 'Generate a mastered HemiSync session you can replay whenever you want.'
+    body: 'Render the full mastered HemiSync session, wait for the download, and keep it for replay.'
   }
 ];
 
@@ -42,10 +42,10 @@ export default function Page() {
             <div className="space-y-5">
               <p className="section-label">HemiSync</p>
               <h1 className="hero-title max-w-4xl text-[var(--text-primary)]">
-                Consumer-friendly HemiSync sessions for focus, recovery, and deep calm.
+                Consumer-friendly HemiSync sessions with 30 curated states and sample-first playback.
               </h1>
               <p className="hero-subtitle">
-                Pick the feeling you want, set the time you have, and let the platform shape a premium binaural session around it. No file juggling, no engineering setup, no raw signal jargon required.
+                Pick the state you want, hear a clean 2 minute carrier sample, then render the full binaural session when you are ready. No file juggling, no engineering setup, no raw signal jargon required.
               </p>
             </div>
 
@@ -84,18 +84,18 @@ export default function Page() {
             </h2>
           </div>
           <p className="max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">
-            Every template starts from a staged HemiSync journey, then gives you just enough control to make it personal without making the platform feel technical.
+            The full library contains {consumerTemplateOptions.length} templates. The homepage shows a smaller cut so people can understand the system quickly before entering the builder.
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
-          {consumerTemplateOptions.map((template) => (
+          {consumerTemplateOptions.slice(0, 8).map((template) => (
             <Card key={template.id} className="overflow-hidden p-0">
               <div className="flex h-full flex-col gap-5 p-6">
                 <div className="flex items-center justify-between gap-3">
                   <p className="section-label">{template.shortLabel}</p>
                   <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-[var(--text-secondary)]">
-                    15 min base
+                    2 min sample
                   </span>
                 </div>
                 <div className="space-y-3">
@@ -122,7 +122,7 @@ export default function Page() {
             A to Z in one calm flow.
           </h2>
           <p className="mt-4 max-w-xl text-base leading-7 text-[var(--text-secondary)]">
-            The platform is meant to feel like choosing a guided ritual, not configuring a lab instrument. Start with a clear goal, make a few taste-level choices, and download your session.
+            The platform is meant to feel like choosing a guided ritual, not configuring a lab instrument. Start with a clear goal, hear a quick sample, make a few taste-level choices, and render your session.
           </p>
           <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 text-sm leading-7 text-[var(--text-secondary)]">
             Use headphones, keep the volume moderate, and treat sessions as wellness and focus support, not medical treatment.

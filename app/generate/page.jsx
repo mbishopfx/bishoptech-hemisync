@@ -6,16 +6,16 @@ import { SessionLab } from './SessionLab';
 
 const guideCards = [
   {
-    title: 'Pick a Ready-Made HemiSync',
-    body: 'Start with a session built for deep focus, creative drift, recovery, or a full-body reset.'
+    title: 'Pick From 30 Templates',
+    body: 'Start with a curated state library built for focus, reset, sleep prep, creativity, clarity, and recovery.'
   },
   {
-    title: 'Adjust the Ritual',
-    body: 'Set the session length, choose an atmosphere, and keep the sound calm, premium, and personal.'
+    title: 'Hear the Carrier Sample',
+    body: 'Each card can open into a 2 minute stereo sample so people can judge the state before rendering.'
   },
   {
     title: 'Render, Download, Replay',
-    body: 'Generate a finished HemiSync session you can download and keep.'
+    body: 'Render the full mastered HemiSync session, stay on screen, and download the finished file when it lands.'
   }
 ];
 
@@ -35,10 +35,10 @@ export default function GeneratePage() {
             <div className="space-y-4">
               <p className="section-label">Build Your Session</p>
               <h1 className="display-type text-5xl leading-none text-[var(--text-primary)] sm:text-6xl">
-                Start with the feeling you want, then let HemiSync handle the structure.
+                Start with the state you want, hear the carrier, then render the full journey.
               </h1>
               <p className="max-w-3xl text-base leading-7 text-[var(--text-secondary)]">
-                This builder is designed to get someone from idea to finished session quickly. Templates come first. Advanced signal tuning stays available, but out of the way until you actually want it.
+                This builder is designed to get someone from idea to finished session quickly. The first move is the template library, the second is the 2 minute sample, and only then do we ask for full-session choices.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -51,9 +51,9 @@ export default function GeneratePage() {
           <Card className="border border-white/10 bg-black/20 p-6">
             <h2 className="display-type text-3xl text-[var(--text-primary)]">Simple Flow</h2>
             <div className="mt-4 space-y-3 text-sm leading-7 text-[var(--text-secondary)]">
-              <p>1. Choose a HemiSync template.</p>
-              <p>2. Set your session length and atmosphere.</p>
-              <p>3. Render and download your session.</p>
+              <p>1. Choose one of 30 HemiSync templates.</p>
+              <p>2. Hear a 2 minute clean carrier sample.</p>
+              <p>3. Render and download the full session.</p>
             </div>
             <p className="mt-5 text-xs leading-6 text-[var(--text-muted)]">
               Headphones recommended. These sessions are for relaxation, focus, and recovery support, not medical treatment.
