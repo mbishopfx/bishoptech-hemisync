@@ -4,9 +4,9 @@ import { Card } from '@/components/ui/card';
 import { consumerTemplateOptions } from './generate/chatspec';
 
 const assurancePoints = [
-  'Premium beats-only renders with bundled atmospheres and clean staged frequency arcs.',
+  'Premium beats-only renders with clean stereo carrier differences and staged frequency arcs.',
   'Headphone-first sessions for focus, reset, creativity, and recovery.',
-  'Fast preview flow plus premium WAV and MP3 exports when you are ready to keep a session.'
+  'Premium WAV and MP3 exports when you are ready to keep a session.'
 ];
 
 const processSteps = [
@@ -22,8 +22,8 @@ const processSteps = [
   },
   {
     step: '03',
-    title: 'Press Play or Render',
-    body: 'Preview quickly in the browser, then generate a mastered session you can replay whenever you want.'
+    title: 'Render and Keep It',
+    body: 'Generate a mastered HemiSync session you can replay whenever you want.'
   }
 ];
 
@@ -122,7 +122,7 @@ export default function Page() {
             A to Z in one calm flow.
           </h2>
           <p className="mt-4 max-w-xl text-base leading-7 text-[var(--text-secondary)]">
-            The platform is meant to feel like choosing a guided ritual, not configuring a lab instrument. Start with a clear goal, make a few taste-level choices, preview, and download your session.
+            The platform is meant to feel like choosing a guided ritual, not configuring a lab instrument. Start with a clear goal, make a few taste-level choices, and download your session.
           </p>
           <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 text-sm leading-7 text-[var(--text-secondary)]">
             Use headphones, keep the volume moderate, and treat sessions as wellness and focus support, not medical treatment.

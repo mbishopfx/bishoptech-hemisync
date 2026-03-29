@@ -14,8 +14,8 @@ const guideCards = [
     body: 'Set the session length, choose an atmosphere, and keep the sound calm, premium, and personal.'
   },
   {
-    title: 'Preview, Render, Replay',
-    body: 'Test the feel in-browser, then generate a finished HemiSync session you can download and keep.'
+    title: 'Render, Download, Replay',
+    body: 'Generate a finished HemiSync session you can download and keep.'
   }
 ];
 
@@ -53,7 +53,7 @@ export default function GeneratePage() {
             <div className="mt-4 space-y-3 text-sm leading-7 text-[var(--text-secondary)]">
               <p>1. Choose a HemiSync template.</p>
               <p>2. Set your session length and atmosphere.</p>
-              <p>3. Preview, render, and download your session.</p>
+              <p>3. Render and download your session.</p>
             </div>
             <p className="mt-5 text-xs leading-6 text-[var(--text-muted)]">
               Headphones recommended. These sessions are for relaxation, focus, and recovery support, not medical treatment.

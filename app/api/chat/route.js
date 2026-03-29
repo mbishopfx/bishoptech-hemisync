@@ -4,6 +4,7 @@ import { requireUserId } from '@/lib/auth/user';
 import { SessionSpecSchema, ChatMessageSchema } from '@/lib/validation/schemas';
 import { deepMerge } from '@/lib/utils/deepmerge';
 import { createPortalClient } from '@/lib/openai/client';
+import { maybeProxyToBackend } from '@/lib/http/backend-proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -27,6 +28,11 @@ async function ensureUserBucket(supabase, userId) {
 }
 
 export async function POST(req) {
+  const proxied = await maybeProxyToBackend(req);
+  if (proxied) {
+    return proxied;
+  }
+
   try {
     const userId = requireUserId(req);
     const body = await req.json();

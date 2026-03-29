@@ -9,11 +9,17 @@ import { buildJourneyBlueprint, buildJourneyAnalytics } from '@/lib/audio/journe
 import { buildBackgroundLayer } from '@/lib/audio/background-layer';
 import { resolveExportProfile } from '@/lib/audio/export-profiles';
 import { resolvePublicUrl } from '@/lib/http/public-url';
+import { maybeProxyToBackend } from '@/lib/http/backend-proxy';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 export async function POST(req) {
+  const proxied = await maybeProxyToBackend(req);
+  if (proxied) {
+    return proxied;
+  }
+
   const logger = getLogger();
 
   try {

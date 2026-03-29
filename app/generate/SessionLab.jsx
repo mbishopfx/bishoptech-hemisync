@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,43 +9,10 @@ import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { consumerTemplateOptions, defaultSessionSpec } from './chatspec';
 import { FocusPresets } from '@/lib/audio/presets';
-import { AmbientAssetOptions, buildAmbientAssetUrl } from '@/lib/audio/assets';
+import { AmbientAssetOptions } from '@/lib/audio/assets';
 import { JourneyPresetOptions, buildJourneyBlueprint } from '@/lib/audio/journeys';
 import { SessionCharts } from '@/components/analytics/SessionCharts';
-import { resolveBackendAssetUrl, toBackendUrl } from '@/lib/frontend/backend-url';
-
-let toneModulePromise;
-function loadToneModule() {
-  if (!toneModulePromise) {
-    toneModulePromise = import('tone');
-  }
-  return toneModulePromise;
-}
-
-let pizzicatoModulePromise;
-function loadPizzicatoModule() {
-  if (!pizzicatoModulePromise) {
-    pizzicatoModulePromise = import('pizzicato').then((mod) => mod.default || mod);
-  }
-  return pizzicatoModulePromise;
-}
-
-function useToneReady() {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-    loadToneModule()
-      .then(() => mounted && setReady(true))
-      .catch(() => mounted && setReady(false));
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return ready;
-}
+import { resolveBackendAssetUrl } from '@/lib/frontend/backend-url';
 
 function formatClock(seconds) {
   const total = Math.max(0, Math.round(seconds || 0));
@@ -63,17 +30,14 @@ function toStageMinutes(seconds) {
 }
 
 export function SessionLab() {
-  const toneReady = useToneReady();
   const [spec, setSpec] = useState(defaultSessionSpec);
   const [intent, setIntent] = useState('Build a calm HemiSync reset with a soft descent, gentle middle hold, and a clean clear return.');
   const [status, setStatus] = useState('Idle');
-  const [playing, setPlaying] = useState(false);
   const [rendering, setRendering] = useState(false);
   const [renderResult, setRenderResult] = useState(null);
   const [chatInput, setChatInput] = useState('Keep this soothing, lower the middle section slightly, and make the return very gentle.');
   const [chatHistory, setChatHistory] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  const stopHandlesRef = useRef([]);
 
   const getLayer = (type) => spec.layers.find((layer) => layer.type === type);
 
@@ -96,12 +60,6 @@ export function SessionLab() {
   const selectedBackgroundLayer = getLayer('background');
   const selectedBackgroundSource = selectedBackgroundLayer?.params?.sourceType || 'none';
   const selectedAmbientAsset = AmbientAssetOptions.find((asset) => asset.id === selectedBackgroundLayer?.params?.assetId);
-
-  useEffect(() => {
-    return () => {
-      stopPreviewInternal();
-    };
-  }, []);
 
   const updateLayerParams = (type, partial) => {
     setSpec((prev) => ({
@@ -270,128 +228,6 @@ export function SessionLab() {
     setStatus(`${template.title} template ready`);
   };
 
-  const startPreview = async () => {
-    if (!toneReady) {
-      setStatus('Audio preview is still loading');
-      return;
-    }
-
-    try {
-      setStatus('Starting preview…');
-      const ToneLib = await loadToneModule();
-      const PizzicatoLib = await loadPizzicatoModule();
-
-      if (typeof ToneLib.start === 'function') {
-        await ToneLib.start();
-      }
-
-      stopPreviewInternal();
-
-      const master = ToneLib.getDestination();
-      master.volume.value = spec.volumeDb ?? -12;
-
-      const binaural = getLayer('binaural');
-      if (binaural) {
-        const carrier = binaural.params.baseFreqHz || spec.baseFreqHz;
-        const deltaFrom = binaural.params.delta?.from || spec.deltaHz;
-        const deltaTo = binaural.params.delta?.to || spec.deltaHz;
-        const durationSec = 30;
-        const startTime = ToneLib.now();
-        const freqDiff = deltaTo - deltaFrom;
-
-        const left = new PizzicatoLib.Sound({ source: 'wave', options: { frequency: carrier } });
-        const right = new PizzicatoLib.Sound({ source: 'wave', options: { frequency: carrier + deltaFrom } });
-        left.volume = 0.45;
-        right.volume = 0.45;
-        left.addEffect(new PizzicatoLib.Effects.StereoPanner({ pan: -1 }));
-        right.addEffect(new PizzicatoLib.Effects.StereoPanner({ pan: 1 }));
-        left.play();
-        right.play();
-
-        const interval = setInterval(() => {
-          const elapsed = ToneLib.now() - startTime;
-          const progress = Math.min(1, elapsed / durationSec);
-          right.frequency = carrier + deltaFrom + freqDiff * progress;
-        }, 200);
-
-        stopHandlesRef.current.push(() => {
-          clearInterval(interval);
-          try {
-            left.stop();
-          } catch {}
-          try {
-            right.stop();
-          } catch {}
-        });
-      }
-
-      const background = getLayer('background');
-      if (background?.params?.sourceType === 'ocean') {
-        const noise = new ToneLib.Noise('pink');
-        const volume = new ToneLib.Volume(background.params.mixDb ?? -24).connect(ToneLib.getDestination());
-        const filter = new ToneLib.Filter(800, 'lowpass').connect(volume);
-        const lfo = new ToneLib.LFO({ frequency: 0.08, min: 200, max: 1200 }).start();
-        lfo.connect(filter.frequency);
-        noise.connect(filter);
-        noise.start();
-
-        stopHandlesRef.current.push(() => {
-          try {
-            noise.stop();
-          } catch {}
-          noise.dispose();
-          filter.dispose();
-          volume.dispose();
-          lfo.dispose();
-        });
-      }
-
-      if (background?.params?.sourceType === 'asset') {
-        const ambientUrl = buildAmbientAssetUrl(background.params.assetId);
-        if (ambientUrl) {
-          const ambient = new ToneLib.Player({ url: ambientUrl, autostart: false, loop: true });
-          await ambient.load();
-          ambient.volume.value = background.params.mixDb ?? -24;
-          ambient.fadeIn = 2;
-          ambient.fadeOut = 2;
-          ambient.connect(ToneLib.getDestination());
-          ambient.start();
-
-          stopHandlesRef.current.push(() => {
-            try {
-              ambient.stop();
-            } catch {}
-            ambient.dispose();
-          });
-        }
-      }
-
-      setStatus('Previewing');
-      setPlaying(true);
-    } catch (err) {
-      console.error(err);
-      setStatus(`Preview error: ${err.message}`);
-      stopPreviewInternal();
-    }
-  };
-
-  const stopPreviewInternal = () => {
-    stopHandlesRef.current.forEach((stopFn) => {
-      try {
-        stopFn?.();
-      } catch (error) {
-        console.warn('Preview stop handler failed', error);
-      }
-    });
-    stopHandlesRef.current = [];
-    setStatus('Stopped');
-    setPlaying(false);
-  };
-
-  const stopPreview = () => {
-    stopPreviewInternal();
-  };
-
   const handleChatSend = async () => {
     if (!chatInput.trim()) return;
 
@@ -404,7 +240,7 @@ export function SessionLab() {
 
     try {
       setStatus('Adjusting your HemiSync…');
-      const response = await fetch(toBackendUrl('/api/chat'), {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -462,7 +298,7 @@ export function SessionLab() {
         background: backgroundPayload
       };
 
-      const response = await fetch(toBackendUrl('/api/audio/generate'), {
+      const response = await fetch('/api/audio/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -495,15 +331,10 @@ export function SessionLab() {
           <div>
             <h2 className="text-xl font-semibold text-white">Your HemiSync Builder</h2>
             <p className="text-sm text-white/70">
-              Choose a template, shape the ritual, preview the feel, and render a premium HemiSync session without getting buried in technical controls.
+              Choose a template, shape the ritual, and render a clean stereo HemiSync session without getting buried in technical controls.
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button onClick={playing ? stopPreview : startPreview} disabled={!toneReady}>
-              {toneReady ? (playing ? 'Stop Preview' : 'Preview HemiSync') : 'Loading Audio Engine…'}
-            </Button>
-            <span className="text-sm text-white/60">{status}</span>
-          </div>
+          <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">{status}</div>
         </div>
       </Card>
 
