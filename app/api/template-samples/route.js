@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { maybeProxyToBackend } from '@/lib/http/backend-proxy';
-import { readTemplateSampleManifest } from '@/lib/supabase/template-samples';
+import { readTemplateSampleManifestPublic } from '@/lib/supabase/template-samples';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -12,7 +12,7 @@ export async function GET(request) {
   }
 
   try {
-    const manifest = await readTemplateSampleManifest();
+    const manifest = await readTemplateSampleManifestPublic();
     const response = NextResponse.json({
       ok: true,
       version: manifest.version,
