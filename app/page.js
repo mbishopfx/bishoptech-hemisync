@@ -29,8 +29,12 @@ const processSteps = [
 
 export default function Page() {
   return (
-    <main className="space-y-10 pb-16 pt-2 lg:pt-6">
-      <section className="glass-emphasis overflow-hidden rounded-[2.25rem]">
+    <main className="relative space-y-10 pb-16 pt-2 lg:pt-6">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 grid-glow opacity-35 [mask-image:radial-gradient(circle_at_center,black_38%,transparent_86%)]"
+      />
+      <section className="relative z-10 glass-emphasis overflow-hidden rounded-[2.25rem]">
         <div className="grid gap-10 px-6 py-10 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:px-10 lg:py-12">
           <div className="space-y-7">
             <div className="flex flex-wrap gap-3">
