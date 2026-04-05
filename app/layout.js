@@ -19,8 +19,8 @@ const monoFont = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: 'HemiSync',
-  description: 'Consumer-friendly HemiSync beat sessions for focus, recovery, creative drift, and deep calm.'
+  title: 'HemiSync Studio',
+  description: 'Premium binaural and hemisync session generation for focus, recovery, creative drift, and deep calm.'
 };
 
 export default function RootLayout({ children }) {
@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <div className="relaxing-overlay" />
         <div className="waves" />
-        <div className="relative z-10 mx-auto max-w-[1440px] px-4 py-4 sm:px-6 lg:px-8">
+        <div className="page-shell desktop-shell">
           {children}
         </div>
       </body>

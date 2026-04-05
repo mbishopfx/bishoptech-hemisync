@@ -59,6 +59,29 @@ export async function POST(req) {
         .single();
       if (error) throw error;
       sessionId = data.id;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('session_count')
+        .eq('id', userId)
+        .maybeSingle();
+
+      const nextCount = (profile?.session_count || 0) + 1;
+      await supabase
+        .from('profiles')
+        .update({
+          session_count: nextCount,
+          last_session_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId);
+
+      await supabase.from('session_logs').insert({
+        user_id: userId,
+        session_id: sessionId,
+        event_type: 'generated',
+        metadata: { source: 'chat_route', focusLevel: parsedSpec.focusLevel }
+      });
     }
 
     const parsedMessages = Array.isArray(messages)

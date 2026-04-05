@@ -33,6 +33,8 @@ Copy `.env.example` to `.env.local` and fill in the values you already use:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `OPENAI_API_KEY`
+- `GEMINI_API_KEY`
+- `AI_PROVIDER` (`openai` or `gemini`)
 - `NEXT_PUBLIC_DEMO_USER_ID`
 
 Optional for persistent render storage:
