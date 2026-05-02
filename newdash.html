@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Astral Architect | Brain State Builder</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;700;800&amp;family=Inter:wght@300;400;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#00e3fd",
+                        "surface-bright": "#2c2c2c",
+                        "surface-container-lowest": "#000000",
+                        "on-tertiary-fixed": "#3d2b00",
+                        "error-container": "#9f0519",
+                        "surface-dim": "#0e0e0e",
+                        "surface-container": "#1a1a1a",
+                        "primary-fixed-dim": "#00d4ec",
+                        "inverse-primary": "#006976",
+                        "on-secondary": "#25006b",
+                        "on-primary": "#005762",
+                        "surface": "#0e0e0e",
+                        "surface-variant": "#262626",
+                        "on-background": "#ffffff",
+                        "on-surface": "#ffffff",
+                        "inverse-on-surface": "#565555",
+                        "secondary-fixed": "#d8caff",
+                        "secondary-fixed-dim": "#cabaff",
+                        "tertiary-fixed-dim": "#ecb200",
+                        "tertiary-container": "#fdc003",
+                        "outline": "#767575",
+                        "background": "#0e0e0e",
+                        "on-primary-container": "#004d57",
+                        "secondary-container": "#591adc",
+                        "error-dim": "#d7383b",
+                        "on-surface-variant": "#adaaaa",
+                        "tertiary-fixed": "#fdc003",
+                        "on-primary-fixed-variant": "#005762",
+                        "primary": "#81ecff",
+                        "primary-dim": "#00d4ec",
+                        "inverse-surface": "#fcf9f8",
+                        "tertiary-dim": "#ecb200",
+                        "on-tertiary-fixed-variant": "#604700",
+                        "surface-container-low": "#131313",
+                        "on-secondary-fixed-variant": "#591bdc",
+                        "on-error": "#490006",
+                        "on-primary-fixed": "#003840",
+                        "outline-variant": "#484847",
+                        "on-error-container": "#ffa8a3",
+                        "tertiary": "#ffd16c",
+                        "on-secondary-container": "#e4daff",
+                        "surface-container-high": "#20201f",
+                        "secondary-dim": "#7e51ff",
+                        "on-tertiary-container": "#553e00",
+                        "on-tertiary": "#604700",
+                        "error": "#ff716c",
+                        "surface-tint": "#81ecff",
+                        "on-secondary-fixed": "#3b00a0",
+                        "secondary": "#a68cff",
+                        "surface-container-highest": "#262626",
+                        "primary-container": "#00e3fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-panel {
+            background: rgba(38, 38, 38, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .oscilloscope-grid {
+            background-image: linear-gradient(rgba(129, 236, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(129, 236, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body selection:bg-primary/30">
+    <!-- Top Navigation -->
+    <header
+        class="fixed top-0 w-full z-50 bg-[#0e0e0e]/40 backdrop-blur-xl flex justify-between items-center px-8 py-4 w-full">
+        <div class="text-xl font-bold tracking-tighter text-cyan-400">Astral Architect</div>
+        <nav class="hidden md:flex gap-8 items-center">
+            <a class="font-['Manrope'] tracking-[0.1em] text-xs uppercase text-cyan-400 font-bold hover:text-cyan-200 transition-colors duration-300"
+                href="#">Workshop</a>
+            <a class="font-['Manrope'] tracking-[0.1em] text-xs uppercase text-neutral-500 hover:text-cyan-200 transition-colors duration-300"
+                href="#">Library</a>
+            <a class="font-['Manrope'] tracking-[0.1em] text-xs uppercase text-neutral-500 hover:text-cyan-200 transition-colors duration-300"
+                href="#">Explore</a>
+        </nav>
+        <div class="flex gap-4">
+            <span
+                class="material-symbols-outlined text-cyan-400 cursor-pointer hover:scale-95 duration-500 ease-out">account_circle</span>
+            <span
+                class="material-symbols-outlined text-cyan-400 cursor-pointer hover:scale-95 duration-500 ease-out">settings</span>
+        </div>
+    </header>
+    <!-- Side Navigation (Web) -->
+    <aside
+        class="fixed left-0 top-0 h-full z-40 h-full w-64 border-r border-white/5 bg-[#0e0e0e] hidden md:flex flex-col pt-24 px-6">
+        <div class="mb-12">
+            <h2 class="text-lg font-black text-white leading-tight">Astral Architect</h2>
+            <p class="font-['Inter'] font-light tracking-widest text-[10px] text-neutral-500 uppercase">Deep Space
+                Console</p>
+        </div>
+        <nav class="space-y-6 flex-1">
+            <div
+                class="flex items-center gap-4 text-cyan-400 border-r-2 border-cyan-400 py-2 group cursor-pointer transition-all">
+                <span class="material-symbols-outlined">architecture</span>
+                <span class="font-['Inter'] font-light tracking-widest text-sm uppercase">Workshop</span>
+            </div>
+            <div
+                class="flex items-center gap-4 text-neutral-500 hover:bg-white/5 py-2 group cursor-pointer transition-all">
+                <span class="material-symbols-outlined">database</span>
+                <span class="font-['Inter'] font-light tracking-widest text-sm uppercase">Library</span>
+            </div>
+            <div
+                class="flex items-center gap-4 text-neutral-500 hover:bg-white/5 py-2 group cursor-pointer transition-all">
+                <span class="material-symbols-outlined">explore</span>
+                <span class="font-['Inter'] font-light tracking-widest text-sm uppercase">Explore</span>
+            </div>
+        </nav>
+        <button
+            class="mb-10 w-full py-4 border-[1.5px] border-primary-fixed text-primary-fixed text-xs tracking-widest uppercase font-bold rounded-xl hover:bg-primary/5 transition-all shadow-[0_0_20px_rgba(0,227,253,0.1)]">
+            New Brain State
+        </button>
+    </aside>
+    <!-- Main Content Canvas -->
+    <main class="md:ml-64 pt-24 pb-32 px-6 md:px-12 min-h-screen relative overflow-hidden">
+        <!-- Background Atmospheric Blurs -->
+        <div
+            class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-secondary/10 blur-[100px] rounded-full pointer-events-none">
+        </div>
+        <section class="max-w-6xl mx-auto space-y-10">
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-2">
+                        State Builder
+                    </h1>
+                    <p class="font-body font-light text-on-surface-variant tracking-widest text-sm uppercase">
+                        Current Profile: <span class="text-primary">Ethereal Projection v.4</span>
+                    </p>
+                </div>
+                <div class="flex gap-4">
+                    <button
+                        class="px-6 py-2 bg-surface-container-high text-on-surface text-xs tracking-widest uppercase rounded-full hover:bg-surface-container-highest transition-colors">
+                        Revert
+                    </button>
+                    <button
+                        class="px-8 py-2 bg-primary-container text-on-primary-fixed font-bold text-xs tracking-widest uppercase rounded-full shadow-[0_0_30px_rgba(0,227,253,0.3)] hover:scale-95 transition-transform">
+                        Save to Neural Archive
+                    </button>
+                </div>
+            </div>
+            <!-- Bento Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Central Visualization (The Oscilloscope) -->
+                <div
+                    class="lg:col-span-8 glass-panel rounded-3xl p-8 min-h-[400px] relative overflow-hidden border border-white/5">
+                    <div class="absolute inset-0 oscilloscope-grid pointer-events-none opacity-40"></div>
+                    <div class="relative z-10 h-full flex flex-col">
+                        <div class="flex justify-between items-start mb-8">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                                <span class="font-label text-[10px] tracking-[0.2em] uppercase text-primary">Live
+                                    Waveform Feedback</span>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-headline text-3xl font-light text-primary tracking-tighter">7.83 <span
+                                        class="text-xs tracking-widest uppercase opacity-50">Hz</span></p>
+                                <p class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase">
+                                    Schumann Resonance</p>
+                            </div>
+                        </div>
+                        <!-- Visualizer Mockup -->
+                        <div class="flex-1 flex items-center justify-center relative">
+                            <div class="w-full h-32 relative">
+                                <svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 120">
+                                    <path class="text-primary/40"
+                                        d="M0,60 Q50,10 100,60 T200,60 T300,60 T400,60 T500,60 T600,60 T700,60 T800,60"
+                                        fill="none" stroke="currentColor" stroke-width="1"></path>
+                                    <path class="text-secondary/30"
+                                        d="M0,60 Q40,5 80,60 T160,60 T240,60 T320,60 T400,60 T480,60 T560,60 T640,60 T720,60 T800,60"
+                                        fill="none" stroke="currentColor" stroke-width="1"></path>
+                                    <path class="text-primary"
+                                        d="M0,60 C100,20 150,100 250,60 S400,20 500,60 S650,100 800,60" fill="none"
+                                        stroke="currentColor" stroke-width="2.5"></path>
+                                </svg>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 mt-auto pt-6 border-t border-white/5">
+                            <div>
+                                <p
+                                    class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase mb-1">
+                                    Phase Offset</p>
+                                <p class="font-headline text-lg text-on-surface">18.4°</p>
+                            </div>
+                            <div>
+                                <p
+                                    class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase mb-1">
+                                    Amplitude</p>
+                                <p class="font-headline text-lg text-on-surface">-12.4dB</p>
+                            </div>
+                            <div>
+                                <p
+                                    class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase mb-1">
+                                    Coherence</p>
+                                <p class="font-headline text-lg text-primary">98%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Carrier Selector & Tone controls -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5">
+                        <p
+                            class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-xs">waves</span> Carrier Tone Selector
+                        </p>
+                        <div class="space-y-3">
+                            <button
+                                class="w-full flex justify-between items-center p-4 bg-surface-container-high/50 rounded-xl border-l-2 border-primary text-on-surface group hover:bg-surface-container-highest transition-colors">
+                                <span class="font-label text-sm font-light tracking-wide">Pink Noise</span>
+                                <span
+                                    class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">check_circle</span>
+                            </button>
+                            <button
+                                class="w-full flex justify-between items-center p-4 bg-surface-container-low/30 rounded-xl border-l-2 border-transparent text-on-surface-variant group hover:bg-surface-container-high transition-colors">
+                                <span class="font-label text-sm font-light tracking-wide">Brown Noise</span>
+                                <span
+                                    class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">add_circle</span>
+                            </button>
+                            <button
+                                class="w-full flex justify-between items-center p-4 bg-surface-container-low/30 rounded-xl border-l-2 border-transparent text-on-surface-variant group hover:bg-surface-container-high transition-colors">
+                                <span class="font-label text-sm font-light tracking-wide">Deep Space</span>
+                                <span
+                                    class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">add_circle</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 relative overflow-hidden">
+                        <img class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
+                            data-alt="Deep space nebula with swirling cyan and violet cosmic dust and distant shimmering stars"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO7E4vuoyM7l02SQmNATTmVXSxtEzH5HWqgABvNZ_iISg0Rwa8gybDm-lnsl9aaMquWa4Aay8RMoQBW5q7D_qI44GcgkRpxj5vnaYtLzh3KXqfinwgcK6DnKBu2jWdN_m_xvyVOAWaIz09kCIKdEqWBZtx0kbwDIxLrl1Ts5Y09JQ4rXW9faP1ASW6PK7qyzzmiY-OIIhxHhDrOfXVfisTbvj_bGLhyPRpXDq_I3PFhkv9YeCZXo0HTXjD4PrNW7eofrh9Q_slSmoN" />
+                        <div class="relative z-10">
+                            <p class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase mb-2">
+                                Neural Status</p>
+                            <h3 class="font-headline text-xl font-bold text-white mb-4">Focus Enhanced</h3>
+                            <div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-primary h-full w-[75%] shadow-[0_0_10px_#00e3fd]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Precision Sliders Row -->
+                <div class="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Alpha -->
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 group">
+                        <div class="flex justify-between items-center mb-6">
+                            <span
+                                class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase">Alpha</span>
+                            <span class="font-headline text-sm text-primary">8 - 13 Hz</span>
+                        </div>
+                        <input
+                            class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer accent-primary-fixed mb-4"
+                            type="range" />
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="text-[10px] text-on-surface-variant font-light tracking-widest uppercase">Intensity</span>
+                            <span class="text-xs font-bold text-white">64%</span>
+                        </div>
+                    </div>
+                    <!-- Beta -->
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 group">
+                        <div class="flex justify-between items-center mb-6">
+                            <span
+                                class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase">Beta</span>
+                            <span class="font-headline text-sm text-secondary">13 - 32 Hz</span>
+                        </div>
+                        <input
+                            class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer accent-secondary-fixed mb-4"
+                            type="range" />
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="text-[10px] text-on-surface-variant font-light tracking-widest uppercase">Intensity</span>
+                            <span class="text-xs font-bold text-white">12%</span>
+                        </div>
+                    </div>
+                    <!-- Theta -->
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 group">
+                        <div class="flex justify-between items-center mb-6">
+                            <span
+                                class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase">Theta</span>
+                            <span class="font-headline text-sm text-tertiary">4 - 8 Hz</span>
+                        </div>
+                        <input
+                            class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer accent-tertiary-fixed mb-4"
+                            type="range" />
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="text-[10px] text-on-surface-variant font-light tracking-widest uppercase">Intensity</span>
+                            <span class="text-xs font-bold text-white">88%</span>
+                        </div>
+                    </div>
+                    <!-- Delta -->
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 group">
+                        <div class="flex justify-between items-center mb-6">
+                            <span
+                                class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase">Delta</span>
+                            <span class="font-headline text-sm text-primary">0.5 - 4 Hz</span>
+                        </div>
+                        <input
+                            class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer accent-primary-fixed mb-4"
+                            type="range" />
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="text-[10px] text-on-surface-variant font-light tracking-widest uppercase">Intensity</span>
+                            <span class="text-xs font-bold text-white">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Bottom Navigation (Mobile) -->
+    <footer
+        class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-[#0e0e0e]/60 backdrop-blur-2xl rounded-t-3xl shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+        <div class="flex flex-col items-center justify-center text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">
+            <span class="material-symbols-outlined">vibration</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase mt-1">Build</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-200">
+            <span class="material-symbols-outlined">library_music</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase mt-1">Library</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-200">
+            <span class="material-symbols-outlined">waves</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase mt-1">States</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-200">
+            <span class="material-symbols-outlined">tune</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase mt-1">Settings</span>
+        </div>
+    </footer>
+</body>
+
+</html>

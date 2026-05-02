@@ -1,163 +1,161 @@
 import Link from 'next/link';
+import { ArrowRight, Brain, Gauge, Headphones, Library, RadioTower, ShieldCheck, Users } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { consumerTemplateOptions } from './generate/chatspec';
 
-const promisePoints = [
-  'Expert-grade binaural session generation with premium WAV and MP3 export.',
-  'Per-user libraries, session logs, and future community sharing built in.',
-  'Designed to grow into an iOS companion app without rebuilding the backend.'
+const scienceCards = [
+  {
+    icon: Headphones,
+    title: 'Stereo carrier tones',
+    body: 'Each ear receives a clean carrier tone. The left/right difference creates a perceived beat frequency when heard through headphones.'
+  },
+  {
+    icon: RadioTower,
+    title: 'Stage-based ramps',
+    body: 'Sessions move through explicit delta-frequency stages instead of holding a single static tone for the entire render.'
+  },
+  {
+    icon: Gauge,
+    title: 'Effectiveness scoring',
+    body: 'The planner checks target band fit, duration, carrier range, stage count, breath pacing, and safety warnings before a tone is saved.'
+  }
 ];
 
-const processSteps = [
-  {
-    step: '01',
-    title: 'Choose the outcome',
-    body: 'Pick the state you want: focus, calm, sleep prep, recovery, or deeper exploratory sessions.'
-  },
-  {
-    step: '02',
-    title: 'Generate the session',
-    body: 'Render a polished binaural session with clean carriers, ramps, mastering, and safe playback defaults.'
-  },
-  {
-    step: '03',
-    title: 'Track the result',
-    body: 'Save it to your library, log the session, and revisit it later from web or iOS.'
-  }
+const platformCards = [
+  'Save tones with a name, image, description, frequency plan, and visibility.',
+  'Share public tones to a member Feed for others to play, download, and reuse.',
+  'Build a profile with social links, bio, followers, and a library of published tones.'
 ];
 
 export default function Page() {
   return (
-    <main className="relative space-y-10 pb-16 pt-2 lg:pt-6">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 grid-glow opacity-35 [mask-image:radial-gradient(circle_at_center,black_38%,transparent_86%)]"
-      />
-      <section className="relative z-10 glass-emphasis overflow-hidden rounded-[2.25rem]">
-        <div className="grid gap-10 px-6 py-10 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:px-10 lg:py-12">
-          <div className="space-y-7">
-            <div className="flex flex-wrap gap-3">
-              <span className="signal-chip">HemiSync Studio</span>
-              <span className="signal-chip">Premium Binaural Generation</span>
-              <span className="signal-chip">Web + iOS Ready</span>
-            </div>
-
-            <div className="space-y-5">
-              <p className="section-label">Production System</p>
-              <h1 className="hero-title max-w-4xl text-[var(--text-primary)]">
-                A premium hemisync platform for building, saving, and tracking guided audio sessions.
-              </h1>
-              <p className="hero-subtitle">
-                HemiSync Studio turns session design into a polished workflow: generate expert-grade audio, save your best renders, track your sessions, and grow into community features without changing the foundation.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Button asChild>
-                <Link href="/generate">Open the Studio</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <a href="#session-types">Browse Session Types</a>
-              </Button>
-            </div>
+    <main className="landing-shell">
+      <section className="landing-hero">
+        <div className="landing-hero__copy">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="science">Auditory Beat Stimulation</Badge>
+            <Badge variant="warm">Member Tone Network</Badge>
           </div>
-
-          <Card className="p-0">
-            <div className="space-y-5 p-6">
-              <p className="section-label">Why It Ships</p>
-              <div className="lux-divider" />
-              <div className="space-y-4">
-                {promisePoints.map((point) => (
-                  <div key={point} className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4">
-                    <p className="text-sm leading-7 text-[var(--text-secondary)]">{point}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-3 gap-3 pt-2">
-                <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.035] p-4 text-center">
-                  <p className="metric-label">Templates</p>
-                  <p className="metric-value mt-2 text-2xl text-[var(--text-primary)]">{consumerTemplateOptions.length}</p>
-                </div>
-                <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.035] p-4 text-center">
-                  <p className="metric-label">Save Rule</p>
-                  <p className="metric-value mt-2 text-2xl text-[var(--text-primary)]">1 Free</p>
-                </div>
-                <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.035] p-4 text-center">
-                  <p className="metric-label">AI Layer</p>
-                  <p className="metric-value mt-2 text-2xl text-[var(--text-primary)]">Gemini</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      <section id="session-types" className="space-y-5">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="space-y-2">
-            <p className="section-label">Session Types</p>
-            <h2 className="section-title text-4xl text-[var(--text-primary)] sm:text-5xl">
-              Built for real use, not demo fluff.
-            </h2>
-          </div>
-          <p className="max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">
-            The library is structured so people can move from quick previews to saved renders, then return to the session later across devices.
+          <h1>Scientific stereo entrainment tools for building and sharing focused audio states.</h1>
+          <p>
+            HemiSync Studio creates headphone-based binaural sessions with controlled carrier tones, left/right
+            frequency differentials, staged ramps, and durable tone libraries. It is designed to support focus,
+            relaxation, meditation, and careful self-experimentation.
           </p>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href="/signup">
+                Create Account <ArrowRight data-icon="inline-end" className="ml-2 size-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href="/login">Log In</Link>
+            </Button>
+          </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
-          {consumerTemplateOptions.slice(0, 8).map((template) => (
-            <Card key={template.id} className="overflow-hidden p-0">
-              <div className="flex h-full flex-col gap-5 p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="section-label">{template.shortLabel}</p>
-                  <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-[var(--text-secondary)]">
-                    Preview First
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  <h3 className="section-title text-3xl leading-none text-[var(--text-primary)]">{template.title}</h3>
-                  <p className="text-sm leading-7 text-[var(--text-secondary)]">{template.description}</p>
-                </div>
-                <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-gold-strong)]">Best For</p>
-                  <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{template.bestFor}</p>
-                </div>
-                <Button asChild className="mt-auto">
-                  <Link href="/generate">Build This Session</Link>
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <Card className="landing-signal p-0">
+          <div className="landing-signal__top">
+            <div>
+              <p className="section-label">Active Tone</p>
+              <h2>Alpha to Theta Descent</h2>
+            </div>
+            <Badge variant="science">Score 86</Badge>
+          </div>
+          <div className="signal-visual" aria-hidden="true">
+            {Array.from({ length: 34 }).map((_, index) => (
+              <span key={index} style={{ '--bar': `${28 + ((index * 19) % 64)}%` }} />
+            ))}
+          </div>
+          <div className="landing-signal__grid">
+            <div>
+              <span>Carrier</span>
+              <strong>236 Hz</strong>
+            </div>
+            <div>
+              <span>Delta Path</span>
+              <strong>10 → 5.2 Hz</strong>
+            </div>
+            <div>
+              <span>Duration</span>
+              <strong>15 min</strong>
+            </div>
+          </div>
+        </Card>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-        <Card className="p-8">
+      <section className="landing-section">
+        <div className="landing-section__intro">
           <p className="section-label">How It Works</p>
-          <h2 className="section-title mt-4 text-4xl text-[var(--text-primary)]">
-            One calm flow from idea to saved session.
-          </h2>
-          <p className="mt-4 max-w-xl text-base leading-7 text-[var(--text-secondary)]">
-            The platform is designed so the first experience feels obvious: choose a state, generate a session, save it if you want, and review your listening history later.
+          <h2>Built around explainable signal design.</h2>
+          <p>
+            The system keeps the audio engine deterministic: choose a target state, inspect the frequency plan, render a
+            mastered WAV/MP3, then save or share the tone with its technical metadata.
           </p>
-          <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 text-sm leading-7 text-[var(--text-secondary)]">
-            Use headphones, keep the volume moderate, and treat sessions as wellness and focus support, not medical treatment.
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {scienceCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <Card key={card.title} className="p-6">
+                <Icon className="size-6 text-cyan-100" />
+                <h3 className="mt-5 text-xl font-semibold text-white">{card.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-white/62">{card.body}</p>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="landing-section landing-two-col">
+        <Card className="p-7">
+          <Brain className="size-7 text-[var(--accent-gold-strong)]" />
+          <h2 className="mt-5 text-3xl font-semibold text-white">Science-forward, claim-careful wording.</h2>
+          <p className="mt-4 text-sm leading-7 text-white/62">
+            Research on binaural beats and brainwave entrainment is promising in some outcomes and mixed in others,
+            especially when measured through EEG entrainment. HemiSync Studio presents tones as wellness and focus
+            support, not diagnosis, treatment, cure, or guaranteed brain-state control.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3 text-sm text-white/64">
+            <a className="underline decoration-white/20 underline-offset-4" href="https://pubmed.ncbi.nlm.nih.gov/30073406/">
+              Meta-analysis
+            </a>
+            <a className="underline decoration-white/20 underline-offset-4" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10198548/">
+              Systematic review
+            </a>
+            <a className="underline decoration-white/20 underline-offset-4" href="https://github.com/facebookresearch/tribev2">
+              TRIBE v2 reference
+            </a>
           </div>
         </Card>
 
-        <Card className="p-8">
-          <div className="grid gap-5 md:grid-cols-3">
-            {processSteps.map((step) => (
-              <div key={step.step} className="rounded-[1.5rem] border border-white/10 bg-white/[0.035] p-5">
-                <p className="mono-type text-xs text-[var(--accent-gold-strong)]">{step.step}</p>
-                <p className="mt-3 text-lg text-[var(--text-primary)]">{step.title}</p>
-                <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)]">{step.body}</p>
+        <Card className="p-7">
+          <Users className="size-7 text-cyan-100" />
+          <h2 className="mt-5 text-3xl font-semibold text-white">A lightweight social platform for tones.</h2>
+          <div className="mt-5 flex flex-col gap-3">
+            {platformCards.map((item) => (
+              <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm leading-6 text-white/66">
+                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[var(--accent-gold-strong)]" />
+                {item}
               </div>
             ))}
           </div>
         </Card>
+      </section>
+
+      <section className="landing-section landing-cta">
+        <div>
+          <Library className="size-7 text-cyan-100" />
+          <h2>Generate, save, publish, reuse.</h2>
+          <p>
+            The platform backend stores profiles, follows, feed posts, saved tones, likes, comments, and library
+            metadata behind Supabase Auth and row-level security.
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/signup">Open the Platform</Link>
+        </Button>
       </section>
     </main>
   );

@@ -1,0 +1,16 @@
+{
+  "name": "hemisync-audio-tools",
+  "version": "0.1.0",
+  "description": "Local Codex plugin for converting audio files into stereo hemisync-style frequency-patterned outputs.",
+  "interface": {
+    "displayName": "HemiSync Audio Tools",
+    "shortDescription": "Convert local audio into controlled L/R entrainment patterns.",
+    "icon": "Headphones",
+    "brandColor": "#7fd5df"
+  },
+  "skills": [
+    {
+      "path": "skills/hemisync-audio-converter"
+    }
+  ]
+}

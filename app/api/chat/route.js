@@ -141,12 +141,12 @@ Spec patch: ${JSON.stringify(entry.specPatch)}`
       { role: 'user', content: body.prompt || 'Help me design a session.' }
     ];
 
-    const response = await client.responses.create({
-      model: 'gpt-4.1-mini',
-      input: messagesForAi
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: messagesForAi
     });
 
-    const content = response.output_text || '{}';
+    const content = response.choices?.[0]?.message?.content || '{}';
     const parsed = JSON.parse(content);
     const assistantReply = typeof parsed.reply === 'string' ? parsed.reply : 'Here is an updated session plan.';
     const specPatch = parsed.specPatch || {};

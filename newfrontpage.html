@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;700;800&amp;family=Inter:wght@300;400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#00e3fd",
+                        "surface-bright": "#2c2c2c",
+                        "surface-container-lowest": "#000000",
+                        "on-tertiary-fixed": "#3d2b00",
+                        "error-container": "#9f0519",
+                        "surface-dim": "#0e0e0e",
+                        "surface-container": "#1a1a1a",
+                        "primary-fixed-dim": "#00d4ec",
+                        "inverse-primary": "#006976",
+                        "on-secondary": "#25006b",
+                        "on-primary": "#005762",
+                        "surface": "#0e0e0e",
+                        "surface-variant": "#262626",
+                        "on-background": "#ffffff",
+                        "on-surface": "#ffffff",
+                        "inverse-on-surface": "#565555",
+                        "secondary-fixed": "#d8caff",
+                        "secondary-fixed-dim": "#cabaff",
+                        "tertiary-fixed-dim": "#ecb200",
+                        "tertiary-container": "#fdc003",
+                        "outline": "#767575",
+                        "background": "#0e0e0e",
+                        "on-primary-container": "#004d57",
+                        "secondary-container": "#591adc",
+                        "error-dim": "#d7383b",
+                        "on-surface-variant": "#adaaaa",
+                        "tertiary-fixed": "#fdc003",
+                        "on-primary-fixed-variant": "#005762",
+                        "primary": "#81ecff",
+                        "primary-dim": "#00d4ec",
+                        "inverse-surface": "#fcf9f8",
+                        "tertiary-dim": "#ecb200",
+                        "on-tertiary-fixed-variant": "#604700",
+                        "surface-container-low": "#131313",
+                        "on-secondary-fixed-variant": "#591bdc",
+                        "on-error": "#490006",
+                        "on-primary-fixed": "#003840",
+                        "outline-variant": "#484847",
+                        "on-error-container": "#ffa8a3",
+                        "tertiary": "#ffd16c",
+                        "on-secondary-container": "#e4daff",
+                        "surface-container-high": "#20201f",
+                        "secondary-dim": "#7e51ff",
+                        "on-tertiary-container": "#553e00",
+                        "on-tertiary": "#604700",
+                        "error": "#ff716c",
+                        "surface-tint": "#81ecff",
+                        "on-secondary-fixed": "#3b00a0",
+                        "secondary": "#a68cff",
+                        "surface-container-highest": "#262626",
+                        "primary-container": "#00e3fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .frequency-wave {
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .glass-blur {
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
+    <!-- TopAppBar from Shared Components -->
+    <header
+        class="bg-[#0e0e0e]/40 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-8 py-4 w-full">
+        <div class="text-xl font-bold tracking-tighter text-cyan-400">Astral Architect</div>
+        <nav class="hidden md:flex items-center gap-8 font-['Manrope'] tracking-[0.1em] text-xs uppercase">
+            <a class="text-cyan-400 font-bold hover:text-cyan-200 transition-colors duration-300" href="#">Workshop</a>
+            <a class="text-neutral-500 hover:text-cyan-200 transition-colors duration-300" href="#">Library</a>
+            <a class="text-neutral-500 hover:text-cyan-200 transition-colors duration-300" href="#">Explore</a>
+        </nav>
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-neutral-500 hover:text-cyan-200 cursor-pointer"
+                data-icon="account_circle">account_circle</span>
+            <span class="material-symbols-outlined text-neutral-500 hover:text-cyan-200 cursor-pointer"
+                data-icon="settings">settings</span>
+        </div>
+    </header>
+    <main class="relative pt-20">
+        <!-- Hero Section: Intentional Asymmetry -->
+        <section class="relative min-h-[921px] flex items-center px-8 md:px-24 overflow-hidden">
+            <!-- Background Atmosheric Blurs -->
+            <div
+                class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none">
+            </div>
+            <div
+                class="absolute bottom-[10%] left-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none">
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+                <div class="lg:col-span-7 flex flex-col items-start text-left">
+                    <span class="font-label text-primary tracking-[0.3em] uppercase text-xs mb-6 block">Neuromodulation
+                        Interface v2.4</span>
+                    <h1
+                        class="font-headline text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 leading-[0.9]">
+                        Design Your <br />
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-dim to-secondary">Brain
+                            State</span>
+                    </h1>
+                    <p class="max-w-md text-on-surface-variant font-light text-lg leading-relaxed mb-10 tracking-wide">
+                        Precise frequency modulation for deep focus, cellular restoration, and expanded consciousness.
+                        The Astral Architect is your console for the inner void.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="px-8 py-4 rounded-xl border-[1.5px] border-primary text-primary font-headline text-sm tracking-widest uppercase hover:bg-primary/5 transition-all duration-300 shadow-[0_0_20px_rgba(129,236,255,0.15)]">
+                            Start Your Session
+                        </button>
+                        <button
+                            class="px-8 py-4 rounded-xl bg-surface-variant/40 glass-blur text-on-surface font-headline text-sm tracking-widest uppercase hover:bg-surface-variant transition-all duration-300">
+                            Build a State
+                        </button>
+                    </div>
+                </div>
+                <!-- Frequency Visualization (Off-center/Asymmetric) -->
+                <div class="lg:col-span-5 relative flex justify-center lg:justify-end">
+                    <div class="relative w-full aspect-square max-w-[480px]">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-40">
+                            <!-- SVG Wave Mockup -->
+                            <svg class="w-full h-full text-primary frequency-wave" viewbox="0 0 400 400">
+                                <path d="M 0 200 Q 50 100 100 200 T 200 200 T 300 200 T 400 200" fill="none"
+                                    stroke="currentColor" stroke-width="0.5"></path>
+                                <path d="M 0 200 Q 50 120 100 200 T 200 200 T 300 200 T 400 200" fill="none"
+                                    opacity="0.6" stroke="currentColor" stroke-width="0.5"></path>
+                                <path d="M 0 200 Q 50 150 100 200 T 200 200 T 300 200 T 400 200" fill="none"
+                                    opacity="0.3" stroke="currentColor" stroke-width="0.5"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute inset-0 rounded-full border border-primary/20 scale-110"></div>
+                        <div class="absolute inset-0 rounded-full border border-primary/10 scale-125"></div>
+                        <div class="relative z-10 w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+                            <img class="w-full h-full object-cover grayscale brightness-50 contrast-125"
+                                data-alt="abstract deep space visualization with swirling glowing nebula dust and ethereal cyan light rays in high resolution"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoknVDQ08U-_rafCAUKwxbz9UGD_FkAdUxe0agVFwdH655k9-ECoR4E8Fk-3HCQ45shP5cZ86JLurLkHLgMh-S3PHbhaogq6UO5uzjSY6hc6YKKctp2oeLLpJCRsw_FrnNEPTRbx1wIaZD19StsbS4et621h5oOnmufyq3g9Thb8h1JMU5GOJ7mN6EfF5uegwnX2y_VAWRDM8S1kA-YBDcjWjYWfL1dbOqF8jkYwKtWxjeKj_5pzPjRn-wvw9kLUkfSLTM_uvwW4N4" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent">
+                            </div>
+                            <div class="absolute bottom-6 left-6">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    <span class="font-label text-[10px] tracking-[0.2em] text-primary uppercase">Current
+                                        Resonance</span>
+                                </div>
+                                <div class="font-headline text-2xl font-bold">7.83 Hz</div>
+                                <div class="font-label text-[10px] text-on-surface-variant">Schumann Resonance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Science of Sync Section: Bento-ish Grid with Tonal Separation -->
+        <section class="py-32 px-8 md:px-24 bg-surface-container-low">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-20 max-w-2xl">
+                    <h2 class="font-headline text-4xl md:text-5xl font-bold mb-6 tracking-tight">The Science of Sync
+                    </h2>
+                    <p class="text-on-surface-variant font-light text-lg leading-relaxed">
+                        Moving beyond meditation apps. We utilize dual-frequency oscillations that physically entrain
+                        brainwaves to specific target states using neurological principles.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Card 1: Hemi-Sync -->
+                    <div class="bg-surface p-8 rounded-2xl relative overflow-hidden group">
+                        <div
+                            class="absolute top-0 right-0 p-6 text-primary/20 group-hover:text-primary transition-colors duration-500">
+                            <span class="material-symbols-outlined text-4xl" data-icon="waves">waves</span>
+                        </div>
+                        <h3 class="font-headline text-xl font-semibold mb-4 mt-8">Hemi-Sync Technology</h3>
+                        <p class="text-on-surface-variant text-sm font-light leading-relaxed mb-6">
+                            Independent signals delivered to each ear create a third 'phantom' frequency, inducing
+                            hemispheric synchronization across the cerebral cortex.
+                        </p>
+                        <div
+                            class="font-label text-[10px] tracking-widest text-primary uppercase border-t border-white/5 pt-4">
+                            Phase Alignment: 98%</div>
+                    </div>
+                    <!-- Card 2: Neural Plasticity -->
+                    <div class="bg-surface p-8 rounded-2xl relative overflow-hidden group">
+                        <div
+                            class="absolute top-0 right-0 p-6 text-secondary/20 group-hover:text-secondary transition-colors duration-500">
+                            <span class="material-symbols-outlined text-4xl" data-icon="vibration">vibration</span>
+                        </div>
+                        <h3 class="font-headline text-xl font-semibold mb-4 mt-8">Phase-Locked Loops</h3>
+                        <p class="text-on-surface-variant text-sm font-light leading-relaxed mb-6">
+                            Our algorithms adjust real-time to your physiological feedback, maintaining entrainment even
+                            as your natural focus drifts.
+                        </p>
+                        <div
+                            class="font-label text-[10px] tracking-widest text-secondary uppercase border-t border-white/5 pt-4">
+                            Entrainment Delta: 0.2ms</div>
+                    </div>
+                    <!-- Card 3: Bio-Resonance -->
+                    <div class="bg-surface p-8 rounded-2xl relative overflow-hidden group">
+                        <div
+                            class="absolute top-0 right-0 p-6 text-tertiary/20 group-hover:text-tertiary transition-colors duration-500">
+                            <span class="material-symbols-outlined text-4xl"
+                                data-icon="temp_preferences_custom">temp_preferences_custom</span>
+                        </div>
+                        <h3 class="font-headline text-xl font-semibold mb-4 mt-8">Adaptive States</h3>
+                        <p class="text-on-surface-variant text-sm font-light leading-relaxed mb-6">
+                            From Gamma focus for cognitive tasks to Deep Delta for cellular repair, the architecture
+                            adapts to your immediate biological needs.
+                        </p>
+                        <div
+                            class="font-label text-[10px] tracking-widest text-tertiary uppercase border-t border-white/5 pt-4">
+                            Range: 0.5Hz - 40Hz</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Featured Collections: Glassmorphism UI -->
+        <section class="py-32 px-8 md:px-24">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
+                <div>
+                    <h2 class="font-headline text-4xl font-bold tracking-tight">Active Transmissions</h2>
+                    <p class="text-on-surface-variant font-light mt-2">Curated frequency paths for specific mental
+                        objectives.</p>
+                </div>
+                <button
+                    class="text-primary font-headline text-xs tracking-widest uppercase flex items-center gap-2 group">
+                    View Entire Library
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform"
+                        data-icon="arrow_forward">arrow_forward</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Large Featured Item -->
+                <div class="relative h-[450px] rounded-3xl overflow-hidden group">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        data-alt="abstract digital landscape with glowing purple and cyan neon geometric lines receding into a dark infinity void"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2X937-qivrasto-05qpC5vLbyQNXf-aD7dcMAQtKzBwR_Gx-IsnXaj8pOF_NNSiEJ9p13ya71JHGY9gmIeqGcwveCNIk0HWh2HPf3fhdkvhxMKqJw_JDvYJW1nslRyPil_6X4EnKuAk_PJyvkI5bNUpX7zLmBTVeH2rBTC4yLGHr3nQ9YiyO8ax77E6kMqOjSOwXKgjTvOlsU5qvOlF3qXlMV4la0JBUiwQBifnyjKTm7Rs2N20GeFKWeYVcJkaDr709PRRmTIu4K" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-10 w-full">
+                        <div
+                            class="bg-primary/20 backdrop-blur-md inline-block px-3 py-1 rounded-full text-primary font-label text-[10px] tracking-widest uppercase mb-4">
+                            Focus Protocol</div>
+                        <h3 class="font-headline text-3xl font-bold mb-2">Deep Work: Alpha Cascade</h3>
+                        <p class="text-on-surface-variant font-light text-sm max-w-sm mb-6">Optimized for high-output
+                            engineering and creative synthesis. 12Hz carrier frequency.</p>
+                        <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="schedule">schedule</span>
+                                <span class="text-xs font-light">90 min</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-lg"
+                                    data-icon="bolt">bolt</span>
+                                <span class="text-xs font-light">High Intensity</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Secondary Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="bg-surface-container rounded-3xl overflow-hidden flex flex-col">
+                        <div class="h-40 relative">
+                            <img class="w-full h-full object-cover opacity-60"
+                                data-alt="soft violet and amber light leak gradients on a dark textured background reminiscent of a dreamy sunset"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwpjZ1_vaPk4iwwV5WKeAXa_Tg28UcDjV9dn33mbGUVnKOerhhErFj7zL0qtTEeT8-n3FA3NSzrsodv9zPFyEma7lWdZ96qYB9SdAkXeBmTB3w38GFe36ZP8LSeM-dWLv0uuUTji-NQuGfJKe_9yxC092go4UGakBNj6lRgxVHTZcMjweyOz-uY-QfMsPLskb4b9FinnmB6SyNjialeHkAaMPnAR_CLotaVv65NYsYmbYuJu05a2SKTr7tVZ3OIy4Dch6RQRZijRdV" />
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-headline text-lg font-semibold mb-2">Solar Plexus Reset</h4>
+                            <p class="text-on-surface-variant text-xs font-light mb-4">432Hz harmonic tuning for anxiety
+                                reduction.</p>
+                            <button
+                                class="w-full py-3 rounded-lg bg-surface-variant hover:bg-surface-container-highest transition-colors text-xs font-headline tracking-widest uppercase">Launch</button>
+                        </div>
+                    </div>
+                    <div class="bg-surface-container rounded-3xl overflow-hidden flex flex-col">
+                        <div class="h-40 relative">
+                            <img class="w-full h-full object-cover opacity-60"
+                                data-alt="stunning clear night sky filled with countless stars and a faint milky way nebula over a silhouette of a calm sea"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKlILe_h2Yx4mRz_gjFpB6BW5KI_7zXxv_r2FDjccTr5WJxLwEilmd2EZMT9jjhdHp_64U83aZDyGKrEfoExRYwgWK-bIZd7_B8Tqg0MzMnoZkXPa0zxqBHiizC-rQS6sGy6Ia_ydYOAhH-tdMM69Suwp7PI5J6Z0ZSJ8h5KRNuMy_ph-Fx5y8gRyWej7bCdAHoJ_aWHLC8Hd5HpaU0Ye6YhbUPJbKryGYr9e1dqcuXHUYRhkTeun32pPNV0d1iFWx7RRRS48MHFP8" />
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-headline text-lg font-semibold mb-2">Void Descent</h4>
+                            <p class="text-on-surface-variant text-xs font-light mb-4">Delta-wave journey for profound
+                                restorative sleep.</p>
+                            <button
+                                class="w-full py-3 rounded-lg bg-surface-variant hover:bg-surface-container-highest transition-colors text-xs font-headline tracking-widest uppercase">Launch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Builder Teaser: Dark Tonal shift -->
+        <section class="py-32 bg-black overflow-hidden relative">
+            <div class="absolute inset-0 opacity-20 pointer-events-none">
+                <div
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-primary via-transparent to-transparent">
+                </div>
+            </div>
+            <div class="max-w-4xl mx-auto px-8 text-center relative z-10">
+                <span class="material-symbols-outlined text-5xl text-primary mb-8"
+                    data-icon="architecture">architecture</span>
+                <h2 class="font-headline text-4xl md:text-5xl font-bold mb-6 tracking-tight">The Architect's Console
+                </h2>
+                <p class="text-on-surface-variant text-lg font-light leading-relaxed mb-12">
+                    Our proprietary Brain State Builder allows you to manually cross-fade between frequencies, layering
+                    pink noise, binaural beats, and environmental textures to create a personalized sonic architecture.
+                </p>
+                <div class="inline-flex flex-col items-center gap-4">
+                    <button
+                        class="px-12 py-5 rounded-2xl bg-gradient-to-r from-primary to-primary-dim text-on-primary-fixed font-headline font-bold text-sm tracking-widest uppercase hover:scale-[1.02] transition-transform duration-300">
+                        Open Architect Console
+                    </button>
+                    <span class="text-[10px] text-primary/40 font-label tracking-widest uppercase">Pro Subscription
+                        Required</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- BottomNavBar from Shared Components -->
+    <footer
+        class="bg-[#0e0e0e]/60 backdrop-blur-2xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 rounded-t-3xl shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+        <a class="flex flex-col items-center justify-center text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+            href="#">
+            <span class="material-symbols-outlined mb-1" data-icon="vibration">vibration</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase">Build</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-200" href="#">
+            <span class="material-symbols-outlined mb-1" data-icon="library_music">library_music</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase">Library</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-200" href="#">
+            <span class="material-symbols-outlined mb-1" data-icon="waves">waves</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase">States</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-neutral-500 hover:text-neutral-200" href="#">
+            <span class="material-symbols-outlined mb-1" data-icon="tune">tune</span>
+            <span class="font-['Inter'] text-[10px] tracking-[0.1em] uppercase">Settings</span>
+        </a>
+    </footer>
+</body>
+
+</html>
