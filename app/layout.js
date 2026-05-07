@@ -1,21 +1,16 @@
 import './globals.css';
-import { Cormorant_Garamond, Instrument_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { Playfair_Display, Inter } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeToggle } from '@/components/theme-toggle';
 
-const displayFont = Cormorant_Garamond({
+const displayFont = Playfair_Display({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
   variable: '--font-display'
 });
 
-const sansFont = Instrument_Sans({
+const sansFont = Inter({
   subsets: ['latin'],
   variable: '--font-sans'
-});
-
-const monoFont = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono'
 });
 
 export const metadata = {
@@ -25,15 +20,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${displayFont.variable} ${sansFont.variable} ${monoFont.variable} min-h-screen overflow-x-hidden bg-[var(--bg-0)] text-[var(--text-primary)]`}
+        className={`${displayFont.variable} ${sansFont.variable} min-h-screen overflow-x-hidden bg-background text-foreground font-sans`}
       >
-        <div className="relaxing-overlay" />
-        <div className="waves" />
-        <div className="page-shell desktop-shell">
-          {children}
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="relaxing-overlay" />
+          <div className="waves" />
+          <ThemeToggle />
+          <div className="page-shell desktop-shell">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

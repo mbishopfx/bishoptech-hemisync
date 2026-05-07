@@ -57,33 +57,35 @@ export function LoginClient() {
 
   return (
     <main className="auth-shell">
-      <Card className="w-full max-w-lg p-8">
-        <div className="mb-8">
+      <Card className="w-full max-w-lg p-10">
+        <div className="mb-10 text-center">
           <p className="section-label">Member Access</p>
-          <h1 className="mt-3 text-4xl font-semibold text-white">Log in to HemiSync Studio</h1>
-          <p className="mt-3 text-sm leading-6 text-white/62">
+          <h1 className="mt-3 font-display text-4xl font-normal text-foreground">Log in to HemiSync</h1>
+          <p className="mt-3 text-sm leading-6 text-muted">
             Access saved tones, your feed, and the controlled audio workspace.
           </p>
         </div>
 
-        <form className="flex flex-col gap-4" onSubmit={handlePasswordLogin}>
-          <label className="flex flex-col gap-2 text-sm text-white/70">
+        <form className="flex flex-col gap-6" onSubmit={handlePasswordLogin}>
+          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
             Email
             <Input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required />
           </label>
-          <label className="flex flex-col gap-2 text-sm text-white/70">
+          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
             Password
             <Input value={password} onChange={(event) => setPassword(event.target.value)} type="password" />
           </label>
-          <Button disabled={loading}>{loading ? 'Checking...' : 'Log In'}</Button>
-          <Button type="button" variant="secondary" disabled={loading || !email} onClick={handleMagicLink}>
-            Send Magic Link
-          </Button>
+          <div className="flex flex-col gap-3 mt-2">
+            <Button disabled={loading}>{loading ? 'Checking...' : 'Log In'}</Button>
+            <Button type="button" variant="secondary" disabled={loading || !email} onClick={handleMagicLink}>
+              Send Magic Link
+            </Button>
+          </div>
         </form>
 
-        {status && <p className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-sm text-white/72">{status}</p>}
-        <p className="mt-6 text-sm text-white/54">
-          New here? <Link className="text-white" href="/signup">Create an account</Link>
+        {status && <p className="mt-6 rounded-xl bg-[var(--bg-1)] p-4 text-center text-sm text-foreground shadow-premium">{status}</p>}
+        <p className="mt-8 text-center text-sm text-muted">
+          New here? <Link className="font-medium text-foreground transition-opacity hover:opacity-80" href="/signup">Create an account</Link>
         </p>
       </Card>
     </main>

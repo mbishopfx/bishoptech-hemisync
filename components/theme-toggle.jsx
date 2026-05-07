@@ -1,26 +1,32 @@
 'use client';
-import { useEffect, useState } from 'react';
+
+import * as React from 'react';
+import { useTheme } from 'next-themes';
+import { Moon, Sun } from 'lucide-react';
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(true);
-  useEffect(() => {
-    const saved = localStorage.getItem('hs-theme');
-    if (saved) setDark(saved === 'dark');
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
   }, []);
-  useEffect(() => {
-    if (dark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    localStorage.setItem('hs-theme', dark ? 'dark' : 'light');
-  }, [dark]);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <button
-      onClick={() => setDark(!dark)}
-      className="fixed right-4 top-4 z-50 rounded-md bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      className="fixed right-4 top-4 z-50 flex items-center justify-center rounded-full border border-border bg-background/50 p-2 backdrop-blur-md transition-all hover:bg-muted"
     >
-      {dark ? 'Dark' : 'Light'}
+      {theme === 'dark' ? (
+        <Sun className="h-5 w-5 text-foreground" />
+      ) : (
+        <Moon className="h-5 w-5 text-foreground" />
+      )}
+      <span className="sr-only">Toggle theme</span>
     </button>
   );
 }
-
-
-

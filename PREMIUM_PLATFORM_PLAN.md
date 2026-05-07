@@ -165,7 +165,7 @@ Use `pydub` only as convenience glue if needed. Do not build the premium rendere
 ### Proposed Platform Split
 
 - `apps/web`
-  - Next.js web app
+  - Next.js web app (Deployed on Vercel)
 - `apps/mobile`
   - React Native app
 - `packages/session-blueprint`
@@ -175,7 +175,7 @@ Use `pydub` only as convenience glue if needed. Do not build the premium rendere
 - `packages/dsp-core`
   - Rust core compiled for worker first, then optionally to WASM
 - `services/render-worker`
-  - job processor for premium export, imports, mastering, and storage delivery
+  - job processor for premium export, imports, mastering, and storage delivery (Deployed on Railway)
 - `tools/research-lab`
   - Python analysis notebooks and QA scripts
 

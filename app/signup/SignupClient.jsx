@@ -46,34 +46,36 @@ export function SignupClient() {
 
   return (
     <main className="auth-shell">
-      <Card className="w-full max-w-xl p-8">
-        <div className="mb-8">
+      <Card className="w-full max-w-xl p-10">
+        <div className="mb-10 text-center">
           <p className="section-label">Create Profile</p>
-          <h1 className="mt-3 text-4xl font-semibold text-white">Start building shareable tones</h1>
-          <p className="mt-3 text-sm leading-6 text-white/62">
+          <h1 className="mt-3 font-display text-4xl font-normal text-foreground">Start building shareable tones</h1>
+          <p className="mt-3 text-sm leading-6 text-muted">
             Your account stores generated sessions, public tone cards, profile links, and feed activity.
           </p>
         </div>
 
-        <form className="flex flex-col gap-4" onSubmit={handleSignup}>
-          <label className="flex flex-col gap-2 text-sm text-white/70">
+        <form className="flex flex-col gap-6" onSubmit={handleSignup}>
+          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
             Display name
             <Input value={form.displayName} onChange={(event) => updateField('displayName', event.target.value)} required />
           </label>
-          <label className="flex flex-col gap-2 text-sm text-white/70">
+          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
             Email
             <Input value={form.email} onChange={(event) => updateField('email', event.target.value)} type="email" required />
           </label>
-          <label className="flex flex-col gap-2 text-sm text-white/70">
+          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
             Password
             <Input value={form.password} onChange={(event) => updateField('password', event.target.value)} type="password" minLength={8} required />
           </label>
-          <Button disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
+          <div className="mt-2">
+            <Button className="w-full" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
+          </div>
         </form>
 
-        {status && <p className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-sm text-white/72">{status}</p>}
-        <p className="mt-6 text-sm text-white/54">
-          Already have an account? <Link className="text-white" href="/login">Log in</Link>
+        {status && <p className="mt-6 rounded-xl bg-[var(--bg-1)] p-4 text-center text-sm text-foreground shadow-premium">{status}</p>}
+        <p className="mt-8 text-center text-sm text-muted">
+          Already have an account? <Link className="font-medium text-foreground transition-opacity hover:opacity-80" href="/login">Log in</Link>
         </p>
       </Card>
     </main>

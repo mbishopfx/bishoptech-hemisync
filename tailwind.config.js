@@ -2,26 +2,43 @@
 module.exports = {
   darkMode: 'class',
   content: [
-    './app/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './lib/**/*.{js,jsx}'
+    './app/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+    './lib/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
     extend: {
-      keyframes: {
-        'slow-gradient': {
-          '0%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-          '100%': { backgroundPosition: '0% 50%' }
+      colors: {
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
+        primary: 'var(--color-primary)',
+        'on-primary': 'var(--color-on-primary)',
+        secondary: 'var(--color-secondary)',
+        accent: 'var(--color-accent)',
+        muted: 'var(--color-muted)',
+        border: 'var(--color-border)',
+        destructive: 'var(--color-destructive)',
+        ring: 'var(--color-ring)',
+        stone: {
+          850: '#1f1a17',
+          900: '#181412',
+          950: '#0f0c0a',
+        },
+        gold: {
+          400: '#d4af37',
+          500: '#c5a028',
+          600: '#b59019',
         }
       },
-      animation: {
-        'slow-gradient': 'slow-gradient 18s ease-in-out infinite'
+      fontFamily: {
+        display: ['var(--font-display)', 'serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
+      },
+      boxShadow: {
+        premium: 'var(--shadow-premium)',
+        'premium-hover': 'var(--shadow-premium-hover)',
       }
     }
   },
   plugins: []
 };
-
-
-

@@ -67,19 +67,19 @@ export async function POST(req) {
       modes: { ...{ binaural: true, monaural: false, isochronic: false }, ...(preset.modes || {}), ...(input.entrainmentModes || {}) }
     });
 
-    const { wavBuffer, mp3Buffer, mastering } = await encodeOutputs({
+    const { wavBuffer, webmBuffer, mastering } = await encodeOutputs({
       left: bed.left,
       right: bed.right,
       sampleRate: bed.sampleRate,
       wavBitDepthCode: exportProfile.wavBitDepthCode,
-      withMp3: true,
-      kbps: exportProfile.mp3Kbps,
+      withWebm: true,
+      kbps: exportProfile.mp3Kbps || 64, // repurposing mp3Kbps for webm kbps if not renamed
       masteringProfile: exportProfile.mastering
     });
     const artifacts = await persistRenderArtifacts({
       baseName: journey.name || input.focusLevel || input.programPreset || 'generated-session',
       wavBuffer,
-      mp3Buffer
+      webmBuffer
     });
     const assets = Object.fromEntries(
       Object.entries(artifacts.files).map(([format, file]) => [
@@ -111,7 +111,7 @@ export async function POST(req) {
       artifactId: artifacts.artifactId,
       assets,
       wav: assets.wav?.url || null,
-      mp3: assets.mp3?.url || null
+      webm: assets.webm?.url || null
     });
   } catch (err) {
     logger.error({ err }, 'audio generate error');

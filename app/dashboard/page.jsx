@@ -38,12 +38,14 @@ import { authedFetch } from '@/lib/frontend/api';
 import { resolveBackendAssetUrl } from '@/lib/frontend/backend-url';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { buildTemplateSessionSpec, consumerTemplateOptions } from '../generate/chatspec';
+import { TonePlayer } from '@/components/audio/TonePlayer';
 
 const navItems = [
   { id: 'studio', label: 'Studio', icon: SlidersHorizontal },
   { id: 'library', label: 'Library', icon: Library },
   { id: 'feed', label: 'Feed', icon: Rss },
   { id: 'sessions', label: 'Sessions', icon: Activity },
+  { id: 'journal', label: 'Journal', icon: Edit3 },
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'settings', label: 'Settings', icon: Settings }
 ];
@@ -177,6 +179,7 @@ export default function DashboardPage() {
   const [profileDraft, setProfileDraft] = useState({});
   const [library, setLibrary] = useState([]);
   const [feed, setFeed] = useState([]);
+  const [journals, setJournals] = useState([]);
   const [status, setStatus] = useState('Loading member workspace...');
   const [loading, setLoading] = useState(true);
   const [rendering, setRendering] = useState(false);
@@ -185,6 +188,7 @@ export default function DashboardPage() {
   const [saveOpen, setSaveOpen] = useState(false);
   const [toneDraft, setToneDraft] = useState(null);
   const [postBody, setPostBody] = useState('');
+  const [journalBody, setJournalBody] = useState('');
 
   const selectedTemplate = useMemo(
     () => consumerTemplateOptions.find((template) => template.id === selectedTemplateId) || consumerTemplateOptions[0],
@@ -192,19 +196,21 @@ export default function DashboardPage() {
   );
 
   const selectedSpec = useMemo(() => buildTemplateSessionSpec(selectedTemplate), [selectedTemplate]);
-  const activeAudio = renderResult?.wav || library[0]?.wav_url || library[0]?.mp3_url || null;
+  const activeAudio = renderResult?.webm || renderResult?.wav || library[0]?.webm_url || library[0]?.mp3_url || library[0]?.wav_url || null;
 
   async function refreshWorkspace() {
-    const [profileData, libraryData, feedData] = await Promise.all([
+    const [profileData, libraryData, feedData, journalData] = await Promise.all([
       authedFetch('/api/profile'),
       authedFetch('/api/library'),
-      authedFetch('/api/feed')
+      authedFetch('/api/feed'),
+      authedFetch('/api/journal')
     ]);
 
     setProfile(profileData.profile);
     setProfileDraft(profileData.profile || {});
     setLibrary(libraryData.tones || []);
     setFeed(feedData.posts || []);
+    setJournals(journalData.entries || []);
   }
 
   useEffect(() => {
@@ -318,6 +324,22 @@ export default function DashboardPage() {
     setFeed((prev) => [data.post, ...prev]);
   }
 
+  async function handleCreateJournal() {
+    if (!journalBody.trim()) return;
+    setStatus('Analyzing journal entry...');
+    try {
+      const data = await authedFetch('/api/journal', {
+        method: 'POST',
+        body: JSON.stringify({ text: journalBody.trim() })
+      });
+      setJournalBody('');
+      setJournals((prev) => [data.journal_entry, ...prev]);
+      setStatus('Journal entry saved and analyzed.');
+    } catch (error) {
+      setStatus('Failed to save journal: ' + error.message);
+    }
+  }
+
   async function handleSaveProfile() {
     const data = await authedFetch('/api/profile', {
       method: 'PATCH',
@@ -416,7 +438,10 @@ export default function DashboardPage() {
                 <TabsContent value="result">
                   <div className="player-window">
                     {activeAudio ? (
-                      <audio controls src={activeAudio} className="w-full" />
+                      <>
+                        <audio controls src={activeAudio} className="w-full" />
+                        <TonePlayer spec={selectedSpec} />
+                      </>
                     ) : (
                       <p>No render loaded yet. Generate a full session to open the player.</p>
                     )}
@@ -427,6 +452,13 @@ export default function DashboardPage() {
                             <Download className="mr-2 size-4" /> WAV
                           </a>
                         </Button>
+                        {renderResult.webm && (
+                          <Button asChild variant="secondary">
+                            <a href={renderResult.webm} download>
+                              <Download className="mr-2 size-4" /> WEBM
+                            </a>
+                          </Button>
+                        )}
                         {renderResult.mp3 && (
                           <Button asChild variant="secondary">
                             <a href={renderResult.mp3} download>
@@ -486,13 +518,13 @@ export default function DashboardPage() {
                     </div>
                     <Badge variant={tone.visibility === 'public' ? 'science' : 'muted'}>{tone.visibility}</Badge>
                   </div>
-                  {(tone.wav_url || tone.mp3_url) && <audio controls className="mt-4 w-full" src={tone.wav_url || tone.mp3_url} />}
+                  {(tone.webm_url || tone.wav_url || tone.mp3_url) && <audio controls className="mt-4 w-full" src={tone.webm_url || tone.wav_url || tone.mp3_url} />}
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Button variant="secondary" onClick={() => handleShareTone(tone)}>
                       <Share2 className="mr-2 size-4" /> Share
                     </Button>
                     <Button asChild variant="secondary">
-                      <a href={tone.wav_url || tone.mp3_url || '#'} download>
+                      <a href={tone.webm_url || tone.wav_url || tone.mp3_url || '#'} download>
                         <Download className="mr-2 size-4" /> Download
                       </a>
                     </Button>
@@ -559,8 +591,8 @@ export default function DashboardPage() {
                           <div className="flex-1">
                             <h4>{post.saved_tones.name}</h4>
                             <p>{post.saved_tones.description}</p>
-                            {(post.saved_tones.wav_url || post.saved_tones.mp3_url) && (
-                              <audio className="mt-3 w-full" controls src={post.saved_tones.wav_url || post.saved_tones.mp3_url} />
+                            {(post.saved_tones.webm_url || post.saved_tones.wav_url || post.saved_tones.mp3_url) && (
+                              <audio className="mt-3 w-full" controls src={post.saved_tones.webm_url || post.saved_tones.wav_url || post.saved_tones.mp3_url} />
                             )}
                           </div>
                         </div>
@@ -585,6 +617,71 @@ export default function DashboardPage() {
               The backend already records `session_logs`, generated renders, saved tones, and feed shares. This tab is the operator surface for detailed listening history and future analytics.
             </p>
           </Card>
+        )}
+
+        {activeTab === 'journal' && (
+          <div className="feed-layout">
+            <Card className="p-5">
+              <div className="flex gap-3">
+                <Avatar>
+                  <AvatarImage src={profile?.avatar_url || ''} />
+                  <AvatarFallback>{(profile?.display_name || 'ME').slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <Textarea
+                    value={journalBody}
+                    onChange={(event) => setJournalBody(event.target.value)}
+                    placeholder="Log your thoughts, emotional state, or experiences after a session..."
+                  />
+                  <div className="mt-3 flex justify-end">
+                    <Button onClick={handleCreateJournal}>
+                      <Edit3 className="mr-2 size-4" /> Save Journal
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {journals.map((journal) => (
+              <Card key={journal.id} className="feed-post p-5">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <strong>{new Date(journal.created_at).toLocaleDateString()}</strong>
+                    <Badge variant="muted">{journal.intent}</Badge>
+                    <Badge variant={journal.sentiment?.includes('positive') ? 'science' : 'muted'}>{journal.sentiment}</Badge>
+                  </div>
+                  <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-white/72">{journal.text}</p>
+                  
+                  {(journal.cognitive_shifts || journal.ai_insights) && (
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                      <div className="flex flex-col gap-2">
+                        {journal.cognitive_shifts && (
+                          <div>
+                            <span className="text-xs font-semibold text-white/50 uppercase">Cognitive Shifts</span>
+                            <p className="text-sm text-white/80">{journal.cognitive_shifts}</p>
+                          </div>
+                        )}
+                        {journal.ai_insights && (
+                          <div className={journal.cognitive_shifts ? "mt-2" : ""}>
+                            <span className="text-xs font-semibold text-white/50 uppercase">AI Insights</span>
+                            <p className="text-sm text-white/80">
+                              {typeof journal.ai_insights === 'string' ? journal.ai_insights : JSON.stringify(journal.ai_insights)}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {journal.summary && (
+                    <div className="mt-4 flex gap-4 text-sm text-white/52 italic">
+                      &quot; {journal.summary} &quot;
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
         )}
 
         {activeTab === 'profile' && (
