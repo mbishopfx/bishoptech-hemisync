@@ -218,16 +218,24 @@ export default function DashboardPage() {
   const activeAudio = renderResult?.wav || library[0]?.wav_url || library[0]?.mp3_url || null;
 
   async function refreshWorkspace() {
-    const [profileData, libraryData, feedData] = await Promise.all([
-      authedFetch('/api/profile'),
-      authedFetch('/api/library'),
-      authedFetch('/api/feed')
-    ]);
+    try {
+      const [profileData, libraryData, feedData] = await Promise.all([
+        authedFetch('/api/profile').catch(e => ({ profile: null, error: e.message })),
+        authedFetch('/api/library').catch(e => ({ tones: [], error: e.message })),
+        authedFetch('/api/feed').catch(e => ({ posts: [], error: e.message }))
+      ]);
 
-    setProfile(profileData.profile);
-    setProfileDraft(profileData.profile || {});
-    setLibrary(libraryData.tones || []);
-    setFeed(feedData.posts || []);
+      setProfile(profileData.profile);
+      setProfileDraft(profileData.profile || {});
+      setLibrary(libraryData.tones || []);
+      setFeed(feedData.posts || []);
+
+      if (profileData.error || libraryData.error || feedData.error) {
+        setStatus('Partial sync completed. Some neural nodes are offline.');
+      }
+    } catch (error) {
+      setStatus(`Sync failure: ${error.message}`);
+    }
   }
 
   useEffect(() => {
@@ -243,12 +251,13 @@ export default function DashboardPage() {
         }
 
         await refreshWorkspace();
-        if (mounted) {
-          setLoading(false);
-        }
       } catch (error) {
         if (mounted) {
-          setStatus(error.message);
+          setStatus(`Initialization error: ${error.message}`);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
         }
       }
     }
@@ -381,11 +390,14 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-black p-6">
         <TechGridBackground />
-        <Card className="glass p-12 text-center animate-pulse">
-          <Radio className="mx-auto size-12 text-cyan-400 mb-6" />
-          <h1 className="text-2xl font-bold text-white tracking-widest uppercase">Initializing Console...</h1>
+        <Card className="glass max-w-md w-full p-12 text-center">
+          <Radio className="mx-auto size-12 text-cyan-400 mb-6 animate-pulse" />
+          <h1 className="text-2xl font-bold text-white tracking-widest uppercase mb-4">Initializing Console</h1>
+          <p className="text-sm text-neutral-500 font-mono italic animate-pulse">
+            &quot;{status}&quot;
+          </p>
         </Card>
       </main>
     );
