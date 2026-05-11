@@ -1,4 +1,7 @@
+"use client";
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Gauge, Headphones, Library, RadioTower, ShieldCheck, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -28,22 +31,38 @@ const platformCards = [
   'Build a profile with social links, bio, followers, and a library of published tones.'
 ];
 
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
 export default function Page() {
   return (
     <main className="landing-shell">
-      <section className="landing-hero">
+      <motion.section 
+        className="landing-hero"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
         <div className="landing-hero__copy">
-          <div className="flex flex-wrap gap-3">
+          <motion.div className="flex flex-wrap gap-3" variants={fadeIn}>
             <Badge variant="secondary" className="px-3 py-1 font-medium tracking-wide uppercase text-xs text-[var(--accent-gold-strong)] shadow-premium bg-[var(--bg-1)]">Auditory Beat Stimulation</Badge>
             <Badge variant="secondary" className="px-3 py-1 font-medium tracking-wide uppercase text-xs shadow-premium bg-[var(--bg-1)] text-muted">Member Tone Network</Badge>
-          </div>
-          <h1 className="hero-title">Scientific stereo entrainment tools for building and sharing focused audio states.</h1>
-          <p className="hero-subtitle">
+          </motion.div>
+          <motion.h1 className="hero-title" variants={fadeIn}>Scientific stereo entrainment tools for building and sharing focused audio states.</motion.h1>
+          <motion.p className="hero-subtitle" variants={fadeIn}>
             HemiSync Studio creates headphone-based binaural sessions with controlled carrier tones, left/right
             frequency differentials, staged ramps, and durable tone libraries. It is designed to support focus,
             relaxation, meditation, and careful self-experimentation.
-          </p>
-          <div className="flex flex-wrap gap-4 mt-2">
+          </motion.p>
+          <motion.div className="flex flex-wrap gap-4 mt-2" variants={fadeIn}>
             <Button asChild>
               <Link href="/signup">
                 Create Account <ArrowRight data-icon="inline-end" className="ml-2 size-4" />
@@ -52,101 +71,127 @@ export default function Page() {
             <Button asChild variant="secondary">
               <Link href="/login">Log In</Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
 
-        <Card className="p-0 overflow-hidden">
-          <div className="landing-signal__top">
-            <div>
-              <p className="section-label">Active Tone</p>
-              <h2 className="mt-2 text-2xl font-display text-foreground">Alpha to Theta Descent</h2>
+        <motion.div variants={fadeIn} className="w-full">
+          <Card className="p-0 overflow-hidden w-full">
+            <div className="landing-signal__top">
+              <div>
+                <p className="section-label">Active Tone</p>
+                <h2 className="mt-2 text-2xl font-display text-foreground">Alpha to Theta Descent</h2>
+              </div>
+              <div className="flex items-center justify-center rounded-full bg-[var(--bg-1)] px-4 py-1.5 shadow-premium">
+                <span className="text-sm font-semibold tracking-wide text-foreground">Score 86</span>
+              </div>
             </div>
-            <div className="flex items-center justify-center rounded-full bg-[var(--bg-1)] px-4 py-1.5 shadow-premium">
-              <span className="text-sm font-semibold tracking-wide text-foreground">Score 86</span>
+            <div className="signal-visual" aria-hidden="true">
+              {Array.from({ length: 34 }).map((_, index) => (
+                <span key={index} style={{ '--bar': `${28 + ((index * 19) % 64)}%` }} />
+              ))}
             </div>
-          </div>
-          <div className="signal-visual" aria-hidden="true">
-            {Array.from({ length: 34 }).map((_, index) => (
-              <span key={index} style={{ '--bar': `${28 + ((index * 19) % 64)}%` }} />
-            ))}
-          </div>
-          <div className="landing-signal__grid">
-            <div className="shadow-none border-none">
-              <span>Carrier</span>
-              <strong>236 Hz</strong>
+            <div className="landing-signal__grid">
+              <div className="shadow-none border-none">
+                <span>Carrier</span>
+                <strong>236 Hz</strong>
+              </div>
+              <div className="shadow-none border-none">
+                <span>Delta Path</span>
+                <strong>10 → 5.2 Hz</strong>
+              </div>
+              <div className="shadow-none border-none">
+                <span>Duration</span>
+                <strong>15 min</strong>
+              </div>
             </div>
-            <div className="shadow-none border-none">
-              <span>Delta Path</span>
-              <strong>10 → 5.2 Hz</strong>
-            </div>
-            <div className="shadow-none border-none">
-              <span>Duration</span>
-              <strong>15 min</strong>
-            </div>
-          </div>
-        </Card>
-      </section>
+          </Card>
+        </motion.div>
+      </motion.section>
 
-      <section className="landing-section">
-        <div className="landing-section__intro">
+      <motion.section 
+        className="landing-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
+        <motion.div className="landing-section__intro" variants={fadeIn}>
           <p className="section-label">How It Works</p>
           <h2 className="font-display">Built around explainable signal design.</h2>
           <p className="section-copy">
             The system keeps the audio engine deterministic: choose a target state, inspect the frequency plan, render a
             mastered WAV/MP3, then save or share the tone with its technical metadata.
           </p>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-3">
+        </motion.div>
+        <motion.div className="grid gap-6 lg:grid-cols-3" variants={staggerContainer}>
           {scienceCards.map((card) => {
             const Icon = card.icon;
             return (
-              <Card key={card.title} className="p-8">
-                <Icon className="size-8 text-[var(--accent-cyan)]" strokeWidth={1.5} />
-                <h3 className="mt-6 text-xl font-medium text-foreground">{card.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{card.body}</p>
-              </Card>
+              <motion.div key={card.title} variants={fadeIn}>
+                <Card className="p-8 h-full">
+                  <Icon className="size-8 text-[var(--accent-cyan)]" strokeWidth={1.5} />
+                  <h3 className="mt-6 text-xl font-medium text-foreground">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{card.body}</p>
+                </Card>
+              </motion.div>
             );
           })}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
-      <section className="landing-section landing-two-col">
-        <Card className="p-10">
-          <Brain className="size-8 text-[var(--accent-gold-strong)]" strokeWidth={1.5} />
-          <h2 className="mt-6 text-3xl font-display font-normal text-foreground">Science-forward, claim-careful wording.</h2>
-          <p className="mt-4 text-base leading-relaxed text-muted">
-            Research on binaural beats and brainwave entrainment is promising in some outcomes and mixed in others,
-            especially when measured through EEG entrainment. HemiSync Studio presents tones as wellness and focus
-            support, not diagnosis, treatment, cure, or guaranteed brain-state control.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-4 text-sm font-medium text-foreground/80">
-            <a className="transition-opacity hover:opacity-70" href="https://pubmed.ncbi.nlm.nih.gov/30073406/">
-              Meta-analysis
-            </a>
-            <a className="transition-opacity hover:opacity-70" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10198548/">
-              Systematic review
-            </a>
-            <a className="transition-opacity hover:opacity-70" href="https://github.com/facebookresearch/tribev2">
-              TRIBE v2 reference
-            </a>
-          </div>
-        </Card>
+      <motion.section 
+        className="landing-section landing-two-col"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeIn} className="h-full">
+          <Card className="p-10 h-full">
+            <Brain className="size-8 text-[var(--accent-gold-strong)]" strokeWidth={1.5} />
+            <h2 className="mt-6 text-3xl font-display font-normal text-foreground">Science-forward, claim-careful wording.</h2>
+            <p className="mt-4 text-base leading-relaxed text-muted">
+              Research on binaural beats and brainwave entrainment is promising in some outcomes and mixed in others,
+              especially when measured through EEG entrainment. HemiSync Studio presents tones as wellness and focus
+              support, not diagnosis, treatment, cure, or guaranteed brain-state control.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-4 text-sm font-medium text-foreground/80">
+              <a className="transition-opacity hover:opacity-70" href="https://pubmed.ncbi.nlm.nih.gov/30073406/">
+                Meta-analysis
+              </a>
+              <a className="transition-opacity hover:opacity-70" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10198548/">
+                Systematic review
+              </a>
+              <a className="transition-opacity hover:opacity-70" href="https://github.com/facebookresearch/tribev2">
+                TRIBE v2 reference
+              </a>
+            </div>
+          </Card>
+        </motion.div>
 
-        <Card className="p-10">
-          <Users className="size-8 text-[var(--accent-cyan)]" strokeWidth={1.5} />
-          <h2 className="mt-6 text-3xl font-display font-normal text-foreground">A lightweight social platform for tones.</h2>
-          <div className="mt-6 flex flex-col gap-4">
-            {platformCards.map((item) => (
-              <div key={item} className="flex gap-4 items-start rounded-2xl p-4 shadow-premium bg-[var(--bg-0)]">
-                <ShieldCheck className="mt-1 size-5 shrink-0 text-[var(--accent-gold-strong)]" strokeWidth={1.5} />
-                <span className="text-sm leading-relaxed text-foreground/80">{item}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </section>
+        <motion.div variants={fadeIn} className="h-full">
+          <Card className="p-10 h-full">
+            <Users className="size-8 text-[var(--accent-cyan)]" strokeWidth={1.5} />
+            <h2 className="mt-6 text-3xl font-display font-normal text-foreground">A lightweight social platform for tones.</h2>
+            <div className="mt-6 flex flex-col gap-4">
+              {platformCards.map((item) => (
+                <div key={item} className="flex gap-4 items-start rounded-2xl p-4 shadow-premium bg-[var(--bg-0)]">
+                  <ShieldCheck className="mt-1 size-5 shrink-0 text-[var(--accent-gold-strong)]" strokeWidth={1.5} />
+                  <span className="text-sm leading-relaxed text-foreground/80">{item}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+      </motion.section>
 
-      <section className="landing-section landing-cta">
+      <motion.section 
+        className="landing-section landing-cta"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeIn}
+      >
         <div>
           <Library className="size-8 text-[var(--accent-cyan)] mb-4" strokeWidth={1.5} />
           <h2 className="font-display">Generate, save, publish, reuse.</h2>
@@ -158,7 +203,7 @@ export default function Page() {
         <Button asChild className="shrink-0 whitespace-nowrap">
           <Link href="/signup">Open the Platform</Link>
         </Button>
-      </section>
+      </motion.section>
     </main>
   );
 }
