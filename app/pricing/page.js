@@ -123,15 +123,37 @@ export default function PricingPage() {
                 ))}
               </div>
 
-              <Link
-                href={`/signup?plan=${plan.id}&priceId=${plan.priceId}`}
+              <button
+                onClick={async () => {
+                    try {
+                        const token = localStorage.getItem('supabase-auth-token'); // Check if user has token
+                        if (!token) {
+                            window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}`;
+                            return;
+                        }
+
+                        const res = await fetch('/api/checkout', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${JSON.parse(token).access_token}`
+                            },
+                            body: JSON.stringify({ priceId: plan.priceId, planId: plan.id })
+                        });
+                        const data = await res.json();
+                        if (data.url) window.location.href = data.url;
+                    } catch (err) {
+                        console.error('Checkout redirect failed', err);
+                        window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}`;
+                    }
+                }}
                 className={`
                   w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2
                   ${plan.highlight ? 'bg-white text-black hover:bg-zinc-200' : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'}
                 `}
               >
                 {plan.cta} <ChevronRight className="size-4" />
-              </Link>
+              </button>
             </motion.div>
           ))}
         </div>
