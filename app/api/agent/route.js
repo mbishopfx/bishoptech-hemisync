@@ -5,7 +5,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
 
-const FREE_TRIAL_LIMIT = 7;
+const FREE_TRIAL_LIMIT = 3;
 
 export async function POST(req) {
   try {
