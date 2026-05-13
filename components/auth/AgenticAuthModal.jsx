@@ -42,7 +42,7 @@ export function AgenticAuthModal({ isOpen, onClose }) {
               <div className="space-y-2">
                 <h2 className="text-2xl font-medium text-white">Continue your journey</h2>
                 <p className="text-white/40 text-sm leading-relaxed">
-                  You've used your free session. Join the community to unlock 100+ specialized frequencies and persistent session tracking.
+                  You&apos;ve used your free session. Join the community to unlock 100+ specialized frequencies and persistent session tracking.
                 </p>
               </div>
 

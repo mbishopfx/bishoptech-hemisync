@@ -91,7 +91,7 @@ export default async function PublicProfilePage({ params }) {
               )}
               {profile.x_url && (
                 <a href={profile.x_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <Twitter className="size-5" />
+                  <X className="size-5" />
                 </a>
               )}
               {profile.instagram_url && (
