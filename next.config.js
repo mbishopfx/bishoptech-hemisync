@@ -18,7 +18,7 @@ const nextConfig = {
     }
 
     return {
-      beforeFiles: [
+      fallback: [
         {
           source: '/api/:path*',
           destination: `${backendOrigin}/api/:path*`
