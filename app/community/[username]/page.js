@@ -5,7 +5,7 @@ import { feedPostSelect, profileSelect, savedToneSelect } from '@/lib/social/ser
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Globe, Instagram, Twitter, Youtube, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Globe, Instagram, X, Youtube, CheckCircle } from 'lucide-react';
 
 export const revalidate = 60; // Revalidate every minute
 
