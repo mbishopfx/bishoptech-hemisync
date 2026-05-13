@@ -20,7 +20,7 @@ const nextConfig = {
     return {
       fallback: [
         {
-          source: '/api/:path*',
+          source: '/api/:path((?!agent|admin|health).*)',
           destination: `${backendOrigin}/api/:path*`
         }
       ]
