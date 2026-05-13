@@ -6,7 +6,8 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Play, ArrowLeft } from 'lucide-react';
 
-export const revalidate = 60; // Revalidate every minute
+export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 async function getCommunityFeed() {
   const supabase = getSupabaseAdmin();

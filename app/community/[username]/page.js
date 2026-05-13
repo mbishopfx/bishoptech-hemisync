@@ -7,7 +7,8 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Globe, Instagram, X, Youtube, CheckCircle } from 'lucide-react';
 
-export const revalidate = 60; // Revalidate every minute
+export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 async function getProfileData(username) {
   const supabase = getSupabaseAdmin();
