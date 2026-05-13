@@ -28,7 +28,8 @@ import {
   Trash2,
   User,
   Sparkles,
-  Loader2
+  Loader2,
+  Hammer
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -45,10 +46,10 @@ import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 
 const navItems = [
   { id: 'agent', label: 'Agentic', icon: Sparkles },
-  { id: 'workshop', label: 'Workshop', icon: Home },
-  { id: 'journal', label: 'Journal', icon: Edit3 },
-  { id: 'feed', label: 'Feed', icon: Compass },
   { id: 'library', label: 'Library', icon: LibraryIcon },
+  { id: 'workshop', label: 'Workshop', icon: Hammer },
+  { id: 'feed', label: 'Feed', icon: Compass },
+  { id: 'journal', label: 'Journal', icon: Edit3 },
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'settings', label: 'Settings', icon: Settings }
 ];
@@ -233,7 +234,14 @@ export default function DashboardPage() {
                       </button>
                     </div>
                     <div className="mt-6 flex items-center justify-between">
-                      <span className="text-xs text-white/40">{Math.floor(tone.duration_sec / 60)}m · {tone.base_freq_hz}Hz</span>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-white/40">{Math.floor(tone.duration_sec / 60)}m · {tone.base_freq_hz}Hz</span>
+                        {profile?.subscription_tier !== 'none' && (
+                            <button className="text-[10px] text-cyan-400 hover:text-cyan-300 mt-1 flex items-center gap-1">
+                                <Download className="size-3" /> Export Audio
+                            </button>
+                        )}
+                      </div>
                       <button className="size-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform">
                         <Play className="size-4 fill-current" />
                       </button>
