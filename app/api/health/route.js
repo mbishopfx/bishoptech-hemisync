@@ -1,19 +1,29 @@
 import { NextResponse } from 'next/server';
-import { inspectRuntimeHealth } from '@/lib/runtime/deployment';
-import { getFfmpegPath } from '@/lib/audio/engine/ffmpeg';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const runtime = await inspectRuntimeHealth();
-  const ffmpegPath = getFfmpegPath();
+  try {
+    const supabase = getSupabaseAdmin();
+    
+    // Quick probe to see if we can talk to the DB
+    const { data, error } = await supabase.from('agentic_tones').select('count', { count: 'exact', head: true });
+    
+    if (error) throw error;
 
-  return NextResponse.json({
-    ok: runtime.artifactStorage.writable,
-    ts: Date.now(),
-    runtime,
-    audio: {
-      ffmpegAvailable: Boolean(ffmpegPath),
-      ffmpegPath: ffmpegPath || null
-    }
-  });
+    return NextResponse.json({
+      status: 'healthy',
+      env: {
+        has_supabase_url: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        has_service_role: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+        has_gemini_key: !!process.env.GEMINI_API_KEY
+      },
+      database: {
+        agentic_tones_count: data?.[0]?.count || 0
+      }
+    });
+  } catch (err) {
+    return NextResponse.json({ status: 'unhealthy', error: err.message }, { status: 500 });
+  }
 }
-

@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { matchMoodToTone } from '@/lib/ai/gemini-matcher';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { getBearerToken } from '@/lib/auth/session';
 
 export const dynamic = 'force-dynamic';
+
+const FREE_TRIAL_LIMIT = 7;
 
 export async function POST(req) {
   try {
@@ -18,24 +19,50 @@ export async function POST(req) {
     // Check authentication
     const token = req.headers.get('authorization')?.split(' ')[1];
     let user = null;
+    let subscription = null;
     
+    const supabase = getSupabaseAdmin();
+
     if (token) {
-      const supabase = getSupabaseAdmin();
-      const { data } = await supabase.auth.getUser(token);
-      user = data?.user;
+      const { data: userData } = await supabase.auth.getUser(token);
+      user = userData?.user;
+      
+      if (user) {
+          // Check profile for generation count and subscription status
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('generation_count, subscription_tier, trial_expires_at')
+            .eq('id', user.id)
+            .single();
+          
+          subscription = profile;
+      }
     }
 
-    // If not logged in, check for free tier
+    // Trial / Subscription logic
+    const cookieStore = await cookies();
+    
     if (!user) {
-      const cookieStore = await cookies();
-      const freeGenUsed = cookieStore.get('free_gen_used');
+      // Unauthenticated Trial
+      const genCount = parseInt(cookieStore.get('free_gen_count')?.value || '0');
       
-      if (freeGenUsed) {
+      if (genCount >= FREE_TRIAL_LIMIT) {
         return NextResponse.json({ 
           error: 'Free limit reached', 
           code: 'AUTH_REQUIRED',
-          message: 'Please create an account to continue exploring your brain states.' 
+          message: 'You have used your 7 free trial generations. Please create an account to continue.' 
         }, { status: 403 });
+      }
+    } else {
+      // Authenticated User Logic
+      if (subscription.subscription_tier === 'none') {
+          if (subscription.generation_count >= FREE_TRIAL_LIMIT) {
+              return NextResponse.json({
+                  error: 'Trial expired',
+                  code: 'SUBSCRIPTION_REQUIRED',
+                  message: 'Your 7-day trial has concluded. Upgrade to Basic ($9) or Full ($19) to continue.'
+              }, { status: 403 });
+          }
       }
     }
 
@@ -43,7 +70,6 @@ export async function POST(req) {
     const { trackId, response: agentMessage } = await matchMoodToTone(mood);
 
     // Fetch track details
-    const supabase = getSupabaseAdmin();
     const { data: track, error: trackError } = await supabase
       .from('agentic_tones')
       .select('*')
@@ -54,7 +80,18 @@ export async function POST(req) {
       throw new Error('Selected track not found in library');
     }
 
-    const res = NextResponse.json({
+    // Update usage
+    if (user) {
+        await supabase.rpc('increment_generation_count', { user_uuid: user.id });
+    } else {
+        const currentCount = parseInt(cookieStore.get('free_gen_count')?.value || '0');
+        cookieStore.set('free_gen_count', (currentCount + 1).toString(), { 
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          path: '/' 
+        });
+    }
+
+    return NextResponse.json({
       ok: true,
       agentMessage,
       track: {
@@ -66,17 +103,6 @@ export async function POST(req) {
         webmUrl: track.webm_url
       }
     });
-
-    // Mark free gen as used if not logged in
-    if (!user) {
-      const cookieStore = await cookies();
-      cookieStore.set('free_gen_used', 'true', { 
-        maxAge: 60 * 60 * 24 * 365, // 1 year
-        path: '/' 
-      });
-    }
-
-    return res;
 
   } catch (err) {
     console.error('Agent API error:', err);
