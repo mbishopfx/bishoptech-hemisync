@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { Zap, Activity, Brain, Shield, ArrowRight, BookOpen, Microscope, Lock, Eye, Cpu, Database, Network, Binary, FlaskConical, Target } from 'lucide-react';
+import { Zap, Activity, Brain, Shield, ArrowRight, BookOpen, Microscope, Lock, Eye, Cpu, Database, Network, Binary, FlaskConical, Target, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LearnPage() {
