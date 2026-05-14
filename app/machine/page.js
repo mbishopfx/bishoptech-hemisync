@@ -140,7 +140,7 @@ export default function MachinePage() {
             </div>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">The Gateway Process.</h2>
             <p className="text-white/50 leading-relaxed">
-              In 1983, the CIA authored a landmark analysis of the **Hemi-Sync** process. They discovered that by alternating the phase of signals between hemispheres, the brain could be induced into states of profound focus and expanded awareness. 
+              In 1983, the CIA authored a landmark analysis of the <strong>Hemi-Sync</strong> process. They discovered that by alternating the phase of signals between hemispheres, the brain could be induced into states of profound focus and expanded awareness. 
             </p>
             <p className="text-white/50 leading-relaxed italic border-l-2 border-cyan-500/30 pl-6 py-2">
               &quot;The Hemi-Sync process utilizes binaural beats to achieve a state of hemispheric synchronization, resulting in a significantly heightened state of consciousness.&quot;
