@@ -2,12 +2,12 @@ import { Suspense } from 'react';
 import { LoginClient } from './LoginClient';
 
 export const metadata = {
-  title: 'Log In | HemiSync Studio'
+  title: 'Sign In | HemiSync.sys'
 };
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
       <LoginClient />
     </Suspense>
   );

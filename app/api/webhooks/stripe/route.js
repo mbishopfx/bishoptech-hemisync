@@ -2,10 +2,19 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
 export async function POST(req) {
+  const stripeSecret = process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecret) {
+      // Graceful exit for build-time evaluation
+      if (process.env.NEXT_PHASE === 'phase-production-build') {
+          return NextResponse.json({ ok: true });
+      }
+      return NextResponse.json({ error: 'Stripe secret missing' }, { status: 500 });
+  }
+
+  const stripe = new Stripe(stripeSecret);
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
 
