@@ -7,7 +7,7 @@ import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import Link from 'next/link';
-import { Zap, Shield, Cpu } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -61,13 +61,6 @@ export default function LandingPage() {
       <main className="pt-40 pb-20 px-6 relative z-10 flex flex-col items-center gap-20">
         {/* Hero Copy */}
         <div className="text-center space-y-6 max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono tracking-widest uppercase mb-4"
-          >
-            <Zap className="size-3 fill-current" /> Free 7-Day Trial Active
-          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -104,25 +97,26 @@ export default function LandingPage() {
           </AnimatePresence>
         </div>
 
-        {/* Value Props */}
-        <motion.section 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-6 w-full max-w-6xl mt-20"
+        {/* Powered By BishopTech */}
+        <motion.div
+           initial={{ opacity: 0 }}
+           whileInView={{ opacity: 1 }}
+           viewport={{ once: true }}
+           className="mt-20 flex flex-col items-center gap-4 group"
         >
-          {[
-            { icon: Zap, title: "7 Sessions Free", body: "Experience full neural alignment with 7 generation credits over 7 days." },
-            { icon: Shield, title: "Stripe Secured", body: "Enterprise-grade subscription management with transparent auto-renewal." },
-            { icon: Cpu, title: "100+ Nodes", body: "Access a vast library of pre-calculated brain states for instant switching." }
-          ].map((item, i) => (
-            <div key={i} className="p-8 rounded-[2rem] bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
-              <item.icon className="size-8 text-cyan-400 mb-6" />
-              <h3 className="text-xl font-medium mb-3">{item.title}</h3>
-              <p className="text-white/40 leading-relaxed text-sm">{item.body}</p>
-            </div>
-          ))}
-        </motion.section>
+          <div className="flex items-center gap-3 grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+            <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/40">Powered by</span>
+            <Image 
+              src="/images/logo.png" 
+              alt="BishopTech" 
+              width={24} 
+              height={24} 
+              className="opacity-50"
+            />
+            <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/60">BishopTech</span>
+          </div>
+          <div className="w-12 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        </motion.div>
       </main>
 
       <footer className="py-12 border-t border-white/5 bg-black/50">
