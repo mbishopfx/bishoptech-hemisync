@@ -5,7 +5,7 @@ import { feedPostSelect, profileSelect, savedToneSelect } from '@/lib/social/ser
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Globe, Instagram, X, Youtube, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Globe, X, CheckCircle, ExternalLink } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60;
@@ -97,12 +97,12 @@ export default async function PublicProfilePage({ params }) {
               )}
               {profile.instagram_url && (
                 <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <Instagram className="size-5" />
+                  <ExternalLink className="size-5" />
                 </a>
               )}
               {profile.youtube_url && (
                 <a href={profile.youtube_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <Youtube className="size-5" />
+                  <ExternalLink className="size-5" />
                 </a>
               )}
             </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Zap, Cpu, Lock, Eye, ArrowRight, FileText, Activity } from 'lucide-react';
 import Link from 'next/link';
@@ -163,7 +164,20 @@ export default function MachinePage() {
         {/* Closing CTA */}
         <section className="text-center py-20 bg-zinc-900/30 rounded-[4rem] border border-white/5 relative overflow-hidden">
           <div className="absolute inset-0 bg-cyan-500/5 blur-[100px] pointer-events-none" />
-          <h2 className="text-3xl md:text-5xl font-light tracking-tighter mb-8">Ready to shift your baseline?</h2>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+             <Image 
+                src="/images/logo.png" 
+                alt="BishopTech Logo" 
+                width={80} 
+                height={80} 
+                className="mx-auto mb-12 animate-pulse"
+              />
+            <h2 className="text-3xl md:text-5xl font-light tracking-tighter mb-8">Ready to shift your baseline?</h2>
+          </motion.div>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link 
               href="/signup" 
