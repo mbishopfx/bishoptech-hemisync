@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight, Zap, Shield, Cpu, Info, DollarSign } from 'lucide-react';
 import Link from 'next/link';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 
 const plans = [
   {
@@ -44,32 +45,14 @@ const plans = [
 export default function PricingPage() {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
+      <PublicHeader />
+
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
         <div className="absolute inset-0 cyber-grid opacity-10" />
       </div>
-
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="size-8 rounded-lg bg-white flex items-center justify-center text-black font-bold group-hover:scale-110 transition-transform">H</div>
-            <span className="text-xl font-bold tracking-tighter">HemiSync<span className="text-white/40">.sys</span></span>
-          </Link>
-          <nav className="flex items-center gap-8 text-sm font-medium text-white/50">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
-            <Link 
-              href="/signup" 
-              className="px-5 py-2.5 rounded-full bg-white text-black text-sm font-bold hover:bg-zinc-200 transition-all flex items-center gap-2 group"
-            >
-              Get Started <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </nav>
-        </div>
-      </header>
 
       <main className="pt-40 pb-20 px-6 relative z-10 flex flex-col items-center">
         <div className="text-center space-y-6 max-w-3xl mb-20">

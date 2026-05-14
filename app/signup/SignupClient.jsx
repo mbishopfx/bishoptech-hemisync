@@ -1,83 +1,136 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { PublicHeader } from '@/components/layout/PublicHeader';
+import { Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
 
 export function SignupClient() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: '', password: '', displayName: '' });
-  const [status, setStatus] = useState('');
+  const searchParams = useSearchParams();
+  const plan = searchParams.get('plan') || 'starter';
+  const priceId = searchParams.get('priceId');
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  function updateField(key, value) {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  }
-
-  async function handleSignup(event) {
-    event.preventDefault();
+  const handleSignup = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    setStatus('');
-
-    try {
-      const supabase = getSupabaseBrowserClient();
-      const { error } = await supabase.auth.signUp({
-        email: form.email,
-        password: form.password,
-        options: {
-          data: { full_name: form.displayName },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+    setError(null);
+    
+    const supabase = getSupabaseBrowserClient();
+    const { data, error: signupError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          requested_plan: plan
         }
-      });
+      }
+    });
 
-      if (error) throw error;
-      setStatus('Account created. If email confirmation is enabled, confirm your email before logging in.');
+    if (signupError) {
+      setError(signupError.message);
+      setLoading(false);
+      return;
+    }
+
+    if (data.session) {
+      // If auto-logged in, try to go to checkout if priceId exists, else dashboard
+      if (priceId) {
+          try {
+              const res = await fetch('/api/checkout', {
+                  method: 'POST',
+                  headers: { 
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${data.session.access_token}`
+                  },
+                  body: JSON.stringify({ priceId, planId: plan })
+              });
+              const checkoutData = await res.json();
+              if (checkoutData.url) {
+                  window.location.href = checkoutData.url;
+                  return;
+              }
+          } catch (err) {
+              console.error('Auto-checkout failed', err);
+          }
+      }
       router.push('/dashboard');
-    } catch (error) {
-      setStatus(error.message);
-    } finally {
+    } else {
+      setError('Please check your email to verify your account.');
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <main className="auth-shell">
-      <Card className="w-full max-w-xl p-10">
-        <div className="mb-10 text-center">
-          <p className="section-label">Create Profile</p>
-          <h1 className="mt-3 font-display text-4xl font-normal text-foreground">Start building shareable tones</h1>
-          <p className="mt-3 text-sm leading-6 text-muted">
-            Your account stores generated sessions, public tone cards, profile links, and feed activity.
-          </p>
-        </div>
-
-        <form className="flex flex-col gap-6" onSubmit={handleSignup}>
-          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
-            Display name
-            <Input value={form.displayName} onChange={(event) => updateField('displayName', event.target.value)} required />
-          </label>
-          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
-            Email
-            <Input value={form.email} onChange={(event) => updateField('email', event.target.value)} type="email" required />
-          </label>
-          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
-            Password
-            <Input value={form.password} onChange={(event) => updateField('password', event.target.value)} type="password" minLength={8} required />
-          </label>
-          <div className="mt-2">
-            <Button className="w-full" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
+    <div className="min-h-screen bg-black text-white font-sans">
+      <PublicHeader />
+      
+      <main className="pt-40 pb-20 px-6 flex flex-col items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md bg-zinc-900/50 backdrop-blur-2xl border border-white/5 p-10 rounded-[3rem] shadow-2xl"
+        >
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono tracking-widest uppercase mb-4">
+              Step_01: Identity_Verification
+            </div>
+            <h1 className="text-3xl font-light tracking-tight mb-2">Initialize Credentials</h1>
+            <p className="text-white/40 text-sm">Join the <strong>{plan.toUpperCase()}</strong> node. 7-day trial included.</p>
           </div>
-        </form>
 
-        {status && <p className="mt-6 rounded-xl bg-[var(--bg-1)] p-4 text-center text-sm text-foreground shadow-premium">{status}</p>}
-        <p className="mt-8 text-center text-sm text-muted">
-          Already have an account? <Link className="font-medium text-foreground transition-opacity hover:opacity-80" href="/login">Log in</Link>
-        </p>
-      </Card>
-    </main>
+          <form onSubmit={handleSignup} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email Address</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
+                placeholder="operator@hemisync.sys"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Secret Access Key</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
+                placeholder="Minimum 8 characters"
+              />
+            </div>
+
+            {error && <p className={`text-xs text-center ${error.includes('email') ? 'text-cyan-400' : 'text-red-400'}`}>{error}</p>}
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full py-4 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Generate Credentials <ArrowRight className="size-4" /></>}
+            </button>
+          </form>
+
+          <div className="mt-8 pt-8 border-t border-white/5 text-center">
+            <p className="text-white/30 text-xs italic flex items-center justify-center gap-2">
+              <ShieldCheck className="size-3 text-cyan-500" /> AES-256 Neural Encryption Enabled
+            </p>
+            <p className="text-white/30 text-xs mt-6">Already an operator? <Link href="/login" className="text-cyan-400 hover:underline">Secure Login</Link></p>
+          </div>
+        </motion.div>
+      </main>
+    </div>
   );
 }

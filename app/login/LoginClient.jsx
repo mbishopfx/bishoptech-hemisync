@@ -1,93 +1,98 @@
 'use client';
 
-import Link from 'next/link';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { PublicHeader } from '@/components/layout/PublicHeader';
+import { Loader2, ArrowRight, Github } from 'lucide-react';
+import Link from 'next/link';
 
 export function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const next = searchParams.get('next') || '/dashboard';
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const redirectTo = searchParams.get('next') || '/dashboard';
-
-  async function handlePasswordLogin(event) {
-    event.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    setStatus('');
+    setError(null);
+    
+    const supabase = getSupabaseBrowserClient();
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    try {
-      const supabase = getSupabaseBrowserClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      router.push(redirectTo);
-      router.refresh();
-    } catch (error) {
-      setStatus(error.message);
-    } finally {
+    if (loginError) {
+      setError(loginError.message);
       setLoading(false);
+    } else {
+      router.push(next);
     }
-  }
-
-  async function handleMagicLink() {
-    setLoading(true);
-    setStatus('');
-
-    try {
-      const supabase = getSupabaseBrowserClient();
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: `${window.location.origin}/dashboard` }
-      });
-      if (error) throw error;
-      setStatus('Magic link sent. Check your email.');
-    } catch (error) {
-      setStatus(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  };
 
   return (
-    <main className="auth-shell">
-      <Card className="w-full max-w-lg p-10">
-        <div className="mb-10 text-center">
-          <p className="section-label">Member Access</p>
-          <h1 className="mt-3 font-display text-4xl font-normal text-foreground">Log in to HemiSync</h1>
-          <p className="mt-3 text-sm leading-6 text-muted">
-            Access saved tones, your feed, and the controlled audio workspace.
-          </p>
-        </div>
-
-        <form className="flex flex-col gap-6" onSubmit={handlePasswordLogin}>
-          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
-            Email
-            <Input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required />
-          </label>
-          <label className="flex flex-col gap-2 text-sm font-medium text-foreground/80">
-            Password
-            <Input value={password} onChange={(event) => setPassword(event.target.value)} type="password" />
-          </label>
-          <div className="flex flex-col gap-3 mt-2">
-            <Button disabled={loading}>{loading ? 'Checking...' : 'Log In'}</Button>
-            <Button type="button" variant="secondary" disabled={loading || !email} onClick={handleMagicLink}>
-              Send Magic Link
-            </Button>
+    <div className="min-h-screen bg-black text-white font-sans">
+      <PublicHeader />
+      
+      <main className="pt-40 pb-20 px-6 flex flex-col items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md bg-zinc-900/50 backdrop-blur-2xl border border-white/5 p-10 rounded-[3rem] shadow-2xl"
+        >
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-light tracking-tight mb-2">Welcome Back</h1>
+            <p className="text-white/40 text-sm">Resume your neural synchronization.</p>
           </div>
-        </form>
 
-        {status && <p className="mt-6 rounded-xl bg-[var(--bg-1)] p-4 text-center text-sm text-foreground shadow-premium">{status}</p>}
-        <p className="mt-8 text-center text-sm text-muted">
-          New here? <Link className="font-medium text-foreground transition-opacity hover:opacity-80" href="/signup">Create an account</Link>
-        </p>
-      </Card>
-    </main>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email Address</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
+                placeholder="operator@hemisync.sys"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Access Key</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {error && <p className="text-red-400 text-xs text-center">{error}</p>}
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full py-4 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Access System <ArrowRight className="size-4" /></>}
+            </button>
+          </form>
+
+          <div className="mt-8 pt-8 border-t border-white/5 text-center space-y-4">
+            <p className="text-white/30 text-xs">New operator? <Link href="/signup" className="text-cyan-400 hover:underline">Apply for credentials</Link></p>
+          </div>
+        </motion.div>
+      </main>
+    </div>
   );
 }
