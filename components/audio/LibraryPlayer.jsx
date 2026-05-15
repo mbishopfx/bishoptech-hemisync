@@ -1,35 +1,61 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { motion } from 'framer-motion';
 import { Play, Pause, Volume2, FastForward, Rewind } from 'lucide-react';
 
-export function LibraryPlayer({ track, onFinished }) {
+function resolveTrackSource(track) {
+  return track?.mp3Url || track?.mp3_url || track?.webmUrl || track?.webm_url || track?.wavUrl || track?.wav_url || '';
+}
+
+export const LibraryPlayer = forwardRef(function LibraryPlayer({ track, onFinished }, ref) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
+  const source = resolveTrackSource(track);
+  const hasTrack = Boolean(track && source);
 
-  useEffect(() => {
-    if (track && audioRef.current) {
-      const source = track.mp3Url || track.mp3_url || track.webmUrl || track.webm_url || track.wavUrl || track.wav_url;
-      audioRef.current.src = source || '';
+  useImperativeHandle(ref, () => ({
+    playTrack(nextTrack) {
+      const nextSource = resolveTrackSource(nextTrack);
+      if (!nextSource || !audioRef.current) return false;
+      audioRef.current.src = nextSource;
       audioRef.current.load();
       setCurrentTime(0);
       setDuration(0);
       audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      return true;
+    },
+    pause() {
+      if (!audioRef.current) return false;
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return true;
     }
-  }, [track]);
+  }), []);
+
+  useEffect(() => {
+    if (!audioRef.current || !source) return;
+
+    audioRef.current.src = source;
+    audioRef.current.load();
+    setCurrentTime(0);
+    setDuration(0);
+
+    if (track?.autoPlay !== false) {
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    }
+  }, [source, track]);
 
   const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      return;
     }
+
+    audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
   };
 
   const handleTimeUpdate = () => {
@@ -50,6 +76,22 @@ export function LibraryPlayer({ track, onFinished }) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  if (!hasTrack) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-md mx-auto mt-12 bg-zinc-900/35 backdrop-blur-xl border border-white/5 p-6 rounded-3xl"
+      >
+        <div className="flex flex-col gap-4 text-center">
+          <p className="text-cyan-400 font-mono text-xs uppercase tracking-[0.2em]">Preview Ready</p>
+          <h3 className="text-white text-xl font-medium">Tap Preview Tone to start</h3>
+          <p className="text-white/40 text-sm">Your 3ish-minute public MP3 preview will appear here instantly.</p>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -58,8 +100,11 @@ export function LibraryPlayer({ track, onFinished }) {
     >
       <audio
         ref={audioRef}
+        preload="auto"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         onEnded={() => {
           setIsPlaying(false);
           if (onFinished) onFinished();
@@ -75,6 +120,9 @@ export function LibraryPlayer({ track, onFinished }) {
           <p className="text-white/40 text-sm mt-1">
             {(track.targetHz || track.target_hz || track.baseFreqHz || track.base_freq_hz || '?')}Hz Pure Stereo Preview
           </p>
+          <p className="mt-2 text-[10px] font-mono uppercase tracking-[0.32em] text-white/25">
+            {track.durationSec || track.duration_sec || 172} seconds • Public MP3
+          </p>
         </div>
 
         {/* Progress Bar */}
@@ -82,7 +130,7 @@ export function LibraryPlayer({ track, onFinished }) {
           <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
             <motion.div 
               className="absolute inset-y-0 left-0 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
-              style={{ width: `${(currentTime / duration) * 100}%` }}
+              style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
             />
           </div>
           <div className="flex justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
@@ -93,7 +141,7 @@ export function LibraryPlayer({ track, onFinished }) {
 
         {/* Controls */}
         <div className="flex items-center justify-center gap-8">
-          <button className="text-white/40 hover:text-white transition-colors">
+          <button className="text-white/40 hover:text-white transition-colors" type="button">
             <Rewind className="size-5" />
           </button>
           
@@ -101,12 +149,13 @@ export function LibraryPlayer({ track, onFinished }) {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={togglePlay}
+            type="button"
             className="size-16 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.2)]"
           >
             {isPlaying ? <Pause className="size-8 fill-current" /> : <Play className="size-8 fill-current translate-x-0.5" />}
           </motion.button>
 
-          <button className="text-white/40 hover:text-white transition-colors">
+          <button className="text-white/40 hover:text-white transition-colors" type="button">
             <FastForward className="size-5" />
           </button>
         </div>
@@ -120,4 +169,4 @@ export function LibraryPlayer({ track, onFinished }) {
       </div>
     </motion.div>
   );
-}
+});

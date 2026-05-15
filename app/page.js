@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
@@ -16,6 +16,7 @@ export default function LandingPage() {
   const [agentMessage, setAgentMessage] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const previewTone = getPrimaryPreviewTone();
+  const playerRef = useRef(null);
 
   const handleGenerate = async (mood) => {
     setIsLoading(true);
@@ -52,6 +53,7 @@ export default function LandingPage() {
     if (!previewTone) return;
     setAgentMessage('Previewing your custom bi-directional stereo template.');
     setCurrentTrack(previewTone);
+    playerRef.current?.playTrack(previewTone);
   };
 
   return (
@@ -108,14 +110,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <AnimatePresence mode="wait">
-            {currentTrack && (
-              <LibraryPlayer 
-                track={currentTrack} 
-                onFinished={() => console.log('Session complete')}
-              />
-            )}
-          </AnimatePresence>
+          <LibraryPlayer
+            ref={playerRef}
+            track={currentTrack}
+            onFinished={() => console.log('Session complete')}
+          />
         </div>
 
         {/* Powered By BishopTech */}
