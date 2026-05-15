@@ -226,25 +226,41 @@ export default function DashboardPage() {
                   <Card key={tone.id} className="bg-zinc-900/40 border-white/5 backdrop-blur-xl p-6 rounded-3xl group hover:border-cyan-500/30 transition-all">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest mb-1">{tone.target_state}</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">{tone.target_state}</p>
+                          {tone.source_type === 'audiotemplate' && (
+                            <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-300">
+                              Preview
+                            </span>
+                          )}
+                        </div>
                         <h3 className="text-lg font-medium">{tone.name}</h3>
                       </div>
                       <button className="text-white/20 group-hover:text-white transition-colors">
                         <MoreHorizontal className="size-5" />
                       </button>
                     </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <span className="text-xs text-white/40">{Math.floor(tone.duration_sec / 60)}m · {tone.base_freq_hz}Hz</span>
-                        {profile?.subscription_tier !== 'none' && (
-                            <button className="text-[10px] text-cyan-400 hover:text-cyan-300 mt-1 flex items-center gap-1">
-                                <Download className="size-3" /> Export Audio
-                            </button>
-                        )}
+                    <div className="mt-6 flex flex-col gap-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-white/40">{Math.floor((tone.duration_sec || 0) / 60)}m · {tone.base_freq_hz}Hz</span>
+                          {tone.mode_label && (
+                            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/20 mt-1">{tone.mode_label}</span>
+                          )}
+                          {profile?.subscription_tier !== 'none' && (
+                              <button className="text-[10px] text-cyan-400 hover:text-cyan-300 mt-1 flex items-center gap-1">
+                                  <Download className="size-3" /> Export Audio
+                              </button>
+                          )}
+                        </div>
+                        <button className="size-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform">
+                          <Play className="size-4 fill-current" />
+                        </button>
                       </div>
-                      <button className="size-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform">
-                        <Play className="size-4 fill-current" />
-                      </button>
+
+                      {tone.mp3_url && (
+                        <audio controls src={tone.mp3_url} className="w-full h-8 opacity-90" preload="none" />
+                      )}
                     </div>
                   </Card>
                 ))}

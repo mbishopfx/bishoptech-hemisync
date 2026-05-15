@@ -6,6 +6,7 @@ import { Omnibar } from '@/components/agent/Omnibar';
 import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { getPrimaryPreviewTone } from '@/lib/audio/preview-tones';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -14,6 +15,7 @@ export default function LandingPage() {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [agentMessage, setAgentMessage] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const previewTone = getPrimaryPreviewTone();
 
   const handleGenerate = async (mood) => {
     setIsLoading(true);
@@ -44,6 +46,12 @@ export default function LandingPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePreviewTone = () => {
+    if (!previewTone) return;
+    setAgentMessage('Previewing your custom bi-directional stereo template.');
+    setCurrentTrack(previewTone);
   };
 
   return (
@@ -86,6 +94,19 @@ export default function LandingPage() {
             isLoading={isLoading} 
             agentMessage={agentMessage}
           />
+
+          <div className="flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={handlePreviewTone}
+              className="inline-flex items-center justify-center rounded-full border border-cyan-500/30 bg-cyan-500/10 px-5 py-2 text-xs font-mono uppercase tracking-[0.3em] text-cyan-200 transition-colors hover:bg-cyan-500/20 hover:text-white"
+            >
+              Preview Tone
+            </button>
+            <p className="text-center text-[10px] font-mono uppercase tracking-[0.35em] text-white/25">
+              Bi-directional stereo preview from your custom mp3 templates
+            </p>
+          </div>
 
           <AnimatePresence mode="wait">
             {currentTrack && (

@@ -12,8 +12,11 @@ export function LibraryPlayer({ track, onFinished }) {
 
   useEffect(() => {
     if (track && audioRef.current) {
-      audioRef.current.src = track.webmUrl || track.wavUrl;
+      const source = track.mp3Url || track.mp3_url || track.webmUrl || track.webm_url || track.wavUrl || track.wav_url;
+      audioRef.current.src = source || '';
       audioRef.current.load();
+      setCurrentTime(0);
+      setDuration(0);
       audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     }
   }, [track]);
@@ -65,9 +68,13 @@ export function LibraryPlayer({ track, onFinished }) {
 
       <div className="flex flex-col gap-6">
         <div className="text-center">
-          <p className="text-cyan-400 font-mono text-xs uppercase tracking-[0.2em] mb-1">{track.state} State Active</p>
+          <p className="text-cyan-400 font-mono text-xs uppercase tracking-[0.2em] mb-1">
+            {track.modeLabel || track.mode_label || `${track.state || track.target_state || 'Stereo'} State Active`}
+          </p>
           <h3 className="text-white text-xl font-medium">{track.name}</h3>
-          <p className="text-white/40 text-sm mt-1">{track.targetHz}Hz Pure Sine</p>
+          <p className="text-white/40 text-sm mt-1">
+            {(track.targetHz || track.target_hz || track.baseFreqHz || track.base_freq_hz || '?')}Hz Pure Stereo Preview
+          </p>
         </div>
 
         {/* Progress Bar */}

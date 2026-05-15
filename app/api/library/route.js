@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { buildPreviewToneLibraryEntries } from '@/lib/audio/preview-tones';
 import { savedToneSelect } from '@/lib/social/serializers';
 
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,9 @@ export async function GET(req) {
       throw error;
     }
 
-    return NextResponse.json({ ok: true, tones: data || [] });
+    const previewTones = buildPreviewToneLibraryEntries();
+
+    return NextResponse.json({ ok: true, tones: [...previewTones, ...(data || [])] });
   } catch (error) {
     const { body, status } = jsonError(error);
     return NextResponse.json(body, { status });
