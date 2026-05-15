@@ -2,6 +2,7 @@
 
 import './globals.css';
 import { Playfair_Display, Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Sidebar } from '@/components/sidebar';
 import { usePathname } from 'next/navigation';
@@ -45,6 +46,7 @@ export default function RootLayout({ children }) {
             </main>
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
