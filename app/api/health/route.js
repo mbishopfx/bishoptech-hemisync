@@ -7,8 +7,7 @@ export async function GET() {
   try {
     const supabase = getSupabaseAdmin();
     
-    // Quick probe to see if we can talk to the DB
-    const { data, error } = await supabase.from('agentic_tones').select('count', { count: 'exact', head: true });
+    const { count, error } = await supabase.from('agentic_tones').select('*', { count: 'exact', head: true });
     
     if (error) throw error;
 
@@ -20,7 +19,7 @@ export async function GET() {
         has_gemini_key: !!process.env.GEMINI_API_KEY
       },
       database: {
-        agentic_tones_count: data?.[0]?.count || 0
+        agentic_tones_count: count || 0
       }
     });
   } catch (err) {
