@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2, Play, Pause, X } from 'lucide-react';
+import { ArrowUp, Loader2, Play, Pause, X } from 'lucide-react';
 
 export function Omnibar({ onGenerate, isLoading, currentTrack, agentMessage }) {
   const [mood, setMood] = useState('');
@@ -28,7 +28,7 @@ export function Omnibar({ onGenerate, isLoading, currentTrack, agentMessage }) {
         <div className={`
           relative overflow-hidden transition-all duration-500
           bg-black/40 backdrop-blur-2xl
-          border ${isFocused ? 'border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.15)]' : 'border-white/10'}
+          border ${isFocused ? 'border-white/35 shadow-[0_0_30px_rgba(255,255,255,0.08)]' : 'border-white/10'}
           rounded-2xl p-1
         `}>
           <input
@@ -57,11 +57,13 @@ export function Omnibar({ onGenerate, isLoading, currentTrack, agentMessage }) {
                 <motion.button
                   key="submit"
                   type="submit"
+                  aria-label="Generate tone"
+                  title="Generate tone"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="p-2 rounded-full bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-colors"
+                  className="p-2 rounded-full border border-white/20 bg-white/5 text-white hover:bg-white/10 transition-colors shadow-sm shadow-white/5"
                 >
-                  <Sparkles className="size-6" />
+                  <ArrowUp className="size-5" strokeWidth={2.25} />
                 </motion.button>
               )}
             </AnimatePresence>
