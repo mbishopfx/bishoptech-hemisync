@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { getRandomPreviewTone } from '@/lib/audio/preview-tones';
+import { getPrimaryPreviewTone } from '@/lib/audio/preview-tones';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -66,7 +66,7 @@ export default function LandingPage() {
       return;
     }
 
-    const nextTone = currentPreviewTone || getRandomPreviewTone();
+    const nextTone = currentPreviewTone || getPrimaryPreviewTone();
     const nextSource = nextTone?.mp3Url || nextTone?.mp3_url;
     if (!nextTone || !nextSource) return;
 
@@ -138,7 +138,7 @@ export default function LandingPage() {
                 {isPreviewPlaying ? 'Pause Preview Tone' : currentPreviewTone ? 'Resume Preview Tone' : 'Preview Tone'}
               </button>
               <p className="text-center text-[10px] font-mono uppercase tracking-[0.35em] text-white/25">
-                Bi-directional stereo preview from your custom mp3 templates
+                Bi-directional stereo preview from your generated HemiSync-style tones
               </p>
             </div>
           )}
