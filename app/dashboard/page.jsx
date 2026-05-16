@@ -129,9 +129,9 @@ export default function DashboardPage() {
       {/* Sidebar */}
       <aside className="w-72 border-r border-white/5 flex flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
         <div className="flex items-center gap-3 mb-12">
-          <div className="size-10 rounded-xl bg-white flex items-center justify-center text-black font-black">H</div>
+          <div className="size-10 rounded-xl bg-white flex items-center justify-center text-black font-black">B</div>
           <div>
-            <h2 className="text-lg font-bold tracking-tight">HemiSync</h2>
+            <h2 className="text-lg font-bold tracking-tight">BishopTech</h2>
             <p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Agentic v1.0</p>
           </div>
         </div>
