@@ -42,6 +42,24 @@ const plans = [
   }
 ];
 
+const tonePack = {
+  name: 'Tone Pack 01',
+  id: 'tone-pack-01',
+  price: 'TBD',
+  priceId: 'price_tone_pack_pending',
+  mode: 'payment',
+  description: 'A one-time 16-tone pack built from the first Hemisync sample collection.',
+  features: [
+    '16 Generated Hemisync-style preview tones',
+    'One-time purchase on Stripe',
+    'Includes the first launch pack',
+    'Public MP3 downloads'
+  ],
+  highlight: false,
+  cta: 'Pack Coming Soon',
+  disabled: true
+};
+
 export default function PricingPage() {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
@@ -140,6 +158,58 @@ export default function PricingPage() {
             </motion.div>
           ))}
         </div>
+
+        <section className="mt-20 w-full max-w-5xl">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Tone Pack</p>
+              <h2 className="text-3xl font-light tracking-tight mt-2">First launch pack placeholder</h2>
+            </div>
+            <p className="max-w-xl text-right text-sm text-white/40">
+              We&apos;ll wire the Stripe one-time pack price here once you create it. For now, the pack card is just a placeholder.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-1 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="relative p-10 rounded-[3rem] border bg-zinc-900/50 border-white/5"
+            >
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest">
+                One-time pack
+              </div>
+
+              <div className="mb-8 text-left">
+                <h3 className="text-2xl font-medium mb-2">{tonePack.name}</h3>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-5xl font-bold tracking-tight">{tonePack.price}</span>
+                  <span className="text-white/30 text-sm">/one time</span>
+                </div>
+                <p className="text-white/40 text-sm mt-4 leading-relaxed">{tonePack.description}</p>
+              </div>
+
+              <div className="space-y-4 mb-10">
+                {tonePack.features.map((feature) => (
+                  <div key={feature} className="flex items-center gap-3 text-sm text-white/70">
+                    <div className="size-5 rounded-full flex items-center justify-center bg-white/5 text-white/30">
+                      <Check className="size-3" />
+                    </div>
+                    {feature}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                disabled
+                type="button"
+                className="w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 bg-white/5 text-white/40 border border-white/10 cursor-not-allowed"
+              >
+                {tonePack.cta} <ChevronRight className="size-4" />
+              </button>
+            </motion.div>
+          </div>
+        </section>
 
         <section className="mt-32 w-full max-w-4xl text-center">
           <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] mb-12">System Architecture</p>

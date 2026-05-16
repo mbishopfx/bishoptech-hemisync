@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { getPrimaryPreviewTone } from '@/lib/audio/preview-tones';
+import { getRandomPreviewTone } from '@/lib/audio/preview-tones';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -16,7 +16,7 @@ export default function LandingPage() {
   const [showPreviewToneButton, setShowPreviewToneButton] = useState(true);
   const [isPreviewActive, setIsPreviewActive] = useState(false);
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
-  const previewTone = getPrimaryPreviewTone();
+  const [currentPreviewTone, setCurrentPreviewTone] = useState(null);
   const audioRef = useRef(null);
 
   const handleGenerate = async (mood) => {
@@ -46,6 +46,7 @@ export default function LandingPage() {
       audioRef.current?.pause();
       setIsPreviewPlaying(false);
       setIsPreviewActive(false);
+      setCurrentPreviewTone(null);
     } catch (err) {
       console.error('Failed to connect to agent:', err);
     } finally {
@@ -54,11 +55,9 @@ export default function LandingPage() {
   };
 
   const handlePreviewTone = async () => {
-    if (!previewTone || !audioRef.current) return;
+    if (!audioRef.current) return;
 
     const audio = audioRef.current;
-    const nextSource = previewTone.mp3Url || previewTone.mp3_url;
-    if (!nextSource) return;
 
     if (isPreviewPlaying) {
       audio.pause();
@@ -67,7 +66,12 @@ export default function LandingPage() {
       return;
     }
 
-    setAgentMessage('Previewing your custom bi-directional stereo template.');
+    const nextTone = currentPreviewTone || getRandomPreviewTone();
+    const nextSource = nextTone?.mp3Url || nextTone?.mp3_url;
+    if (!nextTone || !nextSource) return;
+
+    setCurrentPreviewTone(nextTone);
+    setAgentMessage(`Previewing ${nextTone.name}${nextTone.shortLabel ? ` • ${nextTone.shortLabel}` : ''}.`);
     setIsPreviewActive(true);
     audio.src = nextSource;
     audio.load();
@@ -128,10 +132,10 @@ export default function LandingPage() {
               <button
                 type="button"
                 onClick={handlePreviewTone}
-                aria-pressed={isPreviewPlaying}
+                aria-pressed={isPreviewActive}
                 className={`inline-flex items-center justify-center rounded-full border px-5 py-2 text-xs font-mono uppercase tracking-[0.3em] transition-colors ${isPreviewActive ? 'border-cyan-300/60 bg-cyan-400 text-black shadow-[0_0_24px_rgba(34,211,238,0.3)]' : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20 hover:text-white'}`}
               >
-                {isPreviewPlaying ? 'Pause Preview Tone' : 'Preview Tone'}
+                {isPreviewPlaying ? 'Pause Preview Tone' : currentPreviewTone ? 'Resume Preview Tone' : 'Preview Tone'}
               </button>
               <p className="text-center text-[10px] font-mono uppercase tracking-[0.35em] text-white/25">
                 Bi-directional stereo preview from your custom mp3 templates
@@ -150,6 +154,7 @@ export default function LandingPage() {
             onEnded={() => {
               setIsPreviewPlaying(false);
               setIsPreviewActive(false);
+              setCurrentPreviewTone(null);
             }}
           />
         </div>

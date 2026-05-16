@@ -228,9 +228,9 @@ export default function DashboardPage() {
                       <div>
                         <div className="flex items-center gap-2 mb-1">
                           <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">{tone.target_state}</p>
-                          {tone.source_type === 'audiotemplate' && (
-                            <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-300">
-                              Preview
+                          {(tone.source_type === 'audiotemplate' || tone.source_type === 'generated-pack') && (
+                            <span className={`rounded-full border px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] ${tone.source_type === 'generated-pack' ? 'border-cyan-500/20 bg-cyan-500/10 text-cyan-300' : 'border-cyan-500/20 bg-cyan-500/10 text-cyan-300'}`}>
+                              {tone.source_type === 'generated-pack' ? 'Pack' : 'Preview'}
                             </span>
                           )}
                         </div>

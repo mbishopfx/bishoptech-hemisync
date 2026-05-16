@@ -5,7 +5,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 export async function POST(req) {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const { priceId, planId } = await req.json();
+    const { priceId, planId, mode = 'subscription' } = await req.json();
 
     if (!priceId) {
       return NextResponse.json({ error: 'Price ID is required' }, { status: 400 });
@@ -33,14 +33,18 @@ export async function POST(req) {
           quantity: 1,
         },
       ],
-      mode: 'subscription',
-      subscription_data: {
-        trial_period_days: 7,
-        metadata: {
-          planId: planId,
-          user_uuid: user.id
-        }
-      },
+      mode: mode === 'payment' ? 'payment' : 'subscription',
+      ...(mode === 'payment'
+        ? {}
+        : {
+            subscription_data: {
+              trial_period_days: 7,
+              metadata: {
+                planId: planId,
+                user_uuid: user.id
+              }
+            }
+          }),
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://hemisync.bishoptech.dev'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://hemisync.bishoptech.dev'}/pricing`,
       client_reference_id: user.id,
