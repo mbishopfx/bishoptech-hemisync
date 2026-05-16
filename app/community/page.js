@@ -4,7 +4,7 @@ import { feedPostSelect } from '@/lib/social/serializers';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Play, ArrowLeft } from 'lucide-react';
+import { Play, ArrowLeft, Heart, MessageSquare, TrendingUp } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60;
@@ -40,6 +40,9 @@ export default async function CommunityPage() {
     }, new Map()).values(),
   );
   const creatorHighlights = creatorRollup.sort((a, b) => b.postCount - a.postCount).slice(0, 3);
+  const trendingPosts = [...feed]
+    .sort((a, b) => (b.like_count + b.comment_count) - (a.like_count + a.comment_count))
+    .slice(0, 3);
 
   const communityStats = [
     { label: 'Public posts', value: feed.length.toString() },
@@ -107,6 +110,54 @@ export default async function CommunityPage() {
               )}
             </div>
           </div>
+        </Card>
+
+        <Card className="p-6 bg-[var(--card-bg)] shadow-premium border-none">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)] flex items-center gap-2">
+                <TrendingUp className="size-3.5" /> Trending now
+              </p>
+              <p className="mt-2 text-sm text-muted">Most resonant posts in the last 100 public shares, ranked by likes and comments.</p>
+            </div>
+            <span className="rounded-full border border-[var(--line-soft)] bg-[var(--bg-1)] px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-muted">
+              {trendingPosts.length} posts
+            </span>
+          </div>
+
+          {trendingPosts.length === 0 ? (
+            <p className="mt-4 text-sm text-muted">Trending posts will appear here once members start reacting to public shares.</p>
+          ) : (
+            <div className="mt-4 grid gap-3">
+              {trendingPosts.map((post) => (
+                <div key={post.id} className="rounded-2xl border border-[var(--line-soft)] bg-[var(--bg-0)] px-4 py-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <Link href={`/community/${post.profiles?.username || post.profiles?.id}`} className="truncate font-medium text-foreground hover:underline">
+                        {post.profiles?.display_name || 'Member'}
+                      </Link>
+                      <p className="mt-1 text-xs text-muted line-clamp-2">
+                        {post.body || 'Shared a tone update with the community.'}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end gap-2 text-[10px] uppercase tracking-[0.25em] text-muted">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--line-soft)] bg-[var(--bg-1)] px-2 py-1">
+                        <Heart className="size-3 text-[var(--accent-gold-strong)]" /> {post.like_count}
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--line-soft)] bg-[var(--bg-1)] px-2 py-1">
+                        <MessageSquare className="size-3 text-cyan-300" /> {post.comment_count}
+                      </span>
+                    </div>
+                  </div>
+                  {post.saved_tones?.mp3_url && (
+                    <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-cyan-100">
+                      <Play className="size-3" /> Audio attached
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
 
         <div className="flex flex-col gap-6">
