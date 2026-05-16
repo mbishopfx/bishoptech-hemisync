@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { getPrimaryPreviewTone } from '@/lib/audio/preview-tones';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -18,6 +17,26 @@ export default function LandingPage() {
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
   const [currentPreviewTone, setCurrentPreviewTone] = useState(null);
   const audioRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPreviewTone() {
+      try {
+        const response = await fetch('/api/audio/preview-tone', { cache: 'no-store' });
+        const data = await response.json();
+        if (!response.ok || !data.ok || cancelled) return;
+        setCurrentPreviewTone(data.tone || null);
+      } catch (error) {
+        console.error('Failed to load featured preview tone:', error);
+      }
+    }
+
+    loadPreviewTone();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleGenerate = async (mood) => {
     setIsLoading(true);
@@ -54,6 +73,8 @@ export default function LandingPage() {
     }
   };
 
+
+
   const handlePreviewTone = async () => {
     if (!audioRef.current) return;
 
@@ -66,8 +87,8 @@ export default function LandingPage() {
       return;
     }
 
-    const nextTone = currentPreviewTone || getPrimaryPreviewTone();
-    const nextSource = nextTone?.mp3Url || nextTone?.mp3_url;
+    const nextTone = currentPreviewTone || null;
+    const nextSource = nextTone?.playUrl || nextTone?.webmUrl || nextTone?.wavUrl || nextTone?.mp3Url || nextTone?.mp3_url;
     if (!nextTone || !nextSource) return;
 
     setCurrentPreviewTone(nextTone);
@@ -138,7 +159,7 @@ export default function LandingPage() {
                 {isPreviewPlaying ? 'Pause Preview Tone' : currentPreviewTone ? 'Resume Preview Tone' : 'Preview Tone'}
               </button>
               <p className="text-center text-[10px] font-mono uppercase tracking-[0.35em] text-white/25">
-                Bi-directional stereo preview from your generated HemiSync-style tones
+                Bi-directional stereo preview from our generated binaural HemiSync tones
               </p>
             </div>
           )}

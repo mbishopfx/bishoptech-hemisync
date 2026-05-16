@@ -1,58 +1,77 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import mime from 'mime-types';
-import { maybeProxyToBackend } from '@/lib/http/backend-proxy';
-import { createRangedFileResponse } from '@/lib/http/ranged-file-response';
-import { getPreviewToneCatalog } from '@/lib/audio/preview-tones';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const AUDIO_DIR = path.resolve(process.cwd(), 'audiotemplates');
+const FEATURED_STATE_ORDER = ['theta', 'alpha', 'delta', 'beta', 'gamma'];
 
-function resolveCatalogFileName(fileName) {
-  return getPreviewToneCatalog().find((tone) => tone.fileName === fileName) || null;
+function normalizeAgenticTone(tone) {
+  const playUrl = tone.webm_url || tone.wav_url || tone.mp3_url || null;
+
+  return {
+    id: tone.id,
+    name: tone.name,
+    state: tone.state,
+    target_state: tone.state,
+    targetState: tone.state,
+    target_hz: tone.target_hz,
+    targetHz: tone.target_hz,
+    base_freq_hz: tone.base_freq_hz,
+    baseFreqHz: tone.base_freq_hz,
+    duration_sec: tone.duration_sec,
+    durationSec: tone.duration_sec,
+    description: `${tone.state.charAt(0).toUpperCase() + tone.state.slice(1)} binaural session generated for ${tone.target_hz} Hz entrainment.`,
+    summary: `${tone.state.charAt(0).toUpperCase() + tone.state.slice(1)} binaural session generated for ${tone.target_hz} Hz entrainment.`,
+    noise_type: tone.noise_type,
+    noiseType: tone.noise_type,
+    wav_url: tone.wav_url,
+    wavUrl: tone.wav_url,
+    webm_url: tone.webm_url,
+    webmUrl: tone.webm_url,
+    playUrl,
+    sourceType: 'agentic-generated',
+    source_type: 'agentic-generated'
+  };
 }
 
-export async function GET(request) {
-  const proxied = await maybeProxyToBackend(request);
-  if (proxied) {
-    return proxied;
+function pickFeaturedTone(tones = []) {
+  for (const state of FEATURED_STATE_ORDER) {
+    const match = tones.find((tone) => tone.state === state);
+    if (match) return match;
   }
 
+  return tones[0] || null;
+}
+
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const fileParam = searchParams.get('file');
-
-    if (!fileParam) {
-      return NextResponse.json({
-        ok: true,
-        previewTones: getPreviewToneCatalog()
-      });
+    const supabase = getSupabaseAdmin();
+    if (!supabase) {
+      return NextResponse.json({ error: 'Supabase admin unavailable' }, { status: 503 });
     }
 
-    const fileName = decodeURIComponent(fileParam);
-    const previewTone = resolveCatalogFileName(fileName);
-    if (!previewTone) {
-      return NextResponse.json({ error: 'Unknown preview tone' }, { status: 404 });
+    const { data, error } = await supabase
+      .from('agentic_tones')
+      .select('id,name,state,target_hz,base_freq_hz,noise_type,duration_sec,wav_url,webm_url,created_at')
+      .order('created_at', { ascending: false })
+      .limit(200);
+
+    if (error) {
+      throw error;
     }
 
-    const filePath = path.resolve(AUDIO_DIR, fileName);
-    if (filePath !== AUDIO_DIR && !filePath.startsWith(`${AUDIO_DIR}${path.sep}`)) {
-      return NextResponse.json({ error: 'Invalid preview tone path' }, { status: 400 });
+    const featuredTone = pickFeaturedTone(data || []);
+    if (!featuredTone) {
+      return NextResponse.json({ ok: false, error: 'No generated tones are available yet' }, { status: 404 });
     }
 
-    await fs.access(filePath);
-
-    return createRangedFileResponse({
-      filePath,
-      request,
-      contentType: mime.lookup(fileName) || 'audio/mpeg',
-      filename: path.basename(filePath),
-      cacheControl: 'public, max-age=86400'
+    return NextResponse.json({
+      ok: true,
+      tone: normalizeAgenticTone(featuredTone),
+      total: (data || []).length
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Preview tone not found' }, { status: 404 });
+    return NextResponse.json({ error: error.message || 'Preview tone unavailable' }, { status: 500 });
   }
 }

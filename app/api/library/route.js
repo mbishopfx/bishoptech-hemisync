@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
-import { buildPreviewToneLibraryEntries } from '@/lib/audio/preview-tones';
 import { groupLibraryTonesByState, normalizeLibraryTone, BRAIN_STATE_ORDER } from '@/lib/audio/library-groups';
 import { savedToneSelect } from '@/lib/social/serializers';
 
@@ -13,19 +12,38 @@ export async function GET(req) {
     const { user } = await requireAuthenticatedUser(req);
     await ensureProfile(user);
 
-    const { data, error } = await getSupabaseAdmin()
-      .from('saved_tones')
-      .select(savedToneSelect())
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    const supabase = getSupabaseAdmin();
 
-    if (error) {
-      throw error;
-    }
+    const [{ data: generated, error: generatedError }, { data: saved, error: savedError }] = await Promise.all([
+      supabase
+        .from('agentic_tones')
+        .select('id,name,state,target_hz,base_freq_hz,noise_type,duration_sec,wav_url,webm_url,created_at')
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('saved_tones')
+        .select(savedToneSelect())
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+    ]);
 
-    const previewTones = buildPreviewToneLibraryEntries().map(normalizeLibraryTone);
-    const savedTones = (data || []).map(normalizeLibraryTone);
-    const tones = [...previewTones, ...savedTones];
+    if (generatedError) throw generatedError;
+    if (savedError) throw savedError;
+
+    const generatedTones = (generated || []).map((tone) => ({
+      ...normalizeLibraryTone({
+        ...tone,
+        sourceType: 'agentic-generated',
+        source_type: 'agentic-generated',
+        target_state: tone.state,
+        targetState: tone.state,
+        mp3_url: tone.webm_url || tone.wav_url || null,
+        mp3Url: tone.webm_url || tone.wav_url || null
+      }),
+      visibility: 'public'
+    }));
+
+    const savedTones = (saved || []).map((tone) => normalizeLibraryTone(tone));
+    const tones = [...generatedTones, ...savedTones];
     const tonesByState = groupLibraryTonesByState(tones);
 
     return NextResponse.json({ ok: true, tones, tonesByState, stateOrder: BRAIN_STATE_ORDER });
