@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
 import { buildPreviewToneLibraryEntries } from '@/lib/audio/preview-tones';
+import { groupLibraryTonesByState, normalizeLibraryTone, BRAIN_STATE_ORDER } from '@/lib/audio/library-groups';
 import { savedToneSelect } from '@/lib/social/serializers';
 
 export const dynamic = 'force-dynamic';
@@ -22,9 +23,12 @@ export async function GET(req) {
       throw error;
     }
 
-    const previewTones = buildPreviewToneLibraryEntries();
+    const previewTones = buildPreviewToneLibraryEntries().map(normalizeLibraryTone);
+    const savedTones = (data || []).map(normalizeLibraryTone);
+    const tones = [...previewTones, ...savedTones];
+    const tonesByState = groupLibraryTonesByState(tones);
 
-    return NextResponse.json({ ok: true, tones: [...previewTones, ...(data || [])] });
+    return NextResponse.json({ ok: true, tones, tonesByState, stateOrder: BRAIN_STATE_ORDER });
   } catch (error) {
     const { body, status } = jsonError(error);
     return NextResponse.json(body, { status });
