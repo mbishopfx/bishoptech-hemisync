@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { feedPostSelect, profileSelect, savedToneSelect } from '@/lib/social/serializers';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { FollowButton } from '@/components/social/follow-button';
 import { ArrowLeft, Globe, X, CheckCircle, ExternalLink } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -12,7 +14,10 @@ export const revalidate = 60;
 
 async function getProfileData(username) {
   const supabase = getSupabaseAdmin();
-  
+  const supabaseServer = getSupabaseServerClient();
+  const { data: sessionData } = await supabaseServer.auth.getUser();
+  const currentUser = sessionData?.user || null;
+
   // Try to find by username first, fallback to id if it's a UUID
   let query = supabase.from('profiles').select(profileSelect()).eq('profile_visibility', 'public');
   if (username.length === 36 && username.includes('-')) {
@@ -25,12 +30,21 @@ async function getProfileData(username) {
   
   if (!profile) return null;
 
-  const [{ data: posts }, { data: tones }] = await Promise.all([
+  const [postsResult, tonesResult, followResult] = await Promise.all([
     supabase.from('feed_posts').select(feedPostSelect()).eq('user_id', profile.id).eq('visibility', 'public').order('created_at', { ascending: false }).limit(20),
-    supabase.from('saved_tones').select(savedToneSelect()).eq('user_id', profile.id).eq('visibility', 'public').order('created_at', { ascending: false }).limit(20)
+    supabase.from('saved_tones').select(savedToneSelect()).eq('user_id', profile.id).eq('visibility', 'public').order('created_at', { ascending: false }).limit(20),
+    currentUser && currentUser.id !== profile.id
+      ? supabase.from('follows').select('id').eq('follower_id', currentUser.id).eq('following_id', profile.id).maybeSingle()
+      : Promise.resolve({ data: null })
   ]);
 
-  return { profile, posts: posts || [], tones: tones || [] };
+  return {
+    profile,
+    posts: postsResult.data || [],
+    tones: tonesResult.data || [],
+    canFollow: Boolean(currentUser && currentUser.id !== profile.id),
+    initialFollowing: Boolean(followResult.data)
+  };
 }
 
 export default async function PublicProfilePage({ params }) {
@@ -40,7 +54,7 @@ export default async function PublicProfilePage({ params }) {
     notFound();
   }
 
-  const { profile, posts, tones } = data;
+  const { profile, posts, tones, canFollow, initialFollowing } = data;
 
   return (
     <main className="landing-shell">
@@ -84,27 +98,31 @@ export default async function PublicProfilePage({ params }) {
             )}
 
             {/* Social Links */}
-            <div className="flex gap-4 mt-6">
-              {profile.website_url && (
-                <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <Globe className="size-5" />
-                </a>
-              )}
-              {profile.x_url && (
-                <a href={profile.x_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <X className="size-5" />
-                </a>
-              )}
-              {profile.instagram_url && (
-                <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <ExternalLink className="size-5" />
-                </a>
-              )}
-              {profile.youtube_url && (
-                <a href={profile.youtube_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                  <ExternalLink className="size-5" />
-                </a>
-              )}
+            <div className="flex flex-wrap items-center gap-4 mt-6">
+              <div className="flex gap-4">
+                {profile.website_url && (
+                  <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                    <Globe className="size-5" />
+                  </a>
+                )}
+                {profile.x_url && (
+                  <a href={profile.x_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                    <X className="size-5" />
+                  </a>
+                )}
+                {profile.instagram_url && (
+                  <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                    <ExternalLink className="size-5" />
+                  </a>
+                )}
+                {profile.youtube_url && (
+                  <a href={profile.youtube_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                    <ExternalLink className="size-5" />
+                  </a>
+                )}
+              </div>
+
+              {canFollow && <FollowButton profileId={profile.id} initialFollowing={initialFollowing} />}
             </div>
           </div>
         </Card>
