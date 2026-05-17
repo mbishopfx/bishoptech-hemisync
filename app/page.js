@@ -61,11 +61,11 @@ export default function LandingPage() {
       }
 
       setAgentMessage(data.agentMessage);
-      setShowPreviewToneButton(false);
+      setShowPreviewToneButton(true);
       audioRef.current?.pause();
       setIsPreviewPlaying(false);
       setIsPreviewActive(false);
-      setCurrentPreviewTone(null);
+      setCurrentPreviewTone(data.track || null);
     } catch (err) {
       console.error('Failed to connect to agent:', err);
     } finally {
