@@ -30,18 +30,22 @@ async function getProfileData(username) {
   
   if (!profile) return null;
 
-  const [postsResult, tonesResult, followResult] = await Promise.all([
+  const [postsResult, tonesResult, followResult, followerCountResult, followingCountResult] = await Promise.all([
     supabase.from('feed_posts').select(feedPostSelect()).eq('user_id', profile.id).eq('visibility', 'public').order('created_at', { ascending: false }).limit(20),
     supabase.from('saved_tones').select(savedToneSelect()).eq('user_id', profile.id).eq('visibility', 'public').order('created_at', { ascending: false }).limit(20),
     currentUser && currentUser.id !== profile.id
       ? supabase.from('follows').select('id').eq('follower_id', currentUser.id).eq('following_id', profile.id).maybeSingle()
-      : Promise.resolve({ data: null })
+      : Promise.resolve({ data: null }),
+    supabase.from('follows').select('id', { count: 'exact', head: true }).eq('following_id', profile.id),
+    supabase.from('follows').select('id', { count: 'exact', head: true }).eq('follower_id', profile.id)
   ]);
 
   return {
     profile,
     posts: postsResult.data || [],
     tones: tonesResult.data || [],
+    followerCount: followerCountResult.count || 0,
+    followingCount: followingCountResult.count || 0,
     canFollow: Boolean(currentUser && currentUser.id !== profile.id),
     initialFollowing: Boolean(followResult.data)
   };
@@ -96,6 +100,21 @@ export default async function PublicProfilePage({ params }) {
             {profile.bio && (
               <p className="mt-4 text-foreground/90 leading-relaxed max-w-2xl">{profile.bio}</p>
             )}
+
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl">
+              <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Followers</div>
+                <div className="mt-1 text-xl font-display text-foreground">{followerCount.toLocaleString()}</div>
+              </div>
+              <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Following</div>
+                <div className="mt-1 text-xl font-display text-foreground">{followingCount.toLocaleString()}</div>
+              </div>
+              <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm sm:col-span-1 col-span-2">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Status</div>
+                <div className="mt-1 text-sm font-medium text-[var(--accent-gold-strong)]">Open to community follows</div>
+              </div>
+            </div>
 
             {/* Social Links */}
             <div className="flex flex-wrap items-center gap-4 mt-6">
