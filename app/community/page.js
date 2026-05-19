@@ -40,6 +40,18 @@ export default async function CommunityPage() {
     }, new Map()).values(),
   );
   const creatorHighlights = creatorRollup.sort((a, b) => b.postCount - a.postCount).slice(0, 3);
+  const toneStateRollup = Array.from(
+    feed.reduce((map, post) => {
+      const state = post.saved_tones?.target_state;
+      if (!state) return map;
+
+      map.set(state, (map.get(state) || 0) + 1);
+      return map;
+    }, new Map()).entries(),
+  )
+    .map(([state, count]) => ({ state, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
   const trendingPosts = [...feed]
     .sort((a, b) => (b.like_count + b.comment_count) - (a.like_count + a.comment_count))
     .slice(0, 3);
@@ -80,6 +92,31 @@ export default async function CommunityPage() {
                   <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted">{stat.label}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="rounded-2xl border border-[var(--line-soft)] bg-[var(--bg-0)] px-4 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)]">Top tone states</p>
+                  <p className="mt-1 text-sm text-muted">The most shared emotional targets across public tone posts.</p>
+                </div>
+                <span className="rounded-full border border-[var(--line-soft)] bg-[var(--bg-1)] px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-muted">
+                  {toneStateRollup.length} states
+                </span>
+              </div>
+
+              {toneStateRollup.length === 0 ? (
+                <p className="mt-4 text-sm text-muted">State trends will appear once members share public tones.</p>
+              ) : (
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  {toneStateRollup.map((entry) => (
+                    <div key={entry.state} className="rounded-2xl border border-[var(--line-soft)] bg-[var(--bg-1)] px-4 py-3">
+                      <p className="text-lg font-display text-foreground">{entry.state}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.25em] text-muted">{entry.count} share{entry.count === 1 ? '' : 's'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
