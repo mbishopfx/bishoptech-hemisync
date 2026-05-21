@@ -12,6 +12,7 @@ import {
   Heart,
   MessageSquare,
   TrendingUp,
+  Sparkles,
   Users,
 } from "lucide-react";
 
@@ -96,6 +97,49 @@ export default async function CommunityPage() {
     featuredFollowing = Boolean(followRow);
   }
 
+  const freshVoiceHighlights = Array.from(
+    feed
+      .reduce((map, post) => {
+        const profileId = post.profiles?.id;
+        if (!profileId) return map;
+
+        const current = map.get(profileId) || {
+          profile: post.profiles,
+          latestPostAt: post.created_at,
+          postCount: 0,
+          toneCount: 0,
+        };
+
+        current.postCount += 1;
+        current.toneCount += post.saved_tones ? 1 : 0;
+        map.set(profileId, current);
+        return map;
+      }, new Map())
+      .values(),
+  ).slice(0, 3);
+
+  const highlightProfileIds = Array.from(
+    new Set(
+      [featuredCreator?.profile?.id, ...freshVoiceHighlights.map((voice) => voice.profile?.id)].filter(
+        Boolean,
+      ),
+    ),
+  );
+  const followingProfileIds = new Set();
+
+  if (currentUser && highlightProfileIds.length > 0) {
+    const supabase = getSupabaseAdmin();
+    const { data: followRows } = await supabase
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", currentUser.id)
+      .in("following_id", highlightProfileIds);
+
+    for (const row of followRows || []) {
+      followingProfileIds.add(row.following_id);
+    }
+  }
+
   const communityStats = [
     { label: "Public posts", value: feed.length.toString() },
     { label: "Active creators", value: creatorRollup.length.toString() },
@@ -170,6 +214,85 @@ export default async function CommunityPage() {
                 profileId={featuredCreator.profile.id}
                 initialFollowing={featuredFollowing}
               />
+            )}
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-[var(--card-bg)] shadow-premium border-none">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)] flex items-center gap-2">
+                  <Sparkles className="size-3.5" /> Fresh voices
+                </p>
+                <p className="mt-2 text-sm text-muted">
+                  The newest public creators showing up in the community.
+                </p>
+              </div>
+              <span className="rounded-full border border-[var(--line-soft)] bg-[var(--bg-1)] px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-muted">
+                {freshVoiceHighlights.length} creator
+                {freshVoiceHighlights.length === 1 ? "" : "s"}
+              </span>
+            </div>
+
+            {freshVoiceHighlights.length === 0 ? (
+              <p className="text-sm text-muted">
+                Fresh voices will appear here once members begin sharing public
+                posts.
+              </p>
+            ) : (
+              <div className="grid gap-3">
+                {freshVoiceHighlights.map((voice) => {
+                  const profileId = voice.profile?.id;
+                  const canFollowVoice = Boolean(
+                    currentUser && profileId && currentUser.id !== profileId,
+                  );
+                  const isFollowingVoice = followingProfileIds.has(profileId);
+
+                  return (
+                    <div
+                      key={profileId}
+                      className="flex flex-col gap-3 rounded-2xl border border-[var(--line-soft)] bg-[var(--bg-1)] px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Avatar className="size-12 border border-[var(--line-soft)] bg-[var(--bg-0)]">
+                          <AvatarImage src={voice.profile?.avatar_url || ""} />
+                          <AvatarFallback>
+                            {(voice.profile?.display_name || "M")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                          <Link
+                            href={`/community/${voice.profile?.username || profileId}`}
+                            className="block truncate font-medium text-foreground hover:underline"
+                          >
+                            {voice.profile?.display_name || "Member"}
+                          </Link>
+                          <p className="truncate text-xs text-muted">
+                            @{voice.profile?.username || "member"} • last shared{" "}
+                            {new Date(voice.latestPostAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
+                        <p className="text-xs uppercase tracking-[0.25em] text-muted">
+                          {voice.postCount} post{voice.postCount === 1 ? "" : "s"} • {voice.toneCount} tone
+                          share{voice.toneCount === 1 ? "" : "s"}
+                        </p>
+                        {canFollowVoice && profileId && (
+                          <FollowButton
+                            profileId={profileId}
+                            initialFollowing={isFollowingVoice}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </Card>
