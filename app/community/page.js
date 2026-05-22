@@ -140,6 +140,16 @@ export default async function CommunityPage() {
     }
   }
 
+  const followedHighlightCount = highlightProfileIds.filter((profileId) =>
+    followingProfileIds.has(profileId),
+  ).length;
+  const highlightFollowProgress =
+    highlightProfileIds.length > 0
+      ? Math.round(
+          (followedHighlightCount / highlightProfileIds.length) * 100,
+        )
+      : 0;
+
   const communityStats = [
     { label: "Public posts", value: feed.length.toString() },
     { label: "Active creators", value: creatorRollup.length.toString() },
@@ -168,6 +178,69 @@ export default async function CommunityPage() {
             </Link>
           </Button>
         </div>
+
+        <Card className="p-6 bg-[var(--card-bg)] shadow-premium border-none">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3 text-cyan-100 shadow-premium">
+                <Sparkles className="size-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)]">
+                  {currentUser ? "Your community path" : "New to the circle?"}
+                </p>
+                {currentUser ? (
+                  <>
+                    <h2 className="mt-2 text-2xl font-display text-foreground">
+                      You&apos;ve tuned into {followedHighlightCount}/
+                      {highlightProfileIds.length || 3} spotlight creators
+                    </h2>
+                    <p className="mt-2 max-w-2xl text-sm text-muted">
+                      The feed sharpens as you follow more active voices. Keep
+                      the signal curated by following the creators highlighted
+                      below.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="mt-2 text-2xl font-display text-foreground">
+                      Follow creators, share tones, and shape the public feed
+                    </h2>
+                    <p className="mt-2 max-w-2xl text-sm text-muted">
+                      Create an account to follow members, save tones, and see
+                      the community pulse change around your preferences.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {currentUser ? (
+              <div className="flex shrink-0 flex-col gap-2 rounded-2xl border border-[var(--line-soft)] bg-[var(--bg-1)] px-4 py-3 sm:min-w-56">
+                <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.25em] text-muted">
+                  <span>Follow progress</span>
+                  <span>{highlightFollowProgress}%</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--bg-0)]">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-cyan-200 to-[var(--accent-gold-strong)]"
+                    style={{ width: `${highlightFollowProgress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted">
+                  {followedHighlightCount === highlightProfileIds.length &&
+                  highlightProfileIds.length > 0
+                    ? "You&apos;re following all of today&apos;s highlighted creators."
+                    : "Follow the spotlight creators above to refine your feed."}
+                </p>
+              </div>
+            ) : (
+              <Button asChild className="shadow-premium">
+                <Link href="/signup">Join the community</Link>
+              </Button>
+            )}
+          </div>
+        </Card>
 
         <Card className="p-6 bg-[var(--card-bg)] shadow-premium border-none">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
