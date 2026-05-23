@@ -125,7 +125,7 @@ const evidence = [
 
 function Section({ title, paragraphs = [], callout, subheading, subparagraphs = [] }) {
   return (
-    <section className="space-y-6 rounded-[30px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,12,18,0.92),rgba(6,8,12,0.78))] p-7 shadow-[0_32px_100px_-58px_rgba(0,0,0,0.98)] backdrop-blur-xl md:p-8">
+    <section className="space-y-6 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(9,12,16,0.92),rgba(4,6,10,0.9))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
       <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
         {title}
       </h2>
@@ -136,7 +136,7 @@ function Section({ title, paragraphs = [], callout, subheading, subparagraphs = 
       </div>
       {subheading ? (
         <div className="space-y-4 pt-2">
-          <h3 className="text-xl font-semibold tracking-[-0.04em] text-cyan-100">
+          <h3 className="text-xl font-semibold tracking-[-0.04em] text-white">
             {subheading}
           </h3>
           <div className="space-y-4 text-base leading-8 text-zinc-300 md:text-lg md:leading-9">
@@ -147,8 +147,8 @@ function Section({ title, paragraphs = [], callout, subheading, subparagraphs = 
         </div>
       ) : null}
       {callout ? (
-        <div className="rounded-[24px] border border-cyan-400/15 bg-cyan-400/8 px-5 py-4 text-sm leading-7 text-cyan-50/90">
-          <span className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-cyan-200/80">
+        <div className="rounded-[22px] border border-slate-800/70 bg-black/20 px-5 py-4 text-sm leading-7 text-zinc-300">
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-500">
             {callout.label}
           </span>
           <p className="mt-2">{callout.text}</p>
@@ -161,24 +161,14 @@ function Section({ title, paragraphs = [], callout, subheading, subparagraphs = 
 function EvidenceCard({ title, note, href }) {
   return (
     <a
-      className="group block rounded-[24px] border border-white/8 bg-white/[0.04] p-5 transition-transform duration-300 hover:-translate-y-1 hover:border-cyan-300/20 hover:bg-white/[0.06]"
+      className="group block rounded-[22px] border border-slate-800/70 bg-black/20 p-5 transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.04]"
       href={href}
       rel="noreferrer"
       target="_blank"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-cyan-200/70">
-            Evidence
-          </p>
-          <h4 className="mt-3 text-lg font-semibold tracking-[-0.04em] text-white">
-            {title}
-          </h4>
-        </div>
-        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-zinc-300">
-          Open
-        </span>
-      </div>
+      <h4 className="text-lg font-semibold tracking-[-0.04em] text-white">
+        {title}
+      </h4>
       <p className="mt-4 text-sm leading-7 text-zinc-400">{note}</p>
     </a>
   );
@@ -187,11 +177,11 @@ function EvidenceCard({ title, note, href }) {
 export default function ConsciousnessMechanicsPost() {
   return (
     <article className="space-y-12">
-      <header className="relative overflow-hidden rounded-[36px] border border-white/8 bg-[linear-gradient(180deg,rgba(12,15,24,0.96),rgba(5,7,12,0.95))] px-7 py-10 shadow-[0_40px_140px_-70px_rgba(0,0,0,1)] md:px-10 md:py-12">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.16),transparent_35%),radial-gradient(circle_at_top_right,rgba(99,102,241,0.12),transparent_28%),radial-gradient(circle_at_bottom,rgba(255,255,255,0.03),transparent_40%)]" />
+      <header className="relative overflow-hidden rounded-[32px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(10,13,18,0.96),rgba(4,6,10,0.95))] px-7 py-10 shadow-[0_34px_120px_-70px_rgba(0,0,0,0.98)] md:px-10 md:py-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_35%),radial-gradient(circle_at_top_right,rgba(15,23,42,0.35),transparent_30%),radial-gradient(circle_at_bottom,rgba(255,255,255,0.03),transparent_42%)]" />
         <div className="relative max-w-4xl space-y-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-cyan-200/80">
-            Daily Deep Dive // Consciousness Mechanics
+          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-zinc-500">
+            HemiSync Blog
           </p>
           <h1 className="text-balance text-5xl font-semibold tracking-[-0.075em] text-white md:text-7xl md:leading-[0.95]">
             {consciousnessMechanicsPost.title}
@@ -199,23 +189,17 @@ export default function ConsciousnessMechanicsPost() {
           <p className="max-w-3xl text-balance text-lg leading-8 text-zinc-300 md:text-2xl md:leading-10">
             {consciousnessMechanicsPost.excerpt}
           </p>
-          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.28em] text-zinc-400">
-            <span className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-2">
-              {consciousnessMechanicsPost.category}
-            </span>
-            <span className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-2">
-              {consciousnessMechanicsPost.readTime}
-            </span>
-            <span className="rounded-full border border-white/8 bg-white/[0.03] px-3 py-2">
-              Published {new Date(consciousnessMechanicsPost.publishedAt).toLocaleDateString()}
-            </span>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.28em] text-zinc-500">
+            <span>{consciousnessMechanicsPost.category}</span>
+            <span>{consciousnessMechanicsPost.readTime}</span>
+            <span>{new Date(consciousnessMechanicsPost.publishedAt).toLocaleDateString()}</span>
           </div>
         </div>
       </header>
 
-      <section className="space-y-6 rounded-[30px] border border-white/8 bg-white/[0.03] p-7 shadow-[0_32px_110px_-58px_rgba(0,0,0,0.96)] md:p-8">
+      <section className="space-y-6 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.95)] md:p-8">
         <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
-          Hook: the brain is not a statue, it is a live signal processor
+          The brain is a live signal processor
         </h2>
         <div className="space-y-4 text-base leading-8 text-zinc-300 md:text-lg md:leading-9">
           <p>
@@ -247,7 +231,7 @@ export default function ConsciousnessMechanicsPost() {
         ))}
       </div>
 
-      <section className="space-y-6 rounded-[30px] border border-white/8 bg-[linear-gradient(180deg,rgba(8,11,19,0.9),rgba(5,7,12,0.86))] p-7 shadow-[0_32px_100px_-58px_rgba(0,0,0,0.98)] md:p-8">
+      <section className="space-y-6 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
         <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
           The evidence snapshot
         </h2>
@@ -258,9 +242,9 @@ export default function ConsciousnessMechanicsPost() {
         </div>
       </section>
 
-      <section className="grid gap-6 rounded-[30px] border border-cyan-400/15 bg-cyan-400/[0.06] p-7 shadow-[0_32px_110px_-58px_rgba(34,211,238,0.2)] md:grid-cols-[1.2fr_0.8fr] md:p-8">
+      <section className="grid gap-6 rounded-[28px] border border-slate-800/70 bg-black/20 p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.95)] md:grid-cols-[1.2fr_0.8fr] md:p-8">
         <div className="space-y-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-cyan-200/80">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-zinc-500">
             Try this
           </p>
           <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
@@ -274,7 +258,7 @@ export default function ConsciousnessMechanicsPost() {
             up. Do not judge the result. Just record it.
           </p>
         </div>
-        <div className="rounded-[24px] border border-white/10 bg-black/25 p-5 text-sm leading-7 text-zinc-300">
+        <div className="rounded-[22px] border border-slate-800/70 bg-black/25 p-5 text-sm leading-7 text-zinc-300">
           <p className="font-semibold text-white">Use this session when:</p>
           <ul className="mt-3 space-y-2">
             <li>• Your attention feels noisy and split.</li>
@@ -287,7 +271,7 @@ export default function ConsciousnessMechanicsPost() {
         </div>
       </section>
 
-      <section className="space-y-5 rounded-[30px] border border-white/8 bg-white/[0.03] p-7 shadow-[0_32px_100px_-58px_rgba(0,0,0,0.96)] md:p-8">
+      <section className="space-y-5 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
         <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
           Wrap-up: the mystery is real, but the method still matters
         </h2>
@@ -315,7 +299,7 @@ export default function ConsciousnessMechanicsPost() {
           </p>
         </div>
         <div className="pt-2 text-sm text-zinc-400">
-          Want the archive? Visit the <Link className="text-cyan-200 underline decoration-cyan-300/40 underline-offset-4" href="/blog">blog host page</Link> for the full list of posts.
+          Want the archive? Visit the          <Link className="text-white underline decoration-white/25 underline-offset-4" href="/blog">blog host page</Link> for the full list of posts.
         </div>
       </section>
     </article>
