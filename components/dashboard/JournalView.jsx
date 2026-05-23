@@ -191,7 +191,7 @@ export function JournalView({ onInjectToWorkshop }) {
                       {/* Original Reflection */}
                       <div className="space-y-1">
                         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">Original Entry</p>
-                        <p className="text-sm text-white/80 leading-relaxed font-light italic">"{entry.text}"</p>
+                        <p className="text-sm text-white/80 leading-relaxed font-light italic">&quot;{entry.text}&quot;</p>
                       </div>
 
                       {/* AI Summary */}
@@ -236,7 +236,7 @@ export function JournalView({ onInjectToWorkshop }) {
                         </div>
                         <h4 className="text-base font-semibold text-white">Inject Matched Plan</h4>
                         <p className="text-xs text-white/55 leading-relaxed">
-                          Automatically configure the audio workshop with target parameters matched to this reflection's intent.
+                          Automatically configure the audio workshop with target parameters matched to this reflection&apos;s intent.
                         </p>
                       </div>
 

@@ -273,7 +273,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
               <span className="text-xs font-mono tracking-widest text-emerald-300 uppercase">
-                Success: Custom tone "{workshopSavedTone.name}" saved to Neural Archive.
+                Success: Custom tone &quot;{workshopSavedTone.name}&quot; saved to Neural Archive.
               </span>
             </div>
             <button 

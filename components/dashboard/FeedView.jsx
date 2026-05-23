@@ -50,7 +50,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
       }
     }
     loadLikes();
-  }, [feed, profile?.id]);
+  }, [feed, profile?.id, supabase]);
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
