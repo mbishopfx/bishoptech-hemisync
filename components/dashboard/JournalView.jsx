@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
-export function JournalView({ onInjectToWorkshop }) {
+export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
   const [entries, setEntries] = useState([]);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(true);
@@ -30,8 +30,8 @@ export function JournalView({ onInjectToWorkshop }) {
     fetchEntries();
   }, []);
 
-  const handleSubmitJournal = async (e) => {
-    e.preventDefault();
+  const handleSubmitJournal = async (e, shouldGenerateBeat = false) => {
+    if (e) e.preventDefault();
     if (!text.trim()) return;
 
     setAnalyzing(true);
@@ -48,8 +48,20 @@ export function JournalView({ onInjectToWorkshop }) {
         throw new Error(data?.error || 'Database error while saving reflection');
       }
 
+      const savedEntry = data.journal_entry;
+      const originalText = text.trim();
       setText('');
       await fetchEntries();
+
+      if (shouldGenerateBeat && savedEntry) {
+        const intentMeta = getIntentBadgeMeta(savedEntry.intent);
+        if (onDirectGenerate) {
+          onDirectGenerate({
+            state: intentMeta.state,
+            snippet: originalText.slice(0, 60)
+          });
+        }
+      }
     } catch (err) {
       setError(err.message || 'Analysis failed');
     } finally {
@@ -67,7 +79,7 @@ export function JournalView({ onInjectToWorkshop }) {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 pb-12">
       {/* Journal Reflection Editor */}
       <Card className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden group hover:border-cyan-500/20 transition-all">
         <div className="absolute top-0 right-0 w-[450px] h-[150px] bg-cyan-500/[0.03] blur-[60px] pointer-events-none" />
@@ -80,7 +92,7 @@ export function JournalView({ onInjectToWorkshop }) {
           <span className="material-symbols-outlined text-cyan-500 text-2xl">edit_note</span>
         </div>
 
-        <form onSubmit={handleSubmitJournal} className="space-y-4">
+        <div className="space-y-4">
           <Textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -95,27 +107,40 @@ export function JournalView({ onInjectToWorkshop }) {
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-white/5">
             <span className="text-[10px] font-mono text-white/30 tracking-wider">Supports real-time neuro-intent analysis</span>
-            <Button
-              type="submit"
-              disabled={analyzing || !text.trim()}
-              className="rounded-full bg-white text-black hover:bg-cyan-400 font-semibold px-6 transition-all flex items-center gap-2"
-            >
-              {analyzing ? (
-                <>
-                  <span className="material-symbols-outlined animate-spin text-sm">sync</span>
-                  Analyzing Intent...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-sm">sensors</span>
-                  Commit Reflection
-                </>
-              )}
-            </Button>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                onClick={(e) => handleSubmitJournal(e, false)}
+                disabled={analyzing || !text.trim()}
+                variant="ghost"
+                className="rounded-full text-white/60 hover:text-white border border-white/5 hover:bg-white/5"
+              >
+                Save Reflection Only
+              </Button>
+              
+              <Button
+                type="button"
+                onClick={(e) => handleSubmitJournal(e, true)}
+                disabled={analyzing || !text.trim()}
+                className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6 transition-all flex items-center gap-2"
+              >
+                {analyzing ? (
+                  <>
+                    <span className="material-symbols-outlined animate-spin text-sm">sync</span>
+                    Analyzing Intent...
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-sm">sensors</span>
+                    Analyze & Generate Beat
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-        </form>
+        </div>
 
         {/* Cyber-neon laser scanning overlay during analysis */}
         {analyzing && (
@@ -240,16 +265,27 @@ export function JournalView({ onInjectToWorkshop }) {
                         </p>
                       </div>
 
-                      <div className="mt-6">
+                      <div className="mt-6 space-y-2">
+                        <Button
+                          onClick={() => onDirectGenerate?.({
+                            state: intentMeta.state,
+                            snippet: entry.text.slice(0, 60)
+                          })}
+                          className="w-full rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold tracking-wider text-[10px] font-mono uppercase transition-all py-2.5 flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(6,182,212,0.2)]"
+                        >
+                          Generate Now
+                          <span className="material-symbols-outlined text-xs">bolt</span>
+                        </Button>
                         <Button
                           onClick={() => onInjectToWorkshop?.({
                             state: intentMeta.state,
                             notes: entry.summary || entry.text
                           })}
-                          className="w-full rounded-full border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500 hover:text-black font-semibold tracking-wider text-xs uppercase transition-all py-3 flex items-center justify-center gap-2"
+                          variant="ghost"
+                          className="w-full rounded-full border border-white/5 text-white/60 hover:text-white text-[10px] font-mono uppercase transition-all py-2.5 flex items-center justify-center gap-2"
                         >
-                          Synthesize File
-                          <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                          Load in Composer
+                          <span className="material-symbols-outlined text-xs">arrow_forward</span>
                         </Button>
                       </div>
                     </div>
@@ -263,3 +299,4 @@ export function JournalView({ onInjectToWorkshop }) {
     </div>
   );
 }
+

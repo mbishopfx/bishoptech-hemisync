@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,6 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 export function ProfileView({ profile, onUpdateProfile }) {
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
   const [username, setUsername] = useState(profile?.username || '');
-  const [fullName, setFullName] = useState(profile?.full_name || '');
   const [bio, setBio] = useState(profile?.bio || '');
   const [coverUrl, setCoverUrl] = useState(profile?.cover_url || '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
@@ -22,12 +21,151 @@ export function ProfileView({ profile, onUpdateProfile }) {
   const [tiktokUrl, setTiktokUrl] = useState(profile?.tiktok_url || '');
 
   const [saving, setSaving] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // Image Cropper States
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropFile, setCropFile] = useState(null);
+  const [cropFileExt, setCropFileExt] = useState('png');
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [offsetStart, setOffsetStart] = useState({ x: 0, y: 0 });
+  const [savingCrop, setSavingCrop] = useState(false);
+
+  const canvasRef = useRef(null);
+  const imgRef = useRef(null);
+
   const supabase = getSupabaseBrowserClient();
+
+  // Draw Canvas whenever image, zoom, or offset changes
+  useEffect(() => {
+    if (showCropper && imgRef.current) {
+      drawCanvas();
+    }
+  }, [showCropper, zoom, offset]);
+
+  const drawCanvas = () => {
+    if (!canvasRef.current || !imgRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const img = imgRef.current;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Cover calculations to center image initially
+    const scaleWidth = canvas.width / img.width;
+    const scaleHeight = canvas.height / img.height;
+    const minScale = Math.max(scaleWidth, scaleHeight);
+
+    const baseScale = minScale * zoom;
+    const sw = img.width * baseScale;
+    const sh = img.height * baseScale;
+
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    ctx.drawImage(img, cx - sw / 2 + offset.x, cy - sh / 2 + offset.y, sw, sh);
+  };
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    const clientX = e.clientX || e.touches?.[0]?.clientX;
+    const clientY = e.clientY || e.touches?.[0]?.clientY;
+    setDragStart({ x: clientX, y: clientY });
+    setOffsetStart({ ...offset });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const clientX = e.clientX || e.touches?.[0]?.clientX;
+    const clientY = e.clientY || e.touches?.[0]?.clientY;
+    const dx = clientX - dragStart.x;
+    const dy = clientY - dragStart.y;
+    setOffset({ x: offsetStart.x + dx, y: offsetStart.y + dy });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleAvatarSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setError('');
+    setMessage('');
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        imgRef.current = img;
+        setZoom(1);
+        setOffset({ x: 0, y: 0 });
+        setCropFile(file);
+        setCropFileExt(file.name.split('.').pop() || 'png');
+        setShowCropper(true);
+        // Delay drawing slightly so React DOM has time to mount the canvas
+        setTimeout(drawCanvas, 100);
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveCrop = async () => {
+    if (!canvasRef.current || !profile?.id) return;
+    setSavingCrop(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const canvas = canvasRef.current;
+      canvas.toBlob(async (blob) => {
+        if (!blob) throw new Error('Failed to generate image block');
+
+        const fileName = `${profile.id}/avatar-${Date.now()}.${cropFileExt}`;
+
+        const { data, error: uploadError } = await supabase.storage
+          .from('tone-images')
+          .upload(fileName, blob, {
+            contentType: `image/${cropFileExt}`,
+            cacheControl: '3600',
+            upsert: true
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('tone-images')
+          .getPublicUrl(data.path);
+
+        setAvatarUrl(publicUrl);
+        await saveProfilePatch({ avatar_url: publicUrl });
+        setMessage('Avatar updated successfully.');
+        setShowCropper(false);
+      }, `image/${cropFileExt}`);
+    } catch (err) {
+      console.error('Avatar upload crop error:', err);
+      setError(`Failed to save cropped avatar: ${err.message}`);
+    } finally {
+      setSavingCrop(false);
+    }
+  };
+
+  const handleCancelCrop = () => {
+    setShowCropper(false);
+    setCropFile(null);
+  };
 
   const handleUsernameChange = (e) => {
     // Sanitizing username to match DB standards (lowercase, allowed special chars)
@@ -39,7 +177,6 @@ export function ProfileView({ profile, onUpdateProfile }) {
     const file = e.target.files?.[0];
     if (!file || !profile?.id) return;
 
-    if (type === 'avatar') setUploadingAvatar(true);
     if (type === 'cover') setUploadingCover(true);
     setError('');
     setMessage('');
@@ -62,12 +199,7 @@ export function ProfileView({ profile, onUpdateProfile }) {
         .from('tone-images')
         .getPublicUrl(data.path);
 
-      if (type === 'avatar') {
-        setAvatarUrl(publicUrl);
-        // Instantly patch avatar_url
-        await saveProfilePatch({ avatar_url: publicUrl });
-        setMessage('Avatar updated successfully.');
-      } else {
+      if (type === 'cover') {
         setCoverUrl(publicUrl);
         // Instantly patch cover_url
         await saveProfilePatch({ cover_url: publicUrl });
@@ -77,7 +209,6 @@ export function ProfileView({ profile, onUpdateProfile }) {
       console.error('File upload error:', err);
       setError(`Failed to upload ${type}: ${err.message || err.error_description}`);
     } finally {
-      setUploadingAvatar(false);
       setUploadingCover(false);
     }
   };
@@ -107,7 +238,6 @@ export function ProfileView({ profile, onUpdateProfile }) {
       const patch = {
         display_name: displayName.trim(),
         username: username.trim(),
-        full_name: fullName.trim(),
         bio: bio.trim(),
         website_url: websiteUrl.trim(),
         x_url: xUrl.trim(),
@@ -164,12 +294,8 @@ export function ProfileView({ profile, onUpdateProfile }) {
 
                 {/* Upload Avatar Trigger */}
                 <label className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                  {uploadingAvatar ? (
-                    <span className="material-symbols-outlined text-white animate-spin text-xl">sync</span>
-                  ) : (
-                    <span className="material-symbols-outlined text-white text-xl">photo_camera</span>
-                  )}
-                  <input type="file" onChange={(e) => handleFileUpload(e, 'avatar')} accept="image/*" className="hidden" disabled={uploadingAvatar} />
+                  <span className="material-symbols-outlined text-white text-xl">photo_camera</span>
+                  <input type="file" onChange={handleAvatarSelect} accept="image/*" className="hidden" />
                 </label>
               </div>
 
@@ -236,15 +362,15 @@ export function ProfileView({ profile, onUpdateProfile }) {
             <div className="space-y-3 pt-2">
               <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex justify-between items-center text-xs">
                 <span className="text-white/40">Membership Plan</span>
-                <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 font-mono text-[10px] text-cyan-400 uppercase tracking-wider">{profile?.plan || 'Free'}</span>
+                <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 font-mono text-[10px] text-cyan-400 uppercase tracking-wider">{profile?.subscription_tier || 'Free'}</span>
               </div>
               <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex justify-between items-center text-xs">
-                <span className="text-white/40">Total Sessions Created</span>
-                <span className="font-mono text-white/80">{profile?.session_count || 0}</span>
+                <span className="text-white/40">Total Sync Waves</span>
+                <span className="font-mono text-white/80">{profile?.generation_count || 0}</span>
               </div>
               <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex justify-between items-center text-xs">
-                <span className="text-white/40">Library Generations Used</span>
-                <span className="font-mono text-white/80">{profile?.free_saved_generations_used || 0} / {profile?.free_saved_generations_limit || 1}</span>
+                <span className="text-white/40">Active Status</span>
+                <span className="font-mono text-cyan-400 uppercase tracking-widest text-[10px]">OPERATIONAL</span>
               </div>
             </div>
           </div>
@@ -277,11 +403,7 @@ export function ProfileView({ profile, onUpdateProfile }) {
             </label>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <label className="block space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Full Name</span>
-              <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="e.g. Matthew Bishop" className="bg-black/20 border-white/10" />
-            </label>
+          <div className="grid gap-6 md:grid-cols-1">
             <label className="block space-y-2">
               <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Personal Website URL</span>
               <Input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} placeholder="https://myspace.dev" className="bg-black/20 border-white/10" />
@@ -349,6 +471,91 @@ export function ProfileView({ profile, onUpdateProfile }) {
           </div>
         </form>
       </Card>
+
+      {/* Circular Drag-and-Pan Image Cropper Modal */}
+      {showCropper && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <Card className="max-w-md w-full bg-zinc-950/90 border border-cyan-500/30 p-6 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(6,182,212,0.15)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[150px] h-[50px] bg-cyan-500/[0.05] blur-[35px] pointer-events-none" />
+            
+            <div className="text-center space-y-1">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Positioning calibration</p>
+              <h3 className="text-xl font-light text-white">Adjust Profile Picture</h3>
+            </div>
+            
+            {/* Cropper Viewport */}
+            <div className="flex justify-center">
+              <div className="relative size-[260px] rounded-full overflow-hidden border-2 border-cyan-500/80 shadow-[0_0_30px_rgba(6,182,212,0.2)] bg-zinc-900 cursor-move select-none">
+                <canvas
+                  ref={canvasRef}
+                  width={260}
+                  height={260}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseLeave}
+                  onTouchStart={handleMouseDown}
+                  onTouchMove={handleMouseMove}
+                  onTouchEnd={handleMouseUp}
+                  className="size-full"
+                />
+              </div>
+            </div>
+            
+            {/* Controls */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-[10px] font-mono uppercase text-white/40">
+                  <span>Zoom</span>
+                  <span>{Math.round(zoom * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.01"
+                  value={zoom}
+                  onChange={(e) => setZoom(parseFloat(e.target.value))}
+                  className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
+              </div>
+              <p className="text-[9px] font-mono text-center text-white/30 uppercase tracking-widest">
+                DRAG OR TOUCH TO PAN • SLIDE TO SCALE
+              </p>
+            </div>
+            
+            {/* Actions */}
+            <div className="flex gap-3 justify-end pt-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCancelCrop}
+                className="rounded-full border border-white/5 hover:bg-white/5 text-white/70"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleSaveCrop}
+                disabled={savingCrop}
+                className="rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-6 flex items-center gap-2"
+              >
+                {savingCrop ? (
+                  <>
+                    <span className="material-symbols-outlined animate-spin text-sm">sync</span>
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-sm">crop</span>
+                    Save Avatar
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

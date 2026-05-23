@@ -1,4 +1,4 @@
-CREATE TABLE public.agentic_tones (
+CREATE TABLE IF NOT EXISTS public.agentic_tones (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT now(),
     name TEXT NOT NULL,
@@ -16,4 +16,4 @@ CREATE TABLE public.agentic_tones (
 );
 
 -- Index for mood matching
-CREATE INDEX idx_agentic_tones_state ON public.agentic_tones(state);
+CREATE INDEX IF NOT EXISTS idx_agentic_tones_state ON public.agentic_tones(state);

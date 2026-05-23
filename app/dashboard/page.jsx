@@ -173,6 +173,26 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDirectJournalGenerate = async ({ state, snippet }) => {
+    const composerPayload = {
+      audioPayload: {
+        targetState: state,
+        lengthSec: 600,
+        baseFreqHz: state === 'delta' ? 150 : 220,
+        focusLevel: 5,
+        breathGuide: { pattern: 'coherent-5.5' }
+      },
+      metadata: {
+        name: `Journal Wave (${state.toUpperCase()})`,
+        description: `Binaural wave generated from conscious reflection: "${snippet}..."`,
+        visibility: 'private',
+        backgroundMode: 'none'
+      }
+    };
+    await handleWorkshopGenerate(composerPayload);
+  };
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -384,6 +404,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
               >
                 <JournalView
+                  onDirectGenerate={handleDirectJournalGenerate}
                   onInjectToWorkshop={(params) => {
                     setSelectedSeedTone({
                       name: `Journal Matched Resonance`,

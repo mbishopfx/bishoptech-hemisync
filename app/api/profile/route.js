@@ -10,7 +10,6 @@ function cleanProfilePatch(body = {}) {
   const allowed = [
     'username',
     'display_name',
-    'full_name',
     'bio',
     'avatar_url',
     'cover_url',
@@ -34,7 +33,6 @@ function cleanProfilePatch(body = {}) {
     patch.username = patch.username.toLowerCase().replace(/[^a-z0-9_.-]/g, '').slice(0, 32);
   }
 
-  patch.updated_at = new Date().toISOString();
   return patch;
 }
 

@@ -86,6 +86,11 @@ export function WorkshopComposer({
   const [backgroundMode, setBackgroundMode] = useState('preset');
   const [visibility, setVisibility] = useState('private');
 
+  // Interactive console mixer states
+  const [binauralVol, setBinauralVol] = useState(80);
+  const [breathVol, setBreathVol] = useState(70);
+  const [ambientVol, setAmbientVol] = useState(50);
+
   const selectedPreset = useMemo(
     () => JourneyPresetOptions.find((preset) => preset.id === selectedPresetId) || JourneyPresetOptions[0],
     [selectedPresetId]
@@ -159,19 +164,22 @@ export function WorkshopComposer({
     onStartGenerate({ audioPayload, metadata });
   };
 
+  // Knob rotation degree math (maps 100-1000 Hz to -135deg to +135deg)
+  const rotateDegree = ((baseFreqHz - 100) / 900) * 270 - 135;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-12">
       <div className="space-y-4">
         <div>
-          <p className="section-label">Workshop</p>
-          <h2 className="section-title mt-2 text-4xl text-[var(--text-primary)]">Create your own HemiSync file</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--text-secondary)]">
-            Pick a brain state, seed it from a library tone if you want, and render a custom session into the library.
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Synthesis Workshop</p>
+          <h2 className="mt-2 text-4xl font-light text-white tracking-tight">Create your own HemiSync file</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400 font-light">
+            Select a target brain wave profile, map customized respiration patterns, and trigger background server synthesis.
           </p>
         </div>
 
         {seedTone && (
-          <Card className="border-cyan-500/20 bg-cyan-500/10 p-5">
+          <Card className="border-cyan-500/20 bg-cyan-500/10 p-5 rounded-3xl backdrop-blur-md">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-2 text-cyan-300 flex items-center justify-center">
@@ -183,7 +191,7 @@ export function WorkshopComposer({
                   <p className="mt-1 text-sm text-white/55">{seedMeta.label} · {seedMeta.description}</p>
                 </div>
               </div>
-              <Button variant="secondary" onClick={() => applyBrainStateDefaults(seedBrainState)}>
+              <Button variant="secondary" className="rounded-full font-mono text-[10px] uppercase tracking-wider bg-white/15 text-white hover:bg-white hover:text-black border border-white/5 transition-all" onClick={() => applyBrainStateDefaults(seedBrainState)}>
                 Use this state
               </Button>
             </div>
@@ -192,8 +200,9 @@ export function WorkshopComposer({
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <Card className="space-y-6 p-6">
-          <div className="flex items-center justify-between gap-4">
+        {/* Left Column: Configuration Parameters */}
+        <Card className="space-y-6 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
+          <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
             <div>
               <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Brain state</p>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -202,19 +211,19 @@ export function WorkshopComposer({
                 ))}
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Current</p>
-              <p className="mt-1 text-sm text-cyan-300">{getBrainStateMeta(brainState).label}</p>
+            <div className="text-right shrink-0">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Current Profile</p>
+              <p className="mt-1 text-xs font-mono tracking-wider font-bold text-cyan-300 uppercase">{getBrainStateMeta(brainState).label}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <label className="block space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Preset</span>
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Target Preset Blueprint</span>
               <select
                 value={selectedPresetId}
                 onChange={(event) => setSelectedPresetId(event.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none"
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
               >
                 {JourneyPresetOptions.map((preset) => (
                   <option key={preset.id} value={preset.id}>{preset.name}</option>
@@ -225,27 +234,27 @@ export function WorkshopComposer({
             <div className="grid gap-4 md:grid-cols-2">
               <label className="block space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session name</span>
-                <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="My custom session" />
+                <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="My custom session" className="bg-black/20 border-white/10 rounded-2xl" />
               </label>
               <label className="block space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Visibility</span>
                 <select
                   value={visibility}
                   onChange={(event) => setVisibility(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
                 >
-                  <option value="private">Private</option>
-                  <option value="public">Public</option>
+                  <option value="private">Private (Library Only)</option>
+                  <option value="public">Public (Show on Global Feed)</option>
                 </select>
               </label>
             </div>
 
             <label className="block space-y-2">
               <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Description</span>
-              <Textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Describe the session and its intended state." />
+              <Textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Describe the session and its intended state." className="bg-black/20 border-white/10 rounded-2xl" />
             </label>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2">
               <label className="block space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Length</span>
                 <Input
@@ -254,73 +263,64 @@ export function WorkshopComposer({
                   step={1}
                   value={lengthMinutes}
                   onChange={(event) => setLengthMinutes(Number(event.target.value || 0))}
+                  className="bg-black/20 border-white/10 rounded-2xl"
                 />
-                <p className="text-xs text-white/25">{formatMinutesLabel(lengthMinutes)}</p>
+                <p className="text-[10px] text-zinc-500 font-mono">{formatMinutesLabel(lengthMinutes)}</p>
               </label>
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Base frequency</span>
-                <Input
-                  type="number"
-                  min={100}
-                  max={1000}
-                  step={1}
-                  value={baseFreqHz}
-                  onChange={(event) => setBaseFreqHz(Number(event.target.value || 0))}
-                />
-                <p className="text-xs text-white/25">Carrier tone in Hz</p>
-              </label>
+              
               <label className="block space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Focus level</span>
                 <select
                   value={focusLevel}
                   onChange={(event) => setFocusLevel(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
                 >
-                  <option value="F10">F10</option>
-                  <option value="F12">F12</option>
-                  <option value="F15">F15</option>
+                  <option value="F10">Focus 10 (Mind Awake / Body Asleep)</option>
+                  <option value="F12">Focus 12 (Expanded Awareness)</option>
+                  <option value="F15">Focus 15 (No-Time / Pure Meditation)</option>
                 </select>
               </label>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <label className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <label className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 cursor-pointer hover:border-cyan-500/20 transition-all">
                 <div>
-                  <p className="text-sm text-white">Breath guide</p>
-                  <p className="text-xs text-white/30">Gentle pacing for settling</p>
+                  <p className="text-sm text-white">Breath guide pacing</p>
+                  <p className="text-xs text-white/30 font-light mt-0.5">Tactile pacing guide for target brain wave settling</p>
                 </div>
-                <input type="checkbox" checked={breathEnabled} onChange={(event) => setBreathEnabled(event.target.checked)} />
+                <input type="checkbox" checked={breathEnabled} onChange={(event) => setBreathEnabled(event.target.checked)} className="size-4 accent-cyan-400 cursor-pointer" />
               </label>
               <label className="block space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Breath pattern</span>
                 <select
                   value={breathPattern}
                   onChange={(event) => setBreathPattern(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none"
+                  disabled={!breathEnabled}
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <option value="coherent-5.5">Coherent 5.5</option>
-                  <option value="box">Box</option>
-                  <option value="4-7-8">4-7-8</option>
+                  <option value="coherent-5.5">Coherent (5.5s In / 5.5s Out)</option>
+                  <option value="box">Box (4s In / 4s Hold / 4s Out / 4s Hold)</option>
+                  <option value="4-7-8">4-7-8 Restful Pattern</option>
                 </select>
               </label>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Background</span>
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Background Environment</span>
                 <select
                   value={backgroundMode}
                   onChange={(event) => setBackgroundMode(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none"
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
                 >
-                  <option value="preset">Preset background</option>
-                  <option value="ocean">Ocean bed</option>
+                  <option value="preset">Preset Ambient Blueprint</option>
+                  <option value="ocean">Ocean Tide Bed</option>
                 </select>
               </label>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Blueprint</p>
-                <p className="mt-2 text-sm text-white/70">{selectedPreset?.name}</p>
-                <p className="mt-1 text-xs text-white/35">{selectedPreset?.summary}</p>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Active Blueprint</p>
+                <p className="mt-2 text-xs font-semibold text-white/70">{selectedPreset?.name}</p>
+                <p className="mt-1 text-[10px] text-white/35 font-light leading-relaxed">{selectedPreset?.summary}</p>
               </div>
             </div>
           </div>
@@ -331,44 +331,199 @@ export function WorkshopComposer({
             </div>
           )}
 
-          <div className="flex flex-wrap gap-3">
-            <Button onClick={handleGenerate} disabled={generatingStatus === 'rendering' || generatingStatus === 'saving'}>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Button 
+              onClick={handleGenerate} 
+              disabled={generatingStatus === 'rendering' || generatingStatus === 'saving'}
+              className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6 py-5 tracking-wider text-xs uppercase"
+            >
               {generatingStatus === 'rendering' || generatingStatus === 'saving' ? (
                 <span className="material-symbols-outlined text-sm animate-spin mr-2">sync</span>
               ) : (
-                <span className="material-symbols-outlined text-sm mr-2">sparkles</span>
+                <span className="material-symbols-outlined text-sm mr-2 font-bold">sparkles</span>
               )}
-              {generatingStatus === 'rendering' ? 'Rendering...' : generatingStatus === 'saving' ? 'Saving...' : 'Generate and save file'}
+              {generatingStatus === 'rendering' ? 'Synthesizing...' : generatingStatus === 'saving' ? 'Saving Wave...' : 'Initiate Background Render'}
             </Button>
           </div>
         </Card>
 
+        {/* Right Column: Tactical Sound Desk & Specs */}
         <div className="space-y-6">
-          <Card className="space-y-4 p-6">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session blueprint</p>
-            <div className="space-y-3 text-sm text-white/65">
-              <p>Preset: {selectedPreset?.name}</p>
-              <p>State: {getBrainStateMeta(brainState).label}</p>
-              <p>Length: {Math.round(lengthMinutes)} minutes</p>
-              <p>Base frequency: {Number(baseFreqHz || 0)} Hz</p>
-              <p>Focus: {focusLevel}</p>
-              <p>Breath: {breathEnabled ? breathPattern : 'Off'}</p>
-              <p>Background: {backgroundMode}</p>
+          {/* Base Frequency Rotary Knob Card */}
+          <Card className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl flex flex-col items-center justify-center relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/[0.02] blur-[30px] pointer-events-none" />
+            
+            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-6">Base Frequency Dial</span>
+            
+            <div className="relative size-32 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-inner group-hover:border-cyan-500/30 transition-colors">
+              {/* Inner Rotating Dial Pointer */}
+              <div 
+                className="absolute size-28 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center cursor-pointer shadow-lg active:scale-95 transition-transform"
+                style={{ transform: `rotate(${rotateDegree}deg)` }}
+              >
+                {/* Pointer marker dot */}
+                <div className="absolute top-2.5 size-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+              </div>
+              
+              {/* Value Indicator Screen */}
+              <div className="absolute pointer-events-none text-center">
+                <span className="text-xl font-mono font-bold text-white tracking-tighter">{baseFreqHz}</span>
+                <span className="block text-[8px] text-zinc-500 font-mono tracking-widest uppercase mt-0.5">Hz</span>
+              </div>
+            </div>
+
+            {/* Slider to shift dials */}
+            <div className="w-full mt-6 space-y-2">
+              <input 
+                type="range"
+                min={100}
+                max={1000}
+                value={baseFreqHz}
+                onChange={(e) => setBaseFreqHz(Number(e.target.value))}
+                className="w-full h-1.5 bg-black/60 accent-cyan-400 rounded-lg outline-none cursor-pointer"
+              />
+              <div className="flex items-center justify-between text-[8px] font-mono text-zinc-500 uppercase tracking-widest px-1">
+                <span>100 Hz</span>
+                <span>Carrier Tone</span>
+                <span>1000 Hz</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Premium Vertical Mixer Console */}
+          <Card className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl relative overflow-hidden space-y-6">
+            <div className="absolute top-0 right-0 w-[200px] h-[80px] bg-cyan-500/[0.02] blur-[40px] pointer-events-none" />
+            
+            <div className="flex items-center justify-between border-b border-white/5 pb-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Audio Desk</p>
+                <h3 className="text-base font-semibold text-white mt-0.5">Frequency Mixer</h3>
+              </div>
+              <span className="material-symbols-outlined text-cyan-400 text-xl animate-pulse">tune</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              {/* Channel 1: Binaural Wave */}
+              <div className="flex flex-col items-center p-3 bg-zinc-950/40 border border-white/5 rounded-2xl">
+                <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">BINAURAL</span>
+                <div className="h-36 flex items-center justify-center my-4">
+                  <input 
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={binauralVol}
+                    onChange={(e) => setBinauralVol(Number(e.target.value))}
+                    style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+                    className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none"
+                  />
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-mono text-cyan-300 font-bold">{binauralVol}%</span>
+                  <span className="block text-[8px] text-zinc-500 font-mono mt-0.5">Carrier</span>
+                </div>
+              </div>
+
+              {/* Channel 2: Respiration */}
+              <div className={`flex flex-col items-center p-3 border rounded-2xl transition-all ${
+                breathEnabled ? 'bg-zinc-950/40 border-white/5' : 'bg-zinc-950/10 border-white/5 opacity-40'
+              }`}>
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">BREATH</span>
+                  <input 
+                    type="checkbox" 
+                    checked={breathEnabled} 
+                    onChange={(e) => setBreathEnabled(e.target.checked)} 
+                    className="size-3 accent-cyan-400 cursor-pointer"
+                  />
+                </div>
+                <div className="h-36 flex items-center justify-center my-4">
+                  <input 
+                    type="range"
+                    min={0}
+                    max={100}
+                    disabled={!breathEnabled}
+                    value={breathVol}
+                    onChange={(e) => setBreathVol(Number(e.target.value))}
+                    style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+                    className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none disabled:opacity-30"
+                  />
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-mono text-cyan-300 font-bold">{breathVol}%</span>
+                  <span className="block text-[8px] text-zinc-500 font-mono mt-0.5 truncate max-w-[50px]">{breathPattern.split('-')[0].toUpperCase()}</span>
+                </div>
+              </div>
+
+              {/* Channel 3: Ambient */}
+              <div className="flex flex-col items-center p-3 bg-zinc-950/40 border border-white/5 rounded-2xl">
+                <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">AMBIENT</span>
+                <div className="h-36 flex items-center justify-center my-4">
+                  <input 
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={ambientVol}
+                    onChange={(e) => setAmbientVol(Number(e.target.value))}
+                    style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+                    className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none"
+                  />
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-mono text-cyan-300 font-bold">{ambientVol}%</span>
+                  <span className="block text-[8px] text-zinc-500 font-mono mt-0.5 truncate max-w-[50px]">{backgroundMode === 'ocean' ? 'OCEAN' : 'PRESET'}</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Specifications Output Panel */}
+          <Card className="space-y-4 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session Blueprint Specifications</p>
+            <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-xs font-light text-zinc-300">
+              <div>
+                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Target Profile</span>
+                <span className="font-semibold text-white mt-0.5 block">{selectedPreset?.name}</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Carrier Mode</span>
+                <span className="font-semibold text-cyan-300 mt-0.5 block uppercase">{getBrainStateMeta(brainState).label}</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Carrier Base</span>
+                <span className="font-semibold text-white mt-0.5 block">{baseFreqHz} Hz</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Duration length</span>
+                <span className="font-semibold text-white mt-0.5 block">{lengthMinutes} Minutes</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Entrainment Pacing</span>
+                <span className="font-semibold text-white mt-0.5 block">{breathEnabled ? breathPattern : 'Off'}</span>
+              </div>
+              <div>
+                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Focus Threshold</span>
+                <span className="font-semibold text-white mt-0.5 block">{focusLevel}</span>
+              </div>
             </div>
           </Card>
 
           {generatingResult && (
-            <Card className="space-y-4 p-6">
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-300">Rendered file</p>
-              <h3 className="text-xl font-medium text-white">{generatingResult.journey?.name || name || 'Custom session'}</h3>
-              <p className="text-sm text-white/45">Artifact {generatingResult.artifactId}</p>
-              <div className="space-y-2 text-sm text-white/65">
-                <p>WAV: {generatingResult.assets?.wav?.url || generatingResult.wav || 'Not available'}</p>
-                <p>WebM: {generatingResult.assets?.webm?.url || generatingResult.webm || 'Not available'}</p>
+            <Card className="space-y-4 p-6 bg-zinc-900/40 border-emerald-500/20 backdrop-blur-3xl rounded-3xl relative overflow-hidden animate-pulse">
+              <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-emerald-500/[0.01] blur-[30px] pointer-events-none" />
+              
+              <div className="flex items-center gap-2 text-emerald-400">
+                <span className="material-symbols-outlined text-lg">check_circle</span>
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em]">Compiled Wave</span>
+              </div>
+              <h3 className="text-base font-semibold text-white mt-1">{generatingResult.journey?.name || name || 'Custom session'}</h3>
+              
+              <div className="space-y-2 text-xs font-light text-zinc-400 border-t border-white/5 pt-3">
+                <p className="flex justify-between"><span className="text-zinc-500">Asset File:</span> <span className="font-mono text-white text-[10px] truncate max-w-[180px]">{generatingResult.assets?.wav?.url || generatingResult.wav || 'Not available'}</span></p>
+                <p className="flex justify-between"><span className="text-zinc-500">Format Profile:</span> <span className="text-white">WAV Stereophonic HemiSync</span></p>
               </div>
               {generatingSavedTone && (
-                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
-                  Saved to library as {generatingSavedTone.name}
+                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-[10px] font-mono uppercase tracking-widest text-emerald-300 text-center">
+                  Successfully stored in Neural Archive
                 </div>
               )}
             </Card>
@@ -378,3 +533,4 @@ export function WorkshopComposer({
     </div>
   );
 }
+
