@@ -1,4 +1,29 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { createClient } from '@supabase/supabase-js';
+
+function loadLocalEnv() {
+  const envFiles = ['.env.local', '.env.production.local', '.env.development.local', '.env'];
+  for (const fileName of envFiles) {
+    const filePath = path.resolve(process.cwd(), fileName);
+    if (!fs.existsSync(filePath)) continue;
+
+    const text = fs.readFileSync(filePath, 'utf8');
+    for (const line of text.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#') || !trimmed.includes('=')) continue;
+      const index = trimmed.indexOf('=');
+      const key = trimmed.slice(0, index).trim();
+      const value = trimmed.slice(index + 1).trim().replace(/^['"]|['"]$/g, '');
+      if (key && process.env[key] == null) {
+        process.env[key] = value;
+      }
+    }
+  }
+}
+
+// Load envs
+loadLocalEnv();
 
 const DEFAULT_EMAIL = 'matt@bishoptech.dev';
 const DEFAULT_PASSWORD = 'Blameit1!';
@@ -49,9 +74,8 @@ async function main() {
     .from('profiles')
     .upsert({
       id: userId,
-      email,
-      full_name: 'Admin',
-      updated_at: new Date().toISOString()
+      display_name: 'Admin',
+      username: 'admin'
     }, { onConflict: 'id' });
 
   if (profile.error) {
