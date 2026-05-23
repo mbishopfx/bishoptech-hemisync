@@ -14,7 +14,7 @@ export async function GET(req) {
 
     const supabase = getSupabaseAdmin();
 
-    const [{ data: generated, error: generatedError }, { data: saved, error: savedError }] = await Promise.all([
+    const [{ data: generated, error: generatedError }, { data: saved, error: savedError }, { data: serenity, error: serenityError }] = await Promise.all([
       supabase
         .from('agentic_tones')
         .select('id,name,state,target_hz,base_freq_hz,noise_type,duration_sec,wav_url,webm_url,created_at')
@@ -23,11 +23,18 @@ export async function GET(req) {
         .from('saved_tones')
         .select(savedToneSelect())
         .eq('user_id', user.id)
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('saved_tones')
+        .select(savedToneSelect())
+        .eq('visibility', 'public')
+        .eq('frequency_plan->>sourceType', 'serenity')
         .order('created_at', { ascending: false })
     ]);
 
     if (generatedError) throw generatedError;
     if (savedError) throw savedError;
+    if (serenityError) throw serenityError;
 
     const generatedTones = (generated || []).map((tone) => ({
       ...normalizeLibraryTone({
@@ -42,8 +49,14 @@ export async function GET(req) {
       visibility: 'public'
     }));
 
+    const serenityTones = (serenity || []).map((tone) => ({
+      ...normalizeLibraryTone(tone),
+      sourceType: 'serenity',
+      source_type: 'serenity'
+    }));
+
     const savedTones = (saved || []).map((tone) => normalizeLibraryTone(tone));
-    const tones = [...generatedTones, ...savedTones];
+    const tones = [...generatedTones, ...serenityTones, ...savedTones];
     const tonesByState = groupLibraryTonesByState(tones);
 
     return NextResponse.json({ ok: true, tones, tonesByState, stateOrder: BRAIN_STATE_ORDER });

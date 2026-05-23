@@ -69,7 +69,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
         // 1. Fetch Serenity Seeded Catalog
         const { data: serenity, error: serenityErr } = await supabase
           .from('saved_tones')
-          .select('*, profiles(id, username, display_name, avatar_url)')
+          .select('*, profiles:profiles!saved_tones_user_id_fkey(id, username, display_name, avatar_url)')
           .eq('visibility', 'public')
           .eq('frequency_plan->>sourceType', 'serenity')
           .order('created_at', { ascending: true });
@@ -81,7 +81,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
         // 2. Fetch Collective Waves (most recent 50 public generated custom tones)
         const { data: collective, error: collectiveErr } = await supabase
           .from('saved_tones')
-          .select('*, profiles(id, username, display_name, avatar_url)')
+          .select('*, profiles:profiles!saved_tones_user_id_fkey(id, username, display_name, avatar_url)')
           .eq('visibility', 'public')
           .neq('frequency_plan->>sourceType', 'serenity')
           .order('created_at', { ascending: false })

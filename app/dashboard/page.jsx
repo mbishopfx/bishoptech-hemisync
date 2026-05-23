@@ -92,6 +92,7 @@ export default function DashboardPage() {
       if (response.ok) {
         setAgentMessage(data.agentMessage);
         setAgentTrack(data.track);
+        await refreshWorkspace();
       }
     } catch (err) {
       console.error(err);

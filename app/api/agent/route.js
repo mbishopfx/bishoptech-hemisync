@@ -80,9 +80,31 @@ export async function POST(req) {
       throw new Error('Selected track not found in library');
     }
 
-    // Update usage
+    // Update usage and Auto-Save matched tone to user library
     if (user) {
         await supabase.rpc('increment_generation_count', { user_uuid: user.id });
+
+        // Save matched tone to user library
+        await supabase
+          .from('saved_tones')
+          .insert({
+            user_id: user.id,
+            name: track.name,
+            description: `Matched by HemiSync Agent for mood: "${mood.slice(0, 80)}"`,
+            target_state: track.state,
+            base_freq_hz: track.base_freq_hz || 220,
+            duration_sec: track.duration_sec || 300,
+            wav_url: track.wav_url,
+            mp3_url: track.webm_url || track.wav_url || null,
+            visibility: 'private',
+            frequency_plan: {
+              sourceType: 'agentic-matched',
+              isAgentic: true,
+              matchedMood: mood,
+              targetHz: track.target_hz,
+              noiseType: track.noise_type
+            }
+          });
     } else {
         const currentCount = parseInt(cookieStore.get('free_gen_count')?.value || '0');
         cookieStore.set('free_gen_count', (currentCount + 1).toString(), { 

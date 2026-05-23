@@ -284,17 +284,19 @@ export function ProfileView({ profile, onUpdateProfile }) {
           {/* User Meta Panel */}
           <div className="px-6 pb-6 relative">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 mb-6">
-              <div className="relative size-24 sm:size-32 rounded-3xl border-4 border-black bg-zinc-900 overflow-hidden group/avatar">
-                <Avatar className="size-full rounded-2xl">
-                  <AvatarImage src={avatarUrl} className="object-cover" />
-                  <AvatarFallback className="bg-cyan-950 text-cyan-300 text-3xl font-black">
-                    {displayName?.[0] || 'M'}
-                  </AvatarFallback>
-                </Avatar>
+              <div className="relative size-24 sm:size-32 rounded-3xl border-4 border-black bg-zinc-900 overflow-visible group/avatar">
+                <div className="size-full rounded-2xl overflow-hidden">
+                  <Avatar className="size-full rounded-2xl">
+                    <AvatarImage src={avatarUrl} className="object-cover" />
+                    <AvatarFallback className="bg-cyan-950 text-cyan-300 text-3xl font-black">
+                      {displayName?.[0] || 'M'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
 
-                {/* Upload Avatar Trigger */}
-                <label className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                  <span className="material-symbols-outlined text-white text-xl">photo_camera</span>
+                {/* Floating Upload Avatar Badge */}
+                <label className="absolute -bottom-1.5 -right-1.5 size-8 sm:size-9 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black border border-black flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all hover:scale-105 active:scale-95 z-20">
+                  <span className="material-symbols-outlined text-sm font-bold">photo_camera</span>
                   <input type="file" onChange={handleAvatarSelect} accept="image/*" className="hidden" />
                 </label>
               </div>
