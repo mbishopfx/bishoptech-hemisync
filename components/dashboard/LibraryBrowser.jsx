@@ -1,7 +1,4 @@
-'use client';
-
 import { useMemo, useState } from 'react';
-import { ArrowRight, Library as LibraryIcon, Play, Search, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BRAIN_STATE_ORDER, getBrainStateMeta, groupLibraryTonesByState, normalizeLibraryTone, resolveBrainState } from '@/lib/audio/library-groups';
@@ -37,7 +34,7 @@ function ToneCard({ tone, onUseInWorkshop }) {
           className="size-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform shrink-0"
           aria-label={`Play ${tone.name}`}
         >
-          <Play className="size-4 fill-current" />
+          <span className="material-symbols-outlined text-black font-bold">play_arrow</span>
         </button>
       </div>
 
@@ -60,7 +57,7 @@ function ToneCard({ tone, onUseInWorkshop }) {
           onClick={() => onUseInWorkshop?.(tone)}
         >
           Use in Workshop
-          <ArrowRight className="ml-2 size-4" />
+          <span className="material-symbols-outlined text-sm ml-2 font-semibold">arrow_forward</span>
         </Button>
       </div>
 
@@ -122,7 +119,7 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 p-2">
-            <Search className="ml-2 size-4 text-white/35" />
+            <span className="material-symbols-outlined text-white/35 text-base ml-2">search</span>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -158,7 +155,7 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
 
       {totalVisible === 0 ? (
         <Card className="border-white/5 bg-zinc-900/40 p-10 text-center">
-          <LibraryIcon className="mx-auto size-10 text-white/15" />
+          <span className="material-symbols-outlined text-white/15 text-5xl mx-auto block mb-2">library_music</span>
           <h3 className="mt-4 text-xl font-light text-white/70">No tones found</h3>
           <p className="mt-2 text-sm text-white/35">Try another brain state or clear the search term.</p>
         </Card>
@@ -174,7 +171,7 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Sparkles className="size-4 text-cyan-400" />
+                      <span className="material-symbols-outlined text-cyan-400 text-base">sparkles</span>
                       <h3 className="text-2xl font-light text-white">{meta.label}</h3>
                     </div>
                     <p className="mt-1 text-sm text-white/40">{meta.description}</p>

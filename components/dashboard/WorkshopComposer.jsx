@@ -1,7 +1,4 @@
-'use client';
-
 import { useEffect, useMemo, useState } from 'react';
-import { Loader2, Radio, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -56,7 +53,16 @@ function StatePill({ state, active, onClick }) {
   );
 }
 
-export function WorkshopComposer({ seedTone, onGenerated }) {
+export function WorkshopComposer({ 
+  seedTone, 
+  onGenerated,
+  generatingStatus = 'idle',
+  generatingError = '',
+  generatingProgress = '',
+  generatingResult = null,
+  generatingSavedTone = null,
+  onStartGenerate
+}) {
   const seedBrainState = seedTone ? resolveBrainState(seedTone) : 'alpha';
   const seedMeta = getBrainStateMeta(seedBrainState);
 
@@ -79,11 +85,6 @@ export function WorkshopComposer({ seedTone, onGenerated }) {
   const [breathPattern, setBreathPattern] = useState('coherent-5.5');
   const [backgroundMode, setBackgroundMode] = useState('preset');
   const [visibility, setVisibility] = useState('private');
-  const [rendering, setRendering] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [renderResult, setRenderResult] = useState(null);
-  const [savedTone, setSavedTone] = useState(null);
 
   const selectedPreset = useMemo(
     () => JourneyPresetOptions.find((preset) => preset.id === selectedPresetId) || JourneyPresetOptions[0],
@@ -122,92 +123,40 @@ export function WorkshopComposer({ seedTone, onGenerated }) {
     }
   }, [description, name, selectedPreset]);
 
-  const handleGenerate = async () => {
-    setRendering(true);
-    setSaving(false);
-    setError('');
-    setRenderResult(null);
-    setSavedTone(null);
+  const handleGenerate = () => {
+    if (!onStartGenerate) return;
 
-    try {
-      const payload = {
-        exportProfile: 'premium',
-        journeyPresetId: selectedPresetId,
-        focusLevel,
-        lengthSec: Math.round(lengthMinutes * 60),
-        baseFreqHz: Number(baseFreqHz),
-        stageBlueprint: journey.stages,
-        targetState: brainState,
-        entrainmentModes: { binaural: true, monaural: false, isochronic: false },
-        breathGuide: breathEnabled
-          ? {
-              enabled: true,
-              pattern: breathPattern,
-              bpm: 5.5
-            }
-          : undefined,
-        background: backgroundMode === 'ocean'
-          ? { type: 'ocean', mixDb: -24 }
-          : journey.background
-      };
+    const audioPayload = {
+      exportProfile: 'premium',
+      journeyPresetId: selectedPresetId,
+      focusLevel,
+      lengthSec: Math.round(lengthMinutes * 60),
+      baseFreqHz: Number(baseFreqHz),
+      stageBlueprint: journey.stages,
+      targetState: brainState,
+      entrainmentModes: { binaural: true, monaural: false, isochronic: false },
+      breathGuide: breathEnabled
+        ? {
+            enabled: true,
+            pattern: breathPattern,
+            bpm: 5.5
+          }
+        : undefined,
+      background: backgroundMode === 'ocean'
+        ? { type: 'ocean', mixDb: -24 }
+        : journey.background
+    };
 
-      const response = await fetch('/api/audio/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json();
+    const metadata = {
+      name: name.trim() || `${getBrainStateMeta(brainState).label} Workshop`,
+      description: description.trim() || `Custom ${getBrainStateMeta(brainState).label} session built from the workshop generator.`,
+      brainStateLabel: getBrainStateMeta(brainState).label,
+      deltaHzPath: journey.deltaHzPath,
+      visibility,
+      backgroundMode
+    };
 
-      if (!response.ok) {
-        throw new Error(data?.error || 'Generation failed');
-      }
-
-      setRenderResult(data);
-      setSaving(true);
-
-      const savePayload = {
-        name: name.trim() || `${seedMeta.label} Workshop`,
-        description: description.trim() || `Custom ${seedMeta.label} session built from the workshop generator.`,
-        target_state: brainState,
-        duration_sec: data.journey?.totalLengthSec || payload.lengthSec,
-        base_freq_hz: Number(baseFreqHz),
-        delta_path: data.journey?.deltaHzPath || journey.deltaHzPath,
-        wav_url: data.assets?.wav?.url || data.wav || null,
-        mp3_url: data.assets?.mp3?.url || data.mp3 || null,
-        artifact_id: data.artifactId || null,
-        visibility,
-        source_session_id: data.journey?.id || selectedPresetId,
-        render_id: data.artifactId || null,
-        frequency_plan: {
-          ...data.journey,
-          selectedPresetId,
-          targetState: brainState,
-          focusLevel,
-          breathEnabled,
-          breathPattern,
-          backgroundMode
-        }
-      };
-
-      const saveResponse = await fetch('/api/library/tones', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(savePayload)
-      });
-      const saveData = await saveResponse.json();
-
-      if (!saveResponse.ok) {
-        throw new Error(saveData?.error || 'Tone rendered, but saving to the library failed');
-      }
-
-      setSavedTone(saveData.tone);
-      onGenerated?.(saveData.tone, data);
-    } catch (err) {
-      setError(err.message || 'Workshop generation failed');
-    } finally {
-      setRendering(false);
-      setSaving(false);
-    }
+    onStartGenerate({ audioPayload, metadata });
   };
 
   return (
@@ -225,8 +174,8 @@ export function WorkshopComposer({ seedTone, onGenerated }) {
           <Card className="border-cyan-500/20 bg-cyan-500/10 p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
-                <div className="mt-0.5 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-2 text-cyan-300">
-                  <Radio className="size-4" />
+                <div className="mt-0.5 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-2 text-cyan-300 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-base">radio</span>
                 </div>
                 <div>
                   <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-300/70">Seeded from library</p>
@@ -376,16 +325,20 @@ export function WorkshopComposer({ seedTone, onGenerated }) {
             </div>
           </div>
 
-          {error && (
+          {generatingError && (
             <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-              {error}
+              {generatingError}
             </div>
           )}
 
           <div className="flex flex-wrap gap-3">
-            <Button onClick={handleGenerate} disabled={rendering || saving}>
-              {rendering || saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Sparkles className="mr-2 size-4" />}
-              {rendering ? 'Rendering...' : saving ? 'Saving...' : 'Generate and save file'}
+            <Button onClick={handleGenerate} disabled={generatingStatus === 'rendering' || generatingStatus === 'saving'}>
+              {generatingStatus === 'rendering' || generatingStatus === 'saving' ? (
+                <span className="material-symbols-outlined text-sm animate-spin mr-2">sync</span>
+              ) : (
+                <span className="material-symbols-outlined text-sm mr-2">sparkles</span>
+              )}
+              {generatingStatus === 'rendering' ? 'Rendering...' : generatingStatus === 'saving' ? 'Saving...' : 'Generate and save file'}
             </Button>
           </div>
         </Card>
@@ -404,18 +357,18 @@ export function WorkshopComposer({ seedTone, onGenerated }) {
             </div>
           </Card>
 
-          {renderResult && (
+          {generatingResult && (
             <Card className="space-y-4 p-6">
               <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-300">Rendered file</p>
-              <h3 className="text-xl font-medium text-white">{renderResult.journey?.name || name || 'Custom session'}</h3>
-              <p className="text-sm text-white/45">Artifact {renderResult.artifactId}</p>
+              <h3 className="text-xl font-medium text-white">{generatingResult.journey?.name || name || 'Custom session'}</h3>
+              <p className="text-sm text-white/45">Artifact {generatingResult.artifactId}</p>
               <div className="space-y-2 text-sm text-white/65">
-                <p>WAV: {renderResult.assets?.wav?.url || renderResult.wav || 'Not available'}</p>
-                <p>WebM: {renderResult.assets?.webm?.url || renderResult.webm || 'Not available'}</p>
+                <p>WAV: {generatingResult.assets?.wav?.url || generatingResult.wav || 'Not available'}</p>
+                <p>WebM: {generatingResult.assets?.webm?.url || generatingResult.webm || 'Not available'}</p>
               </div>
-              {savedTone && (
+              {generatingSavedTone && (
                 <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
-                  Saved to library as {savedTone.name}
+                  Saved to library as {generatingSavedTone.name}
                 </div>
               )}
             </Card>

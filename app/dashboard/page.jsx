@@ -1,44 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Activity,
-  Bell,
-  BookAudio,
-  ChevronLeft,
-  ChevronRight,
-  Compass,
-  Download,
-  Edit3,
-  Heart,
-  Home,
-  Library as LibraryIcon,
-  LogOut,
-  MessageCircle,
-  MoreHorizontal,
-  Play,
-  Plus,
-  Radio,
-  Search,
-  Settings,
-  Share2,
-  SlidersHorizontal,
-  Trash2,
-  User,
-  Sparkles,
-  Loader2,
-  Hammer
-} from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
 import { authedFetch } from '@/lib/frontend/api';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { Omnibar } from '@/components/agent/Omnibar';
@@ -46,14 +11,20 @@ import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { LibraryBrowser } from '@/components/dashboard/LibraryBrowser';
 import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
 
+// New high-fidelity modular tab components
+import { FeedView } from '@/components/dashboard/FeedView';
+import { JournalView } from '@/components/dashboard/JournalView';
+import { ProfileView } from '@/components/dashboard/ProfileView';
+import { SettingsView } from '@/components/dashboard/SettingsView';
+
 const navItems = [
-  { id: 'agent', label: 'Agentic', icon: Sparkles },
-  { id: 'library', label: 'Library', icon: LibraryIcon },
-  { id: 'workshop', label: 'Workshop', icon: Hammer },
-  { id: 'feed', label: 'Feed', icon: Compass },
-  { id: 'journal', label: 'Journal', icon: Edit3 },
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'settings', label: 'Settings', icon: Settings }
+  { id: 'agent', label: 'Agentic', icon: 'psychology' },
+  { id: 'library', label: 'Library', icon: 'library_music' },
+  { id: 'workshop', label: 'Workshop', icon: 'architecture' },
+  { id: 'feed', label: 'Feed', icon: 'sensors' },
+  { id: 'journal', label: 'Journal', icon: 'edit_note' },
+  { id: 'profile', label: 'Profile', icon: 'account_circle' },
+  { id: 'settings', label: 'Settings', icon: 'settings' }
 ];
 
 export default function DashboardPage() {
@@ -68,6 +39,13 @@ export default function DashboardPage() {
   const [agentMessage, setAgentMessage] = useState('');
   const [selectedSeedTone, setSelectedSeedTone] = useState(null);
   const [workspaceError, setWorkspaceError] = useState('');
+
+  // Parent-managed Background Workshop Generation States
+  const [workshopStatus, setWorkshopStatus] = useState('idle'); // 'idle' | 'rendering' | 'saving' | 'completed' | 'failed'
+  const [workshopProgress, setWorkshopProgress] = useState('');
+  const [workshopError, setWorkshopError] = useState('');
+  const [workshopResult, setWorkshopResult] = useState(null);
+  const [workshopSavedTone, setWorkshopSavedTone] = useState(null);
 
   async function refreshWorkspace() {
     try {
@@ -122,10 +100,83 @@ export default function DashboardPage() {
     }
   };
 
+  const handleWorkshopGenerate = async (composerPayload) => {
+    setWorkshopStatus('rendering');
+    setWorkshopProgress('Structuring binaural blueprints...');
+    setWorkshopError('');
+    setWorkshopResult(null);
+    setWorkshopSavedTone(null);
+
+    try {
+      const { audioPayload, metadata } = composerPayload;
+
+      // 1. Call standard generate endpoint
+      const response = await fetch('/api/audio/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(audioPayload)
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || 'Generation failed');
+      }
+
+      setWorkshopResult(data);
+      setWorkshopStatus('saving');
+      setWorkshopProgress('Archiving custom binaural wave to your neural library...');
+
+      // 2. Save tone in database
+      const savePayload = {
+        name: metadata.name.trim() || `${metadata.brainStateLabel} Workshop`,
+        description: metadata.description.trim() || `Custom ${metadata.brainStateLabel} session built from the workshop generator.`,
+        target_state: audioPayload.targetState,
+        duration_sec: data.journey?.totalLengthSec || audioPayload.lengthSec,
+        base_freq_hz: audioPayload.baseFreqHz,
+        delta_path: data.journey?.deltaHzPath || metadata.deltaHzPath,
+        wav_url: data.assets?.wav?.url || data.wav || null,
+        mp3_url: data.assets?.mp3?.url || data.mp3 || null,
+        artifact_id: data.artifactId || null,
+        visibility: metadata.visibility,
+        source_session_id: data.journey?.id || audioPayload.journeyPresetId,
+        render_id: data.artifactId || null,
+        frequency_plan: {
+          ...data.journey,
+          selectedPresetId: audioPayload.journeyPresetId,
+          targetState: audioPayload.targetState,
+          focusLevel: audioPayload.focusLevel,
+          breathEnabled: !!audioPayload.breathGuide,
+          breathPattern: audioPayload.breathGuide?.pattern || 'coherent-5.5',
+          backgroundMode: metadata.backgroundMode
+        }
+      };
+
+      const saveResponse = await fetch('/api/library/tones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(savePayload)
+      });
+      const saveData = await saveResponse.json();
+
+      if (!saveResponse.ok) {
+        throw new Error(saveData?.error || 'Tone rendered, but saving to the library failed');
+      }
+
+      setWorkshopSavedTone(saveData.tone);
+      setWorkshopStatus('completed');
+      setWorkshopProgress('');
+      await refreshWorkspace();
+    } catch (err) {
+      console.error('Workshop background generate error:', err);
+      setWorkshopStatus('failed');
+      setWorkshopError(err.message || 'Background generation failed');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="size-12 text-cyan-500 animate-spin" />
+        <span className="material-symbols-outlined text-4xl text-cyan-500 animate-spin">sync</span>
       </div>
     );
   }
@@ -144,7 +195,6 @@ export default function DashboardPage() {
 
         <nav className="flex-1 space-y-2">
           {navItems.map((item) => {
-            const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
@@ -154,7 +204,9 @@ export default function DashboardPage() {
                   isActive ? 'bg-white/5 text-white font-medium border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon className={`size-5 ${isActive ? 'text-cyan-400' : ''}`} />
+                <span className={`material-symbols-outlined text-lg ${isActive ? 'text-cyan-400' : ''}`}>
+                  {item.icon}
+                </span>
                 {item.label}
               </button>
             );
@@ -171,8 +223,11 @@ export default function DashboardPage() {
               <p className="text-sm font-medium truncate">{profile?.display_name || 'Member'}</p>
               <p className="text-[10px] font-mono text-white/40 truncate">@{profile?.username || 'user'}</p>
             </div>
-            <button className="text-white/20 hover:text-white transition-colors">
-              <Settings className="size-4" />
+            <button 
+              onClick={() => setActiveTab('settings')}
+              className="text-white/20 hover:text-white transition-colors flex items-center justify-center"
+            >
+              <span className="material-symbols-outlined text-lg">settings</span>
             </button>
           </div>
         </div>
@@ -193,6 +248,45 @@ export default function DashboardPage() {
             </div>
           </div>
         </header>
+
+        {/* Global Background Generation Banner */}
+        {['rendering', 'saving'].includes(workshopStatus) && (
+          <div className="mx-8 mt-6 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 flex items-center justify-between shadow-[0_0_15px_rgba(6,182,212,0.15)] animate-pulse">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-cyan-400 text-lg animate-spin">sync</span>
+              <span className="text-xs font-mono tracking-widest text-cyan-300 uppercase">
+                Broadcast Node Active: {workshopProgress || 'Synthesizing neural waves...'}
+              </span>
+            </div>
+            <button 
+              onClick={() => setActiveTab('workshop')}
+              className="text-[10px] font-mono text-cyan-400 hover:text-cyan-200 border border-cyan-500/30 px-3 py-1 rounded-full transition-colors"
+            >
+              Open Console
+            </button>
+          </div>
+        )}
+
+        {/* Global Background Complete Success Banner */}
+        {workshopStatus === 'completed' && workshopSavedTone && (
+          <div className="mx-8 mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 flex items-center justify-between shadow-[0_0_15px_rgba(16,185,129,0.15)] animate-bounce" style={{ animationDuration: '3s' }}>
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
+              <span className="text-xs font-mono tracking-widest text-emerald-300 uppercase">
+                Success: Custom tone "{workshopSavedTone.name}" saved to Neural Archive.
+              </span>
+            </div>
+            <button 
+              onClick={() => {
+                setWorkshopStatus('idle');
+                setActiveTab('library');
+              }}
+              className="text-[10px] font-mono text-emerald-400 hover:text-emerald-200 border border-emerald-500/30 px-3 py-1 rounded-full transition-colors"
+            >
+              View Library
+            </button>
+          </div>
+        )}
 
         {workspaceError && (
           <div className="mx-8 mt-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
@@ -244,57 +338,6 @@ export default function DashboardPage() {
               </motion.div>
             )}
 
-            {activeTab === 'feed' && (
-              <motion.div
-                key="feed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                {feed.map((post) => (
-                  <Card key={post.id} className="bg-zinc-900/40 border-white/5 backdrop-blur-xl p-6 rounded-3xl">
-                    <div className="flex gap-4">
-                      <Avatar className="size-10">
-                        <AvatarImage src={post.profiles?.avatar_url} />
-                        <AvatarFallback>M</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 overflow-hidden">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-sm">{post.profiles?.display_name || 'Member'}</span>
-                          <span className="text-[10px] font-mono text-white/40">@{post.profiles?.username || 'user'}</span>
-                        </div>
-                        <p className="mt-2 text-white/70 text-sm leading-relaxed">{post.body}</p>
-                        
-                        {post.saved_tones && (
-                          <div className="mt-4 p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
-                            <div className="size-12 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
-                              <Radio className="size-6" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-xs font-medium">{post.saved_tones.name}</p>
-                              <p className="text-[10px] text-white/40">{post.saved_tones.target_state}</p>
-                            </div>
-                            <button className="size-8 rounded-full bg-white text-black flex items-center justify-center">
-                              <Play className="size-4 fill-current" />
-                            </button>
-                          </div>
-                        )}
-
-                        <div className="mt-4 flex gap-6 text-white/20">
-                          <button className="flex items-center gap-1.5 text-xs hover:text-white transition-colors">
-                            <MessageCircle className="size-4" /> {post.comment_count}
-                          </button>
-                          <button className="flex items-center gap-1.5 text-xs hover:text-white transition-colors">
-                            <Heart className="size-4" /> {post.like_count}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </motion.div>
-            )}
-
             {activeTab === 'workshop' && (
               <motion.div
                 key="workshop"
@@ -308,23 +351,81 @@ export default function DashboardPage() {
                     setSelectedSeedTone(tone);
                     refreshWorkspace();
                   }}
+                  generatingStatus={workshopStatus}
+                  generatingError={workshopError}
+                  generatingProgress={workshopProgress}
+                  generatingResult={workshopResult}
+                  generatingSavedTone={workshopSavedTone}
+                  onStartGenerate={handleWorkshopGenerate}
                 />
               </motion.div>
             )}
 
-            {['journal', 'profile', 'settings'].includes(activeTab) && (
+            {activeTab === 'feed' && (
               <motion.div
-                key="placeholder"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center py-32 text-center"
+                key="feed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
               >
-                <Activity className="size-12 text-white/10 mb-6" />
-                <h3 className="text-xl font-light text-white/60">Module calibration in progress</h3>
-                <p className="text-sm text-white/30 mt-2">The agentic redesign is being applied to this neural node.</p>
+                <FeedView
+                  profile={profile}
+                  tones={library}
+                  initialFeed={feed}
+                  onRefresh={refreshWorkspace}
+                />
               </motion.div>
             )}
 
+            {activeTab === 'journal' && (
+              <motion.div
+                key="journal"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <JournalView
+                  onInjectToWorkshop={(params) => {
+                    setSelectedSeedTone({
+                      name: `Journal Matched Resonance`,
+                      target_state: params.state,
+                      description: params.notes,
+                      baseFreqHz: 220
+                    });
+                    setActiveTab('workshop');
+                  }}
+                />
+              </motion.div>
+            )}
+
+            {activeTab === 'profile' && (
+              <motion.div
+                key="profile"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <ProfileView
+                  profile={profile}
+                  onUpdateProfile={(updated) => {
+                    setProfile(updated);
+                  }}
+                />
+              </motion.div>
+            )}
+
+            {activeTab === 'settings' && (
+              <motion.div
+                key="settings"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <SettingsView
+                  profile={profile}
+                  onUpdateProfile={(updated) => {
+                    setProfile(updated);
+                  }}
+                />
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </main>
