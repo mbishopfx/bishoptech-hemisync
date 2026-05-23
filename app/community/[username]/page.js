@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { FollowButton } from '@/components/social/follow-button';
+import { ShareProfileButton } from '@/components/social/share-profile-button';
 import { ArrowLeft, Globe, X, CheckCircle, ExternalLink } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -141,7 +142,10 @@ export default async function PublicProfilePage({ params }) {
                 )}
               </div>
 
-              {canFollow && <FollowButton profileId={profile.id} initialFollowing={initialFollowing} />}
+              <div className="flex flex-wrap items-center gap-4">
+                {canFollow && <FollowButton profileId={profile.id} initialFollowing={initialFollowing} />}
+                <ShareProfileButton profilePath={`/community/${profile.username || profile.id}`} />
+              </div>
             </div>
           </div>
         </Card>
