@@ -104,6 +104,24 @@ body {
   border-color: var(--line-strong);
 }
 
+@keyframes blog-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes blog-marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 body::before {
   content: '';
   position: fixed;

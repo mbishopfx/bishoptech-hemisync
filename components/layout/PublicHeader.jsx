@@ -29,6 +29,7 @@ export function PublicHeader() {
         {/* Centered Navigation */}
         <nav className="hidden lg:flex items-center gap-12 text-[11px] font-bold tracking-[0.3em] uppercase text-white/50">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           <Link href="/machine" className="hover:text-white transition-colors">Inside the Machine</Link>
           <Link href="/learn" className="hover:text-white transition-colors">Learn</Link>
           <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
@@ -56,6 +57,7 @@ export function PublicHeader() {
             className="lg:hidden absolute top-20 w-full bg-zinc-900 border-b border-white/10 p-8 flex flex-col items-center gap-8 text-[12px] font-bold tracking-[0.4em] uppercase z-[101]"
           >
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+            <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
             <Link href="/machine" onClick={() => setIsMobileMenuOpen(false)}>Inside the Machine</Link>
             <Link href="/learn" onClick={() => setIsMobileMenuOpen(false)}>Learn</Link>
             <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
