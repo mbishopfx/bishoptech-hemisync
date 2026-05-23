@@ -93,7 +93,7 @@ export function Omnibar({ onGenerate, isLoading, currentTrack, agentMessage }) {
             exit={{ opacity: 0 }}
             className="text-center"
           >
-            <p className="text-cyan-400/80 font-mono text-sm uppercase tracking-widest mb-2">Agent Cognition</p>
+            <p className="text-cyan-400/80 font-mono text-sm uppercase tracking-widest mb-2">Resonance Alignment</p>
             <p className="text-white/90 text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto italic">
               &quot;{agentMessage}&quot;
             </p>

@@ -181,7 +181,7 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
             <span className="material-symbols-outlined text-white/10 text-5xl mb-4">border_color</span>
             <h4 className="text-lg font-light text-white/70">Archive is currently blank</h4>
             <p className="text-sm text-white/30 mt-2 max-w-md mx-auto leading-relaxed">
-              No entries committed yet. Begin journaling to log your mental focus sessions, meditation paths, and let the AI build custom HemiSync files.
+              No entries committed yet. Begin journaling to log your mental focus sessions, meditation paths, and synthesize custom HemiSync files.
             </p>
           </Card>
         ) : (
@@ -222,7 +222,7 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
                       {/* AI Summary */}
                       {entry.summary && (
                         <div className="space-y-1">
-                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">AI Deconstruction</p>
+                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">Resonance Analysis</p>
                           <p className="text-sm text-cyan-100/70 leading-relaxed font-light">{entry.summary}</p>
                         </div>
                       )}

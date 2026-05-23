@@ -116,7 +116,7 @@ export function WorkshopComposer({
       setName(`${seedTone.name || seedMeta.label} custom`);
     }
     if (!description) {
-      setDescription(seedTone.description || seedTone.summary || `Seeded from ${seedTone.name || seedMeta.label}.`);
+      setDescription(seedTone.description || seedTone.summary || `Based on ${seedTone.name || seedMeta.label}.`);
     }
   }, [seedTone, name, description, seedMeta.label]);
 
@@ -188,7 +188,6 @@ export function WorkshopComposer({
                   <span className="material-symbols-outlined text-base">radio</span>
                 </div>
                 <div>
-                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-300/70">Seeded from library</p>
                   <h3 className="mt-1 text-lg font-medium text-white">{seedTone.name}</h3>
                   <p className="mt-1 text-sm text-white/55">{seedMeta.label} · {seedMeta.description}</p>
                 </div>

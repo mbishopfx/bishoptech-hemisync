@@ -18,7 +18,7 @@ import { ProfileView } from '@/components/dashboard/ProfileView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
 
 const navItems = [
-  { id: 'agent', label: 'Agentic', icon: 'psychology' },
+  { id: 'agent', label: 'Sync', icon: 'psychology' },
   { id: 'library', label: 'Library', icon: 'library_music' },
   { id: 'workshop', label: 'Workshop', icon: 'architecture' },
   { id: 'feed', label: 'Feed', icon: 'sensors' },
@@ -210,7 +210,7 @@ export default function DashboardPage() {
           <div className="size-10 rounded-xl bg-white flex items-center justify-center text-black font-black">B</div>
           <div>
             <h2 className="text-lg font-bold tracking-tight">BishopTech</h2>
-            <p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Agentic v1.0</p>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">HemiSync Console</p>
           </div>
         </div>
 
@@ -263,11 +263,6 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-light tracking-tight">
             {navItems.find(i => i.id === activeTab)?.label}
           </h1>
-          <div className="flex items-center gap-4">
-            <div className="px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
-              Status: Operational
-            </div>
-          </div>
         </header>
 
         {/* Global Background Generation Banner */}
