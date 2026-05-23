@@ -174,6 +174,7 @@ async function seed() {
             wav_url: wavUrl,
             mp3_url: wavUrl, // serve wav as mp3 fallback directly since browsers play wav seamlessly
             visibility: 'public',
+            is_serenity: true,
             frequency_plan: {
               sourceType: 'serenity',
               isSerenity: true,
@@ -202,6 +203,7 @@ async function seed() {
             wav_url: wavUrl,
             mp3_url: wavUrl,
             visibility: 'public',
+            is_serenity: true,
             frequency_plan: {
               sourceType: 'serenity',
               isSerenity: true,

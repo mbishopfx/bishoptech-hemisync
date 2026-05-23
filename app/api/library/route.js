@@ -27,8 +27,7 @@ export async function GET(req) {
       supabase
         .from('saved_tones')
         .select(savedToneSelect())
-        .eq('visibility', 'public')
-        .eq('frequency_plan->>sourceType', 'serenity')
+        .eq('is_serenity', true)
         .order('created_at', { ascending: false })
     ]);
 

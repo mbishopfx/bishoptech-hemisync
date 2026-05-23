@@ -9,7 +9,9 @@ function ToneCard({ tone, onUseInWorkshop }) {
     ? 'Generated pack'
     : tone.sourceType === 'audiotemplate'
       ? 'Preview tone'
-      : 'Saved tone';
+      : tone.sourceType === 'serenity'
+        ? 'Serenity'
+        : 'Saved tone';
 
   return (
     <Card className="bg-zinc-900/40 border-white/5 backdrop-blur-xl p-5 rounded-3xl group hover:border-cyan-500/30 transition-all">

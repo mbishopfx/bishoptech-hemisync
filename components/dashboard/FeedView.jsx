@@ -70,8 +70,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
         const { data: serenity, error: serenityErr } = await supabase
           .from('saved_tones')
           .select('*, profiles:profiles!saved_tones_user_id_fkey(id, username, display_name, avatar_url)')
-          .eq('visibility', 'public')
-          .eq('frequency_plan->>sourceType', 'serenity')
+          .eq('is_serenity', true)
           .order('created_at', { ascending: true });
 
         if (!serenityErr && serenity) {
@@ -83,7 +82,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
           .from('saved_tones')
           .select('*, profiles:profiles!saved_tones_user_id_fkey(id, username, display_name, avatar_url)')
           .eq('visibility', 'public')
-          .neq('frequency_plan->>sourceType', 'serenity')
+          .eq('is_serenity', false)
           .order('created_at', { ascending: false })
           .limit(50);
 
@@ -284,13 +283,13 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
             Initializing serenity audio pathways...
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex flex-row flex-nowrap overflow-x-auto gap-4 pb-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
             {serenityTones.map((tone) => {
               const isPlaying = playingToneId === tone.id;
               return (
                 <div 
                   key={tone.id} 
-                  className={`relative group bg-zinc-950/60 border rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between min-h-[140px] overflow-hidden ${
+                  className={`relative group bg-zinc-950/60 border rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between min-h-[140px] w-64 shrink-0 overflow-hidden ${
                     isPlaying ? 'border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.25)] bg-cyan-950/20' : 'border-white/5 hover:border-cyan-500/30'
                   }`}
                 >
