@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { RecentPostsCarousel } from '@/components/blog/recent-posts-carousel';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -202,9 +201,6 @@ export default function LandingPage() {
           <div className="w-12 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </motion.div>
 
-        <section className="w-full max-w-7xl px-6 md:px-10">
-          <RecentPostsCarousel />
-        </section>
       </main>
 
       <footer className="py-12 border-t border-white/5 bg-black/50">
