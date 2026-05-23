@@ -203,6 +203,44 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
     }
   };
 
+  const handleSaveToneToLibrary = async (tone) => {
+    const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
+    if (isFreeTrial) {
+      alert('Free trial members cannot save shared community tones to their library. Please upgrade to save community waves!');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/library/tones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${tone.name} (Saved)`,
+          description: tone.description || `Saved from the HemiSync Collective feed.`,
+          target_state: tone.target_state,
+          duration_sec: tone.duration_sec,
+          base_freq_hz: tone.base_freq_hz,
+          wav_url: tone.wav_url,
+          mp3_url: tone.mp3_url || tone.wav_url,
+          delta_path: tone.delta_path || [],
+          frequency_plan: tone.frequency_plan || {},
+          visibility: 'private'
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Clone request failed');
+      }
+
+      alert(`Successfully saved "${tone.name}" to your neural library archive!`);
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Failed to save tone. Make sure your library is not full.');
+    }
+  };
+
   const handleToggleComments = async (postId) => {
     const isOpen = !!openComments[postId];
     setOpenComments(prev => ({ ...prev, [postId]: !isOpen }));
@@ -365,97 +403,108 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
       {feedTab === 'resonance' ? (
         <div className="space-y-6">
           {/* Feed Broadcast Console / Composer */}
-          <Card className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden group hover:border-cyan-500/20 transition-all">
-            <div className="absolute top-0 right-0 w-[400px] h-[100px] bg-cyan-500/5 blur-[50px] pointer-events-none" />
-            
-            {!composing ? (
-              <div className="flex items-center gap-4 cursor-pointer" onClick={() => setComposing(true)}>
-                <Avatar className="size-10 border border-white/10">
-                  <AvatarImage src={profile?.avatar_url} />
-                  <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 rounded-2xl px-5 py-3 text-sm text-white/40 font-light transition-all flex items-center justify-between">
-                  <span>Broadcast a resonance update or share a tone...</span>
-                  <span className="material-symbols-outlined text-cyan-400 text-lg">sensors</span>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleCreatePost} className="space-y-4">
-                <div className="flex items-start gap-4">
+          {profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free' ? (
+            <Card className="bg-zinc-900/20 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden text-center space-y-4">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.01] to-transparent pointer-events-none" />
+              <span className="material-symbols-outlined text-cyan-400/40 text-3xl animate-pulse">lock</span>
+              <h4 className="text-sm font-semibold text-white">Broadcast Protocol Restricted</h4>
+              <p className="text-xs text-white/50 max-w-md mx-auto leading-relaxed">
+                Free trial members can explore public frequencies, but cannot broadcast posts or attach public waves. Upgrade to a paid plan to activate global broadcasting.
+              </p>
+            </Card>
+          ) : (
+            <Card className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden group hover:border-cyan-500/20 transition-all">
+              <div className="absolute top-0 right-0 w-[400px] h-[100px] bg-cyan-500/5 blur-[50px] pointer-events-none" />
+              
+              {!composing ? (
+                <div className="flex items-center gap-4 cursor-pointer" onClick={() => setComposing(true)}>
                   <Avatar className="size-10 border border-white/10">
                     <AvatarImage src={profile?.avatar_url} />
                     <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <Textarea
-                      value={body}
-                      onChange={(e) => setBody(e.target.value)}
-                      placeholder="Share a reflection, insight, or broadcast your current state..."
-                      className="w-full bg-black/20 border-white/10 focus:border-cyan-500/30 rounded-2xl p-4 text-sm text-white placeholder:text-white/30 outline-none resize-none focus:ring-0 min-h-[100px]"
-                    />
+                  <div className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 rounded-2xl px-5 py-3 text-sm text-white/40 font-light transition-all flex items-center justify-between">
+                    <span>Broadcast a resonance update or share a tone...</span>
+                    <span className="material-symbols-outlined text-cyan-400 text-lg">sensors</span>
                   </div>
                 </div>
-
-                {/* Attached Tone Preview */}
-                {selectedToneId && selectedToneDetails && (
-                  <div className="ml-14 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <span className="material-symbols-outlined text-cyan-400 text-2xl animate-pulse">radio</span>
-                      <div>
-                        <p className="text-xs font-semibold text-white">{selectedToneDetails.name}</p>
-                        <p className="text-[10px] text-cyan-300 font-mono uppercase tracking-widest">{selectedToneDetails.target_state || 'Alpha'}</p>
-                      </div>
+              ) : (
+                <form onSubmit={handleCreatePost} className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <Avatar className="size-10 border border-white/10">
+                      <AvatarImage src={profile?.avatar_url} />
+                      <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <Textarea
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
+                        placeholder="Share a reflection, insight, or broadcast your current state..."
+                        className="w-full bg-black/20 border-white/10 focus:border-cyan-500/30 rounded-2xl p-4 text-sm text-white placeholder:text-white/30 outline-none resize-none focus:ring-0 min-h-[100px]"
+                      />
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedToneId('')}
-                      className="text-white/40 hover:text-white flex items-center justify-center"
-                    >
-                      <span className="material-symbols-outlined text-lg">close</span>
-                    </button>
-                  </div>
-                )}
-
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-2 ml-14 border-t border-white/5">
-                  <div className="flex items-center gap-2">
-                    <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mr-2">Attach Wave</label>
-                    <select
-                      value={selectedToneId}
-                      onChange={(e) => setSelectedToneId(e.target.value)}
-                      className="rounded-full border border-white/10 bg-black/40 px-4 py-1.5 text-xs text-white outline-none cursor-pointer hover:border-cyan-500/30 transition-all max-w-[200px]"
-                    >
-                      <option value="">-- No tone --</option>
-                      {tones.map(t => (
-                        <option key={t.id} value={t.id}>{t.name}</option>
-                      ))}
-                    </select>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      onClick={() => {
-                        setComposing(false);
-                        setBody('');
-                        setSelectedToneId('');
-                      }}
-                      className="rounded-full text-white/40 hover:text-white"
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={submitting || (!body.trim() && !selectedToneId)}
-                      className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6"
-                    >
-                      {submitting ? 'Broadcasting...' : 'Broadcast'}
-                    </Button>
+                  {/* Attached Tone Preview */}
+                  {selectedToneId && selectedToneDetails && (
+                    <div className="ml-14 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-cyan-400 text-2xl animate-pulse">radio</span>
+                        <div>
+                          <p className="text-xs font-semibold text-white">{selectedToneDetails.name}</p>
+                          <p className="text-[10px] text-cyan-300 font-mono uppercase tracking-widest">{selectedToneDetails.target_state || 'Alpha'}</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedToneId('')}
+                        className="text-white/40 hover:text-white flex items-center justify-center"
+                      >
+                        <span className="material-symbols-outlined text-lg">close</span>
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center justify-between gap-4 pt-2 ml-14 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                      <label className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/30 mr-2">Attach Wave</label>
+                      <select
+                        value={selectedToneId}
+                        onChange={(e) => setSelectedToneId(e.target.value)}
+                        className="rounded-full border border-white/10 bg-black/40 px-4 py-1.5 text-xs text-white outline-none cursor-pointer hover:border-cyan-500/30 transition-all max-w-[200px]"
+                      >
+                        <option value="">-- No tone --</option>
+                        {tones.map(t => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        onClick={() => {
+                          setComposing(false);
+                          setBody('');
+                          setSelectedToneId('');
+                        }}
+                        className="rounded-full text-white/40 hover:text-white"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={submitting || (!body.trim() && !selectedToneId)}
+                        className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6"
+                      >
+                        {submitting ? 'Broadcasting...' : 'Broadcast'}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </form>
-            )}
-          </Card>
+                </form>
+              )}
+            </Card>
+          )}
 
           {feed.length === 0 ? (
             <Card className="border-white/5 bg-zinc-900/40 backdrop-blur-xl p-16 text-center rounded-3xl relative overflow-hidden">
@@ -515,20 +564,31 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
                               </div>
                             </div>
                             
-                            {post.saved_tones.mp3_url || post.saved_tones.wav_url ? (
-                              <button 
-                                onClick={() => handlePlayTone(post.saved_tones)}
-                                className={`size-10 rounded-full flex items-center justify-center transition-all ${
-                                  playingToneId === post.saved_tones.id
-                                    ? 'bg-cyan-500 text-black shadow-[0_0_10px_rgba(6,182,212,0.4)]'
-                                    : 'bg-white hover:bg-cyan-400 text-black hover:scale-105'
-                                }`}
-                              >
-                                <span className="material-symbols-outlined font-semibold">
-                                  {playingToneId === post.saved_tones.id ? 'pause' : 'play_arrow'}
-                                </span>
-                              </button>
-                            ) : null}
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              {post.saved_tones.user_id !== profile?.id && (
+                                <button
+                                  onClick={() => handleSaveToneToLibrary(post.saved_tones)}
+                                  className="size-10 rounded-full bg-white/5 hover:bg-cyan-500/20 text-zinc-400 hover:text-cyan-300 border border-white/5 hover:border-cyan-500/30 flex items-center justify-center transition-all"
+                                  title="Save to Library"
+                                >
+                                  <span className="material-symbols-outlined font-semibold">library_add</span>
+                                </button>
+                              )}
+                              {post.saved_tones.mp3_url || post.saved_tones.wav_url ? (
+                                <button 
+                                  onClick={() => handlePlayTone(post.saved_tones)}
+                                  className={`size-10 rounded-full flex items-center justify-center transition-all ${
+                                    playingToneId === post.saved_tones.id
+                                      ? 'bg-cyan-500 text-black shadow-[0_0_10px_rgba(6,182,212,0.4)]'
+                                      : 'bg-white hover:bg-cyan-400 text-black hover:scale-105'
+                                  }`}
+                                >
+                                  <span className="material-symbols-outlined font-semibold">
+                                    {playingToneId === post.saved_tones.id ? 'pause' : 'play_arrow'}
+                                  </span>
+                                </button>
+                              ) : null}
+                            </div>
                           </div>
                         )}
 
@@ -692,18 +752,29 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => handlePlayTone(tone)}
-                        className={`size-10 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${
-                          isPlaying 
-                            ? 'bg-cyan-500 text-black scale-105 shadow-[0_0_10px_rgba(6,182,212,0.4)]' 
-                            : 'bg-white hover:bg-cyan-400 text-black hover:scale-105'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined font-semibold">
-                          {isPlaying ? 'pause' : 'play_arrow'}
-                        </span>
-                      </button>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {tone.user_id !== profile?.id && (
+                          <button
+                            onClick={() => handleSaveToneToLibrary(tone)}
+                            className="size-10 rounded-full bg-white/5 hover:bg-cyan-500/20 text-zinc-400 hover:text-cyan-300 border border-white/5 hover:border-cyan-500/30 flex items-center justify-center transition-all"
+                            title="Save to Library"
+                          >
+                            <span className="material-symbols-outlined font-semibold">library_add</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handlePlayTone(tone)}
+                          className={`size-10 rounded-full flex items-center justify-center transition-all ${
+                            isPlaying 
+                              ? 'bg-cyan-500 text-black scale-105 shadow-[0_0_10px_rgba(6,182,212,0.4)]' 
+                              : 'bg-white hover:bg-cyan-400 text-black hover:scale-105'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined font-semibold">
+                            {isPlaying ? 'pause' : 'play_arrow'}
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </Card>
                 );

@@ -378,6 +378,7 @@ export default function DashboardPage() {
                   generatingResult={workshopResult}
                   generatingSavedTone={workshopSavedTone}
                   onStartGenerate={handleWorkshopGenerate}
+                  profile={profile}
                 />
               </motion.div>
             )}

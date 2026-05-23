@@ -13,6 +13,20 @@ export async function POST(req) {
     const body = await req.json();
     const supabase = getSupabaseAdmin();
 
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('subscription_tier')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
+      return NextResponse.json({
+        error: 'Subscription Required',
+        code: 'BROADCAST_BLOCKED',
+        message: 'Free trial members cannot broadcast posts or attach public waves to the global feed. Please upgrade to a paid plan to publish your frequencies!'
+      }, { status: 403 });
+    }
+
     const postType = body?.toneId ? 'tone' : 'text';
     const text = String(body?.body || '').trim();
     if (!text && postType === 'text') {

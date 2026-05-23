@@ -47,6 +47,40 @@ export async function POST(req) {
     const supabase = getSupabaseAdmin();
     const payload = cleanTonePayload(await req.json());
 
+    // 1. Get user subscription tier
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('subscription_tier')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) throw profileError;
+
+    const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
+
+    // 2. Enforce 5-tone library limit on Free Trial users
+    if (isFreeTrial) {
+      // Force visibility to private for free tier
+      payload.visibility = 'private';
+
+      // Count user's active non-serenity tones
+      const { count, error: countError } = await supabase
+        .from('saved_tones')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('is_serenity', false);
+
+      if (countError) throw countError;
+
+      if (count >= 5) {
+        return NextResponse.json({
+          error: 'Limit Reached',
+          code: 'LIBRARY_LIMIT_REACHED',
+          message: 'Free trial members are limited to 5 saved tones in their library. Please upgrade to a paid subscription to save unlimited HemiSync frequencies!'
+        }, { status: 403 });
+      }
+    }
+
     const { data, error } = await supabase
       .from('saved_tones')
       .insert({ ...payload, user_id: user.id })

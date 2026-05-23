@@ -46,10 +46,10 @@ export function SettingsView({ profile, onUpdateProfile }) {
     handleSaveSettings({ profile_visibility: value });
   };
 
-  const getTierIcon = (plan = 'free') => {
-    if (plan === 'founder') return 'workspace_premium';
-    if (plan === 'pro') return 'bolt';
-    return 'nature_people';
+  const isFreeTrial = !profile?.subscription_tier || profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
+
+  const getTierIcon = () => {
+    return isFreeTrial ? 'nature_people' : 'workspace_premium';
   };
 
   return (
@@ -116,19 +116,17 @@ export function SettingsView({ profile, onUpdateProfile }) {
             <div className="space-y-3 pt-2">
               <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-start gap-4">
                 <div className="size-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
-                  <span className="material-symbols-outlined">{getTierIcon(profile?.plan)}</span>
+                  <span className="material-symbols-outlined">{getTierIcon()}</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm text-white capitalize">{profile?.plan || 'Free'} Tier</span>
+                    <span className="font-semibold text-sm text-white capitalize">{isFreeTrial ? 'Free Trial' : 'Paid Plan'}</span>
                     <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 font-mono text-[9px] text-cyan-400 uppercase tracking-widest">Active</span>
                   </div>
                   <p className="text-xs text-white/50 mt-1 leading-relaxed">
-                    {profile?.plan === 'founder' 
-                      ? 'Ultimate access to HemiSync, unlimited premium renders, 8D binaural parameters, early access beta features.' 
-                      : profile?.plan === 'pro'
-                        ? 'Unlimited spatial generation renders, standard cloud library save specs, and full analytics logs.'
-                        : 'Standard binaural builder. Upgrade to unlock premium render specifications and unlimited archive saves.'}
+                    {isFreeTrial 
+                      ? 'Trial allocation. Play all Serenity catalog frequencies, master and export binaural parameters in the Workshop, and archive up to 5 custom sync waves in your neural library. Upgrade to Paid to unlock unlimited library saves, clone community waves, and broadcast on the global feed.'
+                      : 'Premium active allocation. Enjoy unlimited custom synthesis renders, full Master audio export specs, and as many neural archive library saves as you need. Clone community waves to your personal archive and broadcast your mental reflections on the global Feed.'}
                   </p>
                 </div>
               </div>

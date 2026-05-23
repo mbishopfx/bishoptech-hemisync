@@ -61,8 +61,10 @@ export function WorkshopComposer({
   generatingProgress = '',
   generatingResult = null,
   generatingSavedTone = null,
-  onStartGenerate
+  onStartGenerate,
+  profile
 }) {
+  const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
   const seedBrainState = seedTone ? resolveBrainState(seedTone) : 'alpha';
   const seedMeta = getBrainStateMeta(seedBrainState);
 
@@ -157,7 +159,7 @@ export function WorkshopComposer({
       description: description.trim() || `Custom ${getBrainStateMeta(brainState).label} session built from the workshop generator.`,
       brainStateLabel: getBrainStateMeta(brainState).label,
       deltaHzPath: journey.deltaHzPath,
-      visibility,
+      visibility: isFreeTrial ? 'private' : visibility,
       backgroundMode
     };
 
@@ -239,13 +241,17 @@ export function WorkshopComposer({
               <label className="block space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Visibility</span>
                 <select
-                  value={visibility}
+                  value={isFreeTrial ? 'private' : visibility}
+                  disabled={isFreeTrial}
                   onChange={(event) => setVisibility(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
+                  className={`w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none cursor-pointer focus:border-cyan-500/30 transition-all ${isFreeTrial ? 'text-white/40 cursor-not-allowed' : 'text-white'}`}
                 >
                   <option value="private">Private (Library Only)</option>
-                  <option value="public">Public (Show on Global Feed)</option>
+                  {!isFreeTrial && <option value="public">Public (Show on Global Feed)</option>}
                 </select>
+                {isFreeTrial && (
+                  <p className="text-[9px] text-cyan-400 font-mono tracking-wider mt-1">Upgrade to Paid tier to unlock global public broadcasting.</p>
+                )}
               </label>
             </div>
 
