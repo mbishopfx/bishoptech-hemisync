@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight, Zap, Shield, Cpu, Info, DollarSign, X } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 
 const plans = [
   {
@@ -80,6 +81,86 @@ const tonePack = {
 };
 
 export default function PricingPage() {
+  const [serenityTones, setSerenityTones] = useState([]);
+  const [loadingSerenity, setLoadingSerenity] = useState(false);
+  const [activePreviewTone, setActivePreviewTone] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playingToneId, setPlayingToneId] = useState(null);
+
+  const audioRef = useRef(null);
+  const supabase = getSupabaseBrowserClient();
+
+  // Load preview data and query database serenity pack
+  useEffect(() => {
+    // 1. Retrieve active preview tone generated from the homepage
+    const saved = localStorage.getItem('active-preview-tone');
+    if (saved) {
+      setActivePreviewTone(JSON.parse(saved));
+    } else {
+      // Fallback: Fetch featured tone
+      fetch('/api/audio/preview-tone')
+        .then(res => res.json())
+        .then(data => {
+          if (data.ok && data.tone) {
+            setActivePreviewTone(data.tone);
+          }
+        })
+        .catch(err => console.error('Failed to load featured active preview tone:', err));
+    }
+
+    // 2. Fetch Serenity Catalog Tones from Supabase
+    async function loadSerenity() {
+      try {
+        setLoadingSerenity(true);
+        const { data, error } = await supabase
+          .from('saved_tones')
+          .select('*')
+          .eq('is_serenity', true)
+          .order('created_at', { ascending: true });
+        
+        if (!error && data) {
+          setSerenityTones(data);
+        }
+      } catch (err) {
+        console.error('Failed to query serenity tracks:', err);
+      } finally {
+        setLoadingSerenity(false);
+      }
+    }
+    loadSerenity();
+  }, [supabase]);
+
+  // Audio Playback Pipeline
+  const handlePlayTone = (tone) => {
+    const url = tone.webmUrl || tone.wavUrl || tone.mp3Url || tone.webm_url || tone.wav_url || tone.mp3_url || tone.playUrl;
+    if (!url) return;
+
+    if (!audioRef.current) return;
+    const audio = audioRef.current;
+
+    if (playingToneId === tone.id) {
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+      } else {
+        audio.play()
+          .then(() => setIsPlaying(true))
+          .catch(err => console.error('Acoustic playback failed:', err));
+      }
+    } else {
+      audio.pause();
+      audio.src = url;
+      audio.load();
+      setPlayingToneId(tone.id);
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch(err => {
+          console.error('Acoustic playback failed:', err);
+          setIsPlaying(false);
+        });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
       <PublicHeader />
@@ -107,7 +188,7 @@ export default function PricingPage() {
         </div>
 
         {/* 3-Column Plan Grid */}
-        <div className="grid md:grid-cols-3 gap-8 w-full max-w-6xl mb-24">
+        <div className="grid md:grid-cols-3 gap-8 w-full max-w-6xl mb-32">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.id}
@@ -205,8 +286,170 @@ export default function PricingPage() {
           ))}
         </div>
 
+        {/* Dynamic Binaural Calibration Sound Room */}
+        <section className="w-full max-w-5xl mb-32 border-t border-white/5 pt-20">
+          <div className="text-center space-y-4 max-w-2xl mx-auto mb-16">
+            <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Calibration & Sound Room</p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight">Stereo Sound Preview Room.</h2>
+            <p className="text-white/40 text-sm font-light leading-relaxed">
+              Calibrate your headphones and preview our high-fidelity HemiSync waves side-by-side. Test either your active session preview or any of the premium Serenity seed tracks.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-12 gap-8 items-stretch">
+            
+            {/* Left Column: Active Session Preview */}
+            <div className="md:col-span-5 flex flex-col">
+              <div className="relative overflow-hidden rounded-[2.5rem] border border-cyan-500/20 bg-zinc-900/40 backdrop-blur-3xl p-8 flex flex-col justify-between h-full shadow-[0_0_50px_rgba(6,182,212,0.03)] min-h-[320px]">
+                {/* Visual Glow */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+                <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none animate-pulse" />
+
+                <div className="space-y-6 relative z-10">
+                  <div className="flex items-center gap-2 text-[9px] font-mono text-cyan-400 uppercase tracking-[0.25em]">
+                    <span className="animate-pulse size-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+                    Active Sync Preview
+                  </div>
+
+                  {activePreviewTone ? (
+                    <div className="space-y-4">
+                      <div>
+                        <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[9px] font-mono uppercase tracking-widest">
+                          {activePreviewTone.state || activePreviewTone.targetState || 'Theta'} State
+                        </span>
+                        <h3 className="text-2xl font-light tracking-tight text-white mt-3 leading-snug">
+                          {activePreviewTone.name}
+                        </h3>
+                        <p className="text-xs text-white/40 mt-2 font-light leading-relaxed">
+                          {activePreviewTone.description || `Custom matched ${activePreviewTone.targetHz || activePreviewTone.target_hz || '8'}Hz binaural frequency session.`}
+                        </p>
+                      </div>
+
+                      {/* Custom active audio wave animation */}
+                      {playingToneId === activePreviewTone.id && isPlaying && (
+                        <div className="h-10 flex items-center justify-center gap-1.5 bg-black/40 rounded-xl px-4 border border-white/5">
+                          {Array.from({ length: 15 }).map((_, waveIdx) => (
+                            <motion.div
+                              key={waveIdx}
+                              animate={{ 
+                                height: [8, 32, 8],
+                              }}
+                              transition={{ 
+                                duration: 0.6 + Math.random() * 0.4, 
+                                repeat: Infinity, 
+                                ease: "easeInOut",
+                                delay: waveIdx * 0.05
+                              }}
+                              className="w-1 bg-cyan-500 rounded-full"
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-light text-white/50">No Active Session</h3>
+                      <p className="text-xs text-white/30 font-light leading-relaxed">
+                        Go back to the Home page and let the HemiSync Agent parse your current cognitive mood to synthesize a custom beat.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-8 relative z-10 pt-6 border-t border-white/5 flex items-center justify-between">
+                  {activePreviewTone ? (
+                    <button
+                      onClick={() => handlePlayTone(activePreviewTone)}
+                      className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:scale-105 transition-all"
+                    >
+                      <span className="material-symbols-outlined text-2xl font-bold">
+                        {playingToneId === activePreviewTone.id && isPlaying ? 'pause' : 'play_arrow'}
+                      </span>
+                    </button>
+                  ) : (
+                    <Link
+                      href="/"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-[9px] font-mono uppercase tracking-wider text-white hover:bg-white/10 transition-all"
+                    >
+                      Go Sync a Tone <ChevronRight className="size-3" />
+                    </Link>
+                  )}
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-white/20">
+                    Carrier: {activePreviewTone?.baseFreqHz || activePreviewTone?.base_freq_hz || 220}Hz
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Serenity Pack Tones */}
+            <div className="md:col-span-7 flex flex-col">
+              <div className="relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-zinc-900/30 backdrop-blur-3xl p-8 flex flex-col justify-between h-full min-h-[320px]">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[9px] font-mono text-purple-400 uppercase tracking-[0.25em]">Premium Serenity Pack Tones</p>
+                    <span className="text-[9px] font-mono text-white/25 uppercase tracking-widest">Seeded Catalog</span>
+                  </div>
+
+                  {loadingSerenity ? (
+                    <div className="space-y-4 py-12 text-center text-white/30 text-xs font-mono">
+                      <span className="animate-spin inline-block size-4 border-t border-cyan-400 rounded-full mr-2" />
+                      Loading Serenity Catalog...
+                    </div>
+                  ) : serenityTones.length > 0 ? (
+                    <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2 scrollbar-thin">
+                      {serenityTones.map((tone) => (
+                        <div 
+                          key={tone.id}
+                          className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                            playingToneId === tone.id && isPlaying
+                              ? 'bg-purple-500/10 border-purple-500/30 text-white shadow-[0_0_20px_rgba(168,85,247,0.05)]' 
+                              : 'bg-zinc-950/60 border-white/5 text-white/60 hover:border-white/10 hover:text-white/80'
+                          }`}
+                        >
+                          <div className="space-y-1 text-left max-w-[75%]">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[9px] font-mono uppercase tracking-widest text-purple-400">{tone.target_state || 'Theta'}</span>
+                              <span className="text-white/25 text-[8px]">•</span>
+                              <span className="text-white/40 text-[9px] font-mono">{tone.base_freq_hz}Hz Carrier</span>
+                            </div>
+                            <h4 className="text-sm font-medium text-white tracking-tight">{tone.name}</h4>
+                            <p className="text-[10px] text-white/35 font-light leading-normal line-clamp-1">{tone.description}</p>
+                          </div>
+
+                          <button
+                            onClick={() => handlePlayTone(tone)}
+                            className={`size-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                              playingToneId === tone.id && isPlaying
+                                ? 'bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:scale-105'
+                                : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:scale-105'
+                            }`}
+                          >
+                            <span className="material-symbols-outlined text-lg">
+                              {playingToneId === tone.id && isPlaying ? 'pause' : 'play_arrow'}
+                            </span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-12 text-center text-white/35 text-xs font-light leading-relaxed">
+                      No public Serenity tracks registered. Run `node scripts/seed-serenity.mjs` inside your workspace to populate.
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-8 pt-4 border-t border-white/5 text-[9px] font-mono uppercase tracking-widest text-white/25 flex items-center justify-between">
+                  <span>True Binaural Phase Lock</span>
+                  <span className="text-purple-400 font-bold uppercase tracking-widest">{serenityTones.length} premium tracks loaded</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         {/* Muted Tone Pack details */}
-        <section className="mt-20 w-full max-w-5xl">
+        <section className="w-full max-w-5xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
               <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Alternative Node</p>
@@ -290,6 +533,18 @@ export default function PricingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Global Hidden Audio pipeline element */}
+      <audio
+        ref={audioRef}
+        preload="auto"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => {
+          setIsPlaying(false);
+          setPlayingToneId(null);
+        }}
+      />
     </div>
   );
 }

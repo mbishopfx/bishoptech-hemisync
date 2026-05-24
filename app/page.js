@@ -33,10 +33,23 @@ export default function LandingPage() {
       try {
         const response = await fetch('/api/audio/preview-tone', { cache: 'no-store' });
         const data = await response.json();
-        if (!response.ok || !data.ok || cancelled) return;
+        if (!response.ok || !data.ok || cancelled) {
+          const saved = localStorage.getItem('active-preview-tone');
+          if (saved && !cancelled) {
+            setCurrentPreviewTone(JSON.parse(saved));
+          }
+          return;
+        }
         setCurrentPreviewTone(data.tone || null);
+        if (data.tone && !cancelled) {
+          localStorage.setItem('active-preview-tone', JSON.stringify(data.tone));
+        }
       } catch (error) {
         console.error('Failed to load featured preview tone:', error);
+        const saved = localStorage.getItem('active-preview-tone');
+        if (saved && !cancelled) {
+          setCurrentPreviewTone(JSON.parse(saved));
+        }
       }
     }
 
@@ -73,7 +86,12 @@ export default function LandingPage() {
       audioRef.current?.pause();
       setIsPreviewPlaying(false);
       setIsPreviewActive(false);
-      setCurrentPreviewTone(data.track || null);
+      
+      const track = data.track || null;
+      setCurrentPreviewTone(track);
+      if (track) {
+        localStorage.setItem('active-preview-tone', JSON.stringify(track));
+      }
     } catch (err) {
       console.error('Failed to connect to agent:', err);
     } finally {
