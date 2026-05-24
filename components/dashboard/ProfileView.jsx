@@ -278,115 +278,85 @@ export function ProfileView({ profile, onUpdateProfile }) {
     <div className="space-y-8">
       {/* Bento View - Cyber Mockup Card */}
       <div className="grid gap-6 lg:grid-cols-12">
-        <Card className="lg:col-span-8 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl overflow-hidden relative group">
-          {/* Cover Image Area */}
-          <div className="h-44 w-full bg-zinc-950 relative overflow-hidden">
-            {coverUrl ? (
-              <img src={coverUrl} alt="Profile Cover" className="w-full h-full object-cover opacity-60" />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 cyber-grid opacity-30" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
-            
-            {/* Upload Cover Trigger */}
+        <Card className="lg:col-span-8 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl p-8 relative overflow-hidden group flex flex-col items-center text-center justify-center min-h-[300px]">
+          {/* Subtle Background Glow inside Card */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.01] to-transparent pointer-events-none" />
+          <div className="absolute -top-24 w-64 h-64 bg-cyan-500/[0.02] blur-[80px] rounded-full pointer-events-none" />
+
+          {/* Profile Picture Upload Container */}
+          <div className="relative size-32 rounded-full border-4 border-white/10 bg-zinc-950 shadow-[0_0_30px_rgba(6,182,212,0.15)] overflow-visible group/avatar mb-6">
+            <div className="size-full rounded-full overflow-hidden">
+              <Avatar className="size-full rounded-full">
+                <AvatarImage src={avatarUrl} className="object-cover" />
+                <AvatarFallback className="bg-cyan-950 text-cyan-300 text-4xl font-black flex items-center justify-center size-full">
+                  {displayName?.[0] || 'M'}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+
+            {/* Floating Upload Avatar Badge */}
             <label 
-              htmlFor="cover-upload-input"
-              className="absolute right-4 bottom-4 size-10 rounded-full bg-black/60 hover:bg-cyan-500/80 hover:text-black border border-white/10 hover:scale-105 flex items-center justify-center cursor-pointer transition-all"
+              htmlFor="avatar-upload-input"
+              className="absolute bottom-0 right-0 size-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black border-2 border-black flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all hover:scale-105 active:scale-95 z-20"
             >
-              {uploadingCover ? (
-                <span className="material-symbols-outlined text-base animate-spin">sync</span>
-              ) : (
-                <span className="material-symbols-outlined text-base">photo_camera</span>
-              )}
+              <span className="material-symbols-outlined text-[18px]">photo_camera</span>
             </label>
             <input 
-              id="cover-upload-input"
+              id="avatar-upload-input"
               type="file" 
-              onChange={(e) => handleFileUpload(e, 'cover')} 
+              onChange={handleAvatarSelect} 
               accept="image/*" 
               className="hidden" 
-              disabled={uploadingCover} 
             />
           </div>
 
-          {/* User Meta Panel */}
-          <div className="px-6 pb-6 relative">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 mb-6">
-              <div className="relative size-24 sm:size-32 rounded-3xl border-4 border-black bg-zinc-900 overflow-visible group/avatar">
-                <div className="size-full rounded-2xl overflow-hidden">
-                  <Avatar className="size-full rounded-2xl">
-                    <AvatarImage src={avatarUrl} className="object-cover" />
-                    <AvatarFallback className="bg-cyan-950 text-cyan-300 text-3xl font-black">
-                      {displayName?.[0] || 'M'}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
+          {/* User Details */}
+          <div className="space-y-2 mb-6">
+            <h3 className="text-2xl font-light text-white tracking-tight">{displayName || 'Anonymous Member'}</h3>
+            <p className="text-xs font-mono text-cyan-400 uppercase tracking-widest">@{username || 'member'}</p>
+          </div>
 
-                {/* Floating Upload Avatar Badge */}
-                <label 
-                  htmlFor="avatar-upload-input"
-                  className="absolute -bottom-1 -right-1 size-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black border-2 border-black flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all hover:scale-105 active:scale-95 z-20"
-                >
-                  <span className="material-symbols-outlined text-[18px]">photo_camera</span>
-                </label>
-                <input 
-                  id="avatar-upload-input"
-                  type="file" 
-                  onChange={handleAvatarSelect} 
-                  accept="image/*" 
-                  className="hidden" 
-                />
-              </div>
-
-              <div className="flex-1 min-w-0 sm:pt-4">
-                <h3 className="text-2xl font-bold truncate text-white leading-tight">{displayName || 'Anonymous Member'}</h3>
-                <p className="text-xs font-mono text-cyan-400 mt-1 uppercase tracking-widest">@{username || 'member'}</p>
-              </div>
-            </div>
-
-            {/* Profile Bio */}
+          {/* Profile Bio */}
+          <div className="max-w-md mx-auto mb-6 w-full">
             {bio ? (
-              <div className="space-y-1">
-                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">Biography</p>
-                <p className="text-sm text-white/80 leading-relaxed font-light">{bio}</p>
-              </div>
+              <p className="text-sm text-white/70 leading-relaxed font-light italic">&quot;{bio}&quot;</p>
             ) : (
-              <p className="text-sm text-white/30 font-light italic">No neural bio synthesized yet. Outline your journey in the forms below...</p>
+              <p className="text-xs text-white/30 font-light italic uppercase tracking-wider">No neural bio synthesized yet.</p>
             )}
+          </div>
 
-            {/* Public Links Badges */}
-            <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-white/5">
-              {websiteUrl && (
-                <a href={websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/5 px-4 py-1 text-xs text-cyan-300 hover:bg-cyan-500 hover:text-black transition-all">
-                  <span className="material-symbols-outlined text-sm">language</span>
-                  Website
-                </a>
-              )}
-              {xUrl && (
-                <a href={xUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs text-white/70 hover:bg-white hover:text-black transition-all">
-                  <span className="material-symbols-outlined text-sm">alternate_email</span>
-                  X / Twitter
-                </a>
-              )}
-              {instagramUrl && (
-                <a href={instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/5 px-4 py-1 text-xs text-purple-300 hover:bg-purple-500 hover:text-black transition-all">
-                  <span className="material-symbols-outlined text-sm">photo_library</span>
-                  Instagram
-                </a>
-              )}
-              {youtubeUrl && (
-                <a href={youtubeUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border-red-500/20 bg-red-500/5 px-4 py-1 text-xs text-red-300 hover:bg-red-500 hover:text-black transition-all">
-                  <span className="material-symbols-outlined text-sm">video_library</span>
-                  YouTube
-                </a>
-              )}
-              {tiktokUrl && (
-                <a href={tiktokUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border-pink-500/20 bg-pink-500/5 px-4 py-1 text-xs text-pink-300 hover:bg-pink-500 hover:text-black transition-all">
-                  <span className="material-symbols-outlined text-sm">music_note</span>
-                  TikTok
-                </a>
-              )}
-            </div>
+          {/* Public Links Badges */}
+          <div className="flex flex-wrap justify-center gap-2 pt-4 border-t border-white/5 w-full">
+            {websiteUrl && (
+              <a href={websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/5 px-4 py-1 text-xs text-cyan-300 hover:bg-cyan-500 hover:text-black transition-all">
+                <span className="material-symbols-outlined text-sm">language</span>
+                Website
+              </a>
+            )}
+            {xUrl && (
+              <a href={xUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs text-white/70 hover:bg-white hover:text-black transition-all">
+                <span className="material-symbols-outlined text-sm">alternate_email</span>
+                X / Twitter
+              </a>
+            )}
+            {instagramUrl && (
+              <a href={instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/5 px-4 py-1 text-xs text-purple-300 hover:bg-purple-500 hover:text-black transition-all">
+                <span className="material-symbols-outlined text-sm">photo_library</span>
+                Instagram
+              </a>
+            )}
+            {youtubeUrl && (
+              <a href={youtubeUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border-red-500/20 bg-red-500/5 px-4 py-1 text-xs text-red-300 hover:bg-red-500 hover:text-black transition-all">
+                <span className="material-symbols-outlined text-sm">video_library</span>
+                YouTube
+              </a>
+            )}
+            {tiktokUrl && (
+              <a href={tiktokUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border-pink-500/20 bg-pink-500/5 px-4 py-1 text-xs text-pink-300 hover:bg-pink-500 hover:text-black transition-all">
+                <span className="material-symbols-outlined text-sm">music_note</span>
+                TikTok
+              </a>
+            )}
           </div>
         </Card>
 

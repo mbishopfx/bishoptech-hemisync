@@ -59,7 +59,7 @@ export default async function PublicProfilePage({ params }) {
     notFound();
   }
 
-  const { profile, posts, tones, canFollow, initialFollowing } = data;
+  const { profile, posts, tones, canFollow, initialFollowing, followerCount, followingCount } = data;
 
   return (
     <main className="landing-shell">
@@ -75,77 +75,74 @@ export default async function PublicProfilePage({ params }) {
         </div>
 
         {/* Profile Header */}
-        <Card className="relative overflow-hidden border-none shadow-premium bg-[var(--card-bg)]">
-          {profile.cover_url ? (
-            <div className="h-48 w-full bg-cover bg-center" style={{ backgroundImage: `url(${profile.cover_url})` }} />
-          ) : (
-            <div className="h-48 w-full bg-gradient-to-r from-[var(--bg-1)] to-[var(--bg-2)] opacity-50" />
-          )}
-          
-          <div className="px-8 pb-8 pt-0 relative">
-            <div className="flex justify-between items-end -mt-12 mb-4">
-              <Avatar className="size-24 border-4 border-[var(--bg-0)] shadow-premium bg-[var(--bg-1)]">
-                <AvatarImage src={profile.avatar_url || ''} />
-                <AvatarFallback className="text-2xl">{(profile.display_name || 'M').slice(0, 2).toUpperCase()}</AvatarFallback>
+        <Card className="relative overflow-hidden border-none shadow-premium bg-[var(--card-bg)] p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
+            <div className="flex items-center gap-4">
+              <Avatar className="size-24 border border-white/10 shadow-premium bg-[var(--bg-1)]">
+                <AvatarImage src={profile.avatar_url || ''} className="object-cover" />
+                <AvatarFallback className="text-2xl font-bold flex items-center justify-center bg-cyan-950 text-cyan-300">
+                  {(profile.display_name || 'M').slice(0, 2).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
-            </div>
-            
-            <div className="flex flex-col gap-1">
-              <h1 className="text-3xl font-display text-foreground flex items-center gap-2">
-                {profile.display_name || 'Member'}
-                {profile.plan === 'premium' && <CheckCircle className="size-5 text-[var(--accent-gold-strong)]" />}
-              </h1>
-              <span className="text-muted">@{profile.username || profile.id.split('-')[0]}</span>
-            </div>
-
-            {profile.bio && (
-              <p className="mt-4 text-foreground/90 leading-relaxed max-w-2xl">{profile.bio}</p>
-            )}
-
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl">
-              <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm">
-                <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Followers</div>
-                <div className="mt-1 text-xl font-display text-foreground">{followerCount.toLocaleString()}</div>
-              </div>
-              <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm">
-                <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Following</div>
-                <div className="mt-1 text-xl font-display text-foreground">{followingCount.toLocaleString()}</div>
-              </div>
-              <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm sm:col-span-1 col-span-2">
-                <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Status</div>
-                <div className="mt-1 text-sm font-medium text-[var(--accent-gold-strong)]">Open to community follows</div>
+              <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-display text-foreground flex items-center gap-2">
+                  {profile.display_name || 'Member'}
+                  {profile.subscription_tier && profile.subscription_tier !== 'none' && profile.subscription_tier !== 'free' && (
+                    <CheckCircle className="size-5 text-[var(--accent-gold-strong)]" />
+                  )}
+                </h1>
+                <span className="text-muted text-sm">@{profile.username || profile.id.split('-')[0]}</span>
               </div>
             </div>
 
-            {/* Social Links */}
-            <div className="flex flex-wrap items-center gap-4 mt-6">
-              <div className="flex gap-4">
-                {profile.website_url && (
-                  <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                    <Globe className="size-5" />
-                  </a>
-                )}
-                {profile.x_url && (
-                  <a href={profile.x_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                    <X className="size-5" />
-                  </a>
-                )}
-                {profile.instagram_url && (
-                  <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                    <ExternalLink className="size-5" />
-                  </a>
-                )}
-                {profile.youtube_url && (
-                  <a href={profile.youtube_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
-                    <ExternalLink className="size-5" />
-                  </a>
-                )}
-              </div>
+            <div className="flex flex-wrap items-center gap-4">
+              {canFollow && <FollowButton profileId={profile.id} initialFollowing={initialFollowing} />}
+              <ShareProfileButton profilePath={`/community/${profile.username || profile.id}`} />
+            </div>
+          </div>
 
-              <div className="flex flex-wrap items-center gap-4">
-                {canFollow && <FollowButton profileId={profile.id} initialFollowing={initialFollowing} />}
-                <ShareProfileButton profilePath={`/community/${profile.username || profile.id}`} />
-              </div>
+          {profile.bio && (
+            <p className="mt-4 text-foreground/90 leading-relaxed max-w-2xl font-light italic">&quot;{profile.bio}&quot;</p>
+          )}
+
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl">
+            <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm">
+              <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Followers</div>
+              <div className="mt-1 text-xl font-display text-foreground">{followerCount.toLocaleString()}</div>
+            </div>
+            <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm">
+              <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Following</div>
+              <div className="mt-1 text-xl font-display text-foreground">{followingCount.toLocaleString()}</div>
+            </div>
+            <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--bg-1)]/80 px-4 py-3 backdrop-blur-sm sm:col-span-1 col-span-2">
+              <div className="text-[11px] uppercase tracking-[0.24em] text-muted">Status</div>
+              <div className="mt-1 text-sm font-medium text-[var(--accent-gold-strong)]">Open to community follows</div>
+            </div>
+          </div>
+
+          {/* Social Links */}
+          <div className="flex flex-wrap items-center gap-4 mt-6 pt-6 border-t border-[var(--line-soft)]">
+            <div className="flex gap-4">
+              {profile.website_url && (
+                <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                  <Globe className="size-5" />
+                </a>
+              )}
+              {profile.x_url && (
+                <a href={profile.x_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                  <X className="size-5" />
+                </a>
+              )}
+              {profile.instagram_url && (
+                <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                  <ExternalLink className="size-5" />
+                </a>
+              )}
+              {profile.youtube_url && (
+                <a href={profile.youtube_url} target="_blank" rel="noreferrer" className="text-muted hover:text-foreground transition-colors">
+                  <ExternalLink className="size-5" />
+                </a>
+              )}
             </div>
           </div>
         </Card>
