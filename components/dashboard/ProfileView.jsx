@@ -25,6 +25,24 @@ export function ProfileView({ profile, onUpdateProfile }) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // Toggles for active/visible social entry fields
+  const [showWebsite, setShowWebsite] = useState(!!profile?.website_url);
+  const [showX, setShowX] = useState(!!profile?.x_url);
+  const [showInstagram, setShowInstagram] = useState(!!profile?.instagram_url);
+  const [showYoutube, setShowYoutube] = useState(!!profile?.youtube_url);
+  const [showTiktok, setShowTiktok] = useState(!!profile?.tiktok_url);
+
+  // Sync show states if updated profile prop has values
+  useEffect(() => {
+    if (profile) {
+      if (profile.website_url) setShowWebsite(true);
+      if (profile.x_url) setShowX(true);
+      if (profile.instagram_url) setShowInstagram(true);
+      if (profile.youtube_url) setShowYoutube(true);
+      if (profile.tiktok_url) setShowTiktok(true);
+    }
+  }, [profile]);
+
   // Image Cropper States
   const [showCropper, setShowCropper] = useState(false);
   const [cropFile, setCropFile] = useState(null);
@@ -271,14 +289,24 @@ export function ProfileView({ profile, onUpdateProfile }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none" />
             
             {/* Upload Cover Trigger */}
-            <label className="absolute right-4 bottom-4 size-10 rounded-full bg-black/60 hover:bg-cyan-500/80 hover:text-black border border-white/10 hover:scale-105 flex items-center justify-center cursor-pointer transition-all">
+            <label 
+              htmlFor="cover-upload-input"
+              className="absolute right-4 bottom-4 size-10 rounded-full bg-black/60 hover:bg-cyan-500/80 hover:text-black border border-white/10 hover:scale-105 flex items-center justify-center cursor-pointer transition-all"
+            >
               {uploadingCover ? (
                 <span className="material-symbols-outlined text-base animate-spin">sync</span>
               ) : (
                 <span className="material-symbols-outlined text-base">photo_camera</span>
               )}
-              <input type="file" onChange={(e) => handleFileUpload(e, 'cover')} accept="image/*" className="hidden" disabled={uploadingCover} />
             </label>
+            <input 
+              id="cover-upload-input"
+              type="file" 
+              onChange={(e) => handleFileUpload(e, 'cover')} 
+              accept="image/*" 
+              className="hidden" 
+              disabled={uploadingCover} 
+            />
           </div>
 
           {/* User Meta Panel */}
@@ -295,10 +323,19 @@ export function ProfileView({ profile, onUpdateProfile }) {
                 </div>
 
                 {/* Floating Upload Avatar Badge */}
-                <label className="absolute -bottom-1.5 -right-1.5 size-8 sm:size-9 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black border border-black flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all hover:scale-105 active:scale-95 z-20">
-                  <span className="material-symbols-outlined text-sm font-bold">photo_camera</span>
-                  <input type="file" onChange={handleAvatarSelect} accept="image/*" className="hidden" />
+                <label 
+                  htmlFor="avatar-upload-input"
+                  className="absolute -bottom-1 -right-1 size-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black border-2 border-black flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all hover:scale-105 active:scale-95 z-20"
+                >
+                  <span className="material-symbols-outlined text-[18px]">photo_camera</span>
                 </label>
+                <input 
+                  id="avatar-upload-input"
+                  type="file" 
+                  onChange={handleAvatarSelect} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
               </div>
 
               <div className="flex-1 min-w-0 sm:pt-4">
@@ -407,39 +444,159 @@ export function ProfileView({ profile, onUpdateProfile }) {
             </label>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-1">
-            <label className="block space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Personal Website URL</span>
-              <Input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} placeholder="https://myspace.dev" className="bg-black/20 border-white/10" />
-            </label>
-          </div>
-
           <label className="block space-y-2">
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Biography</span>
             <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={4} placeholder="Tell the collective consciousness about your biohacking, meditation patterns, or binaural targets..." className="bg-black/20 border-white/10" />
           </label>
 
-          {/* Social Links Sub-Section */}
-          <div className="space-y-4 pt-4 border-t border-white/5">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Social Link Matrix</p>
-            
+          {/* Social Links & Web Links Section */}
+          <div className="space-y-6 pt-4 border-t border-white/5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Social Link Matrix</p>
+                <p className="text-[10px] text-white/30 mt-1 uppercase tracking-wider font-light">Add direct public credentials to your profile</p>
+              </div>
+              
+              {/* Plus Buttons */}
+              <div className="flex flex-wrap gap-2">
+                {!showWebsite && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowWebsite(true)}
+                    className="rounded-full border border-white/5 bg-white/5 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider py-1.5 px-3"
+                  >
+                    <span className="material-symbols-outlined text-[12px]">add</span>
+                    Website
+                  </Button>
+                )}
+                {!showX && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowX(true)}
+                    className="rounded-full border border-white/5 bg-white/5 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider py-1.5 px-3"
+                  >
+                    <span className="material-symbols-outlined text-[12px]">add</span>
+                    X / Twitter
+                  </Button>
+                )}
+                {!showInstagram && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowInstagram(true)}
+                    className="rounded-full border border-white/5 bg-white/5 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider py-1.5 px-3"
+                  >
+                    <span className="material-symbols-outlined text-[12px]">add</span>
+                    Instagram
+                  </Button>
+                )}
+                {!showYoutube && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowYoutube(true)}
+                    className="rounded-full border border-white/5 bg-white/5 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider py-1.5 px-3"
+                  >
+                    <span className="material-symbols-outlined text-[12px]">add</span>
+                    YouTube
+                  </Button>
+                )}
+                {!showTiktok && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowTiktok(true)}
+                    className="rounded-full border border-white/5 bg-white/5 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider py-1.5 px-3"
+                  >
+                    <span className="material-symbols-outlined text-[12px]">add</span>
+                    TikTok
+                  </Button>
+                )}
+              </div>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block space-y-2">
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">X / Twitter Handle URL</span>
-                <Input value={xUrl} onChange={(e) => setXUrl(e.target.value)} placeholder="https://x.com/username" className="bg-black/20 border-white/10 text-xs" />
-              </label>
-              <label className="block space-y-2">
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">Instagram Profile URL</span>
-                <Input value={instagramUrl} onChange={(e) => setInstagramUrl(e.target.value)} placeholder="https://instagram.com/username" className="bg-black/20 border-white/10 text-xs" />
-              </label>
-              <label className="block space-y-2">
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">YouTube Channel URL</span>
-                <Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="https://youtube.com/@channel" className="bg-black/20 border-white/10 text-xs" />
-              </label>
-              <label className="block space-y-2">
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">TikTok Profile URL</span>
-                <Input value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://tiktok.com/@username" className="bg-black/20 border-white/10 text-xs" />
-              </label>
+              {showWebsite && (
+                <label className="block space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">Personal Website URL</span>
+                    <button 
+                      type="button" 
+                      onClick={() => { setWebsiteUrl(''); setShowWebsite(false); }} 
+                      className="text-[9px] font-mono text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-0.5"
+                    >
+                      <span className="material-symbols-outlined text-[12px]">close</span> Remove
+                    </button>
+                  </div>
+                  <Input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} placeholder="https://myspace.dev" className="bg-black/20 border-white/10 text-xs" />
+                </label>
+              )}
+
+              {showX && (
+                <label className="block space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">X / Twitter Handle URL</span>
+                    <button 
+                      type="button" 
+                      onClick={() => { setXUrl(''); setShowX(false); }} 
+                      className="text-[9px] font-mono text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-0.5"
+                    >
+                      <span className="material-symbols-outlined text-[12px]">close</span> Remove
+                    </button>
+                  </div>
+                  <Input value={xUrl} onChange={(e) => setXUrl(e.target.value)} placeholder="https://x.com/username" className="bg-black/20 border-white/10 text-xs" />
+                </label>
+              )}
+
+              {showInstagram && (
+                <label className="block space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">Instagram Profile URL</span>
+                    <button 
+                      type="button" 
+                      onClick={() => { setInstagramUrl(''); setShowInstagram(false); }} 
+                      className="text-[9px] font-mono text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-0.5"
+                    >
+                      <span className="material-symbols-outlined text-[12px]">close</span> Remove
+                    </button>
+                  </div>
+                  <Input value={instagramUrl} onChange={(e) => setInstagramUrl(e.target.value)} placeholder="https://instagram.com/username" className="bg-black/20 border-white/10 text-xs" />
+                </label>
+              )}
+
+              {showYoutube && (
+                <label className="block space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">YouTube Channel URL</span>
+                    <button 
+                      type="button" 
+                      onClick={() => { setYoutubeUrl(''); setShowYoutube(false); }} 
+                      className="text-[9px] font-mono text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-0.5"
+                    >
+                      <span className="material-symbols-outlined text-[12px]">close</span> Remove
+                    </button>
+                  </div>
+                  <Input value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="https://youtube.com/@channel" className="bg-black/20 border-white/10 text-xs" />
+                </label>
+              )}
+
+              {showTiktok && (
+                <label className="block space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">TikTok Profile URL</span>
+                    <button 
+                      type="button" 
+                      onClick={() => { setTiktokUrl(''); setShowTiktok(false); }} 
+                      className="text-[9px] font-mono text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-0.5"
+                    >
+                      <span className="material-symbols-outlined text-[12px]">close</span> Remove
+                    </button>
+                  </div>
+                  <Input value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://tiktok.com/@username" className="bg-black/20 border-white/10 text-xs" />
+                </label>
+              )}
             </div>
           </div>
 
