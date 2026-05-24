@@ -16,7 +16,15 @@ export default function LandingPage() {
   const [isPreviewActive, setIsPreviewActive] = useState(false);
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
   const [currentPreviewTone, setCurrentPreviewTone] = useState(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
+
+  const formatTime = (time) => {
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -148,25 +156,92 @@ export default function LandingPage() {
             agentMessage={agentMessage}
           />
 
-          {showPreviewToneButton && (
-            <div className="flex flex-col items-center gap-3">
-              <button
-                type="button"
-                onClick={handlePreviewTone}
-                aria-pressed={isPreviewActive}
-                className={`inline-flex items-center justify-center rounded-full border px-5 py-2 text-xs font-mono uppercase tracking-[0.3em] transition-colors ${isPreviewActive ? 'border-cyan-300/60 bg-cyan-400 text-black shadow-[0_0_24px_rgba(34,211,238,0.3)]' : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20 hover:text-white'}`}
-              >
-                {isPreviewPlaying ? 'Pause Preview Tone' : currentPreviewTone ? 'Resume Preview Tone' : 'Preview Tone'}
-              </button>
-              <p className="text-center text-[10px] font-mono uppercase tracking-[0.35em] text-white/25">
-                Bi-directional stereo preview from our generated binaural HemiSync tones
-              </p>
-            </div>
+          {currentPreviewTone && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full max-w-md mx-auto bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(6,182,212,0.05)] text-left"
+            >
+              <div className="text-center">
+                <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.25em] mb-1">
+                  {currentPreviewTone.state || 'Stereo'} State Active
+                </p>
+                <h3 className="text-white text-lg font-medium">{currentPreviewTone.name}</h3>
+                <p className="text-white/40 text-xs mt-1">
+                  {currentPreviewTone.targetHz ? `${currentPreviewTone.targetHz}Hz` : 'Dynamic'} Pure Stereo Preview
+                </p>
+                <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-white/25">
+                  Binaural Tone Generated
+                </p>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="flex flex-col gap-2">
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
+                  <motion.div 
+                    className="absolute inset-y-0 left-0 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                    style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
+                  <span>{formatTime(currentTime)}</span>
+                  <span>{formatTime(duration)}</span>
+                </div>
+              </div>
+
+              {/* Action and playback controls */}
+              <div className="flex flex-col gap-5">
+                {/* Custom circular playback button */}
+                <div className="flex items-center justify-center">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePreviewTone}
+                    type="button"
+                    className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all"
+                  >
+                    <span className="material-symbols-outlined text-2xl font-bold">
+                      {isPreviewPlaying ? 'pause' : 'play_arrow'}
+                    </span>
+                  </motion.button>
+                </div>
+
+                <div className="w-full h-px bg-white/5" />
+
+                {/* Save & Broadcast actions */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
+                  >
+                    <span className="material-symbols-outlined text-sm">library_add</span>
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
+                  >
+                    <span className="material-symbols-outlined text-sm">sensors</span>
+                    Broadcast
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           )}
 
           <audio
             ref={audioRef}
             preload="auto"
+            onTimeUpdate={() => {
+              if (audioRef.current) {
+                setCurrentTime(audioRef.current.currentTime);
+              }
+            }}
+            onLoadedMetadata={() => {
+              if (audioRef.current) {
+                setDuration(audioRef.current.duration);
+              }
+            }}
             onPlay={() => {
               setIsPreviewActive(true);
               setIsPreviewPlaying(true);
@@ -176,6 +251,8 @@ export default function LandingPage() {
               setIsPreviewPlaying(false);
               setIsPreviewActive(false);
               setCurrentPreviewTone(null);
+              setCurrentTime(0);
+              setDuration(0);
             }}
           />
         </div>

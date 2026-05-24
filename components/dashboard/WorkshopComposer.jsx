@@ -345,7 +345,7 @@ export function WorkshopComposer({
               {generatingStatus === 'rendering' || generatingStatus === 'saving' ? (
                 <span className="material-symbols-outlined text-sm animate-spin mr-2">sync</span>
               ) : (
-                <span className="material-symbols-outlined text-sm mr-2 font-bold">sparkles</span>
+                <span className="material-symbols-outlined text-sm mr-2 font-bold">bolt</span>
               )}
               {generatingStatus === 'rendering' ? 'Synthesizing...' : generatingStatus === 'saving' ? 'Saving Wave...' : 'Initiate Background Render'}
             </Button>

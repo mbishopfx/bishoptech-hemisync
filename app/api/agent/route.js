@@ -100,9 +100,10 @@ export async function POST(req) {
           }
         }
 
+        let savedToneId = null;
         if (shouldSave) {
           // Save matched tone to user library
-          await supabase
+          const { data: savedTone, error: saveError } = await supabase
             .from('saved_tones')
             .insert({
               user_id: user.id,
@@ -121,7 +122,13 @@ export async function POST(req) {
                 targetHz: track.target_hz,
                 noiseType: track.noise_type
               }
-            });
+            })
+            .select('id')
+            .single();
+
+          if (!saveError && savedTone) {
+            savedToneId = savedTone.id;
+          }
         }
     } else {
         const currentCount = parseInt(cookieStore.get('free_gen_count')?.value || '0');
@@ -140,7 +147,8 @@ export async function POST(req) {
         state: track.state,
         targetHz: track.target_hz,
         wavUrl: track.wav_url,
-        webmUrl: track.webm_url
+        webmUrl: track.webm_url,
+        savedToneId
       }
     });
 

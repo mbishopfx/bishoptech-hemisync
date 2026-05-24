@@ -173,7 +173,7 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-cyan-400 text-base">sparkles</span>
+                      <span className="material-symbols-outlined text-cyan-400 text-base">waves</span>
                       <h3 className="text-2xl font-light text-white">{meta.label}</h3>
                     </div>
                     <p className="mt-1 text-sm text-white/40">{meta.description}</p>

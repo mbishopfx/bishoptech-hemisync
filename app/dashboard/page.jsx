@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { authedFetch } from '@/lib/frontend/api';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
@@ -37,6 +38,13 @@ export default function DashboardPage() {
   const [agentMessage, setAgentMessage] = useState('');
   const [selectedSeedTone, setSelectedSeedTone] = useState(null);
   const [workspaceError, setWorkspaceError] = useState('');
+
+  // Custom Sync tab actions
+  const [showBroadcastBox, setShowBroadcastBox] = useState(false);
+  const [broadcastComment, setBroadcastComment] = useState('');
+  const [broadcasting, setBroadcasting] = useState(false);
+  const [broadcastSuccess, setBroadcastSuccess] = useState(false);
+  const [savingTrack, setSavingTrack] = useState(false);
 
   // Parent-managed Background Workshop Generation States
   const [workshopStatus, setWorkshopStatus] = useState('idle'); // 'idle' | 'rendering' | 'saving' | 'completed' | 'failed'
@@ -80,6 +88,8 @@ export default function DashboardPage() {
   const handleAgentGenerate = async (mood) => {
     setAgentLoading(true);
     setAgentMessage('');
+    setShowBroadcastBox(false);
+    setBroadcastComment('');
     try {
       const response = await fetch('/api/agent', {
         method: 'POST',
@@ -96,6 +106,79 @@ export default function DashboardPage() {
       console.error(err);
     } finally {
       setAgentLoading(false);
+    }
+  };
+
+  const handleSyncSave = async () => {
+    if (!agentTrack || agentTrack.savedToneId) return;
+
+    if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
+      setWorkspaceError('Library limit reached (5 tones). Upgrade your console tier to save unlimited frequencies.');
+      return;
+    }
+
+    setSavingTrack(true);
+    setWorkspaceError('');
+    try {
+      const response = await fetch('/api/library/tones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: agentTrack.name,
+          description: `Matched by HemiSync Agent for mood`,
+          target_state: agentTrack.state,
+          base_freq_hz: 220,
+          duration_sec: 180,
+          wav_url: agentTrack.wavUrl,
+          mp3_url: agentTrack.webmUrl,
+          visibility: 'private'
+        })
+      });
+      const data = await response.json();
+      if (response.ok && data.tone) {
+        setAgentTrack(prev => ({ ...prev, savedToneId: data.tone.id }));
+        await refreshWorkspace();
+      } else {
+        setWorkspaceError(data.error || 'Failed to save tone to library');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSavingTrack(false);
+    }
+  };
+
+  const handleSyncBroadcast = async () => {
+    if (!agentTrack || !agentTrack.savedToneId) {
+      setWorkspaceError('Please save the tone to your library before broadcasting.');
+      return;
+    }
+    setBroadcasting(true);
+    setWorkspaceError('');
+    try {
+      const response = await fetch('/api/feed/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          body: broadcastComment.trim() || `Tuning into matched resonance: ${agentTrack.name}`,
+          toneId: agentTrack.savedToneId,
+          visibility: 'public'
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setBroadcastSuccess(true);
+        setBroadcastComment('');
+        setShowBroadcastBox(false);
+        await refreshWorkspace();
+        setTimeout(() => setBroadcastSuccess(false), 5000);
+      } else {
+        setWorkspaceError(data.error || 'Failed to broadcast resonance wave');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setBroadcasting(false);
     }
   };
 
@@ -204,12 +287,14 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-black text-white flex">
       {/* Sidebar */}
       <aside className="w-72 border-r border-white/5 flex flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
-        <div className="flex items-center gap-3 mb-12">
-          <div className="size-10 rounded-xl bg-white flex items-center justify-center text-black font-black">B</div>
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">BishopTech</h2>
-            <p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">HemiSync Console</p>
-          </div>
+        <div className="flex items-center gap-3 mb-12 justify-center lg:justify-start">
+          <Image 
+            src="/images/logo.png" 
+            alt="BishopTech Logo" 
+            width={40} 
+            height={40} 
+            className="brightness-110 contrast-125 animate-pulse"
+          />
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -330,7 +415,84 @@ export default function DashboardPage() {
                 />
 
                 {agentTrack && (
-                  <LibraryPlayer track={agentTrack} />
+                  <div className="space-y-6">
+                    <LibraryPlayer track={agentTrack} />
+                    
+                    <div className="max-w-md mx-auto flex flex-col gap-4">
+                      <div className="flex gap-4">
+                        <button
+                          onClick={handleSyncSave}
+                          disabled={savingTrack || Boolean(agentTrack.savedToneId)}
+                          className={`flex-1 flex items-center justify-center gap-2 rounded-2xl border px-4 py-3.5 text-xs font-mono uppercase tracking-wider transition-all ${
+                            agentTrack.savedToneId
+                              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 cursor-default'
+                              : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            {agentTrack.savedToneId ? 'check_circle' : 'library_add'}
+                          </span>
+                          {agentTrack.savedToneId ? 'Saved to Library' : 'Save to Library'}
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
+                              setWorkspaceError('Broadcast restricted. Upgrade your console tier to broadcast resonance waves.');
+                              return;
+                            }
+                            setShowBroadcastBox(!showBroadcastBox);
+                          }}
+                          className={`flex-1 flex items-center justify-center gap-2 rounded-2xl border px-4 py-3.5 text-xs font-mono uppercase tracking-wider transition-all ${
+                            showBroadcastBox
+                              ? 'border-purple-500/40 bg-purple-500/20 text-white'
+                              : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">sensors</span>
+                          Broadcast Wave
+                        </button>
+                      </div>
+
+                      {showBroadcastBox && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="rounded-3xl border border-white/5 bg-zinc-900/35 backdrop-blur-2xl p-5 space-y-4 text-left"
+                        >
+                          <p className="text-[10px] font-mono uppercase tracking-widest text-white/30">
+                            Resonance Broadcast Composer
+                          </p>
+                          <textarea
+                            value={broadcastComment}
+                            onChange={(e) => setBroadcastComment(e.target.value)}
+                            placeholder="Describe the experience of this matched frequency..."
+                            className="w-full min-h-[80px] bg-transparent text-sm text-white/80 placeholder-white/20 border-0 focus:ring-0 resize-none p-0 outline-none"
+                          />
+                          <div className="flex justify-end">
+                            <button
+                              onClick={handleSyncBroadcast}
+                              disabled={broadcasting}
+                              className="inline-flex items-center gap-2 rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-4 py-2 text-[10px] font-mono uppercase tracking-wider disabled:opacity-50 transition-colors"
+                            >
+                              {broadcasting ? (
+                                <span className="material-symbols-outlined text-xs animate-spin">sync</span>
+                              ) : (
+                                <span className="material-symbols-outlined text-xs">radio</span>
+                              )}
+                              Transmit Wave
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {broadcastSuccess && (
+                        <p className="text-center text-xs font-mono text-emerald-400 uppercase tracking-widest animate-pulse">
+                          Transmission Locked & Broadcast Complete!
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
               </motion.div>
             )}
