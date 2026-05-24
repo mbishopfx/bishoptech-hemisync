@@ -125,21 +125,21 @@ const evidence = [
 
 function Section({ title, paragraphs = [], callout, subheading, subparagraphs = [] }) {
   return (
-    <section className="space-y-6 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(9,12,16,0.92),rgba(4,6,10,0.9))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
-      <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
+    <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
         {title}
       </h2>
-      <div className="space-y-4 text-base leading-8 text-zinc-300 md:text-lg md:leading-9">
+      <div className="space-y-4 text-sm leading-relaxed text-white/50">
         {paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
       </div>
       {subheading ? (
         <div className="space-y-4 pt-2">
-          <h3 className="text-xl font-semibold tracking-[-0.04em] text-white">
+          <h3 className="text-xl font-light tracking-tight text-white leading-tight">
             {subheading}
           </h3>
-          <div className="space-y-4 text-base leading-8 text-zinc-300 md:text-lg md:leading-9">
+          <div className="space-y-4 text-sm leading-relaxed text-white/50">
             {subparagraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
@@ -147,8 +147,8 @@ function Section({ title, paragraphs = [], callout, subheading, subparagraphs = 
         </div>
       ) : null}
       {callout ? (
-        <div className="rounded-[22px] border border-slate-800/70 bg-black/20 px-5 py-4 text-sm leading-7 text-zinc-300">
-          <span className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-500">
+        <div className="rounded-2xl border border-white/5 bg-zinc-950/40 px-5 py-4 text-xs leading-relaxed text-white/60">
+          <span className="block text-[9px] font-mono uppercase tracking-[0.25em] text-cyan-400">
             {callout.label}
           </span>
           <p className="mt-2">{callout.text}</p>
@@ -161,15 +161,15 @@ function Section({ title, paragraphs = [], callout, subheading, subparagraphs = 
 function EvidenceCard({ title, note, href }) {
   return (
     <a
-      className="group block rounded-[22px] border border-slate-800/70 bg-black/20 p-5 transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.04]"
+      className="group block rounded-2xl border border-white/5 bg-zinc-950/40 p-5 transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.04]"
       href={href}
       rel="noreferrer"
       target="_blank"
     >
-      <h4 className="text-lg font-semibold tracking-[-0.04em] text-white">
+      <h4 className="text-base font-light tracking-tight text-white group-hover:text-cyan-300 transition-colors leading-tight">
         {title}
       </h4>
-      <p className="mt-4 text-sm leading-7 text-zinc-400">{note}</p>
+      <p className="mt-4 text-xs leading-relaxed text-white/40">{note}</p>
     </a>
   );
 }
@@ -177,19 +177,19 @@ function EvidenceCard({ title, note, href }) {
 export default function ConsciousnessMechanicsPost() {
   return (
     <article className="space-y-12">
-      <header className="relative overflow-hidden rounded-[32px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(10,13,18,0.96),rgba(4,6,10,0.95))] px-7 py-10 shadow-[0_34px_120px_-70px_rgba(0,0,0,0.98)] md:px-10 md:py-12">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_35%),radial-gradient(circle_at_top_right,rgba(15,23,42,0.35),transparent_30%),radial-gradient(circle_at_bottom,rgba(255,255,255,0.03),transparent_42%)]" />
+      <header className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-zinc-500">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
             HemiSync Blog
           </p>
-          <h1 className="text-balance text-5xl font-semibold tracking-[-0.075em] text-white md:text-7xl md:leading-[0.95]">
+          <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {consciousnessMechanicsPost.title}
           </h1>
-          <p className="max-w-3xl text-balance text-lg leading-8 text-zinc-300 md:text-2xl md:leading-10">
+          <p className="max-w-3xl text-balance text-sm leading-relaxed text-white/50">
             {consciousnessMechanicsPost.excerpt}
           </p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.28em] text-zinc-500">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
             <span>{consciousnessMechanicsPost.category}</span>
             <span>{consciousnessMechanicsPost.readTime}</span>
             <span>{new Date(consciousnessMechanicsPost.publishedAt).toLocaleDateString()}</span>
@@ -197,11 +197,11 @@ export default function ConsciousnessMechanicsPost() {
         </div>
       </header>
 
-      <section className="space-y-6 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.95)] md:p-8">
-        <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
+      <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+        <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           The brain is a live signal processor
         </h2>
-        <div className="space-y-4 text-base leading-8 text-zinc-300 md:text-lg md:leading-9">
+        <div className="space-y-4 text-sm leading-relaxed text-white/50">
           <p>
             The strange thing about consciousness is that it changes when the
             input changes. Not always dramatically. Not always predictably. But
@@ -231,8 +231,8 @@ export default function ConsciousnessMechanicsPost() {
         ))}
       </div>
 
-      <section className="space-y-6 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
-        <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
+      <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+        <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           The evidence snapshot
         </h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -242,15 +242,15 @@ export default function ConsciousnessMechanicsPost() {
         </div>
       </section>
 
-      <section className="grid gap-6 rounded-[28px] border border-slate-800/70 bg-black/20 p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.95)] md:grid-cols-[1.2fr_0.8fr] md:p-8">
+      <section className="grid gap-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:grid-cols-[1.2fr_0.8fr] md:p-8">
         <div className="space-y-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-zinc-500">
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
             Try this
           </p>
-          <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
+          <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
             A grounded 12-minute alpha reset
           </h2>
-          <p className="text-base leading-8 text-zinc-200/90 md:text-lg md:leading-9">
+          <p className="text-sm leading-relaxed text-white/50">
             Put on headphones. Play a 10 Hz binaural or isochronic session at a
             comfortable volume. Breathe in for 4 seconds and out for 6 seconds
             for 8 to 10 minutes. Then sit in silence for 2 minutes and write
@@ -258,24 +258,24 @@ export default function ConsciousnessMechanicsPost() {
             up. Do not judge the result. Just record it.
           </p>
         </div>
-        <div className="rounded-[22px] border border-slate-800/70 bg-black/25 p-5 text-sm leading-7 text-zinc-300">
-          <p className="font-semibold text-white">Use this session when:</p>
+        <div className="rounded-2xl border border-white/5 bg-zinc-950/40 p-5 text-xs leading-relaxed text-white/60">
+          <p className="font-mono uppercase tracking-wider text-cyan-400">Use this session when:</p>
           <ul className="mt-3 space-y-2">
             <li>• Your attention feels noisy and split.</li>
             <li>• You want a cleaner transition into meditation or journaling.</li>
             <li>• You need a repeatable ritual that is interesting, not absurd.</li>
           </ul>
-          <p className="mt-4 text-xs uppercase tracking-[0.28em] text-zinc-500">
+          <p className="mt-4 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
             Do not use while driving or operating anything expensive.
           </p>
         </div>
       </section>
 
-      <section className="space-y-5 rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
-        <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
+      <section className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+        <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           Wrap-up: the mystery is real, but the method still matters
         </h2>
-        <div className="space-y-4 text-base leading-8 text-zinc-300 md:text-lg md:leading-9">
+        <div className="space-y-4 text-sm leading-relaxed text-white/50">
           <p>
             Consciousness looks less like a single thing and more like a stack
             of interacting mechanisms: perception, attention, memory, body
@@ -298,8 +298,8 @@ export default function ConsciousnessMechanicsPost() {
             theory if it has to.
           </p>
         </div>
-        <div className="pt-2 text-sm text-zinc-400">
-          Want the archive? Visit the          <Link className="text-white underline decoration-white/25 underline-offset-4" href="/blog">blog host page</Link> for the full list of posts.
+        <div className="pt-4 text-xs font-mono uppercase tracking-wider border-t border-white/5 text-white/30">
+          Want the archive? Visit the <Link className="text-cyan-400 hover:text-cyan-200 underline decoration-cyan-400/25 underline-offset-4" href="/blog">blog host page</Link> for the full list of posts.
         </div>
       </section>
     </article>

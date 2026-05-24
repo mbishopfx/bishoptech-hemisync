@@ -19,19 +19,27 @@ export default function BlogPostPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
       <PublicHeader />
-      <main className="landing-shell pt-28 md:pt-32">
-        <div className="page-shell space-y-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+      
+      {/* Background Effects */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
+        <div className="absolute inset-0 cyber-grid opacity-10" />
+      </div>
+
+      <main className="landing-shell pt-40 pb-20 px-6 relative z-10">
+        <div className="page-shell space-y-8 max-w-4xl mx-auto">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
             <Link
-              className="inline-flex items-center gap-2 rounded-full border border-slate-800/80 bg-black/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-white/[0.05]"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-white transition-colors"
               href="/blog"
             >
               <ArrowLeft className="size-3.5" /> Back to archive
             </Link>
             <Link
-              className="hidden rounded-full border border-slate-800/80 bg-black/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-white/[0.05] md:inline-flex"
+              className="hidden rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-white transition-colors md:inline-flex"
               href="/"
             >
               Home
@@ -40,14 +48,14 @@ export default function BlogPostPage({ params }) {
 
           <ConsciousnessMechanicsPost />
 
-          <div className="rounded-[28px] border border-slate-800/70 bg-[linear-gradient(180deg,rgba(8,11,16,0.9),rgba(4,6,10,0.86))] p-7 shadow-[0_28px_90px_-54px_rgba(0,0,0,0.96)] md:p-8">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-zinc-500">
+          <div className="rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-6 shadow-2xl">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
               Post metadata
             </p>
-            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.28em] text-zinc-500">
-              <span>{consciousnessMechanicsPost.readTime}</span>
-              <span>{new Date(consciousnessMechanicsPost.publishedAt).toLocaleDateString()}</span>
-              <span>{consciousnessMechanicsPost.category}</span>
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
+              <span>Read Time: {consciousnessMechanicsPost.readTime}</span>
+              <span>Published: {new Date(consciousnessMechanicsPost.publishedAt).toLocaleDateString()}</span>
+              <span>Category: {consciousnessMechanicsPost.category}</span>
             </div>
           </div>
         </div>
