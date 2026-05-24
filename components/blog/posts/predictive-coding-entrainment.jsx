@@ -206,7 +206,7 @@ export default function PredictiveCodingEntrainmentPost() {
             If consciousness feels immediate, that is because the brain has already done a lot of work before the experience reaches awareness. It predicts, compares, compresses, and then presents the result as reality.
           </p>
           <p>
-            That makes sound-based state work more interesting than the usual internet version of the story. The point is not that a track magically changes who you are. The point is that rhythmic input can reshape the brain's expectations long enough for a different state to become easier to inhabit.
+            That makes sound-based state work more interesting than the usual internet version of the story. The point is not that a track magically changes who you are. The point is that rhythmic input can reshape the brain’s expectations long enough for a different state to become easier to inhabit.
           </p>
           <p>
             In that sense, the real opponent is not noise in the acoustic sense. It is noise in the predictive sense: too many competing hypotheses, too much internal chatter, too much friction.
