@@ -5,6 +5,12 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
+import HemisphericCoherencePost, {
+  hemisphericCoherencePost,
+} from "@/components/blog/posts/hemispheric-coherence";
+import InteroceptiveBreathPost, {
+  interoceptiveBreathPost,
+} from "@/components/blog/posts/interoceptive-breath";
 import PredictiveCodingEntrainmentPost, {
   predictiveCodingPost,
 } from "@/components/blog/posts/predictive-coding-entrainment";
@@ -19,7 +25,11 @@ const postComponentBySlug = {
   [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
   [predictiveCodingPost.slug]: PredictiveCodingEntrainmentPost,
   [sleepGatePost.slug]: SleepGatePost,
+  [hemisphericCoherencePost.slug]: HemisphericCoherencePost,
+  [interoceptiveBreathPost.slug]: InteroceptiveBreathPost,
 };
+
+const postMetaBySlug = Object.fromEntries(blogPosts.map((post) => [post.slug, post]));
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -27,8 +37,9 @@ export function generateStaticParams() {
 
 export default function BlogPostPage({ params }) {
   const PostComponent = postComponentBySlug[params.slug];
+  const post = postMetaBySlug[params.slug];
 
-  if (!PostComponent) {
+  if (!PostComponent || !post) {
     notFound();
   }
 
@@ -67,13 +78,9 @@ export default function BlogPostPage({ params }) {
               Post metadata
             </p>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
-              <span>Read Time: {PostComponent === ConsciousnessMechanicsPost ? consciousnessMechanicsPost.readTime : PostComponent === PredictiveCodingEntrainmentPost ? predictiveCodingPost.readTime : sleepGatePost.readTime}</span>
-              <span>
-                Published: {new Date(PostComponent === ConsciousnessMechanicsPost ? consciousnessMechanicsPost.publishedAt : PostComponent === PredictiveCodingEntrainmentPost ? predictiveCodingPost.publishedAt : sleepGatePost.publishedAt).toLocaleDateString()}
-              </span>
-              <span>
-                Category: {PostComponent === ConsciousnessMechanicsPost ? consciousnessMechanicsPost.category : PostComponent === PredictiveCodingEntrainmentPost ? predictiveCodingPost.category : sleepGatePost.category}
-              </span>
+              <span>Read Time: {post.readTime}</span>
+              <span>Published: {new Date(post.publishedAt).toLocaleDateString()}</span>
+              <span>Category: {post.category}</span>
             </div>
           </div>
         </div>
