@@ -41,17 +41,29 @@ export async function POST(req) {
     case 'customer.subscription.updated': {
       const session = event.data.object;
       const userId = session.client_reference_id || session.metadata?.user_uuid;
-      const subscriptionId = session.subscription || session.id;
       
       if (userId) {
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-        const planId = session.metadata?.planId || (subscription.items.data[0].price.id === 'price_1TWlb7DJtpuPVfuFfSVEXPYU' ? 'starter' : 'pro');
+        let planId = session.metadata?.planId;
+        let trialExpiresAt = null;
+
+        if (session.mode === 'payment' || !session.subscription) {
+          // Lifetime access or one-time payment
+          planId = planId || 'lifetime';
+        } else {
+          // Subscription
+          const subscriptionId = session.subscription;
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          planId = planId || (subscription.items.data[0].price.id === 'price_1TWlb7DJtpuPVfuFfSVEXPYU' ? 'starter' : 'pro');
+          if (subscription.trial_end) {
+            trialExpiresAt = new Date(subscription.trial_end * 1000).toISOString();
+          }
+        }
         
         await supabase
           .from('profiles')
           .update({ 
             subscription_tier: planId,
-            trial_expires_at: new Date(subscription.trial_end * 1000).toISOString()
+            trial_expires_at: trialExpiresAt
           })
           .eq('id', userId);
       }

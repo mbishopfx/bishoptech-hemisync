@@ -31,7 +31,7 @@ export function PublicHeader() {
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
           <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           <Link href="/machine" className="hover:text-white transition-colors">Inside the Machine</Link>
-          <Link href="/learn" className="hover:text-white transition-colors">Learn</Link>
+          <Link href="/tutorial" className="hover:text-white transition-colors">Tutorial</Link>
           <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
           <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
         </nav>
@@ -59,7 +59,7 @@ export function PublicHeader() {
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
             <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
             <Link href="/machine" onClick={() => setIsMobileMenuOpen(false)}>Inside the Machine</Link>
-            <Link href="/learn" onClick={() => setIsMobileMenuOpen(false)}>Learn</Link>
+            <Link href="/tutorial" onClick={() => setIsMobileMenuOpen(false)}>Tutorial</Link>
             <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
             <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
             <Link 

@@ -55,12 +55,12 @@ export async function POST(req) {
       }
     } else {
       // Authenticated User Logic
-      if (subscription.subscription_tier === 'none') {
-          if (subscription.generation_count >= FREE_TRIAL_LIMIT) {
+      if (subscription.subscription_tier === 'none' || subscription.subscription_tier === 'free') {
+          if (subscription.generation_count >= 5) {
               return NextResponse.json({
-                  error: 'Trial expired',
+                  error: 'Limit reached',
                   code: 'SUBSCRIPTION_REQUIRED',
-                  message: 'Your 7-day trial has concluded. Upgrade to Basic ($9) or Full ($19) to continue.'
+                  message: 'You have generated your 5 free tones for this month. Upgrade to Premium Console ($9) or Lifetime Access ($50) to unlock unlimited generations.'
               }, { status: 403 });
           }
       }
