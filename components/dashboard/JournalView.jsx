@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { authedFetch } from '@/lib/frontend/api';
 
 export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
   const [entries, setEntries] = useState([]);
@@ -14,11 +15,8 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
 
   const fetchEntries = async () => {
     try {
-      const response = await fetch('/api/journal');
-      const data = await response.json();
-      if (response.ok && data.ok) {
-        setEntries(data.entries || []);
-      }
+      const data = await authedFetch('/api/journal');
+      setEntries(data.entries || []);
     } catch (err) {
       console.error('Failed to fetch journal entries:', err);
     } finally {
@@ -37,17 +35,11 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
     setAnalyzing(true);
     setError('');
     try {
-      const response = await fetch('/api/journal', {
+      const data = await authedFetch('/api/journal', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: text.trim() })
       });
       
-      const data = await response.json();
-      if (!response.ok || !data.ok) {
-        throw new Error(data?.error || 'Database error while saving reflection');
-      }
-
       const savedEntry = data.journal_entry;
       const originalText = text.trim();
       setText('');
