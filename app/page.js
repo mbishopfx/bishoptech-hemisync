@@ -7,18 +7,23 @@ import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [agentMessage, setAgentMessage] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [showPreviewToneButton, setShowPreviewToneButton] = useState(true);
-  const [isPreviewActive, setIsPreviewActive] = useState(false);
-  const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
   const [currentPreviewTone, setCurrentPreviewTone] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
+
+  // Serenity Pack States
+  const [serenityTones, setSerenityTones] = useState([]);
+  const [currentSerenityTone, setCurrentSerenityTone] = useState(null);
+  const [playingToneId, setPlayingToneId] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const formatTime = (time) => {
     const mins = Math.floor(time / 60);
@@ -26,9 +31,11 @@ export default function LandingPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Load preview data and query serenity pack on homepage mount
   useEffect(() => {
     let cancelled = false;
 
+    // 1. Fetch featured preview tone (fallback to localStorage if offline/building)
     async function loadPreviewTone() {
       try {
         const response = await fetch('/api/audio/preview-tone', { cache: 'no-store' });
@@ -54,11 +61,33 @@ export default function LandingPage() {
     }
 
     loadPreviewTone();
+
+    // 2. Fetch public Serenity catalog tones from database
+    const supabase = getSupabaseBrowserClient();
+    async function loadSerenity() {
+      try {
+        const { data, error } = await supabase
+          .from('saved_tones')
+          .select('*')
+          .eq('is_serenity', true)
+          .order('created_at', { ascending: true });
+        
+        if (!error && data && data.length > 0 && !cancelled) {
+          setSerenityTones(data);
+          setCurrentSerenityTone(data[0]); // default to first track
+        }
+      } catch (err) {
+        console.error('Failed to load serenity tracks on homepage mount:', err);
+      }
+    }
+    loadSerenity();
+
     return () => {
       cancelled = true;
     };
   }, []);
 
+  // Mood generation handler
   const handleGenerate = async (mood) => {
     setIsLoading(true);
     setAgentMessage('');
@@ -83,9 +112,10 @@ export default function LandingPage() {
 
       setAgentMessage(data.agentMessage);
       setShowPreviewToneButton(true);
+      
+      // Reset active playback
       audioRef.current?.pause();
-      setIsPreviewPlaying(false);
-      setIsPreviewActive(false);
+      setIsPlaying(false);
       
       const track = data.track || null;
       setCurrentPreviewTone(track);
@@ -99,53 +129,50 @@ export default function LandingPage() {
     }
   };
 
+  // Symmetrical Playback Coordinator
+  const handlePlayTone = (tone) => {
+    const url = tone?.webmUrl || tone?.wavUrl || tone?.mp3Url || tone?.webm_url || tone?.wav_url || tone?.mp3_url || tone?.playUrl;
+    if (!url) return;
 
-
-  const handlePreviewTone = async () => {
     if (!audioRef.current) return;
-
     const audio = audioRef.current;
 
-    if (isPreviewPlaying) {
+    if (playingToneId === tone.id) {
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+      } else {
+        audio.play()
+          .then(() => setIsPlaying(true))
+          .catch(err => console.error('Acoustic playback failed:', err));
+      }
+    } else {
       audio.pause();
-      setIsPreviewPlaying(false);
-      setIsPreviewActive(false);
-      return;
-    }
-
-    const nextTone = currentPreviewTone || null;
-    const nextSource = nextTone?.playUrl || nextTone?.webmUrl || nextTone?.wavUrl || nextTone?.mp3Url || nextTone?.mp3_url;
-    if (!nextTone || !nextSource) return;
-
-    setCurrentPreviewTone(nextTone);
-    setAgentMessage(`Previewing ${nextTone.name}${nextTone.shortLabel ? ` • ${nextTone.shortLabel}` : ''}.`);
-    setIsPreviewActive(true);
-    audio.src = nextSource;
-    audio.load();
-
-    try {
-      await audio.play();
-      setIsPreviewPlaying(true);
-    } catch (error) {
-      console.error('Preview tone playback failed:', error);
-      setIsPreviewPlaying(false);
-      setIsPreviewActive(false);
+      audio.src = url;
+      audio.load();
+      setPlayingToneId(tone.id);
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch(err => {
+          console.error('Acoustic playback failed:', err);
+          setIsPlaying(false);
+        });
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
       <PublicHeader />
 
       {/* Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
         <div className="absolute inset-0 cyber-grid opacity-10" />
       </div>
 
       {/* Main Content */}
-      <main className="pt-40 pb-20 px-6 relative z-10 flex flex-col items-center gap-20">
+      <main className="pt-40 pb-20 px-6 relative z-10 flex flex-col items-center gap-20 max-w-7xl mx-auto">
         {/* Hero Copy */}
         <div className="text-center space-y-6 max-w-3xl">
           <motion.h1 
@@ -166,7 +193,7 @@ export default function LandingPage() {
           </motion.p>
         </div>
 
-        {/* Omnibar & Player */}
+        {/* Omnibar & Player Panel */}
         <div className="w-full flex flex-col items-center gap-12">
           <Omnibar 
             onGenerate={handleGenerate} 
@@ -176,77 +203,205 @@ export default function LandingPage() {
 
           {currentPreviewTone && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-md mx-auto bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(6,182,212,0.05)] text-left"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col md:flex-row gap-6 w-full max-w-4xl justify-center items-stretch text-left z-10 relative"
             >
-              <div className="text-center">
-                <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.25em] mb-1">
-                  {currentPreviewTone.state || 'Stereo'} State Active
-                </p>
-                <h3 className="text-white text-lg font-medium">{currentPreviewTone.name}</h3>
-                <p className="text-white/40 text-xs mt-1">
-                  {currentPreviewTone.targetHz ? `${currentPreviewTone.targetHz}Hz` : 'Dynamic'} Pure Stereo Preview
-                </p>
-                <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-white/25">
-                  Binaural Tone Generated
-                </p>
+              
+              {/* Left Player: Generated custom matched tone */}
+              <div className="w-full md:w-1/2 bg-zinc-900/40 border border-cyan-500/20 backdrop-blur-3xl p-8 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(6,182,212,0.05)] flex flex-col justify-between">
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.25em] mb-1 flex items-center justify-center gap-2">
+                      <span className="animate-pulse size-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+                      {currentPreviewTone.state || 'Stereo'} State Active
+                    </p>
+                    <h3 className="text-white text-lg font-medium leading-snug">{currentPreviewTone.name}</h3>
+                    <p className="text-white/40 text-xs mt-1">
+                      {currentPreviewTone.targetHz ? `${currentPreviewTone.targetHz}Hz` : 'Dynamic'} Pure Stereo Preview
+                    </p>
+                    <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-white/25">
+                      Binaural Tone Generated
+                    </p>
+                  </div>
+
+                  {/* Audio Wave Visualizer */}
+                  {playingToneId === currentPreviewTone.id && isPlaying && (
+                    <div className="h-10 flex items-center justify-center gap-1 bg-black/40 rounded-xl px-4 border border-white/5">
+                      {Array.from({ length: 12 }).map((_, waveIdx) => (
+                        <motion.div
+                          key={waveIdx}
+                          animate={{ height: [6, 24, 6] }}
+                          transition={{ 
+                            duration: 0.5 + Math.random() * 0.5, 
+                            repeat: Infinity, 
+                            ease: "easeInOut",
+                            delay: waveIdx * 0.04
+                          }}
+                          className="w-1 bg-cyan-500 rounded-full"
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Progress bar updates */}
+                  <div className="flex flex-col gap-2">
+                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
+                      <motion.div 
+                        className="absolute inset-y-0 left-0 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                        style={{ width: `${playingToneId === currentPreviewTone.id ? (duration ? (currentTime / duration) * 100 : 0) : 0}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
+                      <span>{playingToneId === currentPreviewTone.id ? formatTime(currentTime) : '0:00'}</span>
+                      <span>{playingToneId === currentPreviewTone.id ? formatTime(duration) : '0:00'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6 pt-6 border-t border-white/5">
+                  <div className="flex items-center justify-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handlePlayTone(currentPreviewTone)}
+                      type="button"
+                      className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all"
+                    >
+                      <span className="material-symbols-outlined text-2xl font-bold">
+                        {playingToneId === currentPreviewTone.id && isPlaying ? 'pause' : 'play_arrow'}
+                      </span>
+                    </motion.button>
+                  </div>
+
+                  <div className="w-full h-px bg-white/5" />
+
+                  {/* Auth redirection actions */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setIsAuthModalOpen(true)}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-sm">library_add</span>
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setIsAuthModalOpen(true)}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-sm">sensors</span>
+                      Broadcast
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Progress Bar */}
-              <div className="flex flex-col gap-2">
-                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
-                  <motion.div 
-                    className="absolute inset-y-0 left-0 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
-                    style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
-                  />
+              {/* Right Player: Serenity Pack seeded preview */}
+              <div className="w-full md:w-1/2 bg-zinc-900/40 border border-purple-500/20 backdrop-blur-3xl p-8 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(168,85,247,0.05)] flex flex-col justify-between">
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-1.5">
+                      <select
+                        value={currentSerenityTone?.id || ''}
+                        onChange={(e) => {
+                          const selected = serenityTones.find(t => t.id === e.target.value);
+                          if (selected) setCurrentSerenityTone(selected);
+                        }}
+                        className="bg-zinc-950/80 border border-purple-500/30 text-purple-300 rounded-full px-3 py-0.5 text-[9px] font-mono uppercase tracking-widest focus:outline-none cursor-pointer"
+                      >
+                        {serenityTones.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name} ({t.target_state?.toUpperCase() || 'THETA'})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <h3 className="text-white text-lg font-medium leading-snug">
+                      {currentSerenityTone?.name || 'Abyssal Resonance'}
+                    </h3>
+                    <p className="text-white/40 text-xs mt-1">
+                      {currentSerenityTone?.base_freq_hz || 110}Hz Seeded Carrier Wave
+                    </p>
+                    <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-purple-400/80">
+                      Serenity Pack Preview
+                    </p>
+                  </div>
+
+                  {/* Audio Wave Visualizer for Serenity track */}
+                  {playingToneId === currentSerenityTone?.id && isPlaying && (
+                    <div className="h-10 flex items-center justify-center gap-1 bg-black/40 rounded-xl px-4 border border-white/5">
+                      {Array.from({ length: 12 }).map((_, waveIdx) => (
+                        <motion.div
+                          key={waveIdx}
+                          animate={{ height: [6, 24, 6] }}
+                          transition={{ 
+                            duration: 0.5 + Math.random() * 0.5, 
+                            repeat: Infinity, 
+                            ease: "easeInOut",
+                            delay: waveIdx * 0.04
+                          }}
+                          className="w-1 bg-purple-500 rounded-full"
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Progress bar updates */}
+                  <div className="flex flex-col gap-2">
+                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
+                      <motion.div 
+                        className="absolute inset-y-0 left-0 bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
+                        style={{ width: `${playingToneId === currentSerenityTone?.id ? (duration ? (currentTime / duration) * 100 : 0) : 0}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
+                      <span>{playingToneId === currentSerenityTone?.id ? formatTime(currentTime) : '0:00'}</span>
+                      <span>{playingToneId === currentSerenityTone?.id ? formatTime(duration) : '0:00'}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
-                  <span>{formatTime(currentTime)}</span>
-                  <span>{formatTime(duration)}</span>
+
+                <div className="space-y-6 pt-6 border-t border-white/5">
+                  <div className="flex items-center justify-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handlePlayTone(currentSerenityTone)}
+                      type="button"
+                      className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all"
+                    >
+                      <span className="material-symbols-outlined text-2xl font-bold">
+                        {playingToneId === currentSerenityTone?.id && isPlaying ? 'pause' : 'play_arrow'}
+                      </span>
+                    </motion.button>
+                  </div>
+
+                  <div className="w-full h-px bg-white/5" />
+
+                  {/* Auth modal triggers */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setIsAuthModalOpen(true)}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-purple-300 transition-all font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-sm">library_add</span>
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setIsAuthModalOpen(true)}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-purple-300 transition-all font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-sm">sensors</span>
+                      Broadcast
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Action and playback controls */}
-              <div className="flex flex-col gap-5">
-                {/* Custom circular playback button */}
-                <div className="flex items-center justify-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handlePreviewTone}
-                    type="button"
-                    className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all"
-                  >
-                    <span className="material-symbols-outlined text-2xl font-bold">
-                      {isPreviewPlaying ? 'pause' : 'play_arrow'}
-                    </span>
-                  </motion.button>
-                </div>
-
-                <div className="w-full h-px bg-white/5" />
-
-                {/* Save & Broadcast actions */}
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setIsAuthModalOpen(true)}
-                    className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
-                  >
-                    <span className="material-symbols-outlined text-sm">library_add</span>
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setIsAuthModalOpen(true)}
-                    className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
-                  >
-                    <span className="material-symbols-outlined text-sm">sensors</span>
-                    Broadcast
-                  </button>
-                </div>
-              </div>
             </motion.div>
           )}
 
+          {/* Unified single-channel player */}
           <audio
             ref={audioRef}
             preload="auto"
@@ -261,14 +416,12 @@ export default function LandingPage() {
               }
             }}
             onPlay={() => {
-              setIsPreviewActive(true);
-              setIsPreviewPlaying(true);
+              setIsPlaying(true);
             }}
-            onPause={() => setIsPreviewPlaying(false)}
+            onPause={() => setIsPlaying(false)}
             onEnded={() => {
-              setIsPreviewPlaying(false);
-              setIsPreviewActive(false);
-              setCurrentPreviewTone(null);
+              setIsPlaying(false);
+              setPlayingToneId(null);
               setCurrentTime(0);
               setDuration(0);
             }}
