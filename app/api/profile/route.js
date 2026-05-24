@@ -56,6 +56,23 @@ export async function PATCH(req) {
     const supabase = getSupabaseAdmin();
     const patch = cleanProfilePatch(await req.json());
 
+    if (patch.username) {
+      // Check if username is already taken by another user
+      const { data: existing } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', patch.username)
+        .neq('id', user.id)
+        .maybeSingle();
+
+      if (existing) {
+        return NextResponse.json(
+          { ok: false, error: 'Username is already taken by another neural archetype' },
+          { status: 400 }
+        );
+      }
+    }
+
     const { data, error } = await supabase
       .from('profiles')
       .update(patch)

@@ -14,7 +14,6 @@ import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
 // New high-fidelity modular tab components
 import { FeedView } from '@/components/dashboard/FeedView';
 import { JournalView } from '@/components/dashboard/JournalView';
-import { ProfileView } from '@/components/dashboard/ProfileView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
 
 const navItems = [
@@ -23,7 +22,6 @@ const navItems = [
   { id: 'workshop', label: 'Workshop', icon: 'architecture' },
   { id: 'feed', label: 'Feed', icon: 'sensors' },
   { id: 'journal', label: 'Journal', icon: 'edit_note' },
-  { id: 'profile', label: 'Profile', icon: 'account_circle' },
   { id: 'settings', label: 'Settings', icon: 'settings' }
 ];
 
@@ -415,20 +413,7 @@ export default function DashboardPage() {
               </motion.div>
             )}
 
-            {activeTab === 'profile' && (
-              <motion.div
-                key="profile"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <ProfileView
-                  profile={profile}
-                  onUpdateProfile={(updated) => {
-                    setProfile(updated);
-                  }}
-                />
-              </motion.div>
-            )}
+
 
             {activeTab === 'settings' && (
               <motion.div
