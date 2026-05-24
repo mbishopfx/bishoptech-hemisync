@@ -5,23 +5,37 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
+import PredictiveCodingEntrainmentPost, {
+  predictiveCodingPost,
+} from "@/components/blog/posts/predictive-coding-entrainment";
+import SleepGatePost, {
+  sleepGatePost,
+} from "@/components/blog/posts/sleep-thalamic-gates";
 import { blogPosts } from "@/lib/blog/posts";
 
 export const dynamic = "force-dynamic";
+
+const postComponentBySlug = {
+  [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
+  [predictiveCodingPost.slug]: PredictiveCodingEntrainmentPost,
+  [sleepGatePost.slug]: SleepGatePost,
+};
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
 export default function BlogPostPage({ params }) {
-  if (params.slug !== consciousnessMechanicsPost.slug) {
+  const PostComponent = postComponentBySlug[params.slug];
+
+  if (!PostComponent) {
     notFound();
   }
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
       <PublicHeader />
-      
+
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
@@ -46,16 +60,20 @@ export default function BlogPostPage({ params }) {
             </Link>
           </div>
 
-          <ConsciousnessMechanicsPost />
+          <PostComponent />
 
           <div className="rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-6 shadow-2xl">
             <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
               Post metadata
             </p>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
-              <span>Read Time: {consciousnessMechanicsPost.readTime}</span>
-              <span>Published: {new Date(consciousnessMechanicsPost.publishedAt).toLocaleDateString()}</span>
-              <span>Category: {consciousnessMechanicsPost.category}</span>
+              <span>Read Time: {PostComponent === ConsciousnessMechanicsPost ? consciousnessMechanicsPost.readTime : PostComponent === PredictiveCodingEntrainmentPost ? predictiveCodingPost.readTime : sleepGatePost.readTime}</span>
+              <span>
+                Published: {new Date(PostComponent === ConsciousnessMechanicsPost ? consciousnessMechanicsPost.publishedAt : PostComponent === PredictiveCodingEntrainmentPost ? predictiveCodingPost.publishedAt : sleepGatePost.publishedAt).toLocaleDateString()}
+              </span>
+              <span>
+                Category: {PostComponent === ConsciousnessMechanicsPost ? consciousnessMechanicsPost.category : PostComponent === PredictiveCodingEntrainmentPost ? predictiveCodingPost.category : sleepGatePost.category}
+              </span>
             </div>
           </div>
         </div>
