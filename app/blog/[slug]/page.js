@@ -14,9 +14,15 @@ import InteroceptiveBreathPost, {
 import PredictiveCodingEntrainmentPost, {
   predictiveCodingPost,
 } from "@/components/blog/posts/predictive-coding-entrainment";
+import SalienceGatePost, {
+  salienceGatePost,
+} from "@/components/blog/posts/salience-gate";
 import SleepGatePost, {
   sleepGatePost,
 } from "@/components/blog/posts/sleep-thalamic-gates";
+import ThetaLiminalCorridorPost, {
+  thetaLiminalCorridorPost,
+} from "@/components/blog/posts/theta-liminal-corridor";
 import { blogPosts } from "@/lib/blog/posts";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +33,8 @@ const postComponentBySlug = {
   [sleepGatePost.slug]: SleepGatePost,
   [hemisphericCoherencePost.slug]: HemisphericCoherencePost,
   [interoceptiveBreathPost.slug]: InteroceptiveBreathPost,
+  [thetaLiminalCorridorPost.slug]: ThetaLiminalCorridorPost,
+  [salienceGatePost.slug]: SalienceGatePost,
 };
 
 const postMetaBySlug = Object.fromEntries(blogPosts.map((post) => [post.slug, post]));
