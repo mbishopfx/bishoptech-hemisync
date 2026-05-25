@@ -62,7 +62,8 @@ export function WorkshopComposer({
   generatingResult = null,
   generatingSavedTone = null,
   onStartGenerate,
-  profile
+  profile,
+  library = []
 }) {
   const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
   const seedBrainState = seedTone ? resolveBrainState(seedTone) : 'alpha';
@@ -87,6 +88,14 @@ export function WorkshopComposer({
   const [breathPattern, setBreathPattern] = useState('coherent-5.5');
   const [backgroundMode, setBackgroundMode] = useState('preset');
   const [visibility, setVisibility] = useState('private');
+
+  // Chained Weaver states
+  const [workshopTab, setWorkshopTab] = useState('console'); // 'console' | 'weaver'
+  const [chainedTones, setChainedTones] = useState([]);
+  const [selectedLibraryToneId, setSelectedLibraryToneId] = useState('');
+  const [weaveName, setWeaveName] = useState('');
+  const [weaveDescription, setWeaveDescription] = useState('');
+  const [weaveVisibility, setWeaveVisibility] = useState('private');
 
   // Interactive console mixer states
   const [binauralVol, setBinauralVol] = useState(80);
@@ -130,6 +139,85 @@ export function WorkshopComposer({
     }
   }, [description, name, selectedPreset]);
 
+  // Session Weaver methods
+  const handleAddToneToChain = (toneId) => {
+    if (chainedTones.length >= 5) {
+      alert('You can only chain up to 5 tones together.');
+      return;
+    }
+    const tone = library.find(t => t.id === toneId);
+    if (tone) {
+      setChainedTones([...chainedTones, tone]);
+      setSelectedLibraryToneId('');
+    }
+  };
+
+  const handleMoveToneUp = (index) => {
+    if (index === 0) return;
+    const next = [...chainedTones];
+    const temp = next[index];
+    next[index] = next[index - 1];
+    next[index - 1] = temp;
+    setChainedTones(next);
+  };
+
+  const handleMoveToneDown = (index) => {
+    if (index === chainedTones.length - 1) return;
+    const next = [...chainedTones];
+    const temp = next[index];
+    next[index] = next[index + 1];
+    next[index + 1] = temp;
+    setChainedTones(next);
+  };
+
+  const handleRemoveTone = (index) => {
+    const next = chainedTones.filter((_, idx) => idx !== index);
+    setChainedTones(next);
+  };
+
+  const totalWeaveDurationSec = useMemo(() => {
+    if (chainedTones.length === 0) return 0;
+    const sum = chainedTones.reduce((s, t) => s + (t.duration_sec || t.durationSec || 0), 0);
+    const crossfades = Math.max(0, chainedTones.length - 1) * 0.5;
+    return Math.max(0, Math.round(sum - crossfades));
+  }, [chainedTones]);
+
+  const formatSecondsToMinutesString = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}m ${secs}s`;
+  };
+
+  const handleWeaveSubmit = () => {
+    if (chainedTones.length < 1) {
+      alert('Please add at least one tone to the sequence.');
+      return;
+    }
+    if (!onStartGenerate) return;
+
+    onStartGenerate({
+      isWeave: true,
+      weavePayload: {
+        toneIds: chainedTones.map(t => t.id),
+        name: weaveName.trim() || 'Neural Sequence Weave',
+        description: weaveDescription.trim(),
+        visibility: isFreeTrial ? 'private' : weaveVisibility
+      }
+    });
+  };
+
+  // Auto-populate customized weave metadata
+  useEffect(() => {
+    if (chainedTones.length === 0) {
+      setWeaveName('');
+      setWeaveDescription('');
+      return;
+    }
+    const names = chainedTones.map(t => t.name).join(' ➔ ');
+    setWeaveName(`Weave: ${names.slice(0, 50)}${names.length > 50 ? '...' : ''}`);
+    setWeaveDescription(`Chained neural sequence featuring: ${chainedTones.map((t, idx) => `[${idx+1}] ${t.name}`).join(', ')}`);
+  }, [chainedTones]);
+
   const handleGenerate = () => {
     if (!onStartGenerate) return;
 
@@ -167,20 +255,40 @@ export function WorkshopComposer({
   };
 
   // Knob rotation degree math (maps 100-1000 Hz to -135deg to +135deg)
-  const rotateDegree = ((baseFreqHz - 100) / 900) * 270 - 135;
-
-  return (
+  const rotateDegree = ((baseFreqHz - 100) / 900) * 270 - 135;  return (
     <div className="space-y-8 pb-12">
       <div className="space-y-4">
-        <div>
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Synthesis Workshop</p>
-          <h2 className="mt-2 text-4xl font-light text-white tracking-tight">Create your own HemiSync file</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400 font-light">
-            Select a target brain wave profile, map customized respiration patterns, and trigger background server synthesis.
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Synthesis Workshop</p>
+            <h2 className="mt-2 text-4xl font-light text-white tracking-tight">Create your own HemiSync file</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400 font-light font-sans">
+              Select a target brain wave profile, map customized respiration patterns, or sequence up to 5 library tracks into a custom crossfaded journey.
+            </p>
+          </div>
         </div>
 
-        {seedTone && (
+        {/* Workshop Mode Switcher */}
+        <div className="flex border-b border-white/5 pb-2 mt-6">
+          <div className="flex gap-6">
+            <button
+              type="button"
+              onClick={() => setWorkshopTab('console')}
+              className={`pb-3 text-xs font-mono uppercase tracking-[0.2em] transition-all border-b-2 ${workshopTab === 'console' ? 'border-cyan-500 text-cyan-400 font-bold' : 'border-transparent text-white/40 hover:text-white'}`}
+            >
+              Console (Single Generator)
+            </button>
+            <button
+              type="button"
+              onClick={() => setWorkshopTab('weaver')}
+              className={`pb-3 text-xs font-mono uppercase tracking-[0.2em] transition-all border-b-2 ${workshopTab === 'weaver' ? 'border-cyan-500 text-cyan-400 font-bold' : 'border-transparent text-white/40 hover:text-white'}`}
+            >
+              Weaver (Session Chain Mixer)
+            </button>
+          </div>
+        </div>
+
+        {seedTone && workshopTab === 'console' && (
           <Card className="border-cyan-500/20 bg-cyan-500/10 p-5 rounded-3xl backdrop-blur-md">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
@@ -200,341 +308,593 @@ export function WorkshopComposer({
         )}
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        {/* Left Column: Configuration Parameters */}
-        <Card className="space-y-6 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
-          <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div>
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Brain state</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {BRAIN_STATE_ORDER.map((state) => (
-                  <StatePill key={state} state={state} active={brainState === state} onClick={() => setBrainState(state)} />
-                ))}
-              </div>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Current Profile</p>
-              <p className="mt-1 text-xs font-mono tracking-wider font-bold text-cyan-300 uppercase">{getBrainStateMeta(brainState).label}</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <label className="block space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Target Preset Blueprint</span>
-              <select
-                value={selectedPresetId}
-                onChange={(event) => setSelectedPresetId(event.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
-              >
-                {JourneyPresetOptions.map((preset) => (
-                  <option key={preset.id} value={preset.id}>{preset.name}</option>
-                ))}
-              </select>
-            </label>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session name</span>
-                <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="My custom session" className="bg-black/20 border-white/10 rounded-2xl" />
-              </label>
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Visibility</span>
-                <select
-                  value={isFreeTrial ? 'private' : visibility}
-                  disabled={isFreeTrial}
-                  onChange={(event) => setVisibility(event.target.value)}
-                  className={`w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none cursor-pointer focus:border-cyan-500/30 transition-all ${isFreeTrial ? 'text-white/40 cursor-not-allowed' : 'text-white'}`}
-                >
-                  <option value="private">Private (Library Only)</option>
-                  {!isFreeTrial && <option value="public">Public (Show on Global Feed)</option>}
-                </select>
-                {isFreeTrial && (
-                  <p className="text-[9px] text-cyan-400 font-mono tracking-wider mt-1">Upgrade to Paid tier to unlock global public broadcasting.</p>
-                )}
-              </label>
-            </div>
-
-            <label className="block space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Description</span>
-              <Textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Describe the session and its intended state." className="bg-black/20 border-white/10 rounded-2xl" />
-            </label>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Length</span>
-                <Input
-                  type="number"
-                  min={5}
-                  step={1}
-                  value={lengthMinutes}
-                  onChange={(event) => setLengthMinutes(Number(event.target.value || 0))}
-                  className="bg-black/20 border-white/10 rounded-2xl"
-                />
-                <p className="text-[10px] text-zinc-500 font-mono">{formatMinutesLabel(lengthMinutes)}</p>
-              </label>
-              
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Focus level</span>
-                <select
-                  value={focusLevel}
-                  onChange={(event) => setFocusLevel(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
-                >
-                  <option value="F10">Focus 10 (Mind Awake / Body Asleep)</option>
-                  <option value="F12">Focus 12 (Expanded Awareness)</option>
-                  <option value="F15">Focus 15 (No-Time / Pure Meditation)</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 cursor-pointer hover:border-cyan-500/20 transition-all">
-                <div>
-                  <p className="text-sm text-white">Breath guide pacing</p>
-                  <p className="text-xs text-white/30 font-light mt-0.5">Tactile pacing guide for target brain wave settling</p>
-                </div>
-                <input type="checkbox" checked={breathEnabled} onChange={(event) => setBreathEnabled(event.target.checked)} className="size-4 accent-cyan-400 cursor-pointer" />
-              </label>
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Breath pattern</span>
-                <select
-                  value={breathPattern}
-                  onChange={(event) => setBreathPattern(event.target.value)}
-                  disabled={!breathEnabled}
-                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <option value="coherent-5.5">Coherent (5.5s In / 5.5s Out)</option>
-                  <option value="box">Box (4s In / 4s Hold / 4s Out / 4s Hold)</option>
-                  <option value="4-7-8">4-7-8 Restful Pattern</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <label className="block space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Background Environment</span>
-                <select
-                  value={backgroundMode}
-                  onChange={(event) => setBackgroundMode(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
-                >
-                  <option value="preset">Preset Ambient Blueprint</option>
-                  <option value="ocean">Ocean Tide Bed</option>
-                </select>
-              </label>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Active Blueprint</p>
-                <p className="mt-2 text-xs font-semibold text-white/70">{selectedPreset?.name}</p>
-                <p className="mt-1 text-[10px] text-white/35 font-light leading-relaxed">{selectedPreset?.summary}</p>
-              </div>
-            </div>
-          </div>
-
-          {generatingError && (
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-              {generatingError}
-            </div>
-          )}
-
-          <div className="flex flex-wrap gap-3 pt-2">
-            <Button 
-              onClick={handleGenerate} 
-              disabled={generatingStatus === 'rendering' || generatingStatus === 'saving'}
-              className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6 py-5 tracking-wider text-xs uppercase"
-            >
-              {generatingStatus === 'rendering' || generatingStatus === 'saving' ? (
-                <span className="material-symbols-outlined text-sm animate-spin mr-2">sync</span>
-              ) : (
-                <span className="material-symbols-outlined text-sm mr-2 font-bold">bolt</span>
-              )}
-              {generatingStatus === 'rendering' ? 'Synthesizing...' : generatingStatus === 'saving' ? 'Saving Wave...' : 'Initiate Background Render'}
-            </Button>
-          </div>
-        </Card>
-
-        {/* Right Column: Tactical Sound Desk & Specs */}
-        <div className="space-y-6">
-          {/* Base Frequency Rotary Knob Card */}
-          <Card className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl flex flex-col items-center justify-center relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/[0.02] blur-[30px] pointer-events-none" />
-            
-            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-6">Base Frequency Dial</span>
-            
-            <div className="relative size-32 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-inner group-hover:border-cyan-500/30 transition-colors">
-              {/* Inner Rotating Dial Pointer */}
-              <div 
-                className="absolute size-28 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center cursor-pointer shadow-lg active:scale-95 transition-transform"
-                style={{ transform: `rotate(${rotateDegree}deg)` }}
-              >
-                {/* Pointer marker dot */}
-                <div className="absolute top-2.5 size-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
-              </div>
-              
-              {/* Value Indicator Screen */}
-              <div className="absolute pointer-events-none text-center">
-                <span className="text-xl font-mono font-bold text-white tracking-tighter">{baseFreqHz}</span>
-                <span className="block text-[8px] text-zinc-500 font-mono tracking-widest uppercase mt-0.5">Hz</span>
-              </div>
-            </div>
-
-            {/* Slider to shift dials */}
-            <div className="w-full mt-6 space-y-2">
-              <input 
-                type="range"
-                min={100}
-                max={1000}
-                value={baseFreqHz}
-                onChange={(e) => setBaseFreqHz(Number(e.target.value))}
-                className="w-full h-1.5 bg-black/60 accent-cyan-400 rounded-lg outline-none cursor-pointer"
-              />
-              <div className="flex items-center justify-between text-[8px] font-mono text-zinc-500 uppercase tracking-widest px-1">
-                <span>100 Hz</span>
-                <span>Carrier Tone</span>
-                <span>1000 Hz</span>
-              </div>
-            </div>
-          </Card>
-
-          {/* Premium Vertical Mixer Console */}
-          <Card className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl relative overflow-hidden space-y-6">
-            <div className="absolute top-0 right-0 w-[200px] h-[80px] bg-cyan-500/[0.02] blur-[40px] pointer-events-none" />
-            
-            <div className="flex items-center justify-between border-b border-white/5 pb-3">
+      {workshopTab === 'console' ? (
+        /* ================= CONSOLE SINGLE GENERATOR VIEW ================= */
+        <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          {/* Left Column: Configuration Parameters */}
+          <Card className="space-y-6 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
+            <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Audio Desk</p>
-                <h3 className="text-base font-semibold text-white mt-0.5">Frequency Mixer</h3>
+                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Brain state</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {BRAIN_STATE_ORDER.map((state) => (
+                    <StatePill key={state} state={state} active={brainState === state} onClick={() => setBrainState(state)} />
+                  ))}
+                </div>
               </div>
-              <span className="material-symbols-outlined text-cyan-400 text-xl animate-pulse">tune</span>
+              <div className="text-right shrink-0">
+                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Current Profile</p>
+                <p className="mt-1 text-xs font-mono tracking-wider font-bold text-cyan-300 uppercase">{getBrainStateMeta(brainState).label}</p>
+              </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              {/* Channel 1: Binaural Wave */}
-              <div className="flex flex-col items-center p-3 bg-zinc-950/40 border border-white/5 rounded-2xl">
-                <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">BINAURAL</span>
-                <div className="h-36 flex items-center justify-center my-4">
-                  <input 
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={binauralVol}
-                    onChange={(e) => setBinauralVol(Number(e.target.value))}
-                    style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
-                    className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none"
-                  />
-                </div>
-                <div className="text-center">
-                  <span className="text-[10px] font-mono text-cyan-300 font-bold">{binauralVol}%</span>
-                  <span className="block text-[8px] text-zinc-500 font-mono mt-0.5">Carrier</span>
-                </div>
+            <div className="space-y-4">
+              <label className="block space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Target Preset Blueprint</span>
+                <select
+                  value={selectedPresetId}
+                  onChange={(event) => setSelectedPresetId(event.target.value)}
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
+                >
+                  {JourneyPresetOptions.map((preset) => (
+                    <option key={preset.id} value={preset.id}>{preset.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="block space-y-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session name</span>
+                  <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="My custom session" className="bg-black/20 border-white/10 rounded-2xl" />
+                </label>
+                <label className="block space-y-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Visibility</span>
+                  <select
+                    value={isFreeTrial ? 'private' : visibility}
+                    disabled={isFreeTrial}
+                    onChange={(event) => setVisibility(event.target.value)}
+                    className={`w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none cursor-pointer focus:border-cyan-500/30 transition-all ${isFreeTrial ? 'text-white/40 cursor-not-allowed' : 'text-white'}`}
+                  >
+                    <option value="private">Private (Library Only)</option>
+                    {!isFreeTrial && <option value="public">Public (Show on Global Feed)</option>}
+                  </select>
+                  {isFreeTrial && (
+                    <p className="text-[9px] text-cyan-400 font-mono tracking-wider mt-1">Upgrade to Paid tier to unlock global public broadcasting.</p>
+                  )}
+                </label>
               </div>
 
-              {/* Channel 2: Respiration */}
-              <div className={`flex flex-col items-center p-3 border rounded-2xl transition-all ${
-                breathEnabled ? 'bg-zinc-950/40 border-white/5' : 'bg-zinc-950/10 border-white/5 opacity-40'
-              }`}>
-                <div className="flex items-center gap-1">
-                  <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">BREATH</span>
-                  <input 
-                    type="checkbox" 
-                    checked={breathEnabled} 
-                    onChange={(e) => setBreathEnabled(e.target.checked)} 
-                    className="size-3 accent-cyan-400 cursor-pointer"
+              <label className="block space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Description</span>
+                <Textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={4} placeholder="Describe the session and its intended state." className="bg-black/20 border-white/10 rounded-2xl" />
+              </label>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="block space-y-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Length</span>
+                  <Input
+                    type="number"
+                    min={5}
+                    step={1}
+                    value={lengthMinutes}
+                    onChange={(event) => setLengthMinutes(Number(event.target.value || 0))}
+                    className="bg-black/20 border-white/10 rounded-2xl"
                   />
-                </div>
-                <div className="h-36 flex items-center justify-center my-4">
-                  <input 
-                    type="range"
-                    min={0}
-                    max={100}
+                  <p className="text-[10px] text-zinc-500 font-mono">{formatMinutesLabel(lengthMinutes)}</p>
+                </label>
+                
+                <label className="block space-y-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Focus level</span>
+                  <select
+                    value={focusLevel}
+                    onChange={(event) => setFocusLevel(event.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
+                  >
+                    <option value="F10">Focus 10 (Mind Awake / Body Asleep)</option>
+                    <option value="F12">Focus 12 (Expanded Awareness)</option>
+                    <option value="F15">Focus 15 (No-Time / Pure Meditation)</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 cursor-pointer hover:border-cyan-500/20 transition-all">
+                  <div>
+                    <p className="text-sm text-white">Breath guide pacing</p>
+                    <p className="text-xs text-white/30 font-light mt-0.5">Tactile pacing guide for target brain wave settling</p>
+                  </div>
+                  <input type="checkbox" checked={breathEnabled} onChange={(event) => setBreathEnabled(event.target.checked)} className="size-4 accent-cyan-400 cursor-pointer" />
+                </label>
+                <label className="block space-y-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Breath pattern</span>
+                  <select
+                    value={breathPattern}
+                    onChange={(event) => setBreathPattern(event.target.value)}
                     disabled={!breathEnabled}
-                    value={breathVol}
-                    onChange={(e) => setBreathVol(Number(e.target.value))}
-                    style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
-                    className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none disabled:opacity-30"
-                  />
-                </div>
-                <div className="text-center">
-                  <span className="text-[10px] font-mono text-cyan-300 font-bold">{breathVol}%</span>
-                  <span className="block text-[8px] text-zinc-500 font-mono mt-0.5 truncate max-w-[50px]">{breathPattern.split('-')[0].toUpperCase()}</span>
-                </div>
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <option value="coherent-5.5">Coherent (5.5s In / 5.5s Out)</option>
+                    <option value="box">Box (4s In / 4s Hold / 4s Out / 4s Hold)</option>
+                    <option value="4-7-8">4-7-8 Restful Pattern</option>
+                  </select>
+                </label>
               </div>
 
-              {/* Channel 3: Ambient */}
-              <div className="flex flex-col items-center p-3 bg-zinc-950/40 border border-white/5 rounded-2xl">
-                <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">AMBIENT</span>
-                <div className="h-36 flex items-center justify-center my-4">
-                  <input 
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={ambientVol}
-                    onChange={(e) => setAmbientVol(Number(e.target.value))}
-                    style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
-                    className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none"
-                  />
-                </div>
-                <div className="text-center">
-                  <span className="text-[10px] font-mono text-cyan-300 font-bold">{ambientVol}%</span>
-                  <span className="block text-[8px] text-zinc-500 font-mono mt-0.5 truncate max-w-[50px]">{backgroundMode === 'ocean' ? 'OCEAN' : 'PRESET'}</span>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="block space-y-2">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Background Environment</span>
+                  <select
+                    value={backgroundMode}
+                    onChange={(event) => setBackgroundMode(event.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
+                  >
+                    <option value="preset">Preset Ambient Blueprint</option>
+                    <option value="ocean">Ocean Tide Bed</option>
+                  </select>
+                </label>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Active Blueprint</p>
+                  <p className="mt-2 text-xs font-semibold text-white/70">{selectedPreset?.name}</p>
+                  <p className="mt-1 text-[10px] text-white/35 font-light leading-relaxed">{selectedPreset?.summary}</p>
                 </div>
               </div>
             </div>
-          </Card>
 
-          {/* Specifications Output Panel */}
-          <Card className="space-y-4 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session Blueprint Specifications</p>
-            <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-xs font-light text-zinc-300">
-              <div>
-                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Target Profile</span>
-                <span className="font-semibold text-white mt-0.5 block">{selectedPreset?.name}</span>
+            {generatingError && (
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {generatingError}
               </div>
-              <div>
-                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Carrier Mode</span>
-                <span className="font-semibold text-cyan-300 mt-0.5 block uppercase">{getBrainStateMeta(brainState).label}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Carrier Base</span>
-                <span className="font-semibold text-white mt-0.5 block">{baseFreqHz} Hz</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Duration length</span>
-                <span className="font-semibold text-white mt-0.5 block">{lengthMinutes} Minutes</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Entrainment Pacing</span>
-                <span className="font-semibold text-white mt-0.5 block">{breathEnabled ? breathPattern : 'Off'}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Focus Threshold</span>
-                <span className="font-semibold text-white mt-0.5 block">{focusLevel}</span>
-              </div>
+            )}
+
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Button 
+                onClick={handleGenerate} 
+                disabled={generatingStatus === 'rendering' || generatingStatus === 'saving'}
+                className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6 py-5 tracking-wider text-xs uppercase"
+              >
+                {generatingStatus === 'rendering' || generatingStatus === 'saving' ? (
+                  <span className="material-symbols-outlined text-sm animate-spin mr-2">sync</span>
+                ) : (
+                  <span className="material-symbols-outlined text-sm mr-2 font-bold">bolt</span>
+                )}
+                {generatingStatus === 'rendering' ? 'Synthesizing...' : generatingStatus === 'saving' ? 'Saving Wave...' : 'Initiate Background Render'}
+              </Button>
             </div>
           </Card>
 
-          {generatingResult && (
-            <Card className="space-y-4 p-6 bg-zinc-900/40 border-emerald-500/20 backdrop-blur-3xl rounded-3xl relative overflow-hidden animate-pulse">
-              <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-emerald-500/[0.01] blur-[30px] pointer-events-none" />
+          {/* Right Column: Tactical Sound Desk & Specs */}
+          <div className="space-y-6">
+            {/* Base Frequency Rotary Knob Card */}
+            <Card className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl flex flex-col items-center justify-center relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/[0.02] blur-[30px] pointer-events-none" />
               
-              <div className="flex items-center gap-2 text-emerald-400">
-                <span className="material-symbols-outlined text-lg">check_circle</span>
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em]">Compiled Wave</span>
-              </div>
-              <h3 className="text-base font-semibold text-white mt-1">{generatingResult.journey?.name || name || 'Custom session'}</h3>
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-6">Base Frequency Dial</span>
               
-              <div className="space-y-2 text-xs font-light text-zinc-400 border-t border-white/5 pt-3">
-                <p className="flex justify-between"><span className="text-zinc-500">Asset File:</span> <span className="font-mono text-white text-[10px] truncate max-w-[180px]">{generatingResult.assets?.wav?.url || generatingResult.wav || 'Not available'}</span></p>
-                <p className="flex justify-between"><span className="text-zinc-500">Format Profile:</span> <span className="text-white">WAV Stereophonic HemiSync</span></p>
+              <div className="relative size-32 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shadow-inner group-hover:border-cyan-500/30 transition-colors">
+                {/* Inner Rotating Dial Pointer */}
+                <div 
+                  className="absolute size-28 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center cursor-pointer shadow-lg active:scale-95 transition-transform"
+                  style={{ transform: `rotate(${rotateDegree}deg)` }}
+                >
+                  {/* Pointer marker dot */}
+                  <div className="absolute top-2.5 size-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+                </div>
+                
+                {/* Value Indicator Screen */}
+                <div className="absolute pointer-events-none text-center">
+                  <span className="text-xl font-mono font-bold text-white tracking-tighter">{baseFreqHz}</span>
+                  <span className="block text-[8px] text-zinc-500 font-mono tracking-widest uppercase mt-0.5">Hz</span>
+                </div>
               </div>
-              {generatingSavedTone && (
-                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-[10px] font-mono uppercase tracking-widest text-emerald-300 text-center">
-                  Successfully stored in Neural Archive
+
+              {/* Slider to shift dials */}
+              <div className="w-full mt-6 space-y-2">
+                <input 
+                  type="range"
+                  min={100}
+                  max={1000}
+                  value={baseFreqHz}
+                  onChange={(e) => setBaseFreqHz(Number(e.target.value))}
+                  className="w-full h-1.5 bg-black/60 accent-cyan-400 rounded-lg outline-none cursor-pointer"
+                />
+                <div className="flex items-center justify-between text-[8px] font-mono text-zinc-500 uppercase tracking-widest px-1">
+                  <span>100 Hz</span>
+                  <span>Carrier Tone</span>
+                  <span>1000 Hz</span>
+                </div>
+              </div>
+            </Card>
+
+            {/* Premium Vertical Mixer Console */}
+            <Card className="p-6 bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-3xl relative overflow-hidden space-y-6">
+              <div className="absolute top-0 right-0 w-[200px] h-[80px] bg-cyan-500/[0.02] blur-[40px] pointer-events-none" />
+              
+              <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                <div>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Audio Desk</p>
+                  <h3 className="text-base font-semibold text-white mt-0.5">Frequency Mixer</h3>
+                </div>
+                <span className="material-symbols-outlined text-cyan-400 text-xl animate-pulse">tune</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                {/* Channel 1: Binaural Wave */}
+                <div className="flex flex-col items-center p-3 bg-zinc-950/40 border border-white/5 rounded-2xl">
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">BINAURAL</span>
+                  <div className="h-36 flex items-center justify-center my-4">
+                    <input 
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={binauralVol}
+                      onChange={(e) => setBinauralVol(Number(e.target.value))}
+                      style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+                      className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[10px] font-mono text-cyan-300 font-bold">{binauralVol}%</span>
+                    <span className="block text-[8px] text-zinc-500 font-mono mt-0.5">Carrier</span>
+                  </div>
+                </div>
+
+                {/* Channel 2: Respiration */}
+                <div className={`flex flex-col items-center p-3 border rounded-2xl transition-all ${
+                  breathEnabled ? 'bg-zinc-950/40 border-white/5' : 'bg-zinc-950/10 border-white/5 opacity-40'
+                }`}>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">BREATH</span>
+                    <input 
+                      type="checkbox" 
+                      checked={breathEnabled} 
+                      onChange={(e) => setBreathEnabled(e.target.checked)} 
+                      className="size-3 accent-cyan-400 cursor-pointer"
+                    />
+                  </div>
+                  <div className="h-36 flex items-center justify-center my-4">
+                    <input 
+                      type="range"
+                      min={0}
+                      max={100}
+                      disabled={!breathEnabled}
+                      value={breathVol}
+                      onChange={(e) => setBreathVol(Number(e.target.value))}
+                      style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+                      className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none disabled:opacity-30"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[10px] font-mono text-cyan-300 font-bold">{breathVol}%</span>
+                    <span className="block text-[8px] text-zinc-500 font-mono mt-0.5 truncate max-w-[50px]">{breathPattern.split('-')[0].toUpperCase()}</span>
+                  </div>
+                </div>
+
+                {/* Channel 3: Ambient */}
+                <div className="flex flex-col items-center p-3 bg-zinc-950/40 border border-white/5 rounded-2xl">
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">AMBIENT</span>
+                  <div className="h-36 flex items-center justify-center my-4">
+                    <input 
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={ambientVol}
+                      onChange={(e) => setAmbientVol(Number(e.target.value))}
+                      style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
+                      className="h-28 accent-cyan-400 cursor-pointer bg-zinc-800 rounded-lg outline-none"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[10px] font-mono text-cyan-300 font-bold">{ambientVol}%</span>
+                    <span className="block text-[8px] text-zinc-500 font-mono mt-0.5 truncate max-w-[50px]">{backgroundMode === 'ocean' ? 'OCEAN' : 'PRESET'}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Specifications Output Panel */}
+            <Card className="space-y-4 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Session Blueprint Specifications</p>
+              <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-xs font-light text-zinc-300">
+                <div>
+                  <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Target Profile</span>
+                  <span className="font-semibold text-white mt-0.5 block">{selectedPreset?.name}</span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Carrier Mode</span>
+                  <span className="font-semibold text-cyan-300 mt-0.5 block uppercase">{getBrainStateMeta(brainState).label}</span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Carrier Base</span>
+                  <span className="font-semibold text-white mt-0.5 block">{baseFreqHz} Hz</span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Duration length</span>
+                  <span className="font-semibold text-white mt-0.5 block">{lengthMinutes} Minutes</span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Entrainment Pacing</span>
+                  <span className="font-semibold text-white mt-0.5 block">{breathEnabled ? breathPattern : 'Off'}</span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 font-mono text-[9px] uppercase tracking-wider block">Focus Threshold</span>
+                  <span className="font-semibold text-white mt-0.5 block">{focusLevel}</span>
+                </div>
+              </div>
+            </Card>
+
+            {generatingResult && (
+              <Card className="space-y-4 p-6 bg-zinc-900/40 border-emerald-500/20 backdrop-blur-3xl rounded-3xl relative overflow-hidden animate-pulse">
+                <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-emerald-500/[0.01] blur-[30px] pointer-events-none" />
+                
+                <div className="flex items-center gap-2 text-emerald-400">
+                  <span className="material-symbols-outlined text-lg">check_circle</span>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em]">Compiled Wave</span>
+                </div>
+                <h3 className="text-base font-semibold text-white mt-1">{generatingResult.journey?.name || name || 'Custom session'}</h3>
+                
+                <div className="space-y-2 text-xs font-light text-zinc-400 border-t border-white/5 pt-3">
+                  <p className="flex justify-between"><span className="text-zinc-500">Asset File:</span> <span className="font-mono text-white text-[10px] truncate max-w-[180px]">{generatingResult.assets?.wav?.url || generatingResult.wav || 'Not available'}</span></p>
+                  <p className="flex justify-between"><span className="text-zinc-500">Format Profile:</span> <span className="text-white">WAV Stereophonic HemiSync</span></p>
+                </div>
+                {generatingSavedTone && (
+                  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-[10px] font-mono uppercase tracking-widest text-emerald-300 text-center">
+                    Successfully stored in Neural Archive
+                  </div>
+                )}
+              </Card>
+            )}
+          </div>
+        </div>
+      ) : (
+        /* ================= WEAVER SEQUENCE MIXER VIEW ================= */
+        <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          {/* Left Column: Sequence Builder */}
+          <div className="space-y-6">
+            <Card className="space-y-6 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Sequence Board</p>
+                  <h3 className="text-base font-semibold text-white mt-0.5">Weave Path</h3>
+                </div>
+                <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+                  {chainedTones.length} / 5 Tones chained
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {chainedTones.length === 0 ? (
+                  <div className="rounded-3xl border border-white/5 border-dashed bg-black/10 p-12 text-center text-zinc-500 font-light text-sm backdrop-blur-md flex flex-col items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-cyan-500/30 mb-3 animate-pulse">link_off</span>
+                    <p className="font-sans">No tones added to the sequence yet.</p>
+                    <p className="mt-1 text-xs text-zinc-600 font-sans">Choose a track from the library loader below to build your custom path.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {chainedTones.map((tone, index) => {
+                      const toneState = tone.state || tone.target_state || 'alpha';
+                      const stateMeta = getBrainStateMeta(toneState);
+                      
+                      const stateColors = {
+                        delta: 'border-cyan-500/20 bg-cyan-500/5 text-cyan-400',
+                        theta: 'border-purple-500/20 bg-purple-500/5 text-purple-400',
+                        alpha: 'border-emerald-500/20 bg-emerald-500/5 text-emerald-400',
+                        beta: 'border-amber-500/20 bg-amber-500/5 text-amber-400',
+                        gamma: 'border-red-500/20 bg-red-500/5 text-red-400'
+                      };
+
+                      return (
+                        <div key={`${tone.id}-${index}`} className="relative">
+                          <div className="flex items-center justify-between p-4 bg-black/30 border border-white/5 rounded-2xl backdrop-blur-3xl transition-all hover:border-white/10">
+                            <div className="flex items-center gap-3 overflow-hidden">
+                              <div className="size-7 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center font-mono text-cyan-300 text-xs font-bold shrink-0">
+                                {index + 1}
+                              </div>
+                              <div className="overflow-hidden">
+                                <h4 className="text-sm font-medium text-white truncate pr-2">{tone.name}</h4>
+                                <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                                  <span className={`px-2 py-0.5 rounded-full border text-[8px] font-mono uppercase tracking-wider shrink-0 ${stateColors[toneState] || stateColors.alpha}`}>
+                                    {stateMeta.label}
+                                  </span>
+                                  <span className="text-[10px] text-zinc-500 font-mono truncate shrink-0">
+                                    Carrier: {tone.base_freq_hz || tone.baseFreqHz || 220}Hz
+                                  </span>
+                                  <span className="text-[10px] text-zinc-500 font-mono shrink-0">
+                                    Beat: {tone.target_hz || tone.targetHz || 6}Hz
+                                  </span>
+                                  <span className="text-[10px] text-zinc-500 font-mono shrink-0">
+                                    Dur: {tone.duration_sec || tone.durationSec || 180}s
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1 shrink-0 ml-2">
+                              <button
+                                type="button"
+                                disabled={index === 0}
+                                onClick={() => handleMoveToneUp(index)}
+                                className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed flex items-center justify-center"
+                              >
+                                <span className="material-symbols-outlined text-base">arrow_upward</span>
+                              </button>
+                              <button
+                                type="button"
+                                disabled={index === chainedTones.length - 1}
+                                onClick={() => handleMoveToneDown(index)}
+                                className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed flex items-center justify-center"
+                              >
+                                <span className="material-symbols-outlined text-base">arrow_downward</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveTone(index)}
+                                className="p-1.5 rounded-lg text-red-400/55 hover:text-red-400 hover:bg-red-500/10 flex items-center justify-center"
+                              >
+                                <span className="material-symbols-outlined text-base">close</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {index < chainedTones.length - 1 && (
+                            <div className="flex items-center justify-center my-2 select-none">
+                              <div className="h-6 w-0.5 border-l border-dashed border-cyan-500/30 relative flex items-center justify-center">
+                                <span className="absolute text-[8px] text-cyan-400/50 bg-zinc-950 px-1.5 font-mono uppercase tracking-[0.15em] whitespace-nowrap">Phase Shift</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Tone Selector Loader */}
+            {chainedTones.length < 5 && (
+              <Card className="p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl space-y-4">
+                <div>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Library Loader</p>
+                  <h3 className="text-base font-semibold text-white mt-0.5">Append Neural Resonance Track</h3>
+                </div>
+                <div className="flex gap-3">
+                  <select
+                    value={selectedLibraryToneId}
+                    onChange={(e) => setSelectedLibraryToneId(e.target.value)}
+                    className="flex-1 rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none cursor-pointer focus:border-cyan-500/30 transition-all"
+                  >
+                    <option value="">-- Choose a tone from Library --</option>
+                    {library.map((tone) => {
+                      const tState = tone.state || tone.target_state || 'alpha';
+                      return (
+                        <option key={tone.id} value={tone.id}>
+                          {tone.name} ({tState.toUpperCase()} · {tone.duration_sec || tone.durationSec || 180}s)
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <Button
+                    type="button"
+                    disabled={!selectedLibraryToneId}
+                    onClick={() => handleAddToneToChain(selectedLibraryToneId)}
+                    className="rounded-2xl bg-white/15 hover:bg-white text-white hover:text-black font-mono text-xs uppercase tracking-wider border border-white/5 font-semibold px-6 transition-all"
+                  >
+                    Add Node
+                  </Button>
+                </div>
+              </Card>
+            )}
+          </div>
+
+          {/* Right Column: Custom Weaver Specs & Compile */}
+          <div className="space-y-6">
+            <Card className="space-y-6 p-6 bg-zinc-900/40 border-white/5 backdrop-blur-3xl rounded-3xl">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Neural Weave settings</p>
+                
+                <div className="space-y-4 mt-4">
+                  <label className="block space-y-2">
+                    <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Sequence Name</span>
+                    <Input value={weaveName} onChange={(e) => setWeaveName(e.target.value)} placeholder="My custom sequence journey" className="bg-black/20 border-white/10 rounded-2xl" />
+                  </label>
+
+                  <label className="block space-y-2">
+                    <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Description / Intention</span>
+                    <Textarea value={weaveDescription} onChange={(e) => setWeaveDescription(e.target.value)} rows={4} placeholder="Describe the progression and meditative focus of this sequence weave." className="bg-black/20 border-white/10 rounded-2xl" />
+                  </label>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="block space-y-2">
+                      <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Visibility</span>
+                      <select
+                        value={isFreeTrial ? 'private' : weaveVisibility}
+                        disabled={isFreeTrial}
+                        onChange={(e) => setWeaveVisibility(e.target.value)}
+                        className={`w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm outline-none cursor-pointer focus:border-cyan-500/30 transition-all ${isFreeTrial ? 'text-white/40 cursor-not-allowed' : 'text-white'}`}
+                      >
+                        <option value="private">Private (Library Only)</option>
+                        {!isFreeTrial && <option value="public">Public (Show on Global Feed)</option>}
+                      </select>
+                      {isFreeTrial && (
+                        <p className="text-[9px] text-cyan-400 font-mono tracking-wider mt-1">Upgrade to Paid tier to unlock global public broadcasting.</p>
+                      )}
+                    </label>
+
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4 flex flex-col justify-center">
+                      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30">Combined Length</p>
+                      <p className="mt-2 text-2xl font-bold text-white tracking-tight">{formatSecondsToMinutesString(totalWeaveDurationSec)}</p>
+                      <p className="mt-1 text-[9px] text-zinc-500 font-mono">Crossfaded seamlessly</p>
+                    </div>
+                  </div>
+
+                  {chainedTones.length > 0 && (
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                      <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 mb-2">Resonance Cascades</p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        {chainedTones.map((tone, idx) => {
+                          const tState = tone.state || tone.target_state || 'alpha';
+                          const sMeta = getBrainStateMeta(tState);
+                          return (
+                            <span key={`${tone.id}-cascade-${idx}`} className="flex items-center gap-1.5">
+                              {idx > 0 && <span className="text-[10px] text-cyan-400/50 font-mono">➔</span>}
+                              <span className="px-2.5 py-1 rounded-lg bg-zinc-950 border border-white/10 text-[9px] font-mono uppercase tracking-wider text-white">
+                                {sMeta.label}
+                              </span>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {generatingError && (
+                <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200 font-sans">
+                  {generatingError}
                 </div>
               )}
+
+              <div className="pt-2">
+                <Button 
+                  onClick={handleWeaveSubmit} 
+                  disabled={generatingStatus === 'rendering' || generatingStatus === 'saving' || chainedTones.length === 0}
+                  className="w-full rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6 py-5 tracking-wider text-xs uppercase shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-shadow hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+                >
+                  {generatingStatus === 'rendering' || generatingStatus === 'saving' ? (
+                    <span className="material-symbols-outlined text-sm animate-spin mr-2">sync</span>
+                  ) : (
+                    <span className="material-symbols-outlined text-sm mr-2 font-bold">link</span>
+                  )}
+                  {generatingStatus === 'rendering' ? 'Weaving Waves...' : generatingStatus === 'saving' ? 'Archiving custom wave...' : 'Initiate Neural Weave'}
+                </Button>
+              </div>
             </Card>
-          )}
+
+            {generatingResult && (
+              <Card className="space-y-4 p-6 bg-zinc-900/40 border-emerald-500/20 backdrop-blur-3xl rounded-3xl relative overflow-hidden animate-pulse">
+                <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-emerald-500/[0.01] blur-[30px] pointer-events-none" />
+                
+                <div className="flex items-center gap-2 text-emerald-400">
+                  <span className="material-symbols-outlined text-lg">check_circle</span>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.3em]">Compiled Wave</span>
+                </div>
+                <h3 className="text-base font-semibold text-white mt-1">{generatingResult.tone?.name || weaveName || 'Custom Chained Session'}</h3>
+                
+                <div className="space-y-2 text-xs font-light text-zinc-400 border-t border-white/5 pt-3">
+                  <p className="flex justify-between"><span className="text-zinc-500">Asset File:</span> <span className="font-mono text-white text-[10px] truncate max-w-[180px]">{generatingResult.assets?.wav?.url || generatingResult.wav || 'Not available'}</span></p>
+                  <p className="flex justify-between"><span className="text-zinc-500">Format Profile:</span> <span className="text-white">WAV + WebM Stereophonic Weave</span></p>
+                </div>
+                {generatingSavedTone && (
+                  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-[10px] font-mono uppercase tracking-widest text-emerald-300 text-center">
+                    Successfully stored in Neural Archive
+                  </div>
+                )}
+              </Card>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

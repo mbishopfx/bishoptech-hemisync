@@ -184,12 +184,32 @@ export default function DashboardPage() {
 
   const handleWorkshopGenerate = async (composerPayload) => {
     setWorkshopStatus('rendering');
-    setWorkshopProgress('Structuring binaural blueprints...');
+    setWorkshopProgress(composerPayload.isWeave ? 'Weaving neural sequences...' : 'Structuring binaural blueprints...');
     setWorkshopError('');
     setWorkshopResult(null);
     setWorkshopSavedTone(null);
 
     try {
+      if (composerPayload.isWeave) {
+        const response = await fetch('/api/audio/chain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(composerPayload.weavePayload)
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || 'Neural sequence weave failed');
+        }
+
+        setWorkshopResult(data);
+        setWorkshopSavedTone(data.tone);
+        setWorkshopStatus('completed');
+        setWorkshopProgress('');
+        await refreshWorkspace();
+        return;
+      }
+
       const { audioPayload, metadata } = composerPayload;
 
       // 1. Call standard generate endpoint
@@ -534,6 +554,7 @@ export default function DashboardPage() {
                   generatingSavedTone={workshopSavedTone}
                   onStartGenerate={handleWorkshopGenerate}
                   profile={profile}
+                  library={library}
                 />
               </motion.div>
             )}
