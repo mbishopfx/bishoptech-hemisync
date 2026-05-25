@@ -106,7 +106,7 @@ function buildToneSpec(template, variant) {
     id: randomUUID(),
     name: `${template.name}: ${variant.label}`,
     slug: slugify(`${template.id}-${variant.slug}`),
-    state: template.state,
+    state: variant.state || template.state,
     baseFreqHz: Number(carrierHz.toFixed(2)),
     targetHz,
     noise: variant.noise || template.noise || null,
@@ -450,6 +450,86 @@ const ADVANCED_LIBRARY = [
         description: 'The softest gamma lane in the set, optimized for clarity without strain.',
         tags: ['lucid', 'precision'],
         deltaCurve: [[0, 31.8], [0.3, 35.2], [0.7, 37.9], [1, 39.2]]
+      }
+    ]
+  },
+  {
+    id: 'phased-state-transitions',
+    name: 'Phased State Transitions',
+    state: 'theta',
+    role: 'transition',
+    baseFreqHz: 220,
+    durationSec: 180,
+    modes: { binaural: true, monaural: false, isochronic: false },
+    masteringStyle: 'balanced',
+    summary: 'Expert-level transitional sessions that fade dynamically from one brainwave state to another.',
+    description: 'Binaural beat sweeps pairing tailored carriers, ambient assets, and noise beds for deep, smooth state downshifts or cooling integrations.',
+    tags: ['transition', 'two-state', 'phase-shift'],
+    variants: [
+      {
+        slug: 'beta-to-alpha',
+        label: 'Beta to Alpha Focus Shift',
+        state: 'alpha',
+        targetHz: 9.0,
+        carrierOffsetHz: 12,
+        noise: { type: 'pink', mixDb: -26 },
+        background: { type: 'ocean', mixDb: -24 },
+        summary: 'Phases from alert Beta (18Hz) down to flow-state Alpha (9Hz) for grounded, low-tension execution.',
+        description: 'A transitional brainwave sequence that helps you drop high-pressure stress and settle into deep, calm focus.',
+        tags: ['focus', 'beta-to-alpha'],
+        deltaCurve: [[0, 18.0], [0.3, 15.0], [0.7, 11.0], [1, 9.0]]
+      },
+      {
+        slug: 'alpha-to-theta',
+        label: 'Alpha to Theta Lucid Drift',
+        state: 'theta',
+        targetHz: 5.5,
+        carrierOffsetHz: 0,
+        noise: { type: 'pink', mixDb: -28 },
+        background: { type: 'asset', assetId: 'lumina', mixDb: -25 },
+        summary: 'Phases from relaxed Alpha (11Hz) to deep, creative Theta (5.5Hz) for hypnagogic imagery and subconscious work.',
+        description: 'The classic Gateway Process transition, easing from pleasant waking reflection into profound liminal threshold states.',
+        tags: ['liminal', 'alpha-to-theta'],
+        deltaCurve: [[0, 11.0], [0.35, 9.5], [0.7, 7.0], [1, 5.5]]
+      },
+      {
+        slug: 'theta-to-delta',
+        label: 'Theta to Delta Sleep Descent',
+        state: 'delta',
+        targetHz: 2.2,
+        carrierOffsetHz: -8,
+        noise: { type: 'brown', mixDb: -30 },
+        background: { type: 'asset', assetId: 'nattkatt', mixDb: -26 },
+        summary: 'Phases from meditative Theta (6.5Hz) to deep, restorative Delta (2.2Hz) for profound sleep onset and physical repair.',
+        description: 'A warm, sinking frequency shift that guides you from active dreaming threshold into slow cellular-rest sleep.',
+        tags: ['sleep', 'theta-to-delta'],
+        deltaCurve: [[0, 6.5], [0.3, 5.0], [0.65, 3.5], [1, 2.2]]
+      },
+      {
+        slug: 'gamma-to-alpha',
+        label: 'Gamma to Alpha Integration',
+        state: 'alpha',
+        targetHz: 9.5,
+        carrierOffsetHz: 20,
+        noise: { type: 'white', mixDb: -32 },
+        background: { type: 'asset', assetId: 'papa', mixDb: -26 },
+        summary: 'Phases from high-frequency peak Gamma (40Hz) down to stable Alpha (9.5Hz) to integrate hyper-alert insights.',
+        description: 'A cooling-down sequence designed to ground intense cognitive activity, logical processing, or creative flashes into physical flow.',
+        tags: ['integration', 'gamma-to-alpha'],
+        deltaCurve: [[0, 40.0], [0.25, 30.0], [0.6, 15.0], [1, 9.5]]
+      },
+      {
+        slug: 'beta-to-theta',
+        label: 'Beta to Theta Autonomic Downshift',
+        state: 'theta',
+        targetHz: 4.8,
+        carrierOffsetHz: -4,
+        noise: { type: 'brown', mixDb: -28 },
+        background: { type: 'asset', assetId: 'mindsEyes', mixDb: -24 },
+        summary: 'Phases from anxious Beta (15Hz) directly down to deep, quiet Theta (4.8Hz) to trigger rapid autonomic downshift.',
+        description: 'An emergency downshift track that gently but persistently pulls the nervous system out of fight-or-flight into restoration.',
+        tags: ['reset', 'beta-to-theta'],
+        deltaCurve: [[0, 15.0], [0.35, 12.0], [0.7, 7.5], [1, 4.8]]
       }
     ]
   }
