@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Headphones, Target, Compass, Moon, Wind, Sliders, EyeOff, Check, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -51,6 +51,66 @@ const protocols = [
   }
 ];
 
+function UnicodeCyberBadge({ icon: IconComponent, index }) {
+  const [frameChar, setFrameChar] = useState('■');
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (!isHovered) {
+      setFrameChar('■');
+      return;
+    }
+
+    const chars = ['▖', '▘', '▝', '▗'];
+    let idx = 0;
+    const interval = setInterval(() => {
+      setFrameChar(chars[idx]);
+      idx = (idx + 1) % chars.length;
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
+  const statusCodes = [
+    'ALIGN_HZ',
+    'INTENT_SET',
+    'ISOLATE_CH',
+    'CIRCAD_SYNC',
+    'BREATHE_SYS',
+    'LEVEL_CTRL',
+    'SURRENDER_CMD'
+  ];
+
+  return (
+    <div 
+      className="flex items-center gap-3.5 mb-6 select-none font-mono text-xs"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Sharp square terminal box (no rounded border style) */}
+      <div className="relative size-11 border border-white/10 bg-zinc-950/60 flex items-center justify-center transition-all duration-300 group-hover:border-cyan-500/30 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] rounded-none shrink-0">
+        {/* Animated matrix line scanner */}
+        <div className="absolute inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent top-0 animate-[bounce_2s_infinite] pointer-events-none opacity-0 group-hover:opacity-100" />
+        <IconComponent className="size-[18px] text-white/50 group-hover:text-cyan-400 transition-colors duration-300" />
+      </div>
+
+      {/* Cyber animated bracket text */}
+      <div className="flex flex-col justify-center overflow-hidden">
+        <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-cyan-500/60 transition-colors duration-300 text-[10px]">
+          <span className="text-cyan-500/30 group-hover:animate-pulse">▶</span>
+          <span>[</span>
+          <span className="text-white/80 font-bold group-hover:text-cyan-400 transition-colors">{frameChar}</span>
+          <span className="font-semibold tracking-wider">{statusCodes[index] || 'SYS_OK'}</span>
+          <span>]</span>
+        </div>
+        <span className="text-[7.5px] text-zinc-600 tracking-[0.25em] uppercase mt-0.5 group-hover:text-cyan-400/30 transition-colors">
+          node_protocol_0{index + 1}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function TutorialPage() {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
@@ -96,9 +156,7 @@ export default function TutorialPage() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${step.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
                 <div>
-                  <div className="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:border-cyan-500/30 group-hover:text-cyan-400 transition-all duration-300">
-                    <IconComponent className="size-5 text-white/70 group-hover:text-cyan-400" />
-                  </div>
+                  <UnicodeCyberBadge icon={IconComponent} index={i} />
                   <h3 className="text-xl font-medium tracking-tight text-white mb-4">
                     <span className="text-white/25 mr-2 font-mono text-sm">0{i + 1}.</span>
                     {step.title}
