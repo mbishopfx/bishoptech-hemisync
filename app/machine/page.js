@@ -7,6 +7,62 @@ import { Shield, Zap, Cpu, Lock, Eye, ArrowRight, FileText, Activity, AlertTrian
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
+function UnicodeCyberBadge({ icon: IconComponent, index, colorClass }) {
+  const [frameChar, setFrameChar] = useState('■');
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (!isHovered) {
+      setFrameChar('■');
+      return;
+    }
+
+    const chars = ['▖', '▘', '▝', '▗'];
+    let idx = 0;
+    const interval = setInterval(() => {
+      setFrameChar(chars[idx]);
+      idx = (idx + 1) % chars.length;
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
+  const statusCodes = [
+    'STEM_DECODE',
+    'HEMI_LOCK',
+    'THALA_GATE'
+  ];
+
+  return (
+    <div 
+      className="flex items-center gap-3.5 mb-6 select-none font-mono text-xs"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Sharp square terminal box (no rounded border style) */}
+      <div className="relative size-11 border border-white/10 bg-zinc-950/60 flex items-center justify-center transition-all duration-300 group-hover:border-cyan-500/30 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] rounded-none shrink-0">
+        {/* Animated matrix line scanner */}
+        <div className="absolute inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent top-0 animate-[bounce_2s_infinite] pointer-events-none opacity-0 group-hover:opacity-100" />
+        <IconComponent className={`size-[18px] ${colorClass} group-hover:text-cyan-400 transition-colors duration-300`} />
+      </div>
+
+      {/* Cyber animated bracket text */}
+      <div className="flex flex-col justify-center overflow-hidden">
+        <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-cyan-500/60 transition-colors duration-300 text-[10px]">
+          <span className="text-cyan-500/30 group-hover:animate-pulse">▶</span>
+          <span>[</span>
+          <span className="text-white/80 font-bold group-hover:text-cyan-400 transition-colors">{frameChar}</span>
+          <span className="font-semibold tracking-wider">{statusCodes[index] || 'SYS_OK'}</span>
+          <span>]</span>
+        </div>
+        <span className="text-[7.5px] text-zinc-600 tracking-[0.25em] uppercase mt-0.5 group-hover:text-cyan-400/30 transition-colors">
+          core_processor_0{index + 1}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function MachinePage() {
   const [showEasterEgg, setShowEasterEgg] = useState(false);
   const [carrierFreq, setCarrierFreq] = useState(200);
@@ -248,9 +304,7 @@ export default function MachinePage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-              <div className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-cyan-400">
-                <Cpu className="size-5 animate-pulse" />
-              </div>
+              <UnicodeCyberBadge icon={Cpu} index={0} colorClass="text-cyan-400 animate-pulse" />
               <h3 className="text-xl font-medium mb-3">Superior Olivary Complex</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
                 Auditory signals enter the ears and travel up the auditory nerve. They collide in the **Superior Olivary Complex (SOC)** within the brainstem—the first neurological station that processes stereo phase differences. If the phase difference oscillates persistently, the SOC translates it into a rhythmic signal.
@@ -258,9 +312,7 @@ export default function MachinePage() {
             </div>
 
             <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-              <div className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-purple-400">
-                <Zap className="size-5" />
-              </div>
+              <UnicodeCyberBadge icon={Zap} index={1} colorClass="text-purple-400" />
               <h3 className="text-xl font-medium mb-3">Frequency-Following Response</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
                 The auditory cortex picks up the rhythmic outputs of the SOC. Via the **Frequency-Following Response (FFR)**, the local sensory neural clusters align their firing frequencies with the external differential beat. The sensory cells synchronize, vibrating in unison with the virtual wave.
@@ -268,9 +320,7 @@ export default function MachinePage() {
             </div>
 
             <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-              <div className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-cyan-400">
-                <Activity className="size-5" />
-              </div>
+              <UnicodeCyberBadge icon={Activity} index={2} colorClass="text-cyan-400" />
               <h3 className="text-xl font-medium mb-3">Thalamocortical Locking</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
                 The synchronized sensory signals target the **Thalamus**—the brain&apos;s master sensory relay pacemaker. The thalamus locks onto the frequency and propagates it throughout the neocortex, locking global EEG patterns into Alpha, Theta, Delta, or Beta ranges on a macro scale.
