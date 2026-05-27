@@ -5,6 +5,9 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
+import MemoryReconsolidationPost, {
+  memoryReconsolidationPost,
+} from "@/components/blog/posts/memory-reconsolidation";
 import HemisphericCoherencePost, {
   hemisphericCoherencePost,
 } from "@/components/blog/posts/hemispheric-coherence";
@@ -20,6 +23,9 @@ import SalienceGatePost, {
 import SleepGatePost, {
   sleepGatePost,
 } from "@/components/blog/posts/sleep-thalamic-gates";
+import ThalamicRouterPost, {
+  thalamicRouterPost,
+} from "@/components/blog/posts/thalamic-router";
 import ThetaLiminalCorridorPost, {
   thetaLiminalCorridorPost,
 } from "@/components/blog/posts/theta-liminal-corridor";
@@ -29,8 +35,10 @@ export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
   [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
+  [memoryReconsolidationPost.slug]: MemoryReconsolidationPost,
   [predictiveCodingPost.slug]: PredictiveCodingEntrainmentPost,
   [sleepGatePost.slug]: SleepGatePost,
+  [thalamicRouterPost.slug]: ThalamicRouterPost,
   [hemisphericCoherencePost.slug]: HemisphericCoherencePost,
   [interoceptiveBreathPost.slug]: InteroceptiveBreathPost,
   [thetaLiminalCorridorPost.slug]: ThetaLiminalCorridorPost,
