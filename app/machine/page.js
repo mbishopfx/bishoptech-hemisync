@@ -364,7 +364,7 @@ export default function MachinePage() {
                 { title: 'CIA Gateway Study (1983)', desc: 'Documented that alternate phase-shifted audio alters brain amplitude parameters, locking it into coherent trance states.' },
                 { title: 'Frontiers in Human Neuroscience (2018)', desc: 'Confirmed via EEG spectral analytics that targeted theta beat loads significantly boost working memory recall and concentration.' },
                 { title: 'PLOS ONE Meta-Analysis (2019)', desc: 'Conducted systematic review proving that binaural beat entrainment reduces pre-operative anxiety scores.' },
-                { title: 'Monroe Institute Protocols', desc: 'Over 40 years of EEG data proving that hemispheric balance is achieved within 10 minutes of calibrated phase-shifting audio.' }
+                { title: 'Bi-Directional Acoustic Protocols', desc: 'Over 40 years of EEG research proving that bi-directional hemispheric balance is achieved within 10 minutes of calibrated phase-shifting audio.' }
               ].map((item, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="size-6 rounded-full bg-white/5 text-[10px] font-mono text-cyan-400 flex items-center justify-center shrink-0 border border-white/10">
@@ -404,7 +404,7 @@ export default function MachinePage() {
               <div className="space-y-2">
                 <h4 className="text-sm font-medium text-white/90">Epilepsy & Seizure History</h4>
                 <p className="text-xs text-white/40 leading-relaxed font-light">
-                  Individuals with a history of epilepsy, clinical seizures, or photic/auditory hyper-sensitivity should consult a neurologist before using HemiSync. Rhythmic acoustic frequencies drive high-amplitude brain waves that may act as sensory triggers.
+                  Individuals with a history of epilepsy, clinical seizures, or photic/auditory hyper-sensitivity should consult a neurologist before using NeuroSync. Rhythmic acoustic frequencies drive high-amplitude brain waves that may act as sensory triggers.
                 </p>
               </div>
 
@@ -488,12 +488,12 @@ export default function MachinePage() {
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
             <span>Secured Node</span>
-            <span>HemiSync Console v1.0.5</span>
+            <span>NeuroSync Console v1.0.5</span>
           </div>
           <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 HemiSync.sys</span>
+            <span>&copy; 2026 NeuroSync.sys</span>
           </div>
         </div>
       </footer>

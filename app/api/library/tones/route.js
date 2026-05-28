@@ -76,7 +76,7 @@ export async function POST(req) {
         return NextResponse.json({
           error: 'Limit Reached',
           code: 'LIBRARY_LIMIT_REACHED',
-          message: 'Free trial members are limited to 5 saved tones in their library. Please upgrade to a paid subscription to save unlimited HemiSync frequencies!'
+          message: 'Free trial members are limited to 5 saved tones in their library. Please upgrade to a paid subscription to save unlimited NeuroSync frequencies!'
         }, { status: 403 });
       }
     }

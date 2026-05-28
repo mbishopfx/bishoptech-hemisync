@@ -1,4 +1,4 @@
-# Premium HemiSync Platform Plan
+# Premium NeuroSync Platform Plan
 
 Date: 2026-03-28
 
@@ -262,7 +262,7 @@ Three platform risks should be handled early:
    - Market the product around guided focus, relaxation, ritual, immersion, and audio personalization.
    - Avoid hard neuroscience, medical, or consciousness claims unless you are prepared to substantiate them.
 2. Naming risk
-   - Review trademark exposure before shipping the exact `HemiSync` brand publicly.
+   - Review trademark exposure before shipping the exact `NeuroSync` brand publicly.
 3. Audio safety
    - Keep conservative defaults, headphone warnings, and clear contraindication messaging.
 

@@ -38,7 +38,7 @@ export default function GeneratePage() {
                 Design a session, preview it, and ship the render.
               </h1>
               <p className="max-w-3xl text-base leading-7 text-[var(--text-secondary)]">
-                This dashboard is the working surface of HemiSync Studio. It is built to keep the audio workflow calm and professional: start with the goal, hear a sample, save your best render, and review it later.
+                This dashboard is the working surface of NeuroSync Studio. It is built to keep the audio workflow calm and professional: start with the goal, hear a sample, save your best render, and review it later.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

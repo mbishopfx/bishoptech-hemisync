@@ -1,8 +1,8 @@
-# HemiSync Production Theme + iOS Roadmap
+# NeuroSync Production Theme + iOS Roadmap
 
 > **For Hermes:** Use this plan task-by-task before implementation.
 
-**Goal:** Turn BishopTech HemiSync into a production-grade web platform with premium branding, Gemini-powered AI workflows, per-user storage and tiers, community/session tracking, and a clean path to a native iOS app.
+**Goal:** Turn BishopTech NeuroSync into a production-grade web platform with premium branding, Gemini-powered AI workflows, per-user storage and tiers, community/session tracking, and a clean path to a native iOS app.
 
 **Architecture:** Keep the Next.js web app as the system of record and the marketing/admin surface. Use Supabase for auth, Postgres, storage, and RLS. Use a provider layer for AI so Gemini AI Studio can power journaling, session coaching, moderation, and future community tooling without binding product logic to one vendor. Keep the audio engine server-side for renders, and let the iOS app consume the same APIs and storage.
 
@@ -65,7 +65,7 @@
 - Translate the HTML sections into React components
 - Keep the hero, social proof, workflow, and product explanation sections
 - Make CTAs route to real app paths
-- Add concise, premium copy that explains what HemiSync is without sounding clinical or hypey
+- Add concise, premium copy that explains what NeuroSync is without sounding clinical or hypey
 
 **Primary routes:**
 - Hero CTA → `/generate`
@@ -328,7 +328,7 @@
 
 ## Key open decisions to resolve next
 
-- Should the visual brand stay aligned to the current Astral Architect direction, or should HemiSync get a new product name and identity?
+- Should the visual brand stay aligned to the current Astral Architect direction, or should NeuroSync get a new product name and identity?
 - Do you want Gemini to replace all AI calls, or only journaling/coaching/moderation at first?
 - Should the iOS app launch as a companion client first, or should we build a full native generation UI later?
 

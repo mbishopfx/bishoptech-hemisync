@@ -117,7 +117,7 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
             <p className="section-label">Tone Library</p>
             <h2 className="section-title mt-2 text-4xl text-[var(--text-primary)]">Browse by brain state</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">
-              Choose a tone, preview it, and send it straight into the workshop to build your own HemiSync file.
+              Choose a tone, preview it, and send it straight into the workshop to build your own NeuroSync file.
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 p-2">

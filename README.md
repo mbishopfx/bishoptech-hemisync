@@ -1,6 +1,6 @@
-# HemiSync Studio
+# NeuroSync Studio
 
-Premium beats-only hemispheric synchronization generator built with Next.js, with Vercel handling the frontend and Railway handling the render backend.
+Premium beats-only neural bi-directional acoustic frequencies generator built with Next.js, with Vercel handling the frontend and Railway handling the render backend.
 
 ## What the app does
 

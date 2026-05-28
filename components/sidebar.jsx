@@ -10,7 +10,7 @@ export function Sidebar() {
           <div className="size-8 rounded bg-cyan-500/10 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.15)] group-hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all">
             <Brain className="size-5 text-cyan-400" />
           </div>
-          <span className="font-display font-bold tracking-wide text-lg text-primary drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">HemiSync.sys</span>
+          <span className="font-display font-bold tracking-wide text-lg text-primary drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]">NeuroSync.sys</span>
         </Link>
         <nav className="space-y-2">
           <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-secondary hover:text-cyan-400 hover:bg-cyan-500/10 transition-all border border-transparent hover:border-cyan-500/20">

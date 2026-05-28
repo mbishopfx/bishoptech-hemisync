@@ -32,7 +32,7 @@ const sections = [
   {
     title: "What the Gateway Process memo actually did",
     paragraphs: [
-      "The 1983 Army/CIA memo on the Gateway Process is fascinating precisely because it reads like a serious attempt to translate an altered-state tradition into the language of physics and systems theory. It discusses the Monroe Institute's Hemi-Sync method, then compares the approach with hypnosis, transcendental meditation, and biofeedback. It is trying to map a route from ordinary cognition to altered perception without pretending the subject is simple.",
+      "The 1983 Army/CIA memo on the Gateway Process is fascinating precisely because it reads like a serious attempt to translate an altered-state tradition into the language of physics and systems theory. It discusses early bi-directional acoustic synchronization methods, then compares the approach with hypnosis, transcendental meditation, and biofeedback. It is trying to map a route from ordinary cognition to altered perception without pretending the subject is simple.",
       "On page one, the author states that the analysis had to lean on biomedical models, quantum mechanics, and a lucid model of hemispheric synchronization to explain how consciousness might function. That does not make the memo automatically right; it makes it intellectually ambitious. The document is basically saying: if we are going to understand these experiences, we need a framework wide enough to hold them.",
       "This is where the famous metaphysical language enters the conversation. The memo borrows from thinkers like Itzhak Bentov and from later ideas associated with the holographic brain and implicate order. In plain English: maybe reality is not experienced as a pile of separate objects, but as a compressed projection of a much larger information field. That is a theory, not a verdict. But it is a theory with enough internal drama that people keep rereading it like a lost chapter from a spy novel.",
     ],
@@ -181,7 +181,7 @@ export default function ConsciousnessMechanicsPost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            HemiSync Blog
+            NeuroSync Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {consciousnessMechanicsPost.title}

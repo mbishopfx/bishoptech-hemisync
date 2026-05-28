@@ -108,7 +108,7 @@ export async function POST(req) {
             .insert({
               user_id: user.id,
               name: track.name,
-              description: `Matched by HemiSync Agent for mood: "${mood.slice(0, 80)}"`,
+              description: `Matched by NeuroSync Agent for mood: "${mood.slice(0, 80)}"`,
               target_state: track.state,
               base_freq_hz: track.base_freq_hz || 220,
               duration_sec: track.duration_sec || 300,

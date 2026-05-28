@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { SignupClient } from './SignupClient';
 
 export const metadata = {
-  title: 'Sign Up | HemiSync.sys'
+  title: 'Sign Up | NeuroSync.sys'
 };
 
 export default function SignupPage() {

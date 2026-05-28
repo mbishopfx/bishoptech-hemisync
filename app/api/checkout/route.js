@@ -52,8 +52,8 @@ export async function POST(req) {
               }
             }
           }),
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://hemisync.bishoptech.dev'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://hemisync.bishoptech.dev'}/pricing`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://neurosync.bishoptech.dev'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://neurosync.bishoptech.dev'}/pricing`,
       client_reference_id: user.id,
       customer_email: user.email,
       metadata: {

@@ -1,8 +1,8 @@
-## HemiSync Meditation App — Technical Stack (Gateway-Optimized)
+## NeuroSync Meditation App — Technical Stack (Gateway-Optimized)
 
 ### Overview
 
-Goal: A web app that lets users journal with AI assistance and generates stereo entrainment audio (WAV/MP3) from journal-derived intent/state to guide Hemisync-like focus and consciousness work. Optimized using learnings commonly associated with the Monroe Institute “Gateway Process” and hemispheric synchronization principles (publicly available materials), while ensuring modern safety and reproducibility. Deployed on Vercel using JavaScript, backend-first.
+Goal: A web app that lets users journal with AI assistance and generates stereo entrainment audio (WAV/MP3) from journal-derived intent/state to guide NeuroSync-like focus and consciousness work. Optimized using learnings commonly associated with declassified “Gateway Process” documents and neural bi-directional acoustic frequencies principles (publicly available materials), while ensuring modern safety and reproducibility. Deployed on Vercel using JavaScript, backend-first.
 
 ### High-Level Architecture
 

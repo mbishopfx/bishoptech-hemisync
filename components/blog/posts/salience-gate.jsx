@@ -6,7 +6,7 @@ export const salienceGatePost = salienceGatePostMeta;
 const introParagraphs = [
   "Sensory withdrawal does not create consciousness out of nothing. It removes competing input, which means the system has less external material to solve and more internal material to notice. That distinction is everything.",
   "When the noise floor drops, the brain’s own control signals get louder. Breathing, heartbeat, proprioception, intrusive thought, imagery, and memory fragments all become easier to hear. That is not automatically spiritual. It is a change in salience allocation.",
-  "The reason this matters to HemiSync is simple: if sound can bias state, then sensory reduction can amplify the effect by stripping away the distractions that keep the system busy. The real question is how much of the experience comes from the audio and how much comes from the brain becoming more transparent to itself.",
+  "The reason this matters to NeuroSync is simple: if neural bi-directional acoustic frequencies can bias state, then sensory reduction can amplify the effect by stripping away the distractions that keep the system busy. The real question is how much of the experience comes from the audio and how much comes from the brain becoming more transparent to itself.",
 ];
 
 const sections = [
@@ -180,7 +180,7 @@ export default function SalienceGatePost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            HemiSync Blog
+            NeuroSync Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {salienceGatePost.title}

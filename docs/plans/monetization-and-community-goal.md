@@ -1,8 +1,8 @@
-# HemiSync Community + Monetization Goal
+# NeuroSync Community + Monetization Goal
 
-> **For Hermes:** Treat this as the standing goal for HemiSync feature work.
+> **For Hermes:** Treat this as the standing goal for NeuroSync feature work.
 
-**Goal:** Turn HemiSync into a community-driven tone platform where the product ships one small community feature per day and the monetization model centers on tone packs plus a starter subscription that includes monthly tone drops.
+**Goal:** Turn NeuroSync into a community-driven tone platform where the product ships one small community feature per day and the monetization model centers on tone packs plus a starter subscription that includes monthly tone drops.
 
 **Architecture:** Keep the web app and Supabase as the system of record. Community features should stay lightweight, visually quiet, and aligned with the existing premium/meditative design language. Monetization should evolve toward bundled tone packs, tiered subscriptions, and automated tone generation so the catalog grows continuously without manual bottlenecks.
 

@@ -68,9 +68,9 @@ const tonePack = {
   price: 'TBD',
   priceId: 'price_tone_pack_pending',
   mode: 'payment',
-  description: 'A one-time 16-tone pack built from the first HemiSync sample collection.',
+  description: 'A one-time 16-tone pack built from the first NeuroSync sample collection.',
   features: [
-    '16 Generated HemiSync-style preview tones',
+    '16 Generated NeuroSync-style preview tones',
     'One-time purchase on Stripe',
     'Includes the first launch pack',
     'Public MP3 downloads'
@@ -301,7 +301,7 @@ export default function PricingPage() {
             <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Calibration & Sound Room</p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">Stereo Sound Preview Room.</h2>
             <p className="text-white/40 text-sm font-light leading-relaxed">
-              Calibrate your headphones and preview our high-fidelity HemiSync waves side-by-side. Test either your active session preview or any of the premium Serenity seed tracks.
+              Calibrate your headphones and preview our high-fidelity NeuroSync waves side-by-side. Test either your active session preview or any of the premium Serenity seed tracks.
             </p>
           </div>
 
@@ -359,7 +359,7 @@ export default function PricingPage() {
                     <div className="space-y-2">
                       <h3 className="text-lg font-light text-white/50">No Active Session</h3>
                       <p className="text-xs text-white/30 font-light leading-relaxed">
-                        Go back to the Home page and let the HemiSync Agent parse your current cognitive mood to synthesize a custom beat.
+                        Go back to the Home page and let the NeuroSync Agent parse your current cognitive mood to synthesize a custom beat.
                       </p>
                     </div>
                   )}
@@ -462,7 +462,7 @@ export default function PricingPage() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
               <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Alternative Node</p>
-              <h2 className="text-3xl font-light tracking-tight mt-2">HemiSync Sample Pack Seeding</h2>
+              <h2 className="text-3xl font-light tracking-tight mt-2">NeuroSync Sample Pack Seeding</h2>
             </div>
             <p className="max-w-xl text-left md:text-right text-sm text-white/40 font-light leading-relaxed">
               We&apos;ll activate Stripe checkout one-time packs on the dashboard once cataloging is locked. For now, the pack card acts as a system placeholder.
@@ -538,7 +538,7 @@ export default function PricingPage() {
           <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 HemiSync.sys</span>
+            <span>&copy; 2026 NeuroSync.sys</span>
           </div>
         </div>
       </footer>

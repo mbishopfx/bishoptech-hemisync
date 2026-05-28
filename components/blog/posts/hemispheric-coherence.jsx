@@ -5,7 +5,7 @@ export const hemisphericCoherencePost = hemisphericCoherencePostMeta;
 
 const introParagraphs = [
   "The phrase hemispheric coherence sounds larger than it is. In most serious neuroscience contexts, it does not mean that the brain becomes a single humming crystal. It means that timing relationships across distributed networks become more orderly for a while, and that order can change what consciousness feels like from the inside.",
-  "That distinction matters because HemiSync, binaural stimulation, and related rhythm practices are easy to oversell. The effects, when they appear, are usually about coordination, not transformation into a different species. Coherence is not enlightenment. It is a temporary reduction in internal conflict that can make attention feel cleaner, quieter, and easier to direct.",
+  "That distinction matters because NeuroSync, binaural stimulation, and related rhythm practices are easy to oversell. The effects, when they appear, are usually about coordination, not transformation into a different species. Coherence is not enlightenment. It is a temporary reduction in internal conflict that can make attention feel cleaner, quieter, and easier to direct.",
   "If you keep the mechanism honest, the material gets more interesting. The useful question is not whether synchrony makes people transcend the body. The useful question is whether synchronized timing can reduce neural friction enough to alter the stability of self-experience.",
 ];
 
@@ -181,7 +181,7 @@ export default function HemisphericCoherencePost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            HemiSync Blog
+            NeuroSync Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {hemisphericCoherencePost.title}

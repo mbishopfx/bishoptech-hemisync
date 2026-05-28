@@ -169,7 +169,7 @@ export default async function CommunityPage() {
               Global Feed
             </h1>
             <p className="mt-2 text-muted">
-              Public tones and updates shared by HemiSync members.
+              Public tones and updates shared by NeuroSync members.
             </p>
           </div>
           <Button asChild variant="secondary">

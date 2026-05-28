@@ -62,7 +62,7 @@ export function AgenticAuthModal({ isOpen, onClose }) {
               </div>
 
               <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-2">
-                Secured by HemiSync.sys
+                Secured by NeuroSync.sys
               </p>
             </div>
           </motion.div>

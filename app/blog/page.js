@@ -87,12 +87,12 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
             <span>Secured Node</span>
-            <span>HemiSync Chronicles v1.0.5</span>
+            <span>NeuroSync Chronicles v1.0.5</span>
           </div>
           <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 HemiSync.sys</span>
+            <span>&copy; 2026 NeuroSync.sys</span>
           </div>
         </div>
       </footer>

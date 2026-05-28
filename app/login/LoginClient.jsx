@@ -61,7 +61,7 @@ export function LoginClient() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
-                placeholder="operator@hemisync.sys"
+                placeholder="operator@neurosync.sys"
               />
             </div>
             

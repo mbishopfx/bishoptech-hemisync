@@ -461,7 +461,7 @@ export default function LandingPage() {
           <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 HemiSync.sys</span>
+            <span>&copy; 2026 NeuroSync.sys</span>
           </div>
         </div>
       </footer>
