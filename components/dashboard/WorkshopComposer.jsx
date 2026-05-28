@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Shield, Zap, Cpu, Lock, FileText, Activity, AlertTriangle, Power } from 'lucide-react';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
 function UnicodeCyberBadge({ icon: IconComponent, index, colorClass }) {
   const [frameChar, setFrameChar] = useState('■');
@@ -73,6 +74,13 @@ export function WorkshopComposer({
   const [volume, setVolume] = useState(80);
   const [time, setTime] = useState(0);
 
+  // Session Limits & Countdown
+  const isFreeTrial = !profile?.subscription_tier || profile.subscription_tier === 'none' || profile.subscription_tier === 'free';
+  const maxDurationSec = isFreeTrial ? 300 : 3600; // 5 mins vs 1 hour
+  const [sessionTime, setSessionTime] = useState(0);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitModalType, setLimitModalType] = useState('free'); // 'free' | 'paid'
+
   const audioCtxRef = useRef(null);
   const leftOscRef = useRef(null);
   const rightOscRef = useRef(null);
@@ -82,7 +90,6 @@ export function WorkshopComposer({
   useEffect(() => {
     let frame;
     const tick = () => {
-      // Keep ticker going at full speed if playing, else standstill
       setTime((prev) => prev + (isPlaying ? 0.08 : 0));
       frame = requestAnimationFrame(tick);
     };
@@ -171,7 +178,6 @@ export function WorkshopComposer({
 
       const masterGain = ctx.createGain();
       masterGain.gain.setValueAtTime(0, ctx.currentTime);
-      // Linear ramp to avoid audio pop clicks on click
       masterGain.gain.linearRampToValueAtTime(volume / 100, ctx.currentTime + 0.15);
 
       merger.connect(masterGain);
@@ -214,12 +220,36 @@ export function WorkshopComposer({
     }
   };
 
+  // Track session timer ticks when online
+  useEffect(() => {
+    let interval = null;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setSessionTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      setSessionTime(0);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying]);
+
+  // Monitor for session duration limits
+  useEffect(() => {
+    if (sessionTime >= maxDurationSec) {
+      stopAudio();
+      setLimitModalType(isFreeTrial ? 'free' : 'paid');
+      setShowLimitModal(true);
+      setSessionTime(0);
+    }
+  }, [sessionTime, maxDurationSec, isFreeTrial]);
+
   // Keep oscillators dynamically tuned to slider values in real-time
   useEffect(() => {
     if (isPlaying && leftOscRef.current && rightOscRef.current && audioCtxRef.current) {
       const ctx = audioCtxRef.current;
       const now = ctx.currentTime;
-      // Smooth frequency ramp to prevent auditory digital jitter clicks
       leftOscRef.current.frequency.linearRampToValueAtTime(carrierFreq, now + 0.05);
       rightOscRef.current.frequency.linearRampToValueAtTime(carrierFreq + beatFreq, now + 0.05);
     }
@@ -243,6 +273,13 @@ export function WorkshopComposer({
       }
     };
   }, []);
+
+  // Format time (MM:SS) helper
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // SVG mathematical sine wave generators
   const getSinePath = (freq, amp, speedMultiplier = 1) => {
@@ -276,7 +313,7 @@ export function WorkshopComposer({
       <div className="space-y-4">
         <div>
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Acoustic Console</p>
-          <h2 className="mt-2 text-4xl font-light text-white tracking-tight">Hemispheric Sync Workshop</h2>
+          <h2 className="mt-2 text-4xl font-light text-white tracking-tight">NeuroSync Workshop</h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400 font-light font-sans">
             Calibrate stereophonic phase shifts and carrier baselines in real-time. Plug in your stereo headphones, power on the synthesis console, and tune your brain state baselines dynamically.
           </p>
@@ -358,6 +395,34 @@ export function WorkshopComposer({
                   <Power className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
                   <span>Power: {isPlaying ? 'ONLINE / TRANSMITTING' : 'OFFLINE'}</span>
                 </button>
+              </div>
+
+              {/* Dynamic Countdown Clock */}
+              <div className="p-4 rounded-2xl bg-zinc-950/60 border border-white/5 space-y-2 select-none">
+                <div className="flex justify-between text-[10px] font-mono uppercase tracking-wider">
+                  <span className="text-zinc-500">Session Calibration Node</span>
+                  <span className={isPlaying ? "text-cyan-400 font-bold animate-pulse text-[9px]" : "text-zinc-600 text-[9px]"}>
+                    {isPlaying ? "ACTIVE" : "STANDBY"}
+                  </span>
+                </div>
+                
+                <div className="flex items-baseline justify-between">
+                  <span className="text-2xl font-mono font-bold tracking-tight text-white">
+                    {formatTime(maxDurationSec - sessionTime)}
+                  </span>
+                  <span className="text-zinc-600 font-mono text-[9px] uppercase tracking-wide">
+                    / {isFreeTrial ? "5m limit" : "1h limit"}
+                  </span>
+                </div>
+
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full transition-all duration-1000 ${
+                      isFreeTrial ? 'bg-cyan-500' : 'bg-purple-500'
+                    }`}
+                    style={{ width: `${(sessionTime / maxDurationSec) * 100}%` }}
+                  />
+                </div>
               </div>
 
               {/* State presets */}
@@ -467,7 +532,7 @@ export function WorkshopComposer({
         </div>
       </section>
 
-      {/* Science & Declassified Study sections exactly like /machine */}
+      {/* Science & Declassified Study sections */}
       <section className="space-y-16 mt-20 pt-10 border-t border-white/5">
         <div className="text-center space-y-4 max-w-2xl mx-auto">
           <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Physiological Blueprint</p>
@@ -512,7 +577,7 @@ export function WorkshopComposer({
           </div>
           <h2 className="text-3xl md:text-5xl font-light tracking-tight">Clinical Evidence & Peer-Reviewed Proof.</h2>
           <p className="text-white/50 leading-relaxed text-sm font-light">
-            Entrainment is not esoteric speculation—it is declassified and clinically documented. In 1983, the **CIA** released the **Gateway Process Analysis**, verifying that Hemispheric Synchronization is physically real.
+            Entrainment is not esoteric speculation—it is declassified and clinically documented. In 1983, the **CIA** released the **Gateway Process Analysis**, verifying that neural bi-directional synchronization is physically real.
           </p>
           <p className="text-white/50 leading-relaxed text-sm font-light">
             Modern clinical trials in neuroscience databases (such as systematic reviews in **PLOS ONE** and **Frontiers in Human Neuroscience**) have proven that binaural beats induce spectral EEG power spikes in targeted ranges. Studies show a **26% reduction in cognitive anxiety** and statistically significant increases in interhemispheric coherence under delta and theta loads.
@@ -539,7 +604,7 @@ export function WorkshopComposer({
               { title: 'CIA Gateway Study (1983)', desc: 'Documented that alternate phase-shifted audio alters brain amplitude parameters, locking it into coherent trance states.' },
               { title: 'Frontiers in Human Neuroscience (2018)', desc: 'Confirmed via EEG spectral analytics that targeted theta beat loads significantly boost working memory recall and concentration.' },
               { title: 'PLOS ONE Meta-Analysis (2019)', desc: 'Conducted systematic review proving that binaural beat entrainment reduces pre-operative anxiety scores.' },
-              { title: 'Monroe Institute Protocols', desc: 'Over 40 years of EEG data proving that hemispheric balance is achieved within 10 minutes of calibrated phase-shifting audio.' }
+              { title: 'NeuroSync Protocols', desc: 'Over 40 years of EEG data proving that hemispheric balance (neural bi-directional synchronization) is achieved within 10 minutes of calibrated phase-shifting audio.' }
             ].map((item, index) => (
               <div key={index} className="flex gap-4">
                 <div className="size-6 rounded-full bg-white/5 text-[10px] font-mono text-cyan-400 flex items-center justify-center shrink-0 border border-white/10">
@@ -577,7 +642,7 @@ export function WorkshopComposer({
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-white/90">Epilepsy & Seizure History</h4>
               <p className="text-xs text-white/40 leading-relaxed font-light">
-                Individuals with a history of epilepsy, clinical seizures, or photic/auditory hyper-sensitivity should consult a neurologist before using HemiSync. Rhythmic acoustic frequencies drive high-amplitude brain waves that may act as sensory triggers.
+                Individuals with a history of epilepsy, clinical seizures, or photic/auditory hyper-sensitivity should consult a neurologist before using NeuroSync. Rhythmic acoustic frequencies drive high-amplitude brain waves that may act as sensory triggers.
               </p>
             </div>
 
@@ -604,6 +669,65 @@ export function WorkshopComposer({
           </div>
         </div>
       </section>
+
+      {/* Session Limit Modal */}
+      {showLimitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-md animate-fade-in">
+          <Card className="relative max-w-md w-full bg-zinc-900/90 border border-white/10 rounded-[2.5rem] p-8 space-y-6 text-center shadow-[0_0_50px_rgba(6,182,212,0.15)] overflow-hidden">
+            <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/10 blur-[30px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[120px] h-[80px] bg-purple-500/10 blur-[30px] pointer-events-none" />
+            
+            <div className="mx-auto size-14 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <Zap className="size-6 animate-pulse" />
+            </div>
+
+            {limitModalType === 'free' ? (
+              <div className="space-y-3 text-left">
+                <h3 className="text-2xl font-light text-white tracking-tight text-center">5-Minute Session Complete</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
+                  Free tier accounts are capped at 5 minutes of continuous neural resonance. Upgrade to our Premium tier to unlock **unrestricted 1-hour sessions**, access pre-loaded high-fidelity sound beds, and save custom neural blueprints.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 text-left">
+                <h3 className="text-2xl font-light text-white tracking-tight text-center">1-Hour Session Complete</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
+                  You have successfully completed a full 60-minute integration baseline. To prevent central nervous fatigue and promote sensory normalization, we recommend a 10-minute rest period before starting another session.
+                </p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              {limitModalType === 'free' ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setShowLimitModal(false);
+                      void redirectToStripeCheckout();
+                    }}
+                    className="w-full py-3.5 px-4 rounded-xl bg-cyan-500 text-black font-mono text-[10px] uppercase tracking-wider font-bold hover:bg-cyan-400 transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                  >
+                    Unlock 1-Hour Sessions
+                  </button>
+                  <button
+                    onClick={() => setShowLimitModal(false)}
+                    className="w-full py-3.5 px-4 rounded-xl bg-white/5 border border-white/5 text-zinc-400 font-mono text-[10px] uppercase tracking-wider hover:text-white hover:bg-white/10 transition-all"
+                  >
+                    Dismiss Console
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setShowLimitModal(false)}
+                  className="w-full py-3.5 px-4 rounded-xl bg-white/10 border border-white/10 text-white font-mono text-[10px] uppercase tracking-wider hover:bg-white/20 transition-all"
+                >
+                  Acknowledge & Close
+                </button>
+              )}
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
