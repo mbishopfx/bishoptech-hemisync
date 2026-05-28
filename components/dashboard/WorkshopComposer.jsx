@@ -269,59 +269,128 @@ export function WorkshopComposer({
       <section className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 shadow-[0_0_50px_rgba(6,182,212,0.02)]">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           
-          {/* Real-time Oscilloscope Panel */}
-          <div className="lg:col-span-7 space-y-4">
-            <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Real-time Auditory Oscillations</p>
-            <div className="border border-white/5 bg-black/60 rounded-2xl p-5 space-y-4 relative overflow-hidden">
+          {/* Left Column: Visualizer panel + Calibration sliders underneath */}
+          <div className="lg:col-span-7 space-y-6">
+            
+            {/* Real-time Oscilloscope Panel */}
+            <div className="space-y-4">
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Real-time Auditory Oscillations</p>
+              <div className="border border-white/5 bg-black/60 rounded-2xl p-5 space-y-4 relative overflow-hidden">
+                
+                {/* Left Ear Wave */}
+                <div className="space-y-1 relative z-10">
+                  <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
+                    <span>Left Ear Carrier (L)</span>
+                    <span>{carrierFreq} Hz</span>
+                  </div>
+                  <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                    <path d={getSinePath(carrierFreq, isPlaying ? 20 : 0.5, 1.2)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                </div>
+
+                {/* Right Ear Wave */}
+                <div className="space-y-1 relative z-10">
+                  <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
+                    <span>Right Ear Carrier (R)</span>
+                    <span>{carrierFreq + beatFreq} Hz</span>
+                  </div>
+                  <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                    <path d={getSinePath(carrierFreq + beatFreq, isPlaying ? 20 : 0.5, 1.3)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                </div>
+
+                {/* Center Glowing Differential Entrainment Wave */}
+                <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
+                  <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
+                    <span>Binaural Differential Entrainment (R - L)</span>
+                    <span className="font-bold">{beatFreq} Hz ({activeBrainState.toUpperCase()})</span>
+                  </div>
+                  <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
+                    <defs>
+                      <filter id="glow-wave-workshop">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <path d={getEntrainmentPath(beatFreq, isPlaying ? 30 : 0, 0.4)} fill="none" stroke="currentColor" strokeWidth="2.5" filter="url(#glow-wave-workshop)" />
+                  </svg>
+                </div>
+
+                {/* Ambient glow mesh */}
+                <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Sliders Console (Under Visualizer UX) */}
+            <div className="space-y-4 pt-4 border-t border-white/5">
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Signal Calibration Controls</p>
               
-              {/* Left Ear Wave */}
-              <div className="space-y-1 relative z-10">
-                <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
-                  <span>Left Ear Carrier (L)</span>
+              {/* Base Carrier Frequency Slider */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
+                  <span>Base Carrier Frequency</span>
                   <span>{carrierFreq} Hz</span>
                 </div>
-                <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
-                  <path d={getSinePath(carrierFreq, isPlaying ? 20 : 0.5, 1.2)} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
+                <input
+                  type="range"
+                  min="100"
+                  max="400"
+                  value={carrierFreq}
+                  onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
               </div>
 
-              {/* Right Ear Wave */}
-              <div className="space-y-1 relative z-10">
-                <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
-                  <span>Right Ear Carrier (R)</span>
-                  <span>{carrierFreq + beatFreq} Hz</span>
+              {/* Binaural Beat Frequency Slider */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
+                  <span>Binaural Beat Frequency (Differential)</span>
+                  <span>{beatFreq} Hz</span>
                 </div>
-                <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
-                  <path d={getSinePath(carrierFreq + beatFreq, isPlaying ? 20 : 0.5, 1.3)} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="30"
+                  step="0.5"
+                  value={beatFreq}
+                  onChange={(e) => setBeatFreq(parseFloat(e.target.value))}
+                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
               </div>
 
-              {/* Center Glowing Differential Entrainment Wave */}
-              <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
-                <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
-                  <span>Binaural Differential Entrainment (R - L)</span>
-                  <span className="font-bold">{beatFreq} Hz ({activeBrainState.toUpperCase()})</span>
+              {/* Master volume slider */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
+                  <span>Master Volume</span>
+                  <span>{volume}%</span>
                 </div>
-                <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
-                  <defs>
-                    <filter id="glow-wave-workshop">
-                      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                      <feMerge>
-                        <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                  </defs>
-                  <path d={getEntrainmentPath(beatFreq, isPlaying ? 30 : 0, 0.4)} fill="none" stroke="currentColor" strokeWidth="2.5" filter="url(#glow-wave-workshop)" />
-                </svg>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={(e) => setVolume(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
               </div>
 
-              {/* Ambient glow mesh */}
-              <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none" />
             </div>
+
+            {/* Active spec display under sliders */}
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
+              <Activity className="size-4 text-cyan-400 shrink-0" />
+              <p className="text-[9px] font-mono uppercase tracking-wider text-white/60">
+                R - L DIFFERENCE MATCHES EEG BASELINE: {beatFreq}Hz
+              </p>
+            </div>
+
           </div>
 
-          {/* Synth Interface Controllers */}
+          {/* Right Column: Hardware toggle + state baseline presets */}
           <div className="lg:col-span-5 space-y-5">
+            
             {/* Power Switch Toggle */}
             <div className="space-y-2">
               <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Hardware Interface</p>
@@ -392,68 +461,6 @@ export function WorkshopComposer({
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Sliders Console */}
-            <div className="space-y-4 pt-2 border-t border-white/5">
-              
-              {/* Base Carrier Frequency Slider */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
-                  <span>Base Carrier Frequency</span>
-                  <span>{carrierFreq} Hz</span>
-                </div>
-                <input
-                  type="range"
-                  min="100"
-                  max="400"
-                  value={carrierFreq}
-                  onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
-                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                />
-              </div>
-
-              {/* Binaural Beat Frequency Slider */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
-                  <span>Binaural Beat Frequency (Differential)</span>
-                  <span>{beatFreq} Hz</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.5"
-                  max="30"
-                  step="0.5"
-                  value={beatFreq}
-                  onChange={(e) => setBeatFreq(parseFloat(e.target.value))}
-                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                />
-              </div>
-
-              {/* Master volume slider */}
-              <div className="space-y-1">
-                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
-                  <span>Master Volume</span>
-                  <span>{volume}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={(e) => setVolume(parseInt(e.target.value))}
-                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                />
-              </div>
-
-            </div>
-
-            {/* Bottom active spec display */}
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
-              <Activity className="size-4 text-cyan-400 shrink-0" />
-              <p className="text-[9px] font-mono uppercase tracking-wider text-white/60">
-                R - L DIFFERENCE MATCHES EEG BASELINE: {beatFreq}Hz
-              </p>
             </div>
 
           </div>
