@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import PrecisionDecisionPost, {
+  precisionDecisionPost,
+} from "@/components/blog/posts/precision-is-a-decision";
+import BodyBoundaryPost, {
+  bodyBoundaryPost,
+} from "@/components/blog/posts/the-body-sets-the-boundary";
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
@@ -34,6 +40,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [precisionDecisionPost.slug]: PrecisionDecisionPost,
+  [bodyBoundaryPost.slug]: BodyBoundaryPost,
   [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
   [memoryReconsolidationPost.slug]: MemoryReconsolidationPost,
   [predictiveCodingPost.slug]: PredictiveCodingEntrainmentPost,
