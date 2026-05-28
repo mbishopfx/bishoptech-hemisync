@@ -9,7 +9,12 @@ export const runtime = 'nodejs';
 export async function GET(req) {
   try {
     const { user } = await requireAuthenticatedUser(req);
-    await ensureProfile(user);
+
+    try {
+      await ensureProfile(user);
+    } catch (profileError) {
+      console.warn('feed profile bootstrap failed, continuing with feed fetch', profileError);
+    }
 
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
