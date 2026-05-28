@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
 export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
   const [feed, setFeed] = useState(initialFeed);
@@ -206,7 +207,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
   const handleSaveToneToLibrary = async (tone) => {
     const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
     if (isFreeTrial) {
-      alert('Free trial members cannot save shared community tones to their library. Please upgrade to save community waves!');
+      await redirectToStripeCheckout();
       return;
     }
 
@@ -228,8 +229,12 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
         })
       });
 
+      const errorData = await response.json().catch(() => ({}));
       if (!response.ok) {
-        const errorData = await response.json();
+        if (response.status === 403 && errorData?.code === 'LIBRARY_LIMIT_REACHED') {
+          await redirectToStripeCheckout();
+          return;
+        }
         throw new Error(errorData.message || 'Clone request failed');
       }
 
@@ -411,8 +416,18 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
               <p className="text-xs text-white/50 max-w-md mx-auto leading-relaxed">
                 Free trial members can explore public frequencies, but cannot broadcast posts or attach public waves. Upgrade to a paid plan to activate global broadcasting.
               </p>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => redirectToStripeCheckout()}
+                  className="rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-[10px] tracking-wider uppercase px-5 py-2 transition-colors"
+                >
+                  Upgrade to Lifetime Access
+                </button>
+              </div>
             </Card>
           ) : (
+
             <Card className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden group hover:border-cyan-500/20 transition-all">
               <div className="absolute top-0 right-0 w-[400px] h-[100px] bg-cyan-500/5 blur-[50px] pointer-events-none" />
               

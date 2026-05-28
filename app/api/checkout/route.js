@@ -5,10 +5,17 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 export async function POST(req) {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const { priceId, planId, mode = 'subscription' } = await req.json();
+    const { priceId, planId, mode: requestedMode = 'subscription' } = await req.json();
 
     if (!priceId) {
       return NextResponse.json({ error: 'Price ID is required' }, { status: 400 });
+    }
+
+    const mode = planId === 'lifetime' ? 'payment' : requestedMode;
+    const expectedPriceId = planId === 'lifetime' ? 'price_1TWlbTDJtpuPVfuFG5ejsTAG' : null;
+
+    if (expectedPriceId && priceId !== expectedPriceId) {
+      return NextResponse.json({ error: 'Unexpected price ID for lifetime access' }, { status: 400 });
     }
 
     // Authenticate user

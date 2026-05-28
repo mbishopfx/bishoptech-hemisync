@@ -16,6 +16,29 @@ import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
 import { FeedView } from '@/components/dashboard/FeedView';
 import { JournalView } from '@/components/dashboard/JournalView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
+
+async function readApiResponse(response, fallbackMessage = 'Request failed') {
+  const contentType = response.headers.get('content-type') || '';
+  const raw = await response.text();
+
+  if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      return { error: raw || fallbackMessage, parseError: error.message };
+    }
+  }
+
+  try {
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {
+      error: raw?.trim() || fallbackMessage,
+      raw
+    };
+  }
+}
 
 const navItems = [
   { id: 'agent', label: 'Sync', icon: 'psychology' },
@@ -96,11 +119,25 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mood })
       });
-      const data = await response.json();
+      const data = await readApiResponse(response, 'Agent request failed');
       if (response.ok) {
         setAgentMessage(data.agentMessage);
         setAgentTrack(data.track);
         await refreshWorkspace();
+      } else if (response.status === 403) {
+        if (data?.code === 'AUTH_REQUIRED') {
+          window.location.href = '/signup?plan=free';
+          return;
+        }
+
+        if (['SUBSCRIPTION_REQUIRED', 'LIBRARY_LIMIT_REACHED', 'BROADCAST_BLOCKED'].includes(data?.code)) {
+          await redirectToStripeCheckout();
+          return;
+        }
+
+        throw new Error(data?.error || 'Agent request failed');
+      } else {
+        throw new Error(data?.error || 'Agent request failed');
       }
     } catch (err) {
       console.error(err);
@@ -111,11 +148,6 @@ export default function DashboardPage() {
 
   const handleSyncSave = async () => {
     if (!agentTrack || agentTrack.savedToneId) return;
-
-    if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
-      setWorkspaceError('Library limit reached (5 tones). Upgrade your console tier to save unlimited frequencies.');
-      return;
-    }
 
     setSavingTrack(true);
     setWorkspaceError('');
@@ -130,29 +162,41 @@ export default function DashboardPage() {
           base_freq_hz: 220,
           duration_sec: 180,
           wav_url: agentTrack.wavUrl,
-          mp3_url: agentTrack.webmUrl,
-          visibility: 'private'
+          mp3_url: agentTrack.webmUrl || agentTrack.wavUrl,
+          visibility: 'private',
+          frequency_plan: {
+            sourceType: 'agentic-match',
+            isAgentic: true,
+          }
         })
       });
-      const data = await response.json();
-      if (response.ok && data.tone) {
-        setAgentTrack(prev => ({ ...prev, savedToneId: data.tone.id }));
-        await refreshWorkspace();
-      } else {
-        setWorkspaceError(data.error || 'Failed to save tone to library');
+
+      const data = await readApiResponse(response, 'Save request failed');
+      if (!response.ok) {
+        if (response.status === 403 && data?.code === 'LIBRARY_LIMIT_REACHED') {
+          await redirectToStripeCheckout();
+          return;
+        }
+        throw new Error(data?.message || data?.error || 'Failed to save tone');
       }
+
+      if (data?.savedTone) {
+        setAgentTrack(prev => ({ ...prev, savedToneId: data.savedTone.id }));
+      }
+      await refreshWorkspace();
     } catch (err) {
       console.error(err);
+      setWorkspaceError(err.message || 'Failed to save tone');
     } finally {
       setSavingTrack(false);
     }
   };
-
   const handleSyncBroadcast = async () => {
     if (!agentTrack || !agentTrack.savedToneId) {
-      setWorkspaceError('Please save the tone to your library before broadcasting.');
+      await redirectToStripeCheckout();
       return;
     }
+
     setBroadcasting(true);
     setWorkspaceError('');
     try {
@@ -165,13 +209,15 @@ export default function DashboardPage() {
           visibility: 'public'
         })
       });
-      const data = await response.json();
+      const data = await readApiResponse(response, 'Failed to broadcast resonance wave');
       if (response.ok) {
         setBroadcastSuccess(true);
         setBroadcastComment('');
         setShowBroadcastBox(false);
         await refreshWorkspace();
         setTimeout(() => setBroadcastSuccess(false), 5000);
+      } else if (response.status === 403 && data?.code === 'BROADCAST_BLOCKED') {
+        await redirectToStripeCheckout();
       } else {
         setWorkspaceError(data.error || 'Failed to broadcast resonance wave');
       }
@@ -181,6 +227,7 @@ export default function DashboardPage() {
       setBroadcasting(false);
     }
   };
+
 
   const handleWorkshopGenerate = async (composerPayload) => {
     setWorkshopStatus('rendering');
@@ -196,7 +243,7 @@ export default function DashboardPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(composerPayload.weavePayload)
         });
-        const data = await response.json();
+        const data = await readApiResponse(response, 'Neural sequence weave failed');
 
         if (!response.ok) {
           throw new Error(data?.error || 'Neural sequence weave failed');
@@ -218,7 +265,7 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(audioPayload)
       });
-      const data = await response.json();
+      const data = await readApiResponse(response, 'Generation failed');
 
       if (!response.ok) {
         throw new Error(data?.error || 'Generation failed');
@@ -258,7 +305,7 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(savePayload)
       });
-      const saveData = await saveResponse.json();
+      const saveData = await readApiResponse(saveResponse, 'Tone rendered, but saving to the library failed');
 
       if (!saveResponse.ok) {
         throw new Error(saveData?.error || 'Tone rendered, but saving to the library failed');
@@ -458,7 +505,7 @@ export default function DashboardPage() {
                         <button
                           onClick={() => {
                             if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
-                              setWorkspaceError('Broadcast restricted. Upgrade your console tier to broadcast resonance waves.');
+                              void redirectToStripeCheckout();
                               return;
                             }
                             setShowBroadcastBox(!showBroadcastBox);

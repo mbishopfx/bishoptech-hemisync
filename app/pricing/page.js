@@ -47,7 +47,7 @@ const plans = [
     name: 'Lifetime Access',
     id: 'lifetime',
     price: '$50',
-    priceId: 'price_lifetime_one_time',
+    priceId: 'price_1TWlbTDJtpuPVfuFG5ejsTAG',
     description: 'Permanent founding license with zero recurring costs.',
     features: [
       { text: 'All Premium Console privileges permanently', allowed: true },
@@ -88,9 +88,17 @@ export default function PricingPage() {
   const [playingToneId, setPlayingToneId] = useState(null);
 
   const audioRef = useRef(null);
-  const supabase = getSupabaseBrowserClient();
+  const [supabase, setSupabase] = useState(null);
 
   // Load preview data and query database serenity pack
+  useEffect(() => {
+    try {
+      setSupabase(getSupabaseBrowserClient());
+    } catch (err) {
+      console.warn('Supabase client unavailable on pricing page:', err?.message || err);
+    }
+  }, []);
+
   useEffect(() => {
     // 1. Retrieve active preview tone generated from the homepage
     const saved = localStorage.getItem('active-preview-tone');
@@ -112,6 +120,7 @@ export default function PricingPage() {
     async function loadSerenity() {
       try {
         setLoadingSerenity(true);
+        if (!supabase) return;
         const { data, error } = await supabase
           .from('saved_tones')
           .select('*')
@@ -183,7 +192,7 @@ export default function PricingPage() {
             Upgrade your <span className="text-white/20 italic">frequency.</span>
           </motion.h1>
           <p className="text-white/40 text-lg md:text-xl font-light max-w-xl mx-auto leading-relaxed">
-            Choose the synchronization tier that aligns with your cognitive goals. All paid plans include a 7-day trial.
+            Choose the synchronization tier that aligns with your cognitive goals. Subscription plans include a 7-day trial. Lifetime access is a one-time purchase.
           </p>
         </div>
 
@@ -252,7 +261,7 @@ export default function PricingPage() {
                     }
 
                     if (!token) {
-                      window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}`;
+                      window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}&mode=${plan.mode}`;
                       return;
                     }
 
@@ -272,7 +281,7 @@ export default function PricingPage() {
                     if (data.url) window.location.href = data.url;
                   } catch (err) {
                     console.error('Checkout redirect failed', err);
-                    window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}`;
+                    window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}&mode=${plan.mode}`;
                   }
                 }}
                 className={`

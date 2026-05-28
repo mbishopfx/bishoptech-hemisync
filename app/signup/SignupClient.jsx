@@ -13,6 +13,7 @@ export function SignupClient() {
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'starter';
   const priceId = searchParams.get('priceId');
+  const mode = searchParams.get('mode') || (plan === 'lifetime' ? 'payment' : 'subscription');
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -51,7 +52,7 @@ export function SignupClient() {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${data.session.access_token}`
                   },
-                  body: JSON.stringify({ priceId, planId: plan })
+                  body: JSON.stringify({ priceId, planId: plan, mode })
               });
               const checkoutData = await res.json();
               if (checkoutData.url) {
@@ -84,7 +85,7 @@ export function SignupClient() {
               Step_01: Identity_Verification
             </div>
             <h1 className="text-3xl font-light tracking-tight mb-2">Initialize Credentials</h1>
-            <p className="text-white/40 text-sm">Join the <strong>{plan.toUpperCase()}</strong> node. 7-day trial included.</p>
+            <p className="text-white/40 text-sm">Join the <strong>{plan.toUpperCase()}</strong> node.{plan === 'lifetime' ? ' Lifetime access is a one-time purchase.' : ' 7-day trial included.'}</p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-6">

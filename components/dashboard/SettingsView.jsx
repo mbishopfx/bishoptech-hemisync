@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
 export function SettingsView({ profile, onUpdateProfile }) {
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
@@ -681,7 +682,10 @@ export function SettingsView({ profile, onUpdateProfile }) {
           </div>
 
           <div className="mt-8 flex gap-4">
-            <Button className="rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs tracking-wider uppercase px-6">
+            <Button
+              onClick={() => redirectToStripeCheckout()}
+              className="rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs tracking-wider uppercase px-6"
+            >
               Synthesize Allocation Upgrade
             </Button>
           </div>
