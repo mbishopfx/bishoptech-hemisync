@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Zap, Cpu, Lock, Eye, ArrowRight, FileText, Activity, AlertTriangle, Play, HelpCircle, Check } from 'lucide-react';
+import { Shield, Zap, Cpu, Lock, Eye, ArrowRight, FileText, Activity, AlertTriangle, Play, HelpCircle, Check, Power } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
@@ -65,25 +65,192 @@ function UnicodeCyberBadge({ icon: IconComponent, index, colorClass }) {
 
 export default function MachinePage() {
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+  
+  // Real-time Synthesizer States
+  const [isPlaying, setIsPlaying] = useState(false);
   const [carrierFreq, setCarrierFreq] = useState(200);
   const [targetState, setTargetState] = useState('theta'); // delta, theta, alpha, beta
   const [beatFreq, setBeatFreq] = useState(6);
+  const [volume, setVolume] = useState(80);
   const [time, setTime] = useState(0);
+
+  // Demo Limits
+  const maxDurationSec = 120; // 2 minutes trial limit
+  const [sessionTime, setSessionTime] = useState(0);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+
+  const audioCtxRef = useRef(null);
+  const leftOscRef = useRef(null);
+  const rightOscRef = useRef(null);
+  const masterGainRef = useRef(null);
 
   // Time ticker loop for smooth vector wave animations
   useEffect(() => {
     let frame;
     const tick = () => {
-      setTime((prev) => prev + 0.08);
+      setTime((prev) => prev + (isPlaying ? 0.08 : 0));
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [isPlaying]);
 
   const handleStateSelect = (state, hz) => {
     setTargetState(state);
     setBeatFreq(hz);
+  };
+
+  // Clean up active sound synthesis nodes
+  const stopAudioNodes = () => {
+    if (leftOscRef.current) {
+      try { leftOscRef.current.stop(); } catch (err) {}
+      try { leftOscRef.current.disconnect(); } catch (err) {}
+      leftOscRef.current = null;
+    }
+    if (rightOscRef.current) {
+      try { rightOscRef.current.stop(); } catch (err) {}
+      try { rightOscRef.current.disconnect(); } catch (err) {}
+      rightOscRef.current = null;
+    }
+    if (masterGainRef.current) {
+      try { masterGainRef.current.disconnect(); } catch (err) {}
+      masterGainRef.current = null;
+    }
+  };
+
+  // Start sound synthesis
+  const startAudio = () => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        alert("Web Audio API is not supported in this browser.");
+        return;
+      }
+
+      const ctx = audioCtxRef.current || new AudioContextClass();
+      audioCtxRef.current = ctx;
+
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      stopAudioNodes();
+
+      const leftOsc = ctx.createOscillator();
+      const rightOsc = ctx.createOscillator();
+      leftOsc.type = 'sine';
+      rightOsc.type = 'sine';
+
+      leftOsc.frequency.setValueAtTime(carrierFreq, ctx.currentTime);
+      rightOsc.frequency.setValueAtTime(carrierFreq + beatFreq, ctx.currentTime);
+
+      // Stereo isolated merger
+      const merger = ctx.createChannelMerger(2);
+      leftOsc.connect(merger, 0, 0); // Left channel
+      rightOsc.connect(merger, 0, 1); // Right channel
+
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0, ctx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(volume / 100, ctx.currentTime + 0.15);
+
+      merger.connect(masterGain);
+      masterGain.connect(ctx.destination);
+
+      leftOsc.start();
+      rightOsc.start();
+
+      leftOscRef.current = leftOsc;
+      rightOscRef.current = rightOsc;
+      masterGainRef.current = masterGain;
+
+      setIsPlaying(true);
+    } catch (e) {
+      console.error("Failed to start demonstration synthesizer:", e);
+    }
+  };
+
+  // Fade out and stop synthesizer
+  const stopAudio = () => {
+    if (audioCtxRef.current && masterGainRef.current) {
+      const ctx = audioCtxRef.current;
+      const now = ctx.currentTime;
+      try {
+        masterGainRef.current.gain.setValueAtTime(masterGainRef.current.gain.value, now);
+        masterGainRef.current.gain.linearRampToValueAtTime(0, now + 0.15);
+      } catch (err) {}
+    }
+    setTimeout(() => {
+      stopAudioNodes();
+      setIsPlaying(false);
+    }, 200);
+  };
+
+  const togglePower = () => {
+    if (isPlaying) {
+      stopAudio();
+    } else {
+      startAudio();
+    }
+  };
+
+  // Track session timer ticks when online
+  useEffect(() => {
+    let interval = null;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setSessionTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      setSessionTime(0);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying]);
+
+  // Monitor for session duration limits (2-minute trial limit)
+  useEffect(() => {
+    if (sessionTime >= maxDurationSec) {
+      stopAudio();
+      setShowLimitModal(true);
+      setSessionTime(0);
+    }
+  }, [sessionTime, maxDurationSec]);
+
+  // Keep oscillators dynamically tuned to slider values in real-time
+  useEffect(() => {
+    if (isPlaying && leftOscRef.current && rightOscRef.current && audioCtxRef.current) {
+      const ctx = audioCtxRef.current;
+      const now = ctx.currentTime;
+      leftOscRef.current.frequency.linearRampToValueAtTime(carrierFreq, now + 0.05);
+      rightOscRef.current.frequency.linearRampToValueAtTime(carrierFreq + beatFreq, now + 0.05);
+    }
+  }, [carrierFreq, beatFreq, isPlaying]);
+
+  // Keep synth gain matching volume slider in real-time
+  useEffect(() => {
+    if (isPlaying && masterGainRef.current && audioCtxRef.current) {
+      const ctx = audioCtxRef.current;
+      const now = ctx.currentTime;
+      masterGainRef.current.gain.linearRampToValueAtTime(volume / 100, now + 0.05);
+    }
+  }, [volume, isPlaying]);
+
+  // Make sure we stop everything on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudioNodes();
+      if (audioCtxRef.current) {
+        try { audioCtxRef.current.close(); } catch (e) {}
+      }
+    };
+  }, []);
+
+  // Format time MM:SS
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   // Mathematical sine generator for drawing vector waves in real time
@@ -91,7 +258,6 @@ export default function MachinePage() {
     const points = [];
     const width = 400;
     const height = 80;
-    // Scale down high frequencies to look balanced visually
     const visualFreq = freq * 0.05;
     
     for (let x = 0; x <= width; x += 4) {
@@ -105,7 +271,6 @@ export default function MachinePage() {
     const points = [];
     const width = 400;
     const height = 100;
-    // Draw the slow, glowing difference envelope wave
     for (let x = 0; x <= width; x += 4) {
       const envelope = Math.sin(x * 0.015); // visual envelope
       const y = height / 2 + Math.sin((x * freq * 0.08) - (time * speedMultiplier * 1.2)) * amp * envelope;
@@ -165,71 +330,112 @@ export default function MachinePage() {
         <section className="text-center space-y-6 max-w-3xl mx-auto mb-20">
           <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Neuro-Acoustic Engine</p>
           <h1 className="text-5xl md:text-7xl font-light tracking-tighter">Inside the Machine.</h1>
-          <p className="text-white/40 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-white/40 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light font-sans">
             We leverage the <strong>Frequency-Following Response (FFR)</strong>—a physiological mechanism that aligns your brain&apos;s dominant electrical frequencies with calibrated stereo wave phase shifts.
           </p>
         </section>
 
         {/* Dynamic Interactive Wave Visualizer Console */}
         <section className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-[3rem] p-8 md:p-12 mb-32 shadow-[0_0_50px_rgba(6,182,212,0.02)]">
-          <div className="grid lg:grid-cols-12 gap-12">
+          <div className="grid lg:grid-cols-12 gap-12 items-start">
             
             {/* Visualizer Waves */}
-            <div className="lg:col-span-7 space-y-6 flex flex-col justify-center">
-              <div>
-                <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em] mb-2">Real-time Auditory Oscillations</p>
-                <div className="border border-white/5 bg-black/60 rounded-2xl p-6 space-y-6 relative overflow-hidden">
-                  
-                  {/* Left Ear Wave */}
-                  <div className="space-y-1 relative z-10">
-                    <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
-                      <span>Left Ear Carrier (L)</span>
-                      <span>{carrierFreq} Hz</span>
-                    </div>
-                    <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
-                      <path d={getSinePath(carrierFreq, 20, 1.2)} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
+            <div className="lg:col-span-7 space-y-6">
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Real-time Auditory Oscillations</p>
+              <div className="border border-white/5 bg-black/60 rounded-2xl p-6 space-y-6 relative overflow-hidden">
+                
+                {/* Left Ear Wave */}
+                <div className="space-y-1 relative z-10">
+                  <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
+                    <span>Left Ear Carrier (L)</span>
+                    <span>{carrierFreq} Hz</span>
                   </div>
-
-                  {/* Right Ear Wave */}
-                  <div className="space-y-1 relative z-10">
-                    <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
-                      <span>Right Ear Carrier (R)</span>
-                      <span>{carrierFreq + beatFreq} Hz</span>
-                    </div>
-                    <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
-                      <path d={getSinePath(carrierFreq + beatFreq, 20, 1.3)} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
-                  </div>
-
-                  {/* Center Entrained Wave */}
-                  <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
-                    <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
-                      <span>Binaural Differential Entrainment (R - L)</span>
-                      <span className="font-bold">{beatFreq} Hz ({targetState.toUpperCase()})</span>
-                    </div>
-                    <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
-                      <defs>
-                        <filter id="glow-wave">
-                          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                          <feMerge>
-                            <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
-                          </feMerge>
-                        </filter>
-                      </defs>
-                      <path d={getEntrainmentPath(beatFreq, 30, 0.4)} fill="none" stroke="currentColor" strokeWidth="2.5" filter="url(#glow-wave)" />
-                    </svg>
-                  </div>
-
-                  {/* Ambient static blur */}
-                  <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none" />
+                  <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                    <path d={getSinePath(carrierFreq, isPlaying ? 20 : 0.5, 1.2)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
                 </div>
+
+                {/* Right Ear Wave */}
+                <div className="space-y-1 relative z-10">
+                  <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
+                    <span>Right Ear Carrier (R)</span>
+                    <span>{carrierFreq + beatFreq} Hz</span>
+                  </div>
+                  <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                    <path d={getSinePath(carrierFreq + beatFreq, isPlaying ? 20 : 0.5, 1.3)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                </div>
+
+                {/* Center Entrained Wave */}
+                <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
+                  <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
+                    <span>Binaural Differential Entrainment (R - L)</span>
+                    <span className="font-bold">{beatFreq} Hz ({targetState.toUpperCase()})</span>
+                  </div>
+                  <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
+                    <defs>
+                      <filter id="glow-wave">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <path d={getEntrainmentPath(beatFreq, isPlaying ? 30 : 0, 0.4)} fill="none" stroke="currentColor" strokeWidth="2.5" filter="url(#glow-wave)" />
+                  </svg>
+                </div>
+
+                {/* Ambient static blur */}
+                <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none" />
               </div>
             </div>
 
             {/* Controller Controls */}
-            <div className="lg:col-span-5 flex flex-col justify-between space-y-8">
-              <div className="space-y-6">
+            <div className="lg:col-span-5 space-y-6">
+              
+              {/* Power Switch Toggle */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Hardware Interface</p>
+                <button
+                  onClick={togglePower}
+                  className={`w-full py-4 px-6 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-bold border transition-all flex items-center justify-center gap-3 ${
+                    isPlaying
+                      ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:bg-cyan-500/20'
+                      : 'bg-red-500/5 border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-300'
+                  }`}
+                >
+                  <Power className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
+                  <span>Power: {isPlaying ? 'ONLINE' : 'OFFLINE'}</span>
+                </button>
+              </div>
+
+              {/* Countdown Progress Card */}
+              <div className="p-4 rounded-2xl bg-zinc-950/60 border border-white/5 space-y-2 select-none">
+                <div className="flex justify-between text-[10px] font-mono uppercase tracking-wider">
+                  <span className="text-zinc-500">Demo Calibration Session</span>
+                  <span className={isPlaying ? "text-cyan-400 font-bold animate-pulse text-[9px]" : "text-zinc-600 text-[9px]"}>
+                    {isPlaying ? "ACTIVE" : "STANDBY"}
+                  </span>
+                </div>
+                
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xl font-mono font-bold tracking-tight text-white">
+                    {formatTime(maxDurationSec - sessionTime)}
+                  </span>
+                  <span className="text-zinc-600 font-mono text-[9px] uppercase tracking-wide">
+                    / 2m limit
+                  </span>
+                </div>
+
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-cyan-500 transition-all duration-1000"
+                    style={{ width: `${(sessionTime / maxDurationSec) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6 pt-2">
                 <div className="space-y-2">
                   <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Target Baselines</p>
                   <h3 className="text-3xl font-light text-white tracking-tight">Select Target State.</h3>
@@ -244,7 +450,7 @@ export default function MachinePage() {
                     { id: 'delta', label: 'Delta', hz: 3, range: '0.5 - 4 Hz (Restoration)' },
                     { id: 'theta', label: 'Theta', hz: 6, range: '4 - 8 Hz (Dream/Breakthrough)' },
                     { id: 'alpha', label: 'Alpha', hz: 10, range: '8 - 14 Hz (Calm Flow)' },
-                    { id: 'beta', label: 'Beta', hz: 18, range: '14 - 30 Hz (Analytical focus)' }
+                    { id: 'beta', label: 'Beta', hz: 18, range: '14 - 30 Hz (Analytical Focus)' }
                   ].map((s) => (
                     <button
                       key={s.id}
@@ -279,6 +485,22 @@ export default function MachinePage() {
                     Low carriers (<span className="text-white/40">200Hz</span>) optimize Theta/Delta entrainment, while higher carriers facilitate active logical focus.
                   </p>
                 </div>
+
+                {/* Master volume slider */}
+                <div className="space-y-3 pt-4 border-t border-white/5">
+                  <div className="flex justify-between text-[10px] font-mono uppercase text-white/40">
+                    <span>Master Volume</span>
+                    <span>{volume}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={volume}
+                    onChange={(e) => setVolume(parseInt(e.target.value))}
+                    className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                  />
+                </div>
               </div>
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
@@ -291,6 +513,43 @@ export default function MachinePage() {
 
           </div>
         </section>
+
+        {/* Demo Limit Modal */}
+        {showLimitModal && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+            <div className="relative max-w-md w-full bg-zinc-900/90 border border-white/10 rounded-[2.5rem] p-8 space-y-6 text-center shadow-[0_0_50px_rgba(6,182,212,0.15)] overflow-hidden">
+              <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/10 blur-[30px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-[120px] h-[80px] bg-purple-500/10 blur-[30px] pointer-events-none" />
+              
+              <div className="mx-auto size-14 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                <Zap className="size-6 animate-pulse" />
+              </div>
+
+              <div className="space-y-3 text-left">
+                <h3 className="text-2xl font-light text-white tracking-tight text-center">2-Minute Trial Complete</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
+                  You have completed your 2-minute NeuroSync trial calibration. Sign up for a free account to unlock **5-minute sessions**, or get a Premium membership for **unrestricted 1-hour sessions** and custom blueprints!
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/signup"
+                  className="w-full py-3.5 px-4 rounded-xl bg-cyan-500 text-black font-mono text-[10px] uppercase tracking-wider font-bold hover:bg-cyan-400 transition-all text-center block"
+                >
+                  Initialize Free Account
+                </Link>
+                <button
+                  onClick={() => setShowLimitModal(false)}
+                  className="w-full py-3.5 px-4 rounded-xl bg-white/5 border border-white/5 text-zinc-400 font-mono text-[10px] uppercase tracking-wider hover:text-white hover:bg-white/10 transition-all"
+                >
+                  Close Console
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
 
         {/* Anatomical Science Section */}
         <section className="space-y-16 mb-40">

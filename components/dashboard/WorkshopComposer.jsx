@@ -1,60 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Shield, Zap, Cpu, Lock, FileText, Activity, AlertTriangle, Power } from 'lucide-react';
+import { Activity, Power, Zap } from 'lucide-react';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
-
-function UnicodeCyberBadge({ icon: IconComponent, index, colorClass }) {
-  const [frameChar, setFrameChar] = useState('■');
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    if (!isHovered) {
-      setFrameChar('■');
-      return;
-    }
-
-    const chars = ['▖', '▘', '▝', '▗'];
-    let idx = 0;
-    const interval = setInterval(() => {
-      setFrameChar(chars[idx]);
-      idx = (idx + 1) % chars.length;
-    }, 150);
-
-    return () => clearInterval(interval);
-  }, [isHovered]);
-
-  const statusCodes = [
-    'STEM_DECODE',
-    'HEMI_LOCK',
-    'THALA_GATE'
-  ];
-
-  return (
-    <div 
-      className="flex items-center gap-3.5 mb-6 select-none font-mono text-xs"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="relative size-11 border border-white/10 bg-zinc-950/60 flex items-center justify-center transition-all duration-300 group-hover:border-cyan-500/30 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] rounded-none shrink-0">
-        <div className="absolute inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent top-0 animate-[bounce_2s_infinite] pointer-events-none opacity-0 group-hover:opacity-100" />
-        <IconComponent className={`size-[18px] ${colorClass} group-hover:text-cyan-400 transition-colors duration-300`} />
-      </div>
-
-      <div className="flex flex-col justify-center overflow-hidden">
-        <div className="flex items-center gap-1.5 text-zinc-500 group-hover:text-cyan-500/60 transition-colors duration-300 text-[10px]">
-          <span className="text-cyan-500/30 group-hover:animate-pulse">▶</span>
-          <span>[</span>
-          <span className="text-white/80 font-bold group-hover:text-cyan-400 transition-colors">{frameChar}</span>
-          <span className="font-semibold tracking-wider">{statusCodes[index] || 'SYS_OK'}</span>
-          <span>]</span>
-        </div>
-        <span className="text-[7.5px] text-zinc-600 tracking-[0.25em] uppercase mt-0.5 group-hover:text-cyan-400/30 transition-colors">
-          core_processor_0{index + 1}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 export function WorkshopComposer({ 
   seedTone, 
@@ -308,364 +255,207 @@ export function WorkshopComposer({
   };
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6">
       {/* Tab Header Section */}
-      <div className="space-y-4">
-        <div>
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Acoustic Console</p>
-          <h2 className="mt-2 text-4xl font-light text-white tracking-tight">NeuroSync Workshop</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400 font-light font-sans">
-            Calibrate stereophonic phase shifts and carrier baselines in real-time. Plug in your stereo headphones, power on the synthesis console, and tune your brain state baselines dynamically.
-          </p>
-        </div>
+      <div className="space-y-2">
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Acoustic Console</p>
+        <h2 className="text-3xl font-light text-white tracking-tight">NeuroSync Workshop</h2>
+        <p className="max-w-3xl text-xs leading-relaxed text-zinc-400 font-light font-sans">
+          Calibrate stereophonic phase shifts and carrier baselines in real-time. Plug in your stereo headphones, power on the synthesis console, and tune your brain state baselines dynamically.
+        </p>
       </div>
 
       {/* Main Glassmorphic Interactive Synthesis Module */}
-      <section className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-[3rem] p-8 md:p-12 shadow-[0_0_50px_rgba(6,182,212,0.02)]">
-        <div className="grid lg:grid-cols-12 gap-12">
+      <section className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 shadow-[0_0_50px_rgba(6,182,212,0.02)]">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
           
           {/* Real-time Oscilloscope Panel */}
-          <div className="lg:col-span-7 space-y-6 flex flex-col justify-center">
-            <div>
-              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em] mb-2">Real-time Auditory Oscillations</p>
-              <div className="border border-white/5 bg-black/60 rounded-2xl p-6 space-y-6 relative overflow-hidden">
-                
-                {/* Left Ear Wave */}
-                <div className="space-y-1 relative z-10">
-                  <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
-                    <span>Left Ear Carrier (L)</span>
-                    <span>{carrierFreq} Hz</span>
-                  </div>
-                  <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
-                    <path d={getSinePath(carrierFreq, isPlaying ? 20 : 0.5, 1.2)} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  </svg>
+          <div className="lg:col-span-7 space-y-4">
+            <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Real-time Auditory Oscillations</p>
+            <div className="border border-white/5 bg-black/60 rounded-2xl p-5 space-y-4 relative overflow-hidden">
+              
+              {/* Left Ear Wave */}
+              <div className="space-y-1 relative z-10">
+                <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
+                  <span>Left Ear Carrier (L)</span>
+                  <span>{carrierFreq} Hz</span>
                 </div>
-
-                {/* Right Ear Wave */}
-                <div className="space-y-1 relative z-10">
-                  <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
-                    <span>Right Ear Carrier (R)</span>
-                    <span>{carrierFreq + beatFreq} Hz</span>
-                  </div>
-                  <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
-                    <path d={getSinePath(carrierFreq + beatFreq, isPlaying ? 20 : 0.5, 1.3)} fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  </svg>
-                </div>
-
-                {/* Center Glowing Differential Entrainment Wave */}
-                <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
-                  <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
-                    <span>Binaural Differential Entrainment (R - L)</span>
-                    <span className="font-bold">{beatFreq} Hz ({activeBrainState.toUpperCase()})</span>
-                  </div>
-                  <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
-                    <defs>
-                      <filter id="glow-wave-workshop">
-                        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                        <feMerge>
-                          <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                      </filter>
-                    </defs>
-                    <path d={getEntrainmentPath(beatFreq, isPlaying ? 30 : 0, 0.4)} fill="none" stroke="currentColor" strokeWidth="2.5" filter="url(#glow-wave-workshop)" />
-                  </svg>
-                </div>
-
-                {/* Ambient glow mesh */}
-                <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none" />
+                <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                  <path d={getSinePath(carrierFreq, isPlaying ? 20 : 0.5, 1.2)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
               </div>
+
+              {/* Right Ear Wave */}
+              <div className="space-y-1 relative z-10">
+                <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
+                  <span>Right Ear Carrier (R)</span>
+                  <span>{carrierFreq + beatFreq} Hz</span>
+                </div>
+                <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                  <path d={getSinePath(carrierFreq + beatFreq, isPlaying ? 20 : 0.5, 1.3)} fill="none" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+              </div>
+
+              {/* Center Glowing Differential Entrainment Wave */}
+              <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
+                <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
+                  <span>Binaural Differential Entrainment (R - L)</span>
+                  <span className="font-bold">{beatFreq} Hz ({activeBrainState.toUpperCase()})</span>
+                </div>
+                <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
+                  <defs>
+                    <filter id="glow-wave-workshop">
+                      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <path d={getEntrainmentPath(beatFreq, isPlaying ? 30 : 0, 0.4)} fill="none" stroke="currentColor" strokeWidth="2.5" filter="url(#glow-wave-workshop)" />
+                </svg>
+              </div>
+
+              {/* Ambient glow mesh */}
+              <div className="absolute inset-0 bg-cyan-500/5 blur-[80px] pointer-events-none" />
             </div>
           </div>
 
           {/* Synth Interface Controllers */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-8">
-            <div className="space-y-6">
+          <div className="lg:col-span-5 space-y-5">
+            {/* Power Switch Toggle */}
+            <div className="space-y-2">
+              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Hardware Interface</p>
+              <button
+                onClick={togglePower}
+                className={`w-full py-3.5 px-6 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-bold border transition-all flex items-center justify-center gap-3 ${
+                  isPlaying
+                    ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:bg-cyan-500/20'
+                    : 'bg-red-500/5 border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-300'
+                }`}
+              >
+                <Power className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
+                <span>Power: {isPlaying ? 'ONLINE' : 'OFFLINE'}</span>
+              </button>
+            </div>
+
+            {/* Dynamic Countdown Clock */}
+            <div className="p-4 rounded-2xl bg-zinc-950/60 border border-white/5 space-y-2 select-none">
+              <div className="flex justify-between text-[10px] font-mono uppercase tracking-wider">
+                <span className="text-zinc-500">Session Calibration Node</span>
+                <span className={isPlaying ? "text-cyan-400 font-bold animate-pulse text-[9px]" : "text-zinc-600 text-[9px]"}>
+                  {isPlaying ? "ACTIVE" : "STANDBY"}
+                </span>
+              </div>
               
-              {/* Power Switch Toggle */}
-              <div className="space-y-2">
-                <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Hardware Interface</p>
-                <button
-                  onClick={togglePower}
-                  className={`w-full py-4 px-6 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-bold border transition-all flex items-center justify-center gap-3 ${
-                    isPlaying
-                      ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:bg-cyan-500/20'
-                      : 'bg-red-500/5 border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-300'
+              <div className="flex items-baseline justify-between">
+                <span className="text-xl font-mono font-bold tracking-tight text-white">
+                  {formatTime(maxDurationSec - sessionTime)}
+                </span>
+                <span className="text-zinc-600 font-mono text-[9px] uppercase tracking-wide">
+                  / {isFreeTrial ? "5m limit" : "1h limit"}
+                </span>
+              </div>
+
+              <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-1000 ${
+                    isFreeTrial ? 'bg-cyan-500' : 'bg-purple-500'
                   }`}
-                >
-                  <Power className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
-                  <span>Power: {isPlaying ? 'ONLINE / TRANSMITTING' : 'OFFLINE'}</span>
-                </button>
+                  style={{ width: `${(sessionTime / maxDurationSec) * 100}%` }}
+                />
               </div>
+            </div>
 
-              {/* Dynamic Countdown Clock */}
-              <div className="p-4 rounded-2xl bg-zinc-950/60 border border-white/5 space-y-2 select-none">
-                <div className="flex justify-between text-[10px] font-mono uppercase tracking-wider">
-                  <span className="text-zinc-500">Session Calibration Node</span>
-                  <span className={isPlaying ? "text-cyan-400 font-bold animate-pulse text-[9px]" : "text-zinc-600 text-[9px]"}>
-                    {isPlaying ? "ACTIVE" : "STANDBY"}
-                  </span>
-                </div>
-                
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-mono font-bold tracking-tight text-white">
-                    {formatTime(maxDurationSec - sessionTime)}
-                  </span>
-                  <span className="text-zinc-600 font-mono text-[9px] uppercase tracking-wide">
-                    / {isFreeTrial ? "5m limit" : "1h limit"}
-                  </span>
-                </div>
-
-                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full transition-all duration-1000 ${
-                      isFreeTrial ? 'bg-cyan-500' : 'bg-purple-500'
-                    }`}
-                    style={{ width: `${(sessionTime / maxDurationSec) * 100}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* State presets */}
-              <div className="space-y-2">
-                <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Target Baselines</p>
-                <h3 className="text-2xl font-light text-white tracking-tight">Select Target State.</h3>
-                <p className="text-xs text-white/40 leading-relaxed font-light font-sans">
-                  Choose a preset target baseline or manually adjust the differential slider. Look at how the entrainment wave speeds up or slows down to match your frequency.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            {/* State presets */}
+            <div className="space-y-2">
+              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Target Baselines</p>
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'delta', label: 'Delta', hz: 3, range: '0.5 - 4 Hz (Restoration)' },
-                  { id: 'theta', label: 'Theta', hz: 6, range: '4 - 8 Hz (Dream/Breakthrough)' },
-                  { id: 'alpha', label: 'Alpha', hz: 10, range: '8 - 14 Hz (Calm Flow)' },
-                  { id: 'beta', label: 'Beta', hz: 18, range: '14 - 30 Hz (Analytical Focus)' }
+                  { id: 'delta', label: 'Delta', hz: 3, range: '0.5 - 4 Hz' },
+                  { id: 'theta', label: 'Theta', hz: 6, range: '4 - 8 Hz' },
+                  { id: 'alpha', label: 'Alpha', hz: 10, range: '8 - 14 Hz' },
+                  { id: 'beta', label: 'Beta', hz: 18, range: '14 - 30 Hz' }
                 ].map((s) => (
                   <button
                     key={s.id}
                     onClick={() => {
                       setBeatFreq(s.hz);
                     }}
-                    className={`p-4 rounded-2xl border text-left transition-all ${
+                    className={`p-3 rounded-xl border text-left transition-all ${
                       activeBrainState === s.id
                         ? 'bg-cyan-500/10 border-cyan-500/40 text-white shadow-[0_0_20px_rgba(6,182,212,0.1)]'
                         : 'bg-zinc-950/60 border-white/5 text-white/50 hover:border-white/10 hover:text-white/80'
                     }`}
                   >
-                    <p className="text-sm font-bold tracking-tight">{s.label}</p>
-                    <p className="text-[9px] font-mono text-white/30 mt-1 uppercase tracking-wide">{s.range}</p>
+                    <p className="text-xs font-bold tracking-tight">{s.label}</p>
+                    <p className="text-[8px] font-mono text-white/30 mt-0.5 uppercase tracking-wide">{s.range}</p>
                   </button>
                 ))}
               </div>
+            </div>
 
-              {/* Sliders Console */}
-              <div className="space-y-5 pt-4 border-t border-white/5">
-                
-                {/* Base Carrier Frequency Slider */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-[10px] font-mono uppercase text-white/40">
-                    <span>Base Carrier Frequency</span>
-                    <span>{carrierFreq} Hz</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="100"
-                    max="400"
-                    value={carrierFreq}
-                    onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
-                    className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                  />
-                  <p className="text-[9.5px] font-mono text-white/20 uppercase tracking-widest leading-normal">
-                    Low carriers (<span className="text-white/40">200Hz</span>) optimize Theta/Delta entrainment, while higher carriers facilitate logical focus.
-                  </p>
+            {/* Sliders Console */}
+            <div className="space-y-4 pt-2 border-t border-white/5">
+              
+              {/* Base Carrier Frequency Slider */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
+                  <span>Base Carrier Frequency</span>
+                  <span>{carrierFreq} Hz</span>
                 </div>
+                <input
+                  type="range"
+                  min="100"
+                  max="400"
+                  value={carrierFreq}
+                  onChange={(e) => setCarrierFreq(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
+              </div>
 
-                {/* Binaural Beat Frequency Slider */}
-                <div className="space-y-2 pt-2 border-t border-white/5">
-                  <div className="flex justify-between text-[10px] font-mono uppercase text-white/40">
-                    <span>Binaural Beat Frequency (Differential)</span>
-                    <span>{beatFreq} Hz</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.5"
-                    max="30"
-                    step="0.5"
-                    value={beatFreq}
-                    onChange={(e) => setBeatFreq(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                  />
-                  <p className="text-[9.5px] font-mono text-white/20 uppercase tracking-widest leading-normal">
-                    Tune the exact target brain wave differential speed in real-time.
-                  </p>
+              {/* Binaural Beat Frequency Slider */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
+                  <span>Binaural Beat Frequency (Differential)</span>
+                  <span>{beatFreq} Hz</span>
                 </div>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="30"
+                  step="0.5"
+                  value={beatFreq}
+                  onChange={(e) => setBeatFreq(parseFloat(e.target.value))}
+                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
+              </div>
 
-                {/* Master volume slider */}
-                <div className="space-y-2 pt-2 border-t border-white/5">
-                  <div className="flex justify-between text-[10px] font-mono uppercase text-white/40">
-                    <span>Master Output Volume</span>
-                    <span>{volume}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={volume}
-                    onChange={(e) => setVolume(parseInt(e.target.value))}
-                    className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                  />
+              {/* Master volume slider */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
+                  <span>Master Volume</span>
+                  <span>{volume}%</span>
                 </div>
-
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={(e) => setVolume(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
               </div>
 
             </div>
 
             {/* Bottom active spec display */}
-            <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
-              <Activity className="size-5 text-cyan-400 shrink-0" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-white/60">
-                R - L DIFFERENCE MATCHES TARGET EEG BASELINE: {beatFreq}Hz
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
+              <Activity className="size-4 text-cyan-400 shrink-0" />
+              <p className="text-[9px] font-mono uppercase tracking-wider text-white/60">
+                R - L DIFFERENCE MATCHES EEG BASELINE: {beatFreq}Hz
               </p>
             </div>
 
-          </div>
-        </div>
-      </section>
-
-      {/* Science & Declassified Study sections */}
-      <section className="space-y-16 mt-20 pt-10 border-t border-white/5">
-        <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Physiological Blueprint</p>
-          <h2 className="text-3xl md:text-5xl font-light tracking-tight">The Science of Entrainment.</h2>
-          <p className="text-white/40 text-sm leading-relaxed font-light">
-            How a simple difference in acoustic phase bypasses cognitive blockades and overrides default neural oscillation arrays.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-            <UnicodeCyberBadge icon={Cpu} index={0} colorClass="text-cyan-400 animate-pulse" />
-            <h3 className="text-xl font-medium mb-3">Superior Olivary Complex</h3>
-            <p className="text-xs text-white/50 leading-relaxed font-light">
-              Auditory signals enter the ears and travel up the auditory nerve. They collide in the **Superior Olivary Complex (SOC)** within the brainstem—the first neurological station that processes stereo phase differences. If the phase difference oscillates persistently, the SOC translates it into a rhythmic signal.
-            </p>
-          </div>
-
-          <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-            <UnicodeCyberBadge icon={Zap} index={1} colorClass="text-purple-400" />
-            <h3 className="text-xl font-medium mb-3">Frequency-Following Response</h3>
-            <p className="text-xs text-white/50 leading-relaxed font-light">
-              The auditory cortex picks up the rhythmic outputs of the SOC. Via the **Frequency-Following Response (FFR)**, the local sensory neural clusters align their firing frequencies with the external differential beat. The sensory cells synchronize, vibrating in unison with the virtual wave.
-            </p>
-          </div>
-
-          <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-            <UnicodeCyberBadge icon={Activity} index={2} colorClass="text-cyan-400" />
-            <h3 className="text-xl font-medium mb-3">Thalamocortical Locking</h3>
-            <p className="text-xs text-white/50 leading-relaxed font-light">
-              The synchronized sensory signals target the **Thalamus**—the brain&apos;s master sensory relay pacemaker. The thalamus locks onto the frequency and propagates it throughout the neocortex, locking global EEG patterns into Alpha, Theta, Delta, or Beta ranges on a macro scale.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Clinical Evidence Deck */}
-      <section className="grid md:grid-cols-2 gap-16 items-center mt-20 border-t border-white/5 pt-20">
-        <div className="space-y-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-white/10 text-white/50 text-[10px] font-mono tracking-widest uppercase">
-            <Lock className="size-3" /> Declassified Research
-          </div>
-          <h2 className="text-3xl md:text-5xl font-light tracking-tight">Clinical Evidence & Peer-Reviewed Proof.</h2>
-          <p className="text-white/50 leading-relaxed text-sm font-light">
-            Entrainment is not esoteric speculation—it is declassified and clinically documented. In 1983, the **CIA** released the **Gateway Process Analysis**, verifying that neural bi-directional synchronization is physically real.
-          </p>
-          <p className="text-white/50 leading-relaxed text-sm font-light">
-            Modern clinical trials in neuroscience databases (such as systematic reviews in **PLOS ONE** and **Frontiers in Human Neuroscience**) have proven that binaural beats induce spectral EEG power spikes in targeted ranges. Studies show a **26% reduction in cognitive anxiety** and statistically significant increases in interhemispheric coherence under delta and theta loads.
-          </p>
-          <div className="space-y-3">
-            <a 
-              href="https://www.cia.gov/readingroom/docs/cia-rdp96-00788r001700210023-7.pdf" 
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium text-xs group uppercase font-mono tracking-wider"
-            >
-              View CIA-RDP96-00788R Gateway Memo <FileText className="size-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-            <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">
-              Source: National Archives & Clinical Trials databases.
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-zinc-900/30 rounded-[3rem] p-10 md:p-12 border border-white/5 relative overflow-hidden group hover:border-white/10 transition-colors">
-          <h3 className="text-xl font-medium text-white tracking-tight mb-6">Peer-Reviewed Milestones</h3>
-          <div className="space-y-6">
-            {[
-              { title: 'CIA Gateway Study (1983)', desc: 'Documented that alternate phase-shifted audio alters brain amplitude parameters, locking it into coherent trance states.' },
-              { title: 'Frontiers in Human Neuroscience (2018)', desc: 'Confirmed via EEG spectral analytics that targeted theta beat loads significantly boost working memory recall and concentration.' },
-              { title: 'PLOS ONE Meta-Analysis (2019)', desc: 'Conducted systematic review proving that binaural beat entrainment reduces pre-operative anxiety scores.' },
-              { title: 'NeuroSync Protocols', desc: 'Over 40 years of EEG data proving that hemispheric balance (neural bi-directional synchronization) is achieved within 10 minutes of calibrated phase-shifting audio.' }
-            ].map((item, index) => (
-              <div key={index} className="flex gap-4">
-                <div className="size-6 rounded-full bg-white/5 text-[10px] font-mono text-cyan-400 flex items-center justify-center shrink-0 border border-white/10">
-                  {index + 1}
-                </div>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-medium text-white/95">{item.title}</h4>
-                  <p className="text-xs text-white/45 font-light leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Safety & Warning Protocols */}
-      <section className="bg-zinc-900/30 rounded-[3rem] border border-red-500/20 p-10 md:p-12 relative overflow-hidden mt-20">
-        <div className="absolute inset-0 bg-red-500/5 blur-[80px] pointer-events-none" />
-        <div className="space-y-8">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
-              <AlertTriangle className="size-5" />
-            </div>
-            <div>
-              <p className="text-[10px] font-mono text-red-400 uppercase tracking-[0.4em]">Safety Protocol</p>
-              <h3 className="text-2xl md:text-3xl font-medium tracking-tight text-white mt-1">Responsible Freq Usage.</h3>
-            </div>
-          </div>
-
-          <p className="text-sm leading-relaxed text-white/50 font-light">
-            Entrainment tools physically alter neural dynamics. To prevent auditory fatigue and protect biological systems, you must strictly follow these safety guidelines:
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-8 pt-4">
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-white/90">Epilepsy & Seizure History</h4>
-              <p className="text-xs text-white/40 leading-relaxed font-light">
-                Individuals with a history of epilepsy, clinical seizures, or photic/auditory hyper-sensitivity should consult a neurologist before using NeuroSync. Rhythmic acoustic frequencies drive high-amplitude brain waves that may act as sensory triggers.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-white/90">No Driving / Alert Motor Tasks</h4>
-              <p className="text-xs text-white/40 leading-relaxed font-light">
-                Delta and Theta frequency ranges induce severe physical relaxation, muscle dilation, and drowsiness (somatic damping). NEVER listen to these frequencies while driving, operating heavy machinery, or performing active motor coordination tasks.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-white/90">Hearing Conservation & Decibels</h4>
-              <p className="text-xs text-white/40 leading-relaxed font-light">
-                Entrainment occurs at the auditory pathway level; it does not require high volume. Keep carrier audio below 70-75dB (conversational level). High volume generates ear fatigue, hearing loss, and blocks olivary complex phase-locking.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-white/90">Gradual Session Baselines</h4>
-              <p className="text-xs text-white/40 leading-relaxed font-light">
-                Allow your central nervous system to adapt. Begin with shorter sessions (10 to 15 minutes) to let your superior olivary complex normalize the phase shifts. Do not exceed 60 minutes per continuous session to avoid cognitive over-stimulation.
-              </p>
-            </div>
           </div>
         </div>
       </section>
