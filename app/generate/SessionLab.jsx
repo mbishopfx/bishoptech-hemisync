@@ -11,7 +11,7 @@ import { FocusPresets } from '@/lib/audio/presets';
 import { AmbientAssetOptions } from '@/lib/audio/assets';
 import { buildJourneyBlueprint } from '@/lib/audio/journeys';
 import { SessionCharts } from '@/components/analytics/SessionCharts';
-import { resolveBackendAssetUrl } from '@/lib/frontend/backend-url';
+import { resolveBackendAssetUrl, toBackendUrl } from '@/lib/frontend/backend-url';
 
 const STOIC_RENDER_MESSAGES = [
   'Hold steady. Precision takes time.',
@@ -459,7 +459,7 @@ export function SessionLab() {
       setStatus(`Generating a 2 minute carrier sample for ${template.title}…`);
 
       const previewSpec = buildTemplateSessionSpec(template, { lengthSec: template.sampleLengthSec });
-      const response = await fetch('/api/audio/generate', {
+      const response = await fetch(toBackendUrl('/api/audio/generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
@@ -502,7 +502,7 @@ export function SessionLab() {
       setRenderMessageIndex(0);
       setStatus(`Rendering the full ${selectedTemplate.title} session…`);
 
-      const response = await fetch('/api/audio/generate', {
+      const response = await fetch(toBackendUrl('/api/audio/generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(buildRenderPayload(spec, { exportProfile: 'premium' }))

@@ -11,12 +11,11 @@ import { Omnibar } from '@/components/agent/Omnibar';
 import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { LibraryBrowser } from '@/components/dashboard/LibraryBrowser';
 import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
-
-// New high-fidelity modular tab components
 import { FeedView } from '@/components/dashboard/FeedView';
 import { JournalView } from '@/components/dashboard/JournalView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
+import { toBackendUrl } from '@/lib/frontend/backend-url';
 
 async function readApiResponse(response, fallbackMessage = 'Request failed') {
   const contentType = response.headers.get('content-type') || '';
@@ -238,7 +237,7 @@ export default function DashboardPage() {
 
     try {
       if (composerPayload.isWeave) {
-        const response = await fetch('/api/audio/chain', {
+        const response = await fetch(toBackendUrl('/api/audio/chain'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(composerPayload.weavePayload)
@@ -260,7 +259,7 @@ export default function DashboardPage() {
       const { audioPayload, metadata } = composerPayload;
 
       // 1. Call standard generate endpoint
-      const response = await fetch('/api/audio/generate', {
+      const response = await fetch(toBackendUrl('/api/audio/generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(audioPayload)
