@@ -475,7 +475,7 @@ export function WorkshopComposer({
               <div className="space-y-3 text-left">
                 <h3 className="text-2xl font-light text-white tracking-tight text-center">5-Minute Session Complete</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-                  Free tier accounts are capped at 5 minutes of continuous neural resonance. Upgrade to our Premium tier to unlock **unrestricted 1-hour sessions**, access pre-loaded high-fidelity sound beds, and save custom neural blueprints.
+                  Free tier accounts are capped at 5 minutes of continuous neural resonance. Upgrade to our Premium tier to unlock <strong>unrestricted 1-hour sessions</strong>, access pre-loaded high-fidelity sound beds, and save custom neural blueprints.
                 </p>
               </div>
             ) : (

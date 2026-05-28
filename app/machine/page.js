@@ -528,7 +528,7 @@ export default function MachinePage() {
               <div className="space-y-3 text-left">
                 <h3 className="text-2xl font-light text-white tracking-tight text-center">2-Minute Trial Complete</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-                  You have completed your 2-minute NeuroSync trial calibration. Sign up for a free account to unlock **5-minute sessions**, or get a Premium membership for **unrestricted 1-hour sessions** and custom blueprints!
+                  You have completed your 2-minute NeuroSync trial calibration. Sign up for a free account to unlock <strong>5-minute sessions</strong>, or get a Premium membership for <strong>unrestricted 1-hour sessions</strong> and custom blueprints!
                 </p>
               </div>
 
@@ -566,7 +566,7 @@ export default function MachinePage() {
               <UnicodeCyberBadge icon={Cpu} index={0} colorClass="text-cyan-400 animate-pulse" />
               <h3 className="text-xl font-medium mb-3">Superior Olivary Complex</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
-                Auditory signals enter the ears and travel up the auditory nerve. They collide in the **Superior Olivary Complex (SOC)** within the brainstem—the first neurological station that processes stereo phase differences. If the phase difference oscillates persistently, the SOC translates it into a rhythmic signal.
+                Auditory signals enter the ears and travel up the auditory nerve. They collide in the <strong>Superior Olivary Complex (SOC)</strong> within the brainstem—the first neurological station that processes stereo phase differences. If the phase difference oscillates persistently, the SOC translates it into a rhythmic signal.
               </p>
             </div>
 
@@ -574,7 +574,7 @@ export default function MachinePage() {
               <UnicodeCyberBadge icon={Zap} index={1} colorClass="text-purple-400" />
               <h3 className="text-xl font-medium mb-3">Frequency-Following Response</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
-                The auditory cortex picks up the rhythmic outputs of the SOC. Via the **Frequency-Following Response (FFR)**, the local sensory neural clusters align their firing frequencies with the external differential beat. The sensory cells synchronize, vibrating in unison with the virtual wave.
+                The auditory cortex picks up the rhythmic outputs of the SOC. Via the <strong>Frequency-Following Response (FFR)</strong>, the local sensory neural clusters align their firing frequencies with the external differential beat. The sensory cells synchronize, vibrating in unison with the virtual wave.
               </p>
             </div>
 
@@ -582,7 +582,7 @@ export default function MachinePage() {
               <UnicodeCyberBadge icon={Activity} index={2} colorClass="text-cyan-400" />
               <h3 className="text-xl font-medium mb-3">Thalamocortical Locking</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
-                The synchronized sensory signals target the **Thalamus**—the brain&apos;s master sensory relay pacemaker. The thalamus locks onto the frequency and propagates it throughout the neocortex, locking global EEG patterns into Alpha, Theta, Delta, or Beta ranges on a macro scale.
+                The synchronized sensory signals target the <strong>Thalamus</strong>—the brain&apos;s master sensory relay pacemaker. The thalamus locks onto the frequency and propagates it throughout the neocortex, locking global EEG patterns into Alpha, Theta, Delta, or Beta ranges on a macro scale.
               </p>
             </div>
           </div>
@@ -596,10 +596,10 @@ export default function MachinePage() {
             </div>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">Clinical Evidence & Peer-Reviewed Proof.</h2>
             <p className="text-white/50 leading-relaxed text-sm font-light">
-              Entrainment is not esoteric speculation—it is declassified and clinically documented. In 1983, the **CIA** released the **Gateway Process Analysis**, verifying that Hemispheric Synchronization is physically real.
+              Entrainment is not esoteric speculation—it is declassified and clinically documented. In 1983, the <strong>CIA</strong> released the <strong>Gateway Process Analysis</strong>, verifying that Hemispheric Synchronization is physically real.
             </p>
             <p className="text-white/50 leading-relaxed text-sm font-light">
-              Modern clinical trials in neuroscience databases (such as systematic reviews in **PLOS ONE** and **Frontiers in Human Neuroscience**) have proven that binaural beats induce spectral EEG power spikes in targeted ranges. Studies show a **26% reduction in cognitive anxiety** and statistically significant increases in interhemispheric coherence under delta and theta loads.
+              Modern clinical trials in neuroscience databases (such as systematic reviews in <strong>PLOS ONE</strong> and <strong>Frontiers in Human Neuroscience</strong>) have proven that binaural beats induce spectral EEG power spikes in targeted ranges. Studies show a <strong>26% reduction in cognitive anxiety</strong> and statistically significant increases in interhemispheric coherence under delta and theta loads.
             </p>
             <div className="space-y-3">
               <a 
