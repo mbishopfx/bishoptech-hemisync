@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import DefaultModeNetworkPost, {
+  defaultModeNetworkPost,
+} from "@/components/blog/posts/default-mode-network";
+import ClaustrumAccessPost, {
+  claustrumAccessPost,
+} from "@/components/blog/posts/claustrum-access";
 import PrecisionDecisionPost, {
   precisionDecisionPost,
 } from "@/components/blog/posts/precision-is-a-decision";
@@ -40,6 +46,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [defaultModeNetworkPost.slug]: DefaultModeNetworkPost,
+  [claustrumAccessPost.slug]: ClaustrumAccessPost,
   [precisionDecisionPost.slug]: PrecisionDecisionPost,
   [bodyBoundaryPost.slug]: BodyBoundaryPost,
   [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
