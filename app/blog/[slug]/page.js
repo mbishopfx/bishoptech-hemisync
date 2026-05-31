@@ -17,6 +17,12 @@ import BodyBoundaryPost, {
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
+import SalienceNetworkPriorityPost, {
+  salienceNetworkPriorityPost,
+} from "@/components/blog/posts/salience-network-priority";
+import CrossFrequencyCouplingPost, {
+  crossFrequencyCouplingPost,
+} from "@/components/blog/posts/cross-frequency-coupling";
 import MemoryReconsolidationPost, {
   memoryReconsolidationPost,
 } from "@/components/blog/posts/memory-reconsolidation";
@@ -51,6 +57,8 @@ const postComponentBySlug = {
   [precisionDecisionPost.slug]: PrecisionDecisionPost,
   [bodyBoundaryPost.slug]: BodyBoundaryPost,
   [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
+  [salienceNetworkPriorityPost.slug]: SalienceNetworkPriorityPost,
+  [crossFrequencyCouplingPost.slug]: CrossFrequencyCouplingPost,
   [memoryReconsolidationPost.slug]: MemoryReconsolidationPost,
   [predictiveCodingPost.slug]: PredictiveCodingEntrainmentPost,
   [sleepGatePost.slug]: SleepGatePost,
