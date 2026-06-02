@@ -14,6 +14,12 @@ import PrecisionDecisionPost, {
 import BodyBoundaryPost, {
   bodyBoundaryPost,
 } from "@/components/blog/posts/the-body-sets-the-boundary";
+import PhaseResetCoherentMomentPost, {
+  phaseResetCoherentMomentPost,
+} from "@/components/blog/posts/phase-reset-coherent-moment";
+import BodyMapPresenceDriftPost, {
+  bodyMapPresenceDriftPost,
+} from "@/components/blog/posts/body-map-presence-drift";
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
@@ -52,6 +58,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [phaseResetCoherentMomentPost.slug]: PhaseResetCoherentMomentPost,
+  [bodyMapPresenceDriftPost.slug]: BodyMapPresenceDriftPost,
   [defaultModeNetworkPost.slug]: DefaultModeNetworkPost,
   [claustrumAccessPost.slug]: ClaustrumAccessPost,
   [precisionDecisionPost.slug]: PrecisionDecisionPost,
