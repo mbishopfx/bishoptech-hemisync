@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import CancellationSignalPost, {
+  cancellationSignalPost,
+} from "@/components/blog/posts/the-world-needs-a-cancellation-signal";
+import AgencyIsAPredictionPost, {
+  agencyIsAPredictionPost,
+} from "@/components/blog/posts/agency-is-a-prediction";
 import DefaultModeNetworkPost, {
   defaultModeNetworkPost,
 } from "@/components/blog/posts/default-mode-network";
@@ -58,6 +64,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [cancellationSignalPost.slug]: CancellationSignalPost,
+  [agencyIsAPredictionPost.slug]: AgencyIsAPredictionPost,
   [phaseResetCoherentMomentPost.slug]: PhaseResetCoherentMomentPost,
   [bodyMapPresenceDriftPost.slug]: BodyMapPresenceDriftPost,
   [defaultModeNetworkPost.slug]: DefaultModeNetworkPost,
