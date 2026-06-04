@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import VestibularFrameBuilderPost, {
+  vestibularFrameBuilderPost,
+} from "@/components/blog/posts/vestibular-frame-builder";
+import HypnagogiaStateTransitionPost, {
+  hypnagogiaStateTransitionPost,
+} from "@/components/blog/posts/hypnagogia-state-transition";
 import CancellationSignalPost, {
   cancellationSignalPost,
 } from "@/components/blog/posts/the-world-needs-a-cancellation-signal";
@@ -64,6 +70,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [vestibularFrameBuilderPost.slug]: VestibularFrameBuilderPost,
+  [hypnagogiaStateTransitionPost.slug]: HypnagogiaStateTransitionPost,
   [cancellationSignalPost.slug]: CancellationSignalPost,
   [agencyIsAPredictionPost.slug]: AgencyIsAPredictionPost,
   [phaseResetCoherentMomentPost.slug]: PhaseResetCoherentMomentPost,
