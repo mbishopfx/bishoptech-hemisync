@@ -32,6 +32,12 @@ import PhaseResetCoherentMomentPost, {
 import BodyMapPresenceDriftPost, {
   bodyMapPresenceDriftPost,
 } from "@/components/blog/posts/body-map-presence-drift";
+import ThalamusPrecisionGovernorPost, {
+  thalamusPrecisionGovernorPost,
+} from "@/components/blog/posts/thalamus-precision-governor";
+import InteroceptiveLoopControlRoomPost, {
+  interoceptiveLoopControlRoomPost,
+} from "@/components/blog/posts/interoceptive-loop-control-room";
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
@@ -70,6 +76,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [thalamusPrecisionGovernorPost.slug]: ThalamusPrecisionGovernorPost,
+  [interoceptiveLoopControlRoomPost.slug]: InteroceptiveLoopControlRoomPost,
   [vestibularFrameBuilderPost.slug]: VestibularFrameBuilderPost,
   [hypnagogiaStateTransitionPost.slug]: HypnagogiaStateTransitionPost,
   [cancellationSignalPost.slug]: CancellationSignalPost,
