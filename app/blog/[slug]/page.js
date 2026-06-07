@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import PredictionErrorRecalibratesRealityPost, {
+  predictionErrorRecalibratesRealityPost,
+} from "@/components/blog/posts/prediction-error-recalibrates-reality";
+import NestedRhythmsCoordinationLayerPost, {
+  nestedRhythmsCoordinationLayerPost,
+} from "@/components/blog/posts/nested-rhythms-coordination-layer";
 import VestibularFrameBuilderPost, {
   vestibularFrameBuilderPost,
 } from "@/components/blog/posts/vestibular-frame-builder";
@@ -76,6 +82,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [predictionErrorRecalibratesRealityPost.slug]: PredictionErrorRecalibratesRealityPost,
+  [nestedRhythmsCoordinationLayerPost.slug]: NestedRhythmsCoordinationLayerPost,
   [thalamusPrecisionGovernorPost.slug]: ThalamusPrecisionGovernorPost,
   [interoceptiveLoopControlRoomPost.slug]: InteroceptiveLoopControlRoomPost,
   [vestibularFrameBuilderPost.slug]: VestibularFrameBuilderPost,
