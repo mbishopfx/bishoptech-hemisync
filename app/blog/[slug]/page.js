@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import InteroceptivePrecisionArbiterPost, {
+  interoceptivePrecisionArbiterPost,
+} from "@/components/blog/posts/interoceptive-precision-arbiter";
+import LocusCoeruleusGainControllerPost, {
+  locusCoeruleusGainControllerPost,
+} from "@/components/blog/posts/locus-coeruleus-gain-controller";
 import PredictionErrorRecalibratesRealityPost, {
   predictionErrorRecalibratesRealityPost,
 } from "@/components/blog/posts/prediction-error-recalibrates-reality";
@@ -82,6 +88,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [interoceptivePrecisionArbiterPost.slug]: InteroceptivePrecisionArbiterPost,
+  [locusCoeruleusGainControllerPost.slug]: LocusCoeruleusGainControllerPost,
   [predictionErrorRecalibratesRealityPost.slug]: PredictionErrorRecalibratesRealityPost,
   [nestedRhythmsCoordinationLayerPost.slug]: NestedRhythmsCoordinationLayerPost,
   [thalamusPrecisionGovernorPost.slug]: ThalamusPrecisionGovernorPost,
