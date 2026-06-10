@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import SuperiorColliculusOrientingEnginePost, {
+  superiorColliculusOrientingEnginePost,
+} from "@/components/blog/posts/superior-colliculus-orienting-engine";
+import CerebellumTimingCompilerPost, {
+  cerebellumTimingCompilerPost,
+} from "@/components/blog/posts/cerebellum-timing-compiler";
 import InteroceptivePrecisionArbiterPost, {
   interoceptivePrecisionArbiterPost,
 } from "@/components/blog/posts/interoceptive-precision-arbiter";
@@ -88,6 +94,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [superiorColliculusOrientingEnginePost.slug]: SuperiorColliculusOrientingEnginePost,
+  [cerebellumTimingCompilerPost.slug]: CerebellumTimingCompilerPost,
   [interoceptivePrecisionArbiterPost.slug]: InteroceptivePrecisionArbiterPost,
   [locusCoeruleusGainControllerPost.slug]: LocusCoeruleusGainControllerPost,
   [predictionErrorRecalibratesRealityPost.slug]: PredictionErrorRecalibratesRealityPost,
