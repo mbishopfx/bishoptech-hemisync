@@ -2,6 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import PulvinarPrecisionBrokerPost, {
+  pulvinarPrecisionBrokerPost,
+} from "@/components/blog/posts/pulvinar-precision-broker";
+import ReticularStateBrokerPost, {
+  reticularStateBrokerPost,
+} from "@/components/blog/posts/reticular-state-broker";
 import SuperiorColliculusOrientingEnginePost, {
   superiorColliculusOrientingEnginePost,
 } from "@/components/blog/posts/superior-colliculus-orienting-engine";
@@ -94,6 +100,8 @@ import { blogPosts } from "@/lib/blog/posts";
 export const dynamic = "force-dynamic";
 
 const postComponentBySlug = {
+  [pulvinarPrecisionBrokerPost.slug]: PulvinarPrecisionBrokerPost,
+  [reticularStateBrokerPost.slug]: ReticularStateBrokerPost,
   [superiorColliculusOrientingEnginePost.slug]: SuperiorColliculusOrientingEnginePost,
   [cerebellumTimingCompilerPost.slug]: CerebellumTimingCompilerPost,
   [interoceptivePrecisionArbiterPost.slug]: InteroceptivePrecisionArbiterPost,
