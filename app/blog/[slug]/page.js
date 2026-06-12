@@ -65,6 +65,12 @@ import InteroceptiveLoopControlRoomPost, {
 import ConsciousnessMechanicsPost, {
   consciousnessMechanicsPost,
 } from "@/components/blog/posts/consciousness-mechanics";
+import PosteriorParietalCoordinateEnginePost, {
+  posteriorParietalCoordinateEnginePost,
+} from "@/components/blog/posts/posterior-parietal-coordinate-engine";
+import PrecuneusContinuityBrokerPost, {
+  precuneusContinuityBrokerPost,
+} from "@/components/blog/posts/precuneus-continuity-broker";
 import SalienceNetworkPriorityPost, {
   salienceNetworkPriorityPost,
 } from "@/components/blog/posts/salience-network-priority";
@@ -121,6 +127,8 @@ const postComponentBySlug = {
   [precisionDecisionPost.slug]: PrecisionDecisionPost,
   [bodyBoundaryPost.slug]: BodyBoundaryPost,
   [consciousnessMechanicsPost.slug]: ConsciousnessMechanicsPost,
+  [posteriorParietalCoordinateEnginePost.slug]: PosteriorParietalCoordinateEnginePost,
+  [precuneusContinuityBrokerPost.slug]: PrecuneusContinuityBrokerPost,
   [salienceNetworkPriorityPost.slug]: SalienceNetworkPriorityPost,
   [crossFrequencyCouplingPost.slug]: CrossFrequencyCouplingPost,
   [memoryReconsolidationPost.slug]: MemoryReconsolidationPost,
