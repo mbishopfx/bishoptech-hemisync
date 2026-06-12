@@ -63,7 +63,17 @@ export default function LandingPage() {
     loadPreviewTone();
 
     // 2. Fetch public Serenity catalog tones from database
-    const supabase = getSupabaseBrowserClient();
+    let supabase = null;
+    try {
+      supabase = getSupabaseBrowserClient();
+    } catch (err) {
+      console.warn('Supabase client unavailable on homepage:', err?.message || err);
+    }
+
+    if (!supabase) {
+      return;
+    }
+
     async function loadSerenity() {
       try {
         const { data, error } = await supabase

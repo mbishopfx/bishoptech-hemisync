@@ -95,7 +95,18 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function boot() {
-      const supabase = getSupabaseBrowserClient();
+      let supabase = null;
+      try {
+        supabase = getSupabaseBrowserClient();
+      } catch (err) {
+        console.warn('Supabase client unavailable on dashboard boot:', err?.message || err);
+      }
+
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
         router.push('/login?next=/dashboard');

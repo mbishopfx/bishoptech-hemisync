@@ -69,8 +69,16 @@ export function SettingsView({ profile, onUpdateProfile }) {
 
   const canvasRef = useRef(null);
   const imgRef = useRef(null);
+  const [supabase, setSupabase] = useState(null);
 
-  const supabase = getSupabaseBrowserClient();
+  useEffect(() => {
+    try {
+      setSupabase(getSupabaseBrowserClient());
+    } catch (err) {
+      console.warn('Supabase client unavailable in SettingsView:', err?.message || err);
+      setSupabase(null);
+    }
+  }, []);
 
   // Draw Canvas whenever image, zoom, or offset changes
   useEffect(() => {
@@ -155,6 +163,10 @@ export function SettingsView({ profile, onUpdateProfile }) {
 
   const handleSaveCrop = async () => {
     if (!canvasRef.current || !profile?.id) return;
+    if (!supabase) {
+      setError('Supabase is unavailable right now. Please try again later.');
+      return;
+    }
     setSavingCrop(true);
     setError('');
     setMessage('');

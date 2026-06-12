@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { ensureProfile, jsonError, tryGetAuthenticatedUser } from '@/lib/auth/session';
 import { groupLibraryTonesByState, normalizeLibraryTone, BRAIN_STATE_ORDER } from '@/lib/audio/library-groups';
 import { savedToneSelect } from '@/lib/social/serializers';
 
@@ -9,12 +9,14 @@ export const runtime = 'nodejs';
 
 export async function GET(req) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
-    await ensureProfile(user);
+    const { user } = await tryGetAuthenticatedUser(req);
+    if (user) {
+      await ensureProfile(user);
+    }
 
     const supabase = getSupabaseAdmin();
 
-    const [{ data: generated, error: generatedError }, { data: saved, error: savedError }, { data: serenity, error: serenityError }] = await Promise.all([
+    const queries = [
       supabase
         .from('agentic_tones')
         .select('id,name,state,target_hz,base_freq_hz,noise_type,duration_sec,wav_url,webm_url,created_at')
@@ -22,18 +24,31 @@ export async function GET(req) {
       supabase
         .from('saved_tones')
         .select(savedToneSelect())
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false }),
-      supabase
-        .from('saved_tones')
-        .select(savedToneSelect())
         .eq('is_serenity', true)
         .order('created_at', { ascending: false })
-    ]);
+    ];
+
+    if (user) {
+      queries.push(
+        supabase
+          .from('saved_tones')
+          .select(savedToneSelect())
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+      );
+    }
+
+    const results = await Promise.all(queries);
+    const generated = results[0].data;
+    const generatedError = results[0].error;
+    const serenity = results[1].data;
+    const serenityError = results[1].error;
+    const saved = user ? results[2].data : [];
+    const savedError = user ? results[2].error : null;
 
     if (generatedError) throw generatedError;
-    if (savedError) throw savedError;
     if (serenityError) throw serenityError;
+    if (savedError) throw savedError;
 
     const generatedTones = (generated || []).map((tone) => ({
       ...normalizeLibraryTone({

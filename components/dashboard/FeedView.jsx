@@ -27,8 +27,16 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
   const [serenityTones, setSerenityTones] = useState([]);
   const [playingToneId, setPlayingToneId] = useState(null);
   const [activeAudio, setActiveAudio] = useState(null);
+  const [supabase, setSupabase] = useState(null);
 
-  const supabase = getSupabaseBrowserClient();
+  useEffect(() => {
+    try {
+      setSupabase(getSupabaseBrowserClient());
+    } catch (err) {
+      console.warn('Supabase client unavailable in FeedView:', err?.message || err);
+      setSupabase(null);
+    }
+  }, []);
 
   useEffect(() => {
     setFeed(initialFeed);
@@ -37,6 +45,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
   // Load user liked posts to show active states
   useEffect(() => {
     if (!profile?.id || feed.length === 0) return;
+    if (!supabase) return;
 
     async function loadLikes() {
       try {
@@ -63,6 +72,8 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
 
   // Fetch Serenity catalog and Collective Waves
   useEffect(() => {
+    if (!supabase) return;
+
     async function loadData() {
       try {
         setLoadingPublicTones(true);
