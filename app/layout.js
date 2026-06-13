@@ -13,6 +13,11 @@ const sansFont = Inter({
   variable: '--font-sans'
 });
 
+export const metadata = {
+  metadataBase: new URL('https://cognistration.com'),
+  applicationName: 'Cognistration'
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>

@@ -6,6 +6,7 @@ import { Check, ChevronRight, Zap, Shield, Cpu, Info, DollarSign, X } from 'luci
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 
 const plans = [
   {
@@ -103,18 +104,26 @@ export default function PricingPage() {
     // 1. Retrieve active preview tone generated from the homepage
     const saved = localStorage.getItem('active-preview-tone');
     if (saved) {
-      setActivePreviewTone(JSON.parse(saved));
-    } else {
-      // Fallback: Fetch featured tone
-      fetch('/api/audio/preview-tone')
-        .then(res => res.json())
-        .then(data => {
-          if (data.ok && data.tone) {
-            setActivePreviewTone(data.tone);
-          }
-        })
-        .catch(err => console.error('Failed to load featured active preview tone:', err));
+      try {
+        const parsed = JSON.parse(saved);
+        if (isHomepageGeneratedTone(parsed)) {
+          setActivePreviewTone(parsed);
+          return;
+        }
+      } catch (error) {
+        console.warn('Invalid saved preview tone on pricing page:', error);
+      }
     }
+
+    // Fallback: Fetch featured tone
+    fetch('/api/audio/preview-tone')
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok && data.tone) {
+          setActivePreviewTone(data.tone);
+        }
+      })
+      .catch(err => console.error('Failed to load featured active preview tone:', err));
 
     // 2. Fetch Serenity Catalog Tones from Supabase
     async function loadSerenity() {

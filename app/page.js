@@ -8,6 +8,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +32,20 @@ export default function LandingPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const loadSavedHomepageTone = () => {
+    const saved = localStorage.getItem('active-preview-tone');
+    if (!saved) {
+      return null;
+    }
+
+    try {
+      const parsed = JSON.parse(saved);
+      return isHomepageGeneratedTone(parsed) ? parsed : null;
+    } catch (error) {
+      return null;
+    }
+  };
+
   // Load preview data and query serenity pack on homepage mount
   useEffect(() => {
     let cancelled = false;
@@ -41,9 +56,9 @@ export default function LandingPage() {
         const response = await fetch('/api/audio/preview-tone', { cache: 'no-store' });
         const data = await response.json();
         if (!response.ok || !data.ok || cancelled) {
-          const saved = localStorage.getItem('active-preview-tone');
-          if (saved && !cancelled) {
-            setCurrentPreviewTone(JSON.parse(saved));
+          const savedTone = loadSavedHomepageTone();
+          if (savedTone && !cancelled) {
+            setCurrentPreviewTone(savedTone);
           }
           return;
         }
@@ -53,9 +68,9 @@ export default function LandingPage() {
         }
       } catch (error) {
         console.error('Failed to load featured preview tone:', error);
-        const saved = localStorage.getItem('active-preview-tone');
-        if (saved && !cancelled) {
-          setCurrentPreviewTone(JSON.parse(saved));
+        const savedTone = loadSavedHomepageTone();
+        if (savedTone && !cancelled) {
+          setCurrentPreviewTone(savedTone);
         }
       }
     }

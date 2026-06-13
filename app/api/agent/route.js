@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { matchMoodToTone } from '@/lib/ai/gemini-matcher';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { getHomepageToneById } from '@/lib/audio/homepage-tones';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,18 +70,13 @@ export async function POST(req) {
     // Match mood to tone
     const { trackId, response: agentMessage } = await matchMoodToTone(mood);
 
-    // Fetch track details
-    const { data: track, error: trackError } = await supabase
-      .from('agentic_tones')
-      .select('*')
-      .eq('id', trackId)
-      .single();
-
-    if (trackError || !track) {
+    const track = getHomepageToneById(trackId);
+    if (!track) {
       throw new Error('Selected track not found in library');
     }
 
     // Update usage and Auto-Save matched tone to user library
+    let savedToneId = null;
     if (user) {
         await supabase.rpc('increment_generation_count', { user_uuid: user.id });
 
@@ -100,7 +96,6 @@ export async function POST(req) {
           }
         }
 
-        let savedToneId = null;
         if (shouldSave) {
           // Save matched tone to user library
           const { data: savedTone, error: saveError } = await supabase
@@ -110,17 +105,18 @@ export async function POST(req) {
               name: track.name,
               description: `Matched by NeuroSync Agent for mood: "${mood.slice(0, 80)}"`,
               target_state: track.state,
-              base_freq_hz: track.base_freq_hz || 220,
-              duration_sec: track.duration_sec || 300,
-              wav_url: track.wav_url,
-              mp3_url: track.webm_url || track.wav_url || null,
+              base_freq_hz: track.base_freq_hz || track.baseFreqHz || 220,
+              duration_sec: track.duration_sec || track.durationSec || 300,
+              wav_url: track.wav_url || track.wavUrl || null,
+              mp3_url: track.mp3_url || track.mp3Url || track.wav_url || track.wavUrl || null,
               visibility: 'private',
               frequency_plan: {
-                sourceType: 'agentic-matched',
+                sourceType: 'homepage-generated',
                 isAgentic: true,
+                isHomepagePreview: true,
+                homepageToneId: track.id,
                 matchedMood: mood,
-                targetHz: track.target_hz,
-                noiseType: track.noise_type
+                targetHz: track.target_hz || track.targetHz
               }
             })
             .select('id')
@@ -145,9 +141,11 @@ export async function POST(req) {
         id: track.id,
         name: track.name,
         state: track.state,
-        targetHz: track.target_hz,
-        wavUrl: track.wav_url,
-        webmUrl: track.webm_url,
+        targetHz: track.target_hz || track.targetHz,
+        wavUrl: track.wav_url || track.wavUrl || null,
+        webmUrl: track.webm_url || track.webmUrl || null,
+        mp3Url: track.mp3_url || track.mp3Url || null,
+        sourceType: track.sourceType || track.source_type || 'homepage-generated',
         savedToneId
       }
     });
