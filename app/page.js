@@ -8,7 +8,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
-import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
+import { isHomepageGeneratedTone, HOMEPAGE_STATE_TONES } from '@/lib/audio/homepage-tones';
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,9 +20,6 @@ export default function LandingPage() {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
 
-  // Serenity Pack States
-  const [serenityTones, setSerenityTones] = useState([]);
-  const [currentSerenityTone, setCurrentSerenityTone] = useState(null);
   const [playingToneId, setPlayingToneId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -46,11 +43,10 @@ export default function LandingPage() {
     }
   };
 
-  // Load preview data and query serenity pack on homepage mount
+  // Load preview data on homepage mount
   useEffect(() => {
     let cancelled = false;
 
-    // 1. Fetch featured preview tone (fallback to localStorage if offline/building)
     async function loadPreviewTone() {
       try {
         const response = await fetch('/api/audio/preview-tone', { cache: 'no-store' });
@@ -59,11 +55,13 @@ export default function LandingPage() {
           const savedTone = loadSavedHomepageTone();
           if (savedTone && !cancelled) {
             setCurrentPreviewTone(savedTone);
+          } else if (!cancelled) {
+            setCurrentPreviewTone(HOMEPAGE_STATE_TONES[1]); // Default to Alpha Focus
           }
           return;
         }
-        setCurrentPreviewTone(data.tone || null);
         if (data.tone && !cancelled) {
+          setCurrentPreviewTone(data.tone);
           localStorage.setItem('active-preview-tone', JSON.stringify(data.tone));
         }
       } catch (error) {
@@ -71,46 +69,60 @@ export default function LandingPage() {
         const savedTone = loadSavedHomepageTone();
         if (savedTone && !cancelled) {
           setCurrentPreviewTone(savedTone);
+        } else if (!cancelled) {
+          setCurrentPreviewTone(HOMEPAGE_STATE_TONES[1]); // Default to Alpha Focus
         }
       }
     }
 
     loadPreviewTone();
 
-    // 2. Fetch public Serenity catalog tones from database
-    let supabase = null;
-    try {
-      supabase = getSupabaseBrowserClient();
-    } catch (err) {
-      console.warn('Supabase client unavailable on homepage:', err?.message || err);
-    }
-
-    if (!supabase) {
-      return;
-    }
-
-    async function loadSerenity() {
-      try {
-        const { data, error } = await supabase
-          .from('saved_tones')
-          .select('*')
-          .eq('is_serenity', true)
-          .order('created_at', { ascending: true });
-        
-        if (!error && data && data.length > 0 && !cancelled) {
-          setSerenityTones(data);
-          setCurrentSerenityTone(data[0]); // default to first track
-        }
-      } catch (err) {
-        console.error('Failed to load serenity tracks on homepage mount:', err);
-      }
-    }
-    loadSerenity();
-
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const activeState = currentPreviewTone?.state || 'alpha';
+
+  const stateConfig = {
+    theta: {
+      accentClass: 'text-purple-400',
+      borderClass: 'border-purple-500/20',
+      shadowClass: 'shadow-[0_0_50px_rgba(168,85,247,0.05)]',
+      waveClass: 'bg-purple-500',
+      glowDot: 'bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.8)]'
+    },
+    alpha: {
+      accentClass: 'text-cyan-400',
+      borderClass: 'border-cyan-500/20',
+      shadowClass: 'shadow-[0_0_50px_rgba(6,182,212,0.05)]',
+      waveClass: 'bg-cyan-500',
+      glowDot: 'bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]'
+    },
+    delta: {
+      accentClass: 'text-blue-400',
+      borderClass: 'border-blue-500/20',
+      shadowClass: 'shadow-[0_0_50px_rgba(59,130,246,0.05)]',
+      waveClass: 'bg-blue-500',
+      glowDot: 'bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.8)]'
+    },
+    beta: {
+      accentClass: 'text-rose-400',
+      borderClass: 'border-rose-500/20',
+      shadowClass: 'shadow-[0_0_50px_rgba(244,63,94,0.05)]',
+      waveClass: 'bg-rose-500',
+      glowDot: 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.8)]'
+    },
+    gamma: {
+      accentClass: 'text-emerald-400',
+      borderClass: 'border-emerald-500/20',
+      shadowClass: 'shadow-[0_0_50px_rgba(16,185,129,0.05)]',
+      waveClass: 'bg-emerald-500',
+      glowDot: 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]'
+    }
+  };
+
+  const currentConfig = stateConfig[activeState] || stateConfig.alpha;
 
   // Mood generation handler
   const handleGenerate = async (mood) => {
@@ -230,30 +242,64 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col md:flex-row gap-6 w-full max-w-4xl justify-center items-stretch text-left z-10 relative"
+              className="w-full max-w-xl mx-auto z-10 relative"
             >
-              
-              {/* Left Player: Generated custom matched tone */}
-              <div className="w-full md:w-1/2 bg-zinc-900/40 border border-cyan-500/20 backdrop-blur-3xl p-8 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(6,182,212,0.05)] flex flex-col justify-between">
+              <div className={`w-full bg-zinc-900/40 border backdrop-blur-3xl p-8 rounded-3xl space-y-6 flex flex-col justify-between transition-all duration-500 ${currentConfig.borderClass} ${currentConfig.shadowClass}`}>
                 <div className="space-y-6">
-                  <div className="text-center">
-                    <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.25em] mb-1 flex items-center justify-center gap-2">
-                      <span className="animate-pulse size-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
-                      {currentPreviewTone.state || 'Stereo'} State Active
-                    </p>
-                    <h3 className="text-white text-lg font-medium leading-snug">{currentPreviewTone.name}</h3>
-                    <p className="text-white/40 text-xs mt-1">
-                      {currentPreviewTone.targetHz ? `${currentPreviewTone.targetHz}Hz` : 'Dynamic'} Pure Stereo Preview
-                    </p>
-                    <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-white/25">
-                      Binaural Tone Generated
-                    </p>
+                  {/* Dropdown selector & Status */}
+                  <div className="text-center space-y-4">
+                    <div className="flex flex-col items-center gap-3">
+                      <p className={`font-mono text-[9px] uppercase tracking-[0.25em] flex items-center justify-center gap-2 ${currentConfig.accentClass}`}>
+                        <span className={`animate-pulse size-1.5 rounded-full ${currentConfig.glowDot}`} />
+                        {currentPreviewTone.state || 'Stereo'} State Active
+                      </p>
+                      
+                      <select
+                        value={currentPreviewTone?.id || ''}
+                        onChange={(e) => {
+                          const selected = HOMEPAGE_STATE_TONES.find(t => t.id === e.target.value);
+                          if (selected) {
+                            setCurrentPreviewTone(selected);
+                            // Save to localStorage
+                            localStorage.setItem('active-preview-tone', JSON.stringify(selected));
+                            // Reset playback if switching
+                            if (playingToneId !== selected.id) {
+                              audioRef.current?.pause();
+                              setIsPlaying(false);
+                            }
+                          }
+                        }}
+                        className={`bg-zinc-950/80 border text-[10px] font-mono uppercase tracking-widest focus:outline-none cursor-pointer rounded-full px-4 py-2 transition-colors ${
+                          activeState === 'theta' ? 'border-purple-500/30 text-purple-300' :
+                          activeState === 'alpha' ? 'border-cyan-500/30 text-cyan-300' :
+                          activeState === 'delta' ? 'border-blue-500/30 text-blue-300' :
+                          activeState === 'beta' ? 'border-rose-500/30 text-rose-300' :
+                          'border-emerald-500/30 text-emerald-300'
+                        }`}
+                      >
+                        {HOMEPAGE_STATE_TONES.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name} ({t.state.toUpperCase()})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <h3 className="text-white text-xl font-medium leading-snug">{currentPreviewTone.name}</h3>
+                      <p className="text-white/40 text-xs mt-1">
+                        {currentPreviewTone.targetHz ? `${currentPreviewTone.targetHz}Hz` : 'Dynamic'} Pure Binaural Tone
+                      </p>
+                      <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-white/25">
+                        {currentPreviewTone.summary || 'Pure entrainment state tone'}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Audio Wave Visualizer */}
                   {playingToneId === currentPreviewTone.id && isPlaying && (
                     <div className="h-10 flex items-center justify-center gap-1 bg-black/40 rounded-xl px-4 border border-white/5">
-                      {Array.from({ length: 12 }).map((_, waveIdx) => (
+                      {Array.from({ length: 16 }).map((_, waveIdx) => (
                         <motion.div
                           key={waveIdx}
                           animate={{ height: [6, 24, 6] }}
@@ -263,7 +309,7 @@ export default function LandingPage() {
                             ease: "easeInOut",
                             delay: waveIdx * 0.04
                           }}
-                          className="w-1 bg-cyan-500 rounded-full"
+                          className={`w-1 rounded-full ${currentConfig.waveClass}`}
                         />
                       ))}
                     </div>
@@ -273,7 +319,7 @@ export default function LandingPage() {
                   <div className="flex flex-col gap-2">
                     <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
                       <motion.div 
-                        className="absolute inset-y-0 left-0 bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                        className={`absolute inset-y-0 left-0 shadow-[0_0_10px_rgba(255,255,255,0.5)] ${currentConfig.waveClass}`}
                         style={{ width: `${playingToneId === currentPreviewTone.id ? (duration ? (currentTime / duration) * 100 : 0) : 0}%` }}
                       />
                     </div>
@@ -305,14 +351,14 @@ export default function LandingPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => setIsAuthModalOpen(true)}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
+                      className={`flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest transition-all font-semibold ${currentConfig.accentClass}`}
                     >
                       <span className="material-symbols-outlined text-sm">library_add</span>
                       Save
                     </button>
                     <button
                       onClick={() => setIsAuthModalOpen(true)}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-cyan-200 transition-all font-semibold"
+                      className={`flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest transition-all font-semibold ${currentConfig.accentClass}`}
                     >
                       <span className="material-symbols-outlined text-sm">sensors</span>
                       Broadcast
@@ -320,109 +366,6 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Right Player: Serenity Pack seeded preview */}
-              <div className="w-full md:w-1/2 bg-zinc-900/40 border border-purple-500/20 backdrop-blur-3xl p-8 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(168,85,247,0.05)] flex flex-col justify-between">
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-1.5">
-                      <select
-                        value={currentSerenityTone?.id || ''}
-                        onChange={(e) => {
-                          const selected = serenityTones.find(t => t.id === e.target.value);
-                          if (selected) setCurrentSerenityTone(selected);
-                        }}
-                        className="bg-zinc-950/80 border border-purple-500/30 text-purple-300 rounded-full px-3 py-0.5 text-[9px] font-mono uppercase tracking-widest focus:outline-none cursor-pointer"
-                      >
-                        {serenityTones.map((t) => (
-                          <option key={t.id} value={t.id}>
-                            {t.name} ({t.target_state?.toUpperCase() || 'THETA'})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <h3 className="text-white text-lg font-medium leading-snug">
-                      {currentSerenityTone?.name || 'Abyssal Resonance'}
-                    </h3>
-                    <p className="text-white/40 text-xs mt-1">
-                      {currentSerenityTone?.base_freq_hz || 110}Hz Seeded Carrier Wave
-                    </p>
-                    <p className="mt-2 text-[9px] font-mono uppercase tracking-[0.35em] text-purple-400/80">
-                      Serenity Pack Preview
-                    </p>
-                  </div>
-
-                  {/* Audio Wave Visualizer for Serenity track */}
-                  {playingToneId === currentSerenityTone?.id && isPlaying && (
-                    <div className="h-10 flex items-center justify-center gap-1 bg-black/40 rounded-xl px-4 border border-white/5">
-                      {Array.from({ length: 12 }).map((_, waveIdx) => (
-                        <motion.div
-                          key={waveIdx}
-                          animate={{ height: [6, 24, 6] }}
-                          transition={{ 
-                            duration: 0.5 + Math.random() * 0.5, 
-                            repeat: Infinity, 
-                            ease: "easeInOut",
-                            delay: waveIdx * 0.04
-                          }}
-                          className="w-1 bg-purple-500 rounded-full"
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Progress bar updates */}
-                  <div className="flex flex-col gap-2">
-                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
-                      <motion.div 
-                        className="absolute inset-y-0 left-0 bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
-                        style={{ width: `${playingToneId === currentSerenityTone?.id ? (duration ? (currentTime / duration) * 100 : 0) : 0}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
-                      <span>{playingToneId === currentSerenityTone?.id ? formatTime(currentTime) : '0:00'}</span>
-                      <span>{playingToneId === currentSerenityTone?.id ? formatTime(duration) : '0:00'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6 pt-6 border-t border-white/5">
-                  <div className="flex items-center justify-center">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handlePlayTone(currentSerenityTone)}
-                      type="button"
-                      className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all"
-                    >
-                      <span className="material-symbols-outlined text-2xl font-bold">
-                        {playingToneId === currentSerenityTone?.id && isPlaying ? 'pause' : 'play_arrow'}
-                      </span>
-                    </motion.button>
-                  </div>
-
-                  <div className="w-full h-px bg-white/5" />
-
-                  {/* Auth modal triggers */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setIsAuthModalOpen(true)}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-purple-300 transition-all font-semibold"
-                    >
-                      <span className="material-symbols-outlined text-sm">library_add</span>
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setIsAuthModalOpen(true)}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/25 py-3 text-[10px] font-mono uppercase tracking-widest text-purple-300 transition-all font-semibold"
-                    >
-                      <span className="material-symbols-outlined text-sm">sensors</span>
-                      Broadcast
-                    </button>
-                  </div>
-                </div>
-              </div>
-
             </motion.div>
           )}
 

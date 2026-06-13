@@ -191,6 +191,29 @@ const TEMPLATES = [
         description: 'A grounded delta field with a little more warmth and structural hold.',
         tags: ['anchor', 'rest'],
         deltaCurve: [[0, 4.2], [0.4, 3.5], [0.78, 2.8], [1, 2.5]]
+      },
+      {
+        slug: 'deep-hush',
+        label: 'Deep Hush',
+        targetHz: 2.2,
+        carrierOffsetHz: 1,
+        noise: { type: 'brown', mixDb: -30 },
+        summary: 'A hushed delta bed for settling into deep rest.',
+        description: 'A dark, minimal delta field that softens the nervous system into stillness.',
+        tags: ['hush', 'rest'],
+        deltaCurve: [[0, 4.0], [0.35, 3.2], [0.72, 2.6], [1, 2.2]]
+      },
+      {
+        slug: 'harbor-sleep',
+        label: 'Harbor Sleep',
+        targetHz: 2.7,
+        carrierOffsetHz: -6,
+        background: { type: 'ocean', mixDb: -27 },
+        breath: { pattern: '4-7-8', bpm: 5.2, depth: 0.05 },
+        summary: 'A sheltered delta harbor for sleep and recovery.',
+        description: 'A gently held delta descent with a protected, restorative feel.',
+        tags: ['harbor', 'sleep'],
+        deltaCurve: [[0, 4.3], [0.4, 3.6], [0.78, 2.9], [1, 2.7]]
       }
     ]
   },
@@ -255,6 +278,29 @@ const TEMPLATES = [
         description: 'A bright-but-gentle theta lantern that keeps the mind open and receptive.',
         tags: ['dream', 'lantern'],
         deltaCurve: [[0, 7.1], [0.35, 6.0], [0.75, 5.0], [1, 4.6]]
+      },
+      {
+        slug: 'dream-loom',
+        label: 'Dream Loom',
+        targetHz: 4.4,
+        carrierOffsetHz: 5,
+        noise: { type: 'pink', mixDb: -29 },
+        summary: 'A woven theta field for imagery, recall, and symbolic drift.',
+        description: 'A textured theta design that feels like threads of thought moving together.',
+        tags: ['dream', 'loom'],
+        deltaCurve: [[0, 7.1], [0.35, 6.0], [0.72, 5.0], [1, 4.4]]
+      },
+      {
+        slug: 'river-mirror',
+        label: 'River Mirror',
+        targetHz: 5.2,
+        carrierOffsetHz: -4,
+        background: { type: 'asset', assetId: 'nattkatt', mixDb: -28 },
+        breath: { pattern: 'coherent-5.5', bpm: 5.7, depth: 0.08 },
+        summary: 'A reflective theta drift for inner imagery and creative observation.',
+        description: 'A quiet, reflective theta layer that supports intuition and soft awareness.',
+        tags: ['river', 'mirror'],
+        deltaCurve: [[0, 7.3], [0.4, 6.2], [0.75, 5.4], [1, 5.2]]
       },
       {
         slug: 'oracle-hush',
@@ -340,6 +386,29 @@ const TEMPLATES = [
         description: 'An expansive alpha state that keeps the mind open, calm, and navigable.',
         tags: ['open', 'horizon'],
         deltaCurve: [[0, 10.9], [0.35, 9.9], [0.78, 9.2], [1, 9.6]]
+      },
+      {
+        slug: 'quiet-ledger',
+        label: 'Quiet Ledger',
+        targetHz: 8.3,
+        carrierOffsetHz: 3,
+        background: { type: 'asset', assetId: 'scatter', mixDb: -26 },
+        summary: 'A tidy alpha workspace for organized attention and capture.',
+        description: 'A neat, low-friction alpha lane that keeps thoughts orderly and calm.',
+        tags: ['quiet', 'ledger'],
+        deltaCurve: [[0, 10.6], [0.35, 9.6], [0.74, 8.8], [1, 8.3]]
+      },
+      {
+        slug: 'bright-loam',
+        label: 'Bright Loam',
+        targetHz: 9.1,
+        carrierOffsetHz: -5,
+        breath: { pattern: 'coherent-5.5', bpm: 5.7, depth: 0.06 },
+        masteringStyle: 'clear',
+        summary: 'A grounded alpha field for calm growth and steady progress.',
+        description: 'A lightly brightened alpha session that feels organic, stable, and easy to inhabit.',
+        tags: ['bright', 'loam'],
+        deltaCurve: [[0, 10.8], [0.35, 9.9], [0.78, 9.2], [1, 9.1]]
       }
     ]
   },
@@ -413,6 +482,29 @@ const TEMPLATES = [
         description: 'A more decisive beta shape for moving tasks from thought to action.',
         tags: ['task', 'vector'],
         deltaCurve: [[0, 15.7], [0.35, 17.3], [0.75, 18.8], [1, 18.6]]
+      },
+      {
+        slug: 'reason-spur',
+        label: 'Reason Spur',
+        targetHz: 16.5,
+        carrierOffsetHz: 4,
+        noise: { type: 'pink', mixDb: -29 },
+        summary: 'A compact beta spur for structured reasoning and quick decisions.',
+        description: 'A focused beta drive that nudges logic forward without getting harsh.',
+        tags: ['reason', 'spur'],
+        deltaCurve: [[0, 15.2], [0.35, 16.4], [0.72, 17.2], [1, 16.5]]
+      },
+      {
+        slug: 'task-sprint',
+        label: 'Task Sprint',
+        targetHz: 19.4,
+        carrierOffsetHz: 13,
+        background: { type: 'asset', assetId: 'papa', mixDb: -26 },
+        masteringStyle: 'clear',
+        summary: 'A brisk beta lane for decisive follow-through and completion.',
+        description: 'A faster beta contour built for momentum, action, and task closure.',
+        tags: ['task', 'sprint'],
+        deltaCurve: [[0, 15.9], [0.35, 17.5], [0.75, 19.1], [1, 19.4]]
       }
     ]
   },
@@ -488,6 +580,30 @@ const TEMPLATES = [
         description: 'A dense but graceful gamma rise that helps connections emerge quickly.',
         tags: ['pattern', 'bloom'],
         deltaCurve: [[0, 31.9], [0.35, 35.0], [0.72, 37.8], [1, 38.8]]
+      },
+      {
+        slug: 'crown-glint',
+        label: 'Crown Glint',
+        targetHz: 42.2,
+        carrierOffsetHz: -7,
+        background: { type: 'asset', assetId: 'mindsEyes', mixDb: -29 },
+        breath: { pattern: 'coherent-5.5', bpm: 5.6, depth: 0.04 },
+        summary: 'A crisp gamma crest for insight flashes and centered awareness.',
+        description: 'A bright gamma design with a concentrated sheen and sharp signal.',
+        tags: ['crown', 'glint'],
+        deltaCurve: [[0, 32.0], [0.32, 36.1], [0.7, 39.4], [1, 42.2]]
+      },
+      {
+        slug: 'prism-surge',
+        label: 'Prism Surge',
+        targetHz: 37.9,
+        carrierOffsetHz: 4,
+        noise: { type: 'white', mixDb: -33 },
+        masteringStyle: 'warm',
+        summary: 'A radiant gamma surge for synthesis, precision, and fast pattern matching.',
+        description: 'A slightly softer surge that keeps the gamma field vivid without strain.',
+        tags: ['prism', 'surge'],
+        deltaCurve: [[0, 31.7], [0.35, 35.1], [0.7, 37.2], [1, 37.9]]
       }
     ]
   }
