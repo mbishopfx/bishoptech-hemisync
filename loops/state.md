@@ -18,6 +18,7 @@ Operating goals
 - Expand the tone library over time with at least 2 new tone variants per loop session when tone work is touched.
 - Keep the backend healthy and buildable after tone or blog additions.
 - Audit one backend section per loop so coverage rotates over time.
+- Track BishopTech.dev SEO growth as a separate content-growth loop inside the same repo.
 
 Monitoring checklist
 - Site build passes
@@ -29,17 +30,20 @@ Monitoring checklist
 - Blog sharing path still works
 - iOS sync assumptions still hold
 - Stripe/Apple paywall assumptions still hold
+- BishopTech.dev growth loop has a current 3-day trend watchlist
 
 Open questions
 - Where the iOS app repo will move next
 - Which exact backend sections should get the highest priority
 - Which blog-to-iOS sync path is currently authoritative
 - Whether tone generation should be fully automated or gated by a manual review step
+- Which BishopTech.dev query clusters are strongest enough to turn into published service pages
 
 Current loop focus
 - Morning: tone variants + content sync + quick build check
 - Evening: backend section audit + bug sweep + build verification
-- Rotation: auth/paywall, tone generation, blog publish/share, app sync, analytics, Stripe health/webhooks, admin/ops
+- Rotation: auth/paywall, tone generation, blog publish/share, app sync, analytics, Stripe health/webhooks, admin/ops, BishopTech.dev growth
+
 
 Loop note
 - 2026-06-13 morning: added theta-liminal-settle and alpha-clear-window tone variants, regenerated homepage wavs, confirmed `npm run build`, and verified `GET /api/health` returns healthy on the running runtime.
