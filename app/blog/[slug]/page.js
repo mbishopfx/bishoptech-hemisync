@@ -104,6 +104,7 @@ import ThetaLiminalCorridorPost, {
 import { blogPosts } from "@/lib/blog/posts";
 
 export const dynamic = "force-dynamic";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
 
 const postComponentBySlug = {
   [pulvinarPrecisionBrokerPost.slug]: PulvinarPrecisionBrokerPost,
@@ -143,6 +144,37 @@ const postComponentBySlug = {
 
 const postMetaBySlug = Object.fromEntries(blogPosts.map((post) => [post.slug, post]));
 
+export function generateMetadata({ params }) {
+  const post = postMetaBySlug[params.slug];
+
+  if (!post) {
+    return {};
+  }
+
+  const title = `${post.title} | Cognistration Blog`;
+  const description = post.excerpt || 'A Cognistration blog post.';
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${siteUrl}/blog/${post.slug}`
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/blog/${post.slug}`,
+      siteName: 'Cognistration',
+      type: 'article'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description
+    }
+  };
+}
+
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
@@ -155,8 +187,31 @@ export default function BlogPostPage({ params }) {
     notFound();
   }
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
+    headline: post.title,
+    description: post.excerpt || 'A Cognistration blog post.',
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt || post.publishedAt,
+    author: {
+      '@type': 'Organization',
+      name: 'Cognistration'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Cognistration',
+      url: siteUrl
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <PublicHeader />
 
       {/* Background Effects */}
@@ -193,6 +248,9 @@ export default function BlogPostPage({ params }) {
               <span>Read Time: {post.readTime}</span>
               <span>Published: {new Date(post.publishedAt).toLocaleDateString()}</span>
               <span>Category: {post.category}</span>
+              <Link href="/ai-disclosure" className="hover:text-white transition-colors">
+                AI Disclosure
+              </Link>
             </div>
           </div>
         </div>

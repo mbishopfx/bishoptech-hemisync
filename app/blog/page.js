@@ -6,14 +6,31 @@ import { ArrowRight, BookOpen, Clock, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { blogPosts } from '@/lib/blog/posts';
+import { buildAbsoluteUrl } from '@/lib/seo';
 
 export default function BlogPage() {
   const posts = [...blogPosts].sort(
     (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
   );
 
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Cognistration Blog Archive',
+    itemListElement: posts.map((post, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: buildAbsoluteUrl(`/blog/${post.slug}`),
+      name: post.title
+    }))
+  };
+
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       <PublicHeader />
 
       {/* Ambient Cyber Neon Background */}
@@ -86,13 +103,17 @@ export default function BlogPage() {
       <footer className="py-12 border-t border-white/5 bg-black/50 mt-20">
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
-            <span>Secured Node</span>
-            <span>NeuroSync Chronicles v1.0.5</span>
+            <span>Editorial Archive</span>
+            <span>Privacy, Terms, Cookies, and AI Disclosure Linked Below</span>
           </div>
-          <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
+          <div className="flex flex-wrap gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 NeuroSync.sys</span>
+            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
+            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <span>&copy; 2026 Cognistration</span>
           </div>
         </div>
       </footer>
