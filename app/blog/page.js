@@ -107,6 +107,7 @@ export default function BlogPage() {
             <span>Privacy, Terms, Cookies, and AI Disclosure Linked Below</span>
           </div>
           <div className="flex flex-wrap gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
+            <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>

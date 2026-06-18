@@ -18,7 +18,7 @@ export function PublicHeader() {
           <Link href="/" className="flex items-center gap-3">
              <Image 
                 src="/images/logo.png" 
-                alt="BishopTech Logo" 
+                alt="Cognistration Logo" 
                 width={32} 
                 height={32} 
                 className="brightness-110 contrast-125"
@@ -29,12 +29,27 @@ export function PublicHeader() {
         {/* Centered Navigation */}
         <nav className="hidden lg:flex items-center gap-12 text-[11px] font-bold tracking-[0.3em] uppercase text-white/50">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
-          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+          <Link href="/community" className="hover:text-white transition-colors">Community</Link>
           <Link href="/machine" className="hover:text-white transition-colors">Inside the Machine</Link>
           <Link href="/tutorial" className="hover:text-white transition-colors">Tutorial</Link>
           <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-          <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
+          <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
         </nav>
+
+        <div className="hidden lg:flex items-center gap-3 absolute right-10">
+          <Link
+            href="/login"
+            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] font-mono uppercase tracking-[0.3em] text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-full bg-white px-4 py-2 text-[10px] font-mono uppercase tracking-[0.3em] text-black transition-colors hover:bg-zinc-200"
+          >
+            Get Started
+          </Link>
+        </div>
 
         {/* Mobile Toggle */}
         <div className="lg:hidden">
@@ -57,10 +72,11 @@ export function PublicHeader() {
             className="lg:hidden absolute top-20 w-full bg-zinc-900 border-b border-white/10 p-8 flex flex-col items-center gap-8 text-[12px] font-bold tracking-[0.4em] uppercase z-[101]"
           >
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-            <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
+            <Link href="/community" onClick={() => setIsMobileMenuOpen(false)}>Community</Link>
             <Link href="/machine" onClick={() => setIsMobileMenuOpen(false)}>Inside the Machine</Link>
             <Link href="/tutorial" onClick={() => setIsMobileMenuOpen(false)}>Tutorial</Link>
             <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
             <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
             <Link 
               href="/signup" 
