@@ -98,7 +98,7 @@ const evidence = [
     href: "https://www.nature.com/articles/nn.3719",
   },
   {
-    title: "Analysis and Assessment of Gateway Process — U.S. Army/CIA memo (1983)",
+    title: "Analysis of a historical altered-state memo (1983)",
     note:
       "Useful because it treats altered states as an engineering problem involving synchronization, attention, and perception.",
     href: "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo152943/pdf/GOVPUB-D101-PURL-gpo152943.pdf",
@@ -181,7 +181,7 @@ export default function BodyBoundaryPost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            NeuroSync Blog
+            Cognistration Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {bodyBoundaryPost.title}

@@ -228,7 +228,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${tone.name} (Saved)`,
-          description: tone.description || `Saved from the NeuroSync Collective feed.`,
+          description: tone.description || `Saved from the Cognistration feed.`,
           target_state: tone.target_state,
           duration_sec: tone.duration_sec,
           base_freq_hz: tone.base_freq_hz,

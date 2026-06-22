@@ -1,9 +1,11 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Terms and Conditions | Cognistration',
-  description: 'Terms and Conditions for cognistration.com.'
-};
+  description: 'Terms and Conditions for Cognistration on bishoptech.dev.',
+  path: '/terms'
+});
 
 function Section({ title, children }) {
   return (
@@ -19,7 +21,7 @@ export default function TermsPage() {
     <LegalPageShell
       eyebrow="Terms and Conditions"
       title="Cognistration Terms and Conditions"
-      summary="Effective June 12, 2026. These terms govern access to and use of cognistration.com and any related Cognistration services."
+      summary="Effective June 12, 2026. These terms govern access to and use of bishoptech.dev and any related Cognistration services."
     >
       <Section title="Acceptance of terms">
         <p>By accessing or using Cognistration, you agree to these Terms and Conditions. If you do not agree, do not use the service.</p>
@@ -64,7 +66,7 @@ export default function TermsPage() {
       </Section>
 
       <Section title="Contact">
-        <p>Questions about these terms can be sent to <a className="text-cyan-300 hover:text-cyan-200" href="mailto:legal@cognistration.com">legal@cognistration.com</a>.</p>
+        <p>Questions about these terms can be sent to <a className="text-cyan-300 hover:text-cyan-200" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
       </Section>
     </LegalPageShell>
   );

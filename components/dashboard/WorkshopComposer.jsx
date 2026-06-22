@@ -259,7 +259,7 @@ export function WorkshopComposer({
       {/* Tab Header Section */}
       <div className="space-y-2">
         <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Acoustic Console</p>
-        <h2 className="text-3xl font-light text-white tracking-tight">NeuroSync Workshop</h2>
+        <h2 className="text-3xl font-light text-white tracking-tight">Cognistration Workshop</h2>
         <p className="max-w-3xl text-xs leading-relaxed text-zinc-400 font-light font-sans">
           Calibrate stereophonic phase shifts and carrier baselines in real-time. Plug in your stereo headphones, power on the synthesis console, and tune your brain state baselines dynamically.
         </p>

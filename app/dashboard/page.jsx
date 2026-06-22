@@ -167,7 +167,7 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: agentTrack.name,
-          description: `Matched by NeuroSync Agent for mood`,
+          description: `Matched by Cognistration Agent for mood`,
           target_state: agentTrack.state,
           base_freq_hz: 220,
           duration_sec: 180,

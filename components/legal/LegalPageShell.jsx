@@ -20,6 +20,9 @@ export function LegalPageShell({ eyebrow, title, summary, children }) {
           <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.25em] text-white/35">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
             <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
           </div>
         </div>

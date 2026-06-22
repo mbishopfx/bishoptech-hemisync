@@ -218,7 +218,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-6xl md:text-8xl font-light tracking-tighter leading-[0.9] text-white"
           >
-            Cognitive <span className="text-white/20 italic">Orchestration</span>
+            Calm audio for <span className="text-white/20 italic">focus, rest, and reset.</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -226,8 +226,25 @@ export default function LandingPage() {
             transition={{ delay: 0.4 }}
             className="text-white/40 text-xl md:text-2xl font-light tracking-tight max-w-xl mx-auto leading-relaxed"
           >
-            Describe your current state. Our agent will match you to a precision frequency to shift your cognitive baseline.
+            Choose a listening session that fits the moment. Cognistration keeps the routine simple, repeatable, and easy to trust.
           </motion.p>
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <Link
+              href="/pricing"
+              className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              View Pricing
+            </Link>
+            <Link
+              href="/tutorial"
+              className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-200 transition-colors hover:bg-cyan-500/15 hover:text-cyan-100"
+            >
+              See How It Works
+            </Link>
+          </div>
+          <p className="pt-2 text-[10px] font-mono uppercase tracking-[0.28em] text-white/25">
+            Clear policies, direct support, and safety guidance are linked in the footer.
+          </p>
         </div>
 
         {/* Omnibar & Player Panel */}
@@ -422,14 +439,18 @@ export default function LandingPage() {
       <footer className="py-12 border-t border-white/5 bg-black/50">
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
-            <span>System Status: Optimal</span>
-            <span>100+ Frequencies Online</span>
-            <span>Binaural Phase Lock: Active</span>
+            <span>Calm Audio Sessions</span>
+            <span>Policy, safety, and contact links are in the footer</span>
+            <span>Headphones Recommended</span>
           </div>
-          <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
+          <div className="flex flex-wrap gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 NeuroSync.sys</span>
+            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
+            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <span>&copy; 2026 Cognistration.com</span>
           </div>
         </div>
       </footer>

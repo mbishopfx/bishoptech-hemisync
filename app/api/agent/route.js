@@ -51,7 +51,7 @@ export async function POST(req) {
         return NextResponse.json({ 
           error: 'Free limit reached', 
           code: 'AUTH_REQUIRED',
-          message: 'You have used your 7 free trial generations. Please create an account to continue.' 
+          message: `You have used your ${FREE_TRIAL_LIMIT} free trial generations. Please create an account to continue.`
         }, { status: 403 });
       }
     } else {
@@ -103,7 +103,7 @@ export async function POST(req) {
             .insert({
               user_id: user.id,
               name: track.name,
-              description: `Matched by NeuroSync Agent for mood: "${mood.slice(0, 80)}"`,
+              description: `Matched by Cognistration Agent for mood: "${mood.slice(0, 80)}"`,
               target_state: track.state,
               base_freq_hz: track.base_freq_hz || track.baseFreqHz || 220,
               duration_sec: track.duration_sec || track.durationSec || 300,

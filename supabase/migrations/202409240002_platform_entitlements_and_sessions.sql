@@ -3,6 +3,8 @@ create extension if not exists "pgcrypto";
 
 alter table profiles
   add column if not exists plan text not null default 'free',
+  add column if not exists subscription_tier text not null default 'free',
+  add column if not exists trial_expires_at timestamptz,
   add column if not exists free_saved_generations_used integer not null default 0,
   add column if not exists free_saved_generations_limit integer not null default 1,
   add column if not exists session_count integer not null default 0,

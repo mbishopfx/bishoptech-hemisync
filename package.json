@@ -1,5 +1,5 @@
 {
-  "name": "neurosync",
+  "name": "cognistration",
   "private": true,
   "version": "0.1.0",
   "scripts": {
@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "node .next/standalone/server.js",
     "lint": "eslint .",
-    "prerender:samples": "node scripts/prerender-template-samples.mjs"
+    "prerender:samples": "node scripts/prerender-template-samples.mjs",
+    "seed:demo-community": "node scripts/seed-demo-community.mjs"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

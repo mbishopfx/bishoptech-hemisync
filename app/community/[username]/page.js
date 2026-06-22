@@ -9,11 +9,30 @@ import { Button } from '@/components/ui/button';
 import { FollowButton } from '@/components/social/follow-button';
 import { ShareProfileButton } from '@/components/social/share-profile-button';
 import { ArrowLeft, Globe, X, CheckCircle, ExternalLink } from 'lucide-react';
+import { buildPageMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60;
 
+const hasSupabaseConfig = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
+
+export function generateMetadata({ params }) {
+  return buildPageMetadata({
+    title: 'Community Profile | Cognistration',
+    description: `Public community profile for ${params.username} on Cognistration.`,
+    path: `/community/${params.username}`
+  });
+}
+
 async function getProfileData(username) {
+  if (!hasSupabaseConfig) {
+    return null;
+  }
+
   const supabase = getSupabaseAdmin();
   const supabaseServer = getSupabaseServerClient();
   const { data: sessionData } = await supabaseServer.auth.getUser();
@@ -53,6 +72,27 @@ async function getProfileData(username) {
 }
 
 export default async function PublicProfilePage({ params }) {
+  if (!hasSupabaseConfig) {
+    return (
+      <main className="landing-shell">
+        <div className="max-w-4xl mx-auto w-full flex flex-col gap-10">
+          <Card className="relative overflow-hidden border-none shadow-premium bg-[var(--card-bg)] p-8">
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)]">
+              Community profile unavailable
+            </p>
+            <h1 className="mt-2 text-3xl font-display text-foreground">
+              Public profile data is offline in this environment.
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted">
+              The route stays live so search engines and visitors can reach it,
+              but profile data requires the production Supabase environment.
+            </p>
+          </Card>
+        </div>
+      </main>
+    );
+  }
+
   const data = await getProfileData(params.username);
   
   if (!data) {

@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { LoginClient } from './LoginClient';
 
 export const metadata = {
-  title: 'Sign In | NeuroSync.sys'
+  title: 'Sign In | Cognistration'
 };
 
 export default function LoginPage() {

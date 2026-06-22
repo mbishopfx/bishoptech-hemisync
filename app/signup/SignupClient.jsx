@@ -82,27 +82,27 @@ export function SignupClient() {
         >
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono tracking-widest uppercase mb-4">
-              Step_01: Identity_Verification
+              Step 01: Account setup
             </div>
-            <h1 className="text-3xl font-light tracking-tight mb-2">Initialize Credentials</h1>
-            <p className="text-white/40 text-sm">Join the <strong>{plan.toUpperCase()}</strong> node.{plan === 'lifetime' ? ' Lifetime access is a one-time purchase.' : ' 7-day trial included.'}</p>
+            <h1 className="text-3xl font-light tracking-tight mb-2">Create your account</h1>
+            <p className="text-white/40 text-sm">Choose the <strong>{plan.toUpperCase()}</strong> plan.{plan === 'lifetime' ? ' Lifetime access is a one-time purchase.' : ' A 7-day trial is included with subscription plans.'}</p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email Address</label>
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email address</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
-                placeholder="operator@neurosync.sys"
+                placeholder="name@company.com"
               />
             </div>
             
             <div className="space-y-2">
-              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Secret Access Key</label>
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Password</label>
               <input 
                 type="password" 
                 value={password}
@@ -120,18 +120,29 @@ export function SignupClient() {
               disabled={loading}
               className="w-full py-4 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
             >
-              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Generate Credentials <ArrowRight className="size-4" /></>}
+              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Create account <ArrowRight className="size-4" /></>}
             </button>
           </form>
 
           <div className="mt-8 pt-8 border-t border-white/5 text-center">
             <p className="text-white/30 text-xs italic flex items-center justify-center gap-2">
-              <ShieldCheck className="size-3 text-cyan-500" /> AES-256 Neural Encryption Enabled
+              <ShieldCheck className="size-3 text-cyan-500" /> Secure account handling and encrypted transport in place
             </p>
-            <p className="text-white/30 text-xs mt-6">Already an operator? <Link href="/login" className="text-cyan-400 hover:underline">Secure Login</Link></p>
+            <p className="text-white/30 text-xs mt-6">Already have an account? <Link href="/login" className="text-cyan-400 hover:underline">Sign in</Link></p>
           </div>
         </motion.div>
       </main>
+
+      <footer className="pb-12 px-6">
+        <div className="max-w-md mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-mono uppercase tracking-[0.28em] text-white/25 text-center">
+          <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+          <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+          <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+          <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
+          <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+          <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+        </div>
+      </footer>
     </div>
   );
 }

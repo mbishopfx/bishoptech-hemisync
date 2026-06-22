@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Zap, Cpu, Lock, Eye, ArrowRight, FileText, Activity, AlertTriangle, Play, HelpCircle, Check, Power } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { buildAbsoluteUrl } from '@/lib/seo';
 
 function UnicodeCyberBadge({ icon: IconComponent, index, colorClass }) {
   const [frameChar, setFrameChar] = useState('■');
@@ -170,7 +171,7 @@ export default function MachinePage() {
   };
 
   // Fade out and stop synthesizer
-  const stopAudio = () => {
+  const stopAudio = useCallback(() => {
     if (audioCtxRef.current && masterGainRef.current) {
       const ctx = audioCtxRef.current;
       const now = ctx.currentTime;
@@ -183,7 +184,7 @@ export default function MachinePage() {
       stopAudioNodes();
       setIsPlaying(false);
     }, 200);
-  };
+  }, []);
 
   const togglePower = () => {
     if (isPlaying) {
@@ -215,7 +216,7 @@ export default function MachinePage() {
       setShowLimitModal(true);
       setSessionTime(0);
     }
-  }, [sessionTime, maxDurationSec]);
+  }, [sessionTime, maxDurationSec, stopAudio]);
 
   // Keep oscillators dynamically tuned to slider values in real-time
   useEffect(() => {
@@ -253,6 +254,14 @@ export default function MachinePage() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const machineJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Inside the Machine | Cognistration',
+    url: buildAbsoluteUrl('/machine'),
+    description: 'A product and system overview for Cognistration’s listening and generation workflow.'
+  };
+
   // Mathematical sine generator for drawing vector waves in real time
   const getSinePath = (freq, amp, speedMultiplier = 1) => {
     const points = [];
@@ -281,6 +290,10 @@ export default function MachinePage() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(machineJsonLd) }}
+      />
       <PublicHeader />
 
       {/* Background Cyber-Grid Effect */}
@@ -302,18 +315,17 @@ export default function MachinePage() {
           >
             <div className="text-center space-y-8 max-w-2xl">
               <motion.h2 
-                animate={{ 
-                  color: ['#06B6D4', '#ffffff', '#06B6D4'],
-                  textShadow: ['0 0 20px #06B6D4', '0 0 0px #ffffff', '0 0 20px #06B6D4']
-                }}
-                transition={{ duration: 0.1, repeat: Infinity }}
-                className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic"
+              animate={{ 
+                color: ['#06B6D4', '#ffffff', '#06B6D4'],
+                textShadow: ['0 0 20px #06B6D4', '0 0 0px #ffffff', '0 0 20px #06B6D4']
+              }}
+              transition={{ duration: 0.1, repeat: Infinity }}
+              className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic"
               >
-                THEY TRIED TO HIDE THIS
+              CONCEPTUAL DEMO
               </motion.h2>
               <p className="text-white/40 font-mono text-sm leading-relaxed">
-                Declassified protocol 96-00788R. The frequency following response is the key to the gateway.
-                Your baseline is a choice, not a constraint.
+              This page visualizes a binaural-style listening setup and a set of control surfaces for the product experience. It is an illustrative demo, not a medical or neurological claim.
               </p>
               <div className="flex justify-center gap-4 text-cyan-400 font-mono text-xs uppercase tracking-widest">
                 <span>[ REDACTED ]</span>
@@ -331,7 +343,10 @@ export default function MachinePage() {
           <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Neuro-Acoustic Engine</p>
           <h1 className="text-5xl md:text-7xl font-light tracking-tighter">Inside the Machine.</h1>
           <p className="text-white/40 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light font-sans">
-            We leverage the <strong>Frequency-Following Response (FFR)</strong>—a physiological mechanism that aligns your brain&apos;s dominant electrical frequencies with calibrated stereo wave phase shifts.
+            This page presents a visual explanation of the audio experience and the controls that shape it. It is designed to stay clear, calm, and easy to understand.
+          </p>
+          <p className="mt-4 text-[10px] font-mono uppercase tracking-[0.35em] text-white/25">
+            Illustrative only — not medical advice, diagnosis, or a guaranteed outcome.
           </p>
         </section>
 
@@ -411,7 +426,7 @@ export default function MachinePage() {
                     className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500"
                   />
                   <p className="text-[9.5px] font-mono text-white/20 uppercase tracking-widest leading-normal mt-1">
-                    Low carriers (<span className="text-white/40">200Hz</span>) optimize Theta/Delta entrainment, while higher carriers facilitate active logical focus.
+                  Lower carriers can feel softer and more relaxed, while higher carriers may feel more active and crisp. The labels are descriptive, not clinical.
                   </p>
                 </div>
 
@@ -436,7 +451,7 @@ export default function MachinePage() {
               <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
                 <Activity className="size-5 text-cyan-400 shrink-0" />
                 <p className="text-[10px] font-mono uppercase tracking-wider text-white/60">
-                  R - L DIFFERENCE MATCHES TARGET EEG BASELINE: {beatFreq}Hz
+                  R - L DIFFERENCE REFLECTS THE SELECTED DEMO STATE: {beatFreq}Hz
                 </p>
               </div>
 
@@ -489,10 +504,10 @@ export default function MachinePage() {
 
               <div className="space-y-6 pt-2">
                 <div className="space-y-2">
-                  <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Target Baselines</p>
+                  <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Target Demo States</p>
                   <h3 className="text-3xl font-light text-white tracking-tight">Select Target State.</h3>
                   <p className="text-xs text-white/40 leading-relaxed font-light">
-                    Adjust the target frequency below. Watch how the resulting differential wave slows down or speeds up to entrain the brain hemispheres.
+                    Adjust the target frequency below to see how the visual state changes. The controls are for demonstration and exploration, not diagnosis or treatment.
                   </p>
                 </div>
 
@@ -539,7 +554,7 @@ export default function MachinePage() {
               <div className="space-y-3 text-left">
                 <h3 className="text-2xl font-light text-white tracking-tight text-center">2-Minute Trial Complete</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-                  You have completed your 2-minute NeuroSync trial calibration. Sign up for a free account to unlock <strong>5-minute sessions</strong>, or get a Premium membership for <strong>unrestricted 1-hour sessions</strong> and custom blueprints!
+                  <strong>Cognistration</strong> trial calibration. Sign up for a free account to unlock <strong>5-minute sessions</strong>, or get a Premium membership for <strong>unrestricted 1-hour sessions</strong> and custom blueprints!
                 </p>
               </div>
 
@@ -565,52 +580,52 @@ export default function MachinePage() {
         {/* Anatomical Science Section */}
         <section className="space-y-16 mb-40">
           <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Physiological Blueprint</p>
-            <h2 className="text-3xl md:text-5xl font-light tracking-tight">The Science of Entrainment.</h2>
+            <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Listening Model</p>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight">How the audio experience is organized.</h2>
             <p className="text-white/40 text-sm leading-relaxed font-light">
-              How a simple difference in acoustic phase bypasses cognitive blockades and overrides default neural oscillation arrays.
+              How careful timing, comfort, and repetition shape the listening experience.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
               <UnicodeCyberBadge icon={Cpu} index={0} colorClass="text-cyan-400 animate-pulse" />
-              <h3 className="text-xl font-medium mb-3">Superior Olivary Complex</h3>
+              <h3 className="text-xl font-medium mb-3">Stereo Timing Model</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
-                Auditory signals enter the ears and travel up the auditory nerve. They collide in the <strong>Superior Olivary Complex (SOC)</strong> within the brainstem—the first neurological station that processes stereo phase differences. If the phase difference oscillates persistently, the SOC translates it into a rhythmic signal.
+                This card shows how two channels can be compared side by side. It is a visual explanation of the listening setup, not a scientific claim.
               </p>
             </div>
 
             <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
               <UnicodeCyberBadge icon={Zap} index={1} colorClass="text-purple-400" />
-              <h3 className="text-xl font-medium mb-3">Frequency-Following Response</h3>
+              <h3 className="text-xl font-medium mb-3">Rhythm Visualization</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
-                The auditory cortex picks up the rhythmic outputs of the SOC. Via the <strong>Frequency-Following Response (FFR)</strong>, the local sensory neural clusters align their firing frequencies with the external differential beat. The sensory cells synchronize, vibrating in unison with the virtual wave.
+                The visual rhythm helps illustrate how the experience feels over time. The wording is descriptive and intentionally non-clinical.
               </p>
             </div>
 
             <div className="p-8 rounded-[2rem] border border-white/5 bg-zinc-900/20 backdrop-blur-xl relative overflow-hidden group hover:border-white/10 transition-colors">
               <UnicodeCyberBadge icon={Activity} index={2} colorClass="text-cyan-400" />
-              <h3 className="text-xl font-medium mb-3">Thalamocortical Locking</h3>
+              <h3 className="text-xl font-medium mb-3">Pattern Overview</h3>
               <p className="text-xs text-white/50 leading-relaxed font-light">
-                The synchronized sensory signals target the <strong>Thalamus</strong>—the brain&apos;s master sensory relay pacemaker. The thalamus locks onto the frequency and propagates it throughout the neocortex, locking global EEG patterns into Alpha, Theta, Delta, or Beta ranges on a macro scale.
+                The control labels group the demo into familiar listening states. They help orient the interface without making medical or performance claims.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Clinical Proof and Documentation */}
+        {/* Research and Documentation */}
         <section className="grid md:grid-cols-2 gap-16 items-center mb-40 border-t border-white/5 pt-20">
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-white/10 text-white/50 text-[10px] font-mono tracking-widest uppercase">
-              <Lock className="size-3" /> Declassified Research
+              <Lock className="size-3" /> Background Reading
             </div>
-            <h2 className="text-3xl md:text-5xl font-light tracking-tight">Clinical Evidence & Peer-Reviewed Proof.</h2>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tight">Public research and practical context.</h2>
             <p className="text-white/50 leading-relaxed text-sm font-light">
-              Entrainment is not esoteric speculation—it is declassified and clinically documented. In 1983, the <strong>CIA</strong> released the <strong>Gateway Process Analysis</strong>, verifying that Hemispheric Synchronization is physically real.
+              This product is informed by public research on rhythm, perception, and listening habits. It is meant to stay clear, useful, and easy to understand.
             </p>
             <p className="text-white/50 leading-relaxed text-sm font-light">
-              Modern clinical trials in neuroscience databases (such as systematic reviews in <strong>PLOS ONE</strong> and <strong>Frontiers in Human Neuroscience</strong>) have proven that binaural beats induce spectral EEG power spikes in targeted ranges. Studies show a <strong>26% reduction in cognitive anxiety</strong> and statistically significant increases in interhemispheric coherence under delta and theta loads.
+              We keep the framing conservative: calm sessions can support a steadier routine, but the experience varies by person, setting, and use case.
             </p>
             <div className="space-y-3">
               <a 
@@ -619,22 +634,22 @@ export default function MachinePage() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium text-xs group uppercase font-mono tracking-wider"
               >
-                View CIA-RDP96-00788R Gateway Memo <FileText className="size-4 group-hover:translate-x-1 transition-transform" />
+                View background reading <FileText className="size-4 group-hover:translate-x-1 transition-transform" />
               </a>
               <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">
-                Source: National Archives & Clinical Trials databases.
+                Source: public research and product documentation.
               </div>
             </div>
           </div>
 
           <div className="bg-zinc-900/30 rounded-[3rem] p-10 md:p-12 border border-white/5 relative overflow-hidden group hover:border-white/10 transition-colors">
-            <h3 className="text-xl font-medium text-white tracking-tight mb-6">Peer-Reviewed Milestones</h3>
+            <h3 className="text-xl font-medium text-white tracking-tight mb-6">Reference Points</h3>
             <div className="space-y-6">
               {[
-                { title: 'CIA Gateway Study (1983)', desc: 'Documented that alternate phase-shifted audio alters brain amplitude parameters, locking it into coherent trance states.' },
-                { title: 'Frontiers in Human Neuroscience (2018)', desc: 'Confirmed via EEG spectral analytics that targeted theta beat loads significantly boost working memory recall and concentration.' },
-                { title: 'PLOS ONE Meta-Analysis (2019)', desc: 'Conducted systematic review proving that binaural beat entrainment reduces pre-operative anxiety scores.' },
-                { title: 'Bi-Directional Acoustic Protocols', desc: 'Over 40 years of EEG research proving that bi-directional hemispheric balance is achieved within 10 minutes of calibrated phase-shifting audio.' }
+                { title: 'Rhythm and attention', desc: 'Rhythmic audio is often used to create a steadier listening environment and a more intentional routine.' },
+                { title: 'Comfort and consistency', desc: 'Short, repeatable sessions tend to feel easier to return to than noisy, overcomplicated rituals.' },
+                { title: 'Listening context', desc: 'Volume, timing, and environment matter a lot in how any audio session is experienced.' },
+                { title: 'Careful framing', desc: 'The best product copy stays specific, calm, and honest about what a session can and cannot do.' }
               ].map((item, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="size-6 rounded-full bg-white/5 text-[10px] font-mono text-cyan-400 flex items-center justify-center shrink-0 border border-white/10">
@@ -665,40 +680,40 @@ export default function MachinePage() {
             </div>
 
             <p className="text-sm leading-relaxed text-white/50 font-light">
-              Entrainment tools physically alter neural dynamics. To prevent auditory fatigue and protect biological systems, you must strictly follow these safety guidelines:
+              Audio tools should be used thoughtfully. To keep the experience comfortable and predictable, follow these simple safety guidelines:
             </p>
 
             <div className="grid md:grid-cols-2 gap-8 pt-4">
               
               {/* Warning 1 */}
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-white/90">Epilepsy & Seizure History</h4>
+                <h4 className="text-sm font-medium text-white/90">Epilepsy & seizure history</h4>
                 <p className="text-xs text-white/40 leading-relaxed font-light">
-                  Individuals with a history of epilepsy, clinical seizures, or photic/auditory hyper-sensitivity should consult a neurologist before using NeuroSync. Rhythmic acoustic frequencies drive high-amplitude brain waves that may act as sensory triggers.
+                  If you have a history of seizures or sound sensitivity, check with a clinician before using the product.
                 </p>
               </div>
 
               {/* Warning 2 */}
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-white/90">No Driving / Alert Motor Tasks</h4>
+                <h4 className="text-sm font-medium text-white/90">Avoid driving or demanding tasks</h4>
                 <p className="text-xs text-white/40 leading-relaxed font-light">
-                  Delta and Theta frequency ranges induce severe physical relaxation, muscle dilation, and drowsiness (somatic damping). NEVER listen to these frequencies while driving, operating heavy machinery, or performing active motor coordination tasks.
+                  Listen only when you can relax and pay attention to the session. Do not use it while driving or doing anything that needs full focus.
                 </p>
               </div>
 
               {/* Warning 3 */}
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-white/90">Hearing Conservation & Decibels</h4>
+                <h4 className="text-sm font-medium text-white/90">Keep the volume comfortable</h4>
                 <p className="text-xs text-white/40 leading-relaxed font-light">
-                  Entrainment occurs at the auditory pathway level; it does not require high volume. Keep carrier audio below 70-75dB (conversational level). High volume generates ear fatigue, hearing loss, and blocks olivary complex phase-locking.
+                  The audio should be easy to listen to. If it feels loud or tiring, turn it down.
                 </p>
               </div>
 
               {/* Warning 4 */}
               <div className="space-y-2">
-                <h4 className="text-sm font-medium text-white/90">Gradual Session Baselines</h4>
+                <h4 className="text-sm font-medium text-white/90">Start with shorter sessions</h4>
                 <p className="text-xs text-white/40 leading-relaxed font-light">
-                  Allow your central nervous system to adapt. Begin with shorter sessions (10 to 15 minutes) to let your superior olivary complex normalize the phase shifts. Do not exceed 60 minutes per continuous session to avoid cognitive over-stimulation.
+                  Start with short sessions and build from there. It is usually easier to learn what works when you keep the first few runs simple.
                 </p>
               </div>
 
@@ -727,14 +742,14 @@ export default function MachinePage() {
           >
             <Image 
               src="/images/logo.png" 
-              alt="BishopTech Logo" 
+              alt="Cognistration Logo" 
               width={80} 
               height={80} 
               className="mx-auto animate-pulse"
             />
-            <h2 className="text-3xl md:text-5xl font-light tracking-tighter">Ready to shift your baseline?</h2>
+            <h2 className="text-3xl md:text-5xl font-light tracking-tighter">Explore the demo gently.</h2>
             <p className="text-white/40 text-sm max-w-sm mx-auto font-light leading-relaxed">
-              Equip your headphones, lock in your intention, and launch the console.
+              Set your headphones, choose a comfortable volume, and use the controls at your own pace.
             </p>
           </motion.div>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10 max-w-xs mx-auto sm:max-w-none">
@@ -758,12 +773,15 @@ export default function MachinePage() {
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
             <span>Secured Node</span>
-            <span>NeuroSync Console v1.0.5</span>
+            <span>Cognistration Console v1.0.5</span>
           </div>
-          <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
+          <div className="flex flex-wrap gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 NeuroSync.sys</span>
+            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <span>&copy; 2026 Cognistration.com</span>
           </div>
         </div>
       </footer>

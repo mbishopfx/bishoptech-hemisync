@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
+import { buildAbsoluteUrl } from '@/lib/seo';
 
 const plans = [
   {
@@ -14,7 +16,7 @@ const plans = [
     id: 'free',
     price: '$0',
     priceId: 'free',
-    description: 'Explore foundational binaural dynamics and synchronization.',
+    description: 'Try the core listening experience without commitment.',
     features: [
       { text: 'Generate up to 5 tones per month', allowed: true },
       { text: 'Access to full soundwave library', allowed: true },
@@ -31,17 +33,17 @@ const plans = [
     id: 'premium',
     price: '$9',
     priceId: 'price_1TWlb7DJtpuPVfuFfSVEXPYU',
-    description: 'Complete auditory synchronization and master broadcasting.',
+    description: 'Full access to the listening tools, exports, and saved sessions.',
     features: [
-      { text: 'Unlimited AI Tone Generation', allowed: true },
-      { text: 'High-Fidelity WAV/MP3 Master Exports', allowed: true },
-      { text: 'Broadcast to Collective Waves Feed', allowed: true },
-      { text: 'Access Public Collective Waves Stream', allowed: true },
-      { text: 'Advanced Bio-Acoustic Metrics', allowed: true },
+      { text: 'Unlimited tone generation', allowed: true },
+      { text: 'High-fidelity WAV/MP3 exports', allowed: true },
+      { text: 'Save sessions to your library', allowed: true },
+      { text: 'Access the public collection', allowed: true },
+      { text: 'Session playback controls and history', allowed: true },
       { text: '7-Day Full Access Trial Included', allowed: true }
     ],
     highlight: true,
-    cta: 'Ascend to Premium',
+    cta: 'Start Premium',
     mode: 'subscription'
   },
   {
@@ -49,16 +51,16 @@ const plans = [
     id: 'lifetime',
     price: '$50',
     priceId: 'price_1TWlbTDJtpuPVfuFG5ejsTAG',
-    description: 'Permanent founding license with zero recurring costs.',
+    description: 'One-time access for people who want the full experience without a subscription.',
     features: [
-      { text: 'All Premium Console privileges permanently', allowed: true },
-      { text: 'Never pay recurring monthly fees', allowed: true },
-      { text: 'Exclusive Founding Member Badge', allowed: true },
-      { text: 'Priority Agent Cognition & Core Nodes', allowed: true },
-      { text: 'Lifetime System updates & nodes', allowed: true }
+      { text: 'All premium features included', allowed: true },
+      { text: 'One-time checkout', allowed: true },
+      { text: 'No recurring monthly billing', allowed: true },
+      { text: 'Access to future feature updates', allowed: true },
+      { text: 'Same listening experience as Premium', allowed: true }
     ],
     highlight: false,
-    cta: 'Secure Lifetime License',
+    cta: 'Choose Lifetime',
     mode: 'payment'
   }
 ];
@@ -66,18 +68,18 @@ const plans = [
 const tonePack = {
   name: 'Tone Pack 01',
   id: 'tone-pack-01',
-  price: 'TBD',
+  price: 'Coming soon',
   priceId: 'price_tone_pack_pending',
   mode: 'payment',
-  description: 'A one-time 16-tone pack built from the first NeuroSync sample collection.',
+  description: 'A one-time 16-tone pack reserved for the first Cognistration sample collection release.',
   features: [
-    '16 Generated NeuroSync-style preview tones',
+    '16 generated preview tones',
     'One-time purchase on Stripe',
     'Includes the first launch pack',
     'Public MP3 downloads'
   ],
   highlight: false,
-  cta: 'Pack Coming Soon',
+  cta: 'Pack Launch Pending',
   disabled: true
 };
 
@@ -90,6 +92,14 @@ export default function PricingPage() {
 
   const audioRef = useRef(null);
   const [supabase, setSupabase] = useState(null);
+
+  const pricingJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Pricing | Cognistration',
+    url: buildAbsoluteUrl('/pricing'),
+    description: 'Compare Cognistration plans and choose the right listening tier.'
+  };
 
   // Load preview data and query database serenity pack
   useEffect(() => {
@@ -181,6 +191,10 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingJsonLd) }}
+      />
       <PublicHeader />
 
       {/* Background Effects */}
@@ -192,16 +206,16 @@ export default function PricingPage() {
 
       <main className="pt-40 pb-20 px-6 relative z-10 flex flex-col items-center max-w-7xl mx-auto">
         <div className="text-center space-y-6 max-w-3xl mb-20">
-          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Subscription Nodes</p>
+          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Pricing</p>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-light tracking-tighter text-white"
           >
-            Upgrade your <span className="text-white/20 italic">frequency.</span>
+            Choose a <span className="text-white/20 italic">calm listening plan.</span>
           </motion.h1>
           <p className="text-white/40 text-lg md:text-xl font-light max-w-xl mx-auto leading-relaxed">
-            Choose the synchronization tier that aligns with your cognitive goals. Subscription plans include a 7-day trial. Lifetime access is a one-time purchase.
+            Choose the plan that fits how you use Cognistration. Subscription plans include a 7-day trial. Lifetime access is a one-time purchase.
           </p>
         </div>
 
@@ -220,7 +234,7 @@ export default function PricingPage() {
             >
               {plan.highlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cyan-500 text-black text-[10px] font-bold uppercase tracking-widest">
-                  Most Calibrated
+                  Most Complete
                 </div>
               )}
 
@@ -258,10 +272,10 @@ export default function PricingPage() {
               <button
                 onClick={async () => {
                   try {
-                    const token = localStorage.getItem('supabase-auth-token');
-                    
                     if (plan.id === 'free') {
-                      if (token) {
+                      const supabaseClient = getSupabaseBrowserClient();
+                      const { data } = await supabaseClient.auth.getSession();
+                      if (data.session) {
                         window.location.href = '/dashboard';
                       } else {
                         window.location.href = '/signup?plan=free';
@@ -269,25 +283,12 @@ export default function PricingPage() {
                       return;
                     }
 
-                    if (!token) {
-                      window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}&mode=${plan.mode}`;
-                      return;
-                    }
-
-                    const res = await fetch('/api/checkout', {
-                      method: 'POST',
-                      headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${JSON.parse(token).access_token}`
-                      },
-                      body: JSON.stringify({ 
-                        priceId: plan.priceId, 
-                        planId: plan.id, 
-                        mode: plan.mode 
-                      })
+                    await redirectToStripeCheckout({
+                      planId: plan.id,
+                      priceId: plan.priceId,
+                      mode: plan.mode,
+                      fallbackPath: '/signup'
                     });
-                    const data = await res.json();
-                    if (data.url) window.location.href = data.url;
                   } catch (err) {
                     console.error('Checkout redirect failed', err);
                     window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}&mode=${plan.mode}`;
@@ -310,7 +311,7 @@ export default function PricingPage() {
             <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Calibration & Sound Room</p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">Stereo Sound Preview Room.</h2>
             <p className="text-white/40 text-sm font-light leading-relaxed">
-              Calibrate your headphones and preview our high-fidelity NeuroSync waves side-by-side. Test either your active session preview or any of the premium Serenity seed tracks.
+              Calibrate your headphones and preview our high-fidelity audio side-by-side. Test either your active session preview or any of the premium Serenity seed tracks.
             </p>
           </div>
 
@@ -339,7 +340,7 @@ export default function PricingPage() {
                           {activePreviewTone.name}
                         </h3>
                         <p className="text-xs text-white/40 mt-2 font-light leading-relaxed">
-                          {activePreviewTone.description || `Custom matched ${activePreviewTone.targetHz || activePreviewTone.target_hz || '8'}Hz binaural frequency session.`}
+                          {activePreviewTone.description || `Custom matched ${activePreviewTone.targetHz || activePreviewTone.target_hz || '8'}Hz listening session.`}
                         </p>
                       </div>
 
@@ -368,7 +369,7 @@ export default function PricingPage() {
                     <div className="space-y-2">
                       <h3 className="text-lg font-light text-white/50">No Active Session</h3>
                       <p className="text-xs text-white/30 font-light leading-relaxed">
-                        Go back to the Home page and let the NeuroSync Agent parse your current cognitive mood to synthesize a custom beat.
+                        Go back to the Home page and let the Cognistration Agent parse your current listening goal to synthesize a custom beat.
                       </p>
                     </div>
                   )}
@@ -389,7 +390,7 @@ export default function PricingPage() {
                       href="/"
                       className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-[9px] font-mono uppercase tracking-wider text-white hover:bg-white/10 transition-all"
                     >
-                      Go Sync a Tone <ChevronRight className="size-3" />
+                      Try a Tone <ChevronRight className="size-3" />
                     </Link>
                   )}
                   <span className="text-[9px] font-mono uppercase tracking-widest text-white/20">
@@ -457,7 +458,7 @@ export default function PricingPage() {
                 </div>
 
                 <div className="mt-8 pt-4 border-t border-white/5 text-[9px] font-mono uppercase tracking-widest text-white/25 flex items-center justify-between">
-                  <span>True Binaural Phase Lock</span>
+                  <span>Binaural-style Preview</span>
                   <span className="text-purple-400 font-bold uppercase tracking-widest">{serenityTones.length} premium tracks loaded</span>
                 </div>
               </div>
@@ -470,11 +471,11 @@ export default function PricingPage() {
         <section className="w-full max-w-5xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
-              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Alternative Node</p>
-              <h2 className="text-3xl font-light tracking-tight mt-2">NeuroSync Sample Pack Seeding</h2>
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Coming Soon</p>
+              <h2 className="text-3xl font-light tracking-tight mt-2">Cognistration Sample Pack</h2>
             </div>
             <p className="max-w-xl text-left md:text-right text-sm text-white/40 font-light leading-relaxed">
-              We&apos;ll activate Stripe checkout one-time packs on the dashboard once cataloging is locked. For now, the pack card acts as a system placeholder.
+              One-time packs are reserved for the first catalog release. The card stays visible so visitors can see what is next without mistaking it for a live checkout.
             </p>
           </div>
 
@@ -524,10 +525,10 @@ export default function PricingPage() {
           <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] mb-12">System Architecture</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { label: 'Latency', value: '< 150ms' },
-              { label: 'Uptime', value: '99.99%' },
-              { label: 'Frequencies', value: '100+' },
-              { label: 'Encryption', value: 'AES-256' }
+              { label: 'Plan types', value: '3' },
+              { label: 'Trial access', value: '7 days' },
+              { label: 'Billing', value: 'Stripe' },
+              { label: 'Safety', value: 'Guidance included' }
             ].map((stat, i) => (
               <div key={i} className="space-y-1">
                 <p className="text-white/20 text-[10px] uppercase tracking-widest">{stat.label}</p>
@@ -541,13 +542,16 @@ export default function PricingPage() {
       <footer className="py-12 border-t border-white/5 bg-black/50 mt-20">
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
-            <span>Secured by Stripe</span>
-            <span>7-Day Trial Refund policy</span>
+            <span>Billing Options</span>
+            <span>Privacy, Terms, and Cookies Linked Below</span>
           </div>
-          <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
+          <div className="flex flex-wrap gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 NeuroSync.sys</span>
+            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <span>&copy; 2026 Cognistration.com</span>
           </div>
         </div>
       </footer>

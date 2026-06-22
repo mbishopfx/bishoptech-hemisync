@@ -5,7 +5,7 @@ export default function robots() {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/community', '/pricing', '/tutorial', '/machine', '/privacy', '/terms', '/cookies', '/contact', '/health-warning', '/ai-disclosure'],
+        allow: ['/', '/blog', '/community', '/pricing', '/tutorial', '/machine', '/privacy', '/terms', '/cookies', '/contact', '/health-warning', '/ai-disclosure', '/llms.txt'],
         disallow: ['/api/', '/dashboard', '/generate', '/login', '/signup']
       }
     ],

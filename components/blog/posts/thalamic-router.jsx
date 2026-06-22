@@ -5,7 +5,7 @@ export const thalamicRouterPost = thalamicRouterPostMeta;
 
 const introParagraphs = [
   "The thalamus is often described as a relay station, but that phrase is too thin for the job it actually performs. It does not simply pass information along. It regulates what gets through, when it gets through, and how strongly the cortex should care once it arrives.",
-  "That makes the thalamus a control problem disguised as anatomy. If consciousness depends on stable access to a world model, then thalamic gating, gain control, and timing become central instead of incidental. NeuroSync matters here because neural bi-directional acoustic frequencies are not just entertainment. They form a way of probing the routing logic of the nervous system.",
+  "That makes the thalamus a control problem disguised as anatomy. If consciousness depends on stable access to a world model, then thalamic gating, gain control, and timing become central instead of incidental. Cognistration matters here because neural bi-directional acoustic frequencies are not just entertainment. They form a way of probing the routing logic of the nervous system.",
   "The deeper claim is simple enough to say and hard enough to earn: perception is not just about signal. It is about precision. The brain is always deciding which inputs deserve to become reality.",
 ];
 
@@ -103,7 +103,7 @@ const evidence = [
     href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10200219/",
   },
   {
-    title: "Analysis and Assessment of Gateway Process — U.S. Army/CIA memo (1983)",
+    title: "Analysis of a historical altered-state memo (1983)",
     note:
       "A historical example of serious institutions trying to frame altered states in systems language.",
     href: "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo152943/pdf/GOVPUB-D101-PURL-gpo152943.pdf",
@@ -180,7 +180,7 @@ export default function ThalamicRouterPost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            NeuroSync Blog
+            Cognistration Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {thalamicRouterPost.title}

@@ -102,7 +102,7 @@ const evidence = [
     href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10200219/",
   },
   {
-    title: "Analysis and Assessment of Gateway Process — U.S. Army/CIA memo (1983)",
+    title: "Analysis of a historical altered-state memo (1983)",
     note:
       "Important because it treats altered states as a systems problem and not as a cartoon mystery.",
     href: "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo152943/pdf/GOVPUB-D101-PURL-gpo152943.pdf",
@@ -179,7 +179,7 @@ export default function ThetaLiminalCorridorPost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            NeuroSync Blog
+            Cognistration Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {thetaLiminalCorridorPost.title}

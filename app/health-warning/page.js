@@ -1,9 +1,11 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Health Warning | Cognistration',
-  description: 'Health and safety warning for cognistration.com.'
-};
+  description: 'Health and safety warning for Cognistration on bishoptech.dev.',
+  path: '/health-warning'
+});
 
 function WarningCard({ title, body }) {
   return (

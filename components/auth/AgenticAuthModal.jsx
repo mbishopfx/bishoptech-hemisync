@@ -42,7 +42,7 @@ export function AgenticAuthModal({ isOpen, onClose }) {
               <div className="space-y-2">
                 <h2 className="text-2xl font-medium text-white">Continue your journey</h2>
                 <p className="text-white/40 text-sm leading-relaxed">
-                  You&apos;ve used your free session. Join the community to unlock 100+ specialized frequencies and persistent session tracking.
+                  You&apos;ve used your free session. Join the community to unlock an expanded frequency library and persistent session tracking.
                 </p>
               </div>
 
@@ -62,7 +62,7 @@ export function AgenticAuthModal({ isOpen, onClose }) {
               </div>
 
               <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-2">
-                Secured by NeuroSync.sys
+                Secured by Cognistration
               </p>
             </div>
           </motion.div>

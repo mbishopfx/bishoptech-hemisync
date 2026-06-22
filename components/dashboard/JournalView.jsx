@@ -173,7 +173,7 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
             <span className="material-symbols-outlined text-white/10 text-5xl mb-4">border_color</span>
             <h4 className="text-lg font-light text-white/70">Archive is currently blank</h4>
             <p className="text-sm text-white/30 mt-2 max-w-md mx-auto leading-relaxed">
-              No entries committed yet. Begin journaling to log your mental focus sessions, meditation paths, and synthesize custom NeuroSync files.
+              No entries committed yet. Begin journaling to log your mental focus sessions, meditation paths, and synthesize custom Cognistration files.
             </p>
           </Card>
         ) : (
@@ -242,7 +242,7 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
                       </div>
                     </div>
 
-                    {/* Mapped NeuroSync CTA card */}
+                    {/* Mapped Cognistration CTA card */}
                     <div className="md:w-72 flex flex-col justify-between p-5 bg-cyan-500/[0.02] border border-cyan-500/10 rounded-2xl shrink-0 relative overflow-hidden group/cta hover:border-cyan-500/30 transition-all">
                       <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/5 blur-[30px] pointer-events-none" />
                       

@@ -1,9 +1,11 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = {
+export const metadata = buildPageMetadata({
   title: 'Privacy Policy | Cognistration',
-  description: 'Privacy Policy for cognistration.com.'
-};
+  description: 'Privacy Policy for Cognistration on bishoptech.dev.',
+  path: '/privacy'
+});
 
 function Section({ title, children }) {
   return (
@@ -19,7 +21,7 @@ export default function PrivacyPage() {
     <LegalPageShell
       eyebrow="Privacy Policy"
       title="Cognistration Privacy Policy"
-      summary="Effective June 12, 2026. This policy explains what information Cognistration collects on cognistration.com, how it is used, and the choices available to users."
+      summary="Effective June 12, 2026. This policy explains what information Cognistration collects on bishoptech.dev, how it is used, and the choices available to users."
     >
       <Section title="Information we collect">
         <p>We collect information you provide directly, including account details, profile information, prompts, journal entries, saved tones, community posts, and support messages.</p>
@@ -38,8 +40,8 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="Cookies and local storage">
-        <p>cognistration.com uses cookies and local storage to keep users signed in, preserve playback state, enforce usage limits, and understand product activity.</p>
-        <p>You can control cookies through your browser settings, but disabling them may break parts of the service.</p>
+        <p>bishoptech.dev uses cookies and local storage to keep users signed in, preserve playback state, enforce usage limits, and understand product activity.</p>
+        <p>We also use a short-lived functional cookie for unauthenticated trial limits. You can control cookies through your browser settings, but disabling them may break parts of the service.</p>
       </Section>
 
       <Section title="Data sharing">
@@ -47,7 +49,7 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="Your choices">
-        <p>You may update account information from your profile settings where available. You may also request account or data deletion by contacting <a className="text-cyan-300 hover:text-cyan-200" href="mailto:privacy@cognistration.com">privacy@cognistration.com</a>.</p>
+        <p>You may update account information from your profile settings where available. You may also request account or data deletion by contacting <a className="text-cyan-300 hover:text-cyan-200" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
         <p>Some information may be retained when required for security, accounting, fraud prevention, dispute resolution, or legal compliance.</p>
       </Section>
 
@@ -61,7 +63,7 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="Contact">
-        <p>Questions about this policy can be sent to <a className="text-cyan-300 hover:text-cyan-200" href="mailto:privacy@cognistration.com">privacy@cognistration.com</a>.</p>
+        <p>Questions about this policy can be sent to <a className="text-cyan-300 hover:text-cyan-200" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
       </Section>
     </LegalPageShell>
   );

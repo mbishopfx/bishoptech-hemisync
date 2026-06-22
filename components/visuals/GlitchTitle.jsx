@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 
-export function GlitchTitle({ text = 'Bishop NeuroSync' }) {
+export function GlitchTitle({ text = 'Bishop Cognistration' }) {
   const glitch = {
     initial: { opacity: 0, y: 8, filter: 'blur(6px)' },
     animate: {

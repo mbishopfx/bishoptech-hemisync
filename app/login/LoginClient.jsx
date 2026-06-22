@@ -48,25 +48,25 @@ export function LoginClient() {
           className="w-full max-w-md bg-zinc-900/50 backdrop-blur-2xl border border-white/5 p-10 rounded-[3rem] shadow-2xl"
         >
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-light tracking-tight mb-2">Welcome Back</h1>
-            <p className="text-white/40 text-sm">Resume your neural synchronization.</p>
+            <h1 className="text-3xl font-light tracking-tight mb-2">Welcome back</h1>
+            <p className="text-white/40 text-sm">Sign in to continue your sessions and saved work.</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email Address</label>
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email address</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
-                placeholder="operator@neurosync.sys"
+                placeholder="name@company.com"
               />
             </div>
             
             <div className="space-y-2">
-              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Access Key</label>
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Password</label>
               <input 
                 type="password" 
                 value={password}
@@ -84,15 +84,26 @@ export function LoginClient() {
               disabled={loading}
               className="w-full py-4 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
             >
-              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Access System <ArrowRight className="size-4" /></>}
+              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Sign in <ArrowRight className="size-4" /></>}
             </button>
           </form>
 
           <div className="mt-8 pt-8 border-t border-white/5 text-center space-y-4">
-            <p className="text-white/30 text-xs">New operator? <Link href="/signup" className="text-cyan-400 hover:underline">Apply for credentials</Link></p>
+            <p className="text-white/30 text-xs">Need an account? <Link href="/signup" className="text-cyan-400 hover:underline">Create one</Link></p>
           </div>
         </motion.div>
       </main>
+
+      <footer className="pb-12 px-6">
+        <div className="max-w-md mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-mono uppercase tracking-[0.28em] text-white/25 text-center">
+          <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+          <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+          <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+          <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
+          <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+          <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+        </div>
+      </footer>
     </div>
   );
 }

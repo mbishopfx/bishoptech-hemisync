@@ -1,11 +1,11 @@
 # Agentic Platform Redesign & Tone Library Plan
 
 ## Background & Motivation
-The goal is to transition the platform to a minimalist, "agentic" look and feel inspired by `lovable.dev`. The core user experience will be simplified to a central, plain-text input on the landing page where users describe how they are feeling. An LLM will parse this mood and instantly orchestrate the appropriate 3-minute binaural/iso-chronic tone to help them re-center. 
+The goal is to transition Cognistration to a minimalist, "agentic" look and feel inspired by `lovable.dev`. The core user experience will be simplified to a central, plain-text input on the landing page where users describe how they are feeling. An LLM will parse this mood and instantly orchestrate the appropriate 3-minute binaural/iso-chronic tone to help them re-center.
 
 ## Scope & Impact
 - **Audio Library:** Pre-generation of ~100 distinct 3-minute tracks spanning various brain states (Alpha, Beta, Theta, Gamma, Delta).
-- **Agentic AI:** Integration with Gemini API (`gemini-3-flash-preview`) to match natural language mood inputs to the pre-generated audio tracks.
+- **Agentic AI:** Integration with Vercel AI Gateway to match natural language mood inputs to the pre-generated audio tracks.
 - **Access Control:** Allowing exactly 1 free generation without an account, enforced via `localStorage`, followed by a signup wall.
 - **UI/UX Redesign:** A complete visual overhaul of the landing page and the logged-in dashboard to reflect the new agentic design language (dark mode, glassmorphism, Framer Motion animations, minimalist layout), moving away from default Shadcn styling.
 

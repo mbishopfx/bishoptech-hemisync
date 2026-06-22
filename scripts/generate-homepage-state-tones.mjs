@@ -14,8 +14,16 @@ const TONES = [
   { fileName: 'delta-rest.wav', baseFreqHz: 108, targetHz: 2.8, durationSec: 60 },
   { fileName: 'theta-drift.wav', baseFreqHz: 192, targetHz: 5.2, durationSec: 60 },
   { fileName: 'alpha-focus.wav', baseFreqHz: 220, targetHz: 10, durationSec: 60 },
+  { fileName: 'delta-cognistration-anchor.wav', baseFreqHz: 112, targetHz: 2.6, durationSec: 60 },
+  { fileName: 'theta-liminal-settle.wav', baseFreqHz: 200, targetHz: 6.1, durationSec: 60 },
+  { fileName: 'theta-quiet-window.wav', baseFreqHz: 204, targetHz: 5.7, durationSec: 60 },
+  { fileName: 'alpha-clear-window.wav', baseFreqHz: 232, targetHz: 9.2, durationSec: 60 },
+  { fileName: 'alpha-open-channel.wav', baseFreqHz: 228, targetHz: 8.8, durationSec: 60 },
+  { fileName: 'theta-cognistration-arc.wav', baseFreqHz: 208, targetHz: 6.3, durationSec: 60 },
+  { fileName: 'alpha-cognistration-aperture.wav', baseFreqHz: 236, targetHz: 9.6, durationSec: 60 },
   { fileName: 'beta-drive.wav', baseFreqHz: 286, targetHz: 17.2, durationSec: 60 },
-  { fileName: 'gamma-clarity.wav', baseFreqHz: 392, targetHz: 39.5, durationSec: 60 }
+  { fileName: 'gamma-clarity.wav', baseFreqHz: 392, targetHz: 39.5, durationSec: 60 },
+  { fileName: 'gamma-cognistration-beacon.wav', baseFreqHz: 396, targetHz: 41.2, durationSec: 60 }
 ];
 
 function clamp(value, min, max) {

@@ -4,7 +4,12 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(req) {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripeSecret = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecret) {
+      return NextResponse.json({ error: 'Stripe secret missing' }, { status: 503 });
+    }
+
+    const stripe = new Stripe(stripeSecret);
     const { priceId, planId, mode: requestedMode = 'subscription' } = await req.json();
 
     if (!priceId) {
@@ -52,8 +57,8 @@ export async function POST(req) {
               }
             }
           }),
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://neurosync.bishoptech.dev'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://neurosync.bishoptech.dev'}/pricing`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev'}/pricing`,
       client_reference_id: user.id,
       customer_email: user.email,
       metadata: {

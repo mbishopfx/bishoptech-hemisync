@@ -9,14 +9,14 @@ import { maybeProxyToBackend } from '@/lib/http/backend-proxy';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-async function ensureUserProfile(supabase, userId, email) {
+async function ensureUserProfile(supabase, userId) {
     const { data } = await supabase
     .from('profiles')
     .select('id')
     .eq('id', userId)
     .maybeSingle();
   if (data) return;
-  await supabase.from('profiles').insert({ id: userId, email });
+  await supabase.from('profiles').insert({ id: userId });
 }
 
 async function ensureUserBucket(supabase, userId) {
@@ -41,7 +41,7 @@ export async function POST(req) {
     const parsedSpec = sessionSpec ? SessionSpecSchema.parse(sessionSpec) : SessionSpecSchema.parse({});
 
     const supabase = getSupabaseAdmin();
-    await ensureUserProfile(supabase, userId, body?.email);
+    await ensureUserProfile(supabase, userId);
     await ensureUserBucket(supabase, userId);
 
     let sessionId = body?.sessionId;

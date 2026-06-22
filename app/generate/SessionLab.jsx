@@ -147,7 +147,7 @@ function SignalBars({ active, gradient, count = 16, compact = false }) {
 export function SessionLab() {
   const [selectedTemplateId, setSelectedTemplateId] = useState(consumerTemplateOptions[0].id);
   const [spec, setSpec] = useState(defaultSessionSpec);
-  const [status, setStatus] = useState('30 curated NeuroSync templates are ready.');
+  const [status, setStatus] = useState('30 curated Cognistration templates are ready.');
   const [rendering, setRendering] = useState(false);
   const [renderMessageIndex, setRenderMessageIndex] = useState(0);
   const [renderResult, setRenderResult] = useState(null);
@@ -594,7 +594,7 @@ export function SessionLab() {
       <Card className="glass-emphasis border border-white/10 p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold text-white">Your NeuroSync Builder</h2>
+            <h2 className="text-xl font-semibold text-white">Your Cognistration Builder</h2>
             <p className="text-sm text-white/70">
               Choose from {consumerTemplateOptions.length} curated templates, hear a clean 2 minute carrier sample,
               then render the full stereo session.
@@ -1075,7 +1075,7 @@ export function SessionLab() {
                 <div className="flex flex-wrap gap-3">
                   <a
                     href={renderResult.wav}
-                    download="neurosync-session.wav"
+                    download="cognistration-session.wav"
                     className="rounded-md bg-sky-400/90 px-3 py-1 text-sm font-medium text-slate-900 hover:bg-sky-300"
                   >
                     Download WAV
@@ -1083,7 +1083,7 @@ export function SessionLab() {
                   {renderResult.mp3 && (
                     <a
                       href={renderResult.mp3}
-                      download="neurosync-session.mp3"
+                      download="cognistration-session.mp3"
                       className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20"
                     >
                       Download MP3

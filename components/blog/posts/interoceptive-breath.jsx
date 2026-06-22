@@ -5,7 +5,7 @@ export const interoceptiveBreathPost = interoceptiveBreathPostMeta;
 
 const introParagraphs = [
   "Breathing is the rare control surface the nervous system leaves partly in your hands. It is voluntary enough to practice, involuntary enough to keep you alive, and close enough to the machinery of arousal that even small changes can alter the feel of consciousness.",
-  "That is why breath work matters in a NeuroSync context. The sound is only one part of the state stack. Respiration changes CO2 tolerance, autonomic tone, interoceptive precision, and the amount of background noise the mind has to solve before attention can settle.",
+  "That is why breath work matters in a Cognistration context. The sound is only one part of the state stack. Respiration changes CO2 tolerance, autonomic tone, interoceptive precision, and the amount of background noise the mind has to solve before attention can settle.",
   "The serious claim is not that breath makes everyone mystical. The serious claim is that breathing can change the confidence level of the body’s predictions, and that shift can make awareness feel steadier, quieter, or more internally spacious.",
 ];
 
@@ -100,7 +100,7 @@ const evidence = [
     href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10200219/",
   },
   {
-    title: "Analysis and Assessment of Gateway Process — U.S. Army/CIA memo (1983)",
+    title: "Analysis of a historical altered-state memo (1983)",
     note:
       "A reminder that state-change practices were taken seriously enough to be modeled in systems language, even if the metaphysical claims remained unproven.",
     href: "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo152943/pdf/GOVPUB-D101-PURL-gpo152943.pdf",
@@ -183,7 +183,7 @@ export default function InteroceptiveBreathPost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            NeuroSync Blog
+            Cognistration Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {interoceptiveBreathPost.title}

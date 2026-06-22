@@ -1,6 +1,13 @@
-# NeuroSync Studio
+# Cognistration
 
 Premium beats-only neural bi-directional acoustic frequencies generator built with Next.js, with Vercel handling the frontend and Railway handling the render backend.
+
+## Operating loops
+
+- `loops/state.md` is the resumable operating memory.
+- `loops/morning-loop.md` handles tone growth, blog sync, and build readiness.
+- `loops/evening-loop.md` handles backend section audits and verification.
+- `loops/backend-rotation.md` defines the section rotation map.
 
 ## What the app does
 
@@ -32,9 +39,7 @@ Copy `.env.example` to `.env.local` and fill in the values you already use:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `OPENAI_API_KEY`
-- `GEMINI_API_KEY`
-- `AI_PROVIDER` (`openai` or `gemini`)
+- `AI_GATEWAY_API_KEY`
 - `NEXT_PUBLIC_DEMO_USER_ID`
 
 Optional for persistent render storage:

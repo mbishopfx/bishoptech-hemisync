@@ -8,7 +8,7 @@ const sections = [
     title: "The hook: when a sound can shift a state, the whole room changes",
     paragraphs: [
       "Here is the weird part: your brain is not a fixed object. It is more like a live mixing board, constantly turning dials up and down depending on what it hears, expects, and rehearses. That means a tone, a breath pattern, a rhythm, or a change in attention can move the whole system. Not magically. Mechanically.",
-      "That is why binaural beats, the Gateway Process memo, and even the old Stargate remote viewing program still refuse to die. They sit at the crossroads of something very human: the urge to ask whether consciousness is trapped in the skull or whether the skull is just the interface panel. One camp wants proof. The other wants a door. Reality, annoyingly, may be wearing both jackets at once.",
+      "That is why binaural beats, the historical altered-state memo, and even the old historical remote-viewing program still refuse to die. They sit at the crossroads of something very human: the urge to ask whether consciousness is trapped in the skull or whether the skull is just the interface panel. One camp wants proof. The other wants a door. Reality, annoyingly, may be wearing both jackets at once.",
       "The safest way to read this material is not as a promise of psychic superpowers, but as a clue that human consciousness is more state-dependent than most people think. Change the signal, and you can change the feeling of being you. That alone is wild enough to be worth studying.",
     ],
     callout: {
@@ -30,15 +30,15 @@ const sections = [
     ],
   },
   {
-    title: "What the Gateway Process memo actually did",
+    title: "What the historical altered-state memo actually did",
     paragraphs: [
-      "The 1983 Army/CIA memo on the Gateway Process is fascinating precisely because it reads like a serious attempt to translate an altered-state tradition into the language of physics and systems theory. It discusses early bi-directional acoustic synchronization methods, then compares the approach with hypnosis, transcendental meditation, and biofeedback. It is trying to map a route from ordinary cognition to altered perception without pretending the subject is simple.",
+      "The 1983 historical altered-state memo is fascinating precisely because it reads like a serious attempt to translate an altered-state tradition into the language of physics and systems theory. It discusses early bi-directional acoustic synchronization methods, then compares the approach with hypnosis, transcendental meditation, and biofeedback. It is trying to map a route from ordinary cognition to altered perception without pretending the subject is simple.",
       "On page one, the author states that the analysis had to lean on biomedical models, quantum mechanics, and a lucid model of hemispheric synchronization to explain how consciousness might function. That does not make the memo automatically right; it makes it intellectually ambitious. The document is basically saying: if we are going to understand these experiences, we need a framework wide enough to hold them.",
       "This is where the famous metaphysical language enters the conversation. The memo borrows from thinkers like Itzhak Bentov and from later ideas associated with the holographic brain and implicate order. In plain English: maybe reality is not experienced as a pile of separate objects, but as a compressed projection of a much larger information field. That is a theory, not a verdict. But it is a theory with enough internal drama that people keep rereading it like a lost chapter from a spy novel.",
     ],
     callout: {
       label: "Important distinction",
-      text: "The Gateway memo is a declassified analytical document, not proof that the universe is holographic. Its value is that it shows how seriously some institutions were willing to think about altered states.",
+      text: "The Gateway memo is a historical analytical document, not proof that the universe is holographic. Its value is that it shows how seriously some institutions were willing to think about altered states.",
     },
   },
   {
@@ -50,10 +50,10 @@ const sections = [
     ],
   },
   {
-    title: "Project Stargate: the government tried remote viewing, then graded the homework",
+    title: "Historical remote-viewing research: what got funded, and what did not hold up",
     paragraphs: [
-      "Project Stargate is the part of this story that always gets the eyebrows moving. The U.S. government funded remote viewing research for years, beginning in the 1970s and continuing into the 1990s. That does not prove psychic spying worked. It does prove that somebody in the system thought the question was important enough to investigate instead of just laugh at.",
-      "The strongest sober summary is this: the AIR evaluation in 1995 recommended terminating the program, and the CIA's own retrospective stance was that there was no case in which ESP data provided intelligence that guided operations. That is the line between a fascinating research program and an operational tool. Curiosity got the funding. Reliability did not survive the audit.",
+      "Historical remote-viewing research is the part of this story that always gets the eyebrows moving. Researchers and institutions funded the work for years, beginning in the 1970s and continuing into the 1990s. That does not prove psychic spying worked. It does prove that somebody thought the question was important enough to investigate instead of just laugh at.",
+      "The strongest sober summary is this: the 1995 evaluation recommended terminating the program, and the retrospective stance was that there was no case in which the data guided intelligence operations. That is the line between a fascinating research program and an operational tool. Curiosity got the funding. Reliability did not survive the audit.",
       "And that is the useful lesson. A good mystery can survive a bad result. It just cannot pretend the bad result was a win. Stargate becomes more interesting, not less, when we admit that the reports were mixed, the claims were controversial, and the institutional appetite for certainty was ultimately smaller than the legend that grew around the program.",
     ],
     subheading: "Why people still care",
@@ -98,15 +98,15 @@ const evidence = [
     href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10200219/",
   },
   {
-    title: "Analysis and Assessment of Gateway Process — U.S. Army/CIA memo (1983)",
+    title: "Analysis of a historical altered-state memo (1983)",
     note:
-      "The memo explicitly discusses Gateway, Hemi-Sync, hypnosis, transcendental meditation, biofeedback, hemispheric synchronization, and the challenge of describing altered states in scientific language.",
+      "The memo explicitly discusses Gateway, historical synchronization, hypnosis, transcendental meditation, biofeedback, hemispheric synchronization, and the challenge of describing altered states in scientific language.",
     href: "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo152943/pdf/GOVPUB-D101-PURL-gpo152943.pdf",
   },
   {
     title: "STAR GATE [Controlled Remote Viewing] — Federation of American Scientists summary",
     note:
-      "The FAS summary notes that AIR's 1995 evaluation recommended terminating the program and that CIA concluded there was no case where ESP data guided intelligence operations.",
+      "The FAS summary notes that the 1995 evaluation recommended terminating the program and that the retrospective conclusion was that there was no case where the data guided intelligence operations.",
     href: "https://irp.fas.org/program/collect/stargate.htm",
   },
   {
@@ -181,7 +181,7 @@ export default function ConsciousnessMechanicsPost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            NeuroSync Blog
+            Cognistration Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {consciousnessMechanicsPost.title}
@@ -210,7 +210,7 @@ export default function ConsciousnessMechanicsPost() {
             whole system into a different mode of self-experience.
           </p>
           <p>
-            That is why binaural beats, the Gateway Process memo, and Project
+            That is why binaural beats, the historical altered-state memo, and Project
             Stargate keep showing up in conversations about altered states. They
             are three different ways of asking the same question: if you can
             steer the signal, can you steer the state?
@@ -284,7 +284,7 @@ export default function ConsciousnessMechanicsPost() {
             wants to learn how state changes happen in real life.
           </p>
           <p>
-            The declassified documents are valuable not because they prove the
+            The historical documents are valuable not because they prove the
             paranormal, but because they show how far serious people were willing
             to go in order to model experiences that felt bigger than ordinary
             language. The lab studies are valuable because they keep the story

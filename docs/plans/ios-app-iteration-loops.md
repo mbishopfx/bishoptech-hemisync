@@ -1,8 +1,8 @@
-# BishopTech HemiSync iOS App Iteration Loops
+# Cognistration iOS App Iteration Loops
 
-> **For Hermes:** Use this as the operating plan for turning BishopTech HemiSync into a sleek iOS app with a free tier, a paid tier, and fast iteration loops.
+> **For Hermes:** Use this as the operating plan for turning Cognistration into a sleek iOS app with a free tier, a paid tier, and fast iteration loops.
 
-**Goal:** Ship a polished iOS app version of BishopTech HemiSync that feels premium, smooth, and simple while using a repeatable loop to improve activation, retention, and monetization.
+**Goal:** Ship a polished iOS app version of Cognistration that feels premium, smooth, and simple while using a repeatable loop to improve activation, retention, and monetization.
 
 **Architecture:**
 Start with one core iOS experience and one clear upgrade path. Keep the app focused on the smallest valuable loop: sign up, try the core experience, hit a free-tier limit, understand the benefit of upgrading, and convert when ready. Build in short feedback cycles so every release teaches us something about onboarding, pricing, usage limits, and the UX polish needed to make the app feel native and delightful.
@@ -82,7 +82,7 @@ Success signal:
 - The layout feels intentional on iPhone size screens
 
 ### Loop 2: Core Value Flow
-**Goal:** Deliver the core HemiSync value in the fewest steps possible.
+**Goal:** Deliver the core Cognistration value in the fewest steps possible.
 
 Focus:
 - One primary action

@@ -16,26 +16,23 @@ const STATES = [
   { name: 'gamma', min: 30, max: 50, baseFreqs: [350, 400, 440] }
 ];
 
-const NOISE_TYPES = ['pink', 'brown', 'none'];
-
 function generateCatalog() {
   const catalog = [];
   for (const state of STATES) {
     for (let i = 0; i < 20; i++) {
       const baseFreq = state.baseFreqs[i % state.baseFreqs.length];
       const targetHz = state.min + (Math.random() * (state.max - state.min));
-      const noiseType = NOISE_TYPES[i % NOISE_TYPES.length];
-      
+
       catalog.push({
         name: `${state.name.charAt(0).toUpperCase() + state.name.slice(1)} Session ${i + 1}`,
         state: state.name,
         baseFreqHz: baseFreq,
         targetHz: parseFloat(targetHz.toFixed(2)),
-        noiseType: noiseType === 'none' ? null : noiseType,
+        noiseType: null,
         modes: {
           binaural: true,
-          monaural: i % 4 === 0,
-          isochronic: i % 5 === 0
+          monaural: false,
+          isochronic: false
         },
         durationSec: 180
       });

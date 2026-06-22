@@ -25,7 +25,7 @@ const SOURCE_TONES = [
     name: 'Deep Focus Alpha',
     shortLabel: 'Bass Boost',
     fileName: 'Deep Focus Alpha (Bass Boost).mp3',
-    summary: 'A warmer alpha preview with a stronger low-end bed for a grounded hemisync-style feel.'
+    summary: 'A warmer alpha preview with a stronger low-end bed for a grounded binaural feel.'
   },
   {
     id: 'deep-focus-alpha-rhythmic-panning',
@@ -62,7 +62,7 @@ const STATE_VARIANTS = [
     deltaHzTo: 2.8,
     noise: { type: 'brown', mixDb: -28 },
     modes: { binaural: true, monaural: false, isochronic: false },
-    modeLabel: 'Hemisync preview • delta'
+    modeLabel: 'Cognistration preview • delta'
   },
   {
     id: 'theta',
@@ -75,7 +75,7 @@ const STATE_VARIANTS = [
     deltaHzTo: 5.4,
     noise: { type: 'pink', mixDb: -26 },
     modes: { binaural: true, monaural: true, isochronic: false },
-    modeLabel: 'Hemisync preview • theta'
+    modeLabel: 'Cognistration preview • theta'
   },
   {
     id: 'alpha',
@@ -88,7 +88,7 @@ const STATE_VARIANTS = [
     deltaHzTo: 8,
     noise: { type: 'pink', mixDb: -24 },
     modes: { binaural: true, monaural: false, isochronic: true },
-    modeLabel: 'Hemisync preview • alpha'
+    modeLabel: 'Cognistration preview • alpha'
   },
   {
     id: 'beta',
@@ -101,7 +101,7 @@ const STATE_VARIANTS = [
     deltaHzTo: 14,
     noise: { type: 'white', mixDb: -28 },
     modes: { binaural: true, monaural: true, isochronic: false },
-    modeLabel: 'Hemisync preview • beta'
+    modeLabel: 'Cognistration preview • beta'
   }
 ];
 

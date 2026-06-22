@@ -88,7 +88,7 @@ export async function POST(req) {
     const musL = imported.left.subarray(0, totalFrames);
     const musR = imported.right.subarray(0, totalFrames);
 
-    // 2) Synthesize neurosync overlay fixed delta frequency with isochronic gate at BPM
+    // 2) Synthesize Cognistration overlay fixed delta frequency with isochronic gate at BPM
     const bed = await buildSessionBed({
       lengthSec: totalLength,
       sampleRate: targetRate,

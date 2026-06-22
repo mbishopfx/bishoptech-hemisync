@@ -5,48 +5,49 @@ import { motion } from 'framer-motion';
 import { Headphones, Target, Compass, Moon, Wind, Sliders, EyeOff, Check, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { buildAbsoluteUrl } from '@/lib/seo';
 
 const protocols = [
   {
     icon: Compass,
-    title: 'Horizontal Alignment',
-    description: 'Lay down flat on a bed or a highly supportive recliner. Eliminate physical motor tension. Restricting somatic feedback minimizes motor cortex signals, freeing up maximum neural bandwidth for auditory phase-locking.',
+    title: 'Comfortable setup',
+    description: 'Use a quiet, comfortable place where you can relax without interruption. A stable posture and fewer distractions make it easier to settle in.',
     accent: 'from-cyan-500/20 to-cyan-500/0'
   },
   {
     icon: Target,
-    title: 'Intentional Lock',
-    description: 'Before booting the frequency, formulate a single, clear intention. Hold it in your mind for 60 seconds (e.g., "I will sink into deep theta rest," or "I will lock in analytical synthesis"). Intention acts as an anchor for the entrained state.',
+    title: 'Set one intention',
+    description: 'Before you start, pick one simple goal: focus, rest, or a calmer evening. A clear intention helps the session feel more purposeful.',
     accent: 'from-purple-500/20 to-purple-500/0'
   },
   {
     icon: Headphones,
-    title: 'Stereo Isolation',
-    description: 'True binaural synchronization requires absolute channel isolation. Use high-quality over-ear noise-canceling headphones. Standard speakers blend the frequencies in the air, neutralizing the phase-following response before it reaches your ears.',
+    title: 'Use headphones',
+    description: 'Headphones usually give the cleanest listening experience. They help keep the audio focused and comfortable.',
     accent: 'from-pink-500/20 to-pink-500/0'
   },
   {
     icon: Moon,
-    title: 'Circadian Syncing',
-    description: 'Frequencies are highly sensitive to biological clocks. Use Delta/Theta waves immediately before sleeping or upon waking to catch natural hypnagogic pathways. Reserve Alpha/Beta waves for mid-day focus windows.',
+    title: 'Match the time of day',
+    description: 'Choose a session that fits your moment: lighter focus sessions for daytime and softer ones for wind-down or rest.',
     accent: 'from-blue-500/20 to-blue-500/0'
   },
   {
     icon: Wind,
-    title: 'Diaphragmatic Respiration',
-    description: 'Engage in slow, deep box breathing (4s inhale, 4s hold, 4s exhale, 4s hold). Lowering your heart rate reduces autonomic nervous system background static, allowing your auditory pathway to lock onto the binaural difference waves significantly faster.',
+    title: 'Slow breathing',
+    description: 'A few slow breaths can help you unwind before listening and make the session feel easier to settle into.',
     accent: 'from-teal-500/20 to-teal-500/0'
   },
   {
     icon: Sliders,
-    title: 'Carrier Level Control',
-    description: 'Maintain low, comfortable volume thresholds (around 60-65dB). Binaural beats are carrier waves; they do not need to be loud to entrain the brain. High volume generates auditory stress and ear fatigue, blocking synchronization.',
+    title: 'Keep the volume comfortable',
+    description: 'The best setting is usually a moderate, comfortable volume. You should be able to relax, not strain.',
     accent: 'from-indigo-500/20 to-indigo-500/0'
   },
   {
     icon: EyeOff,
-    title: 'Surrender Analytical Control',
-    description: 'Do not actively listen for or analyze the pitch difference. Let the sound wash over your auditory cortex. The superior olivary complex calculates the phase differences autonomously. Intellectual effort blocks the shift by firing active beta waves.',
+    title: 'Let it be simple',
+    description: 'Try not to overanalyze the session. Let it play in the background and notice how it feels over time.',
     accent: 'from-emerald-500/20 to-emerald-500/0'
   }
 ];
@@ -112,8 +113,20 @@ function UnicodeCyberBadge({ icon: IconComponent, index }) {
 }
 
 export default function TutorialPage() {
+  const tutorialJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Tutorial | Cognistration',
+    url: buildAbsoluteUrl('/tutorial'),
+    description: 'A calm setup guide for Cognistration listening sessions.'
+  };
+
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(tutorialJsonLd) }}
+      />
       <PublicHeader />
 
       {/* Ambient background particles */}
@@ -135,7 +148,7 @@ export default function TutorialPage() {
             Optimal <span className="text-white/20 italic">resonance.</span>
           </motion.h1>
           <p className="text-white/40 text-lg md:text-xl font-light max-w-xl mx-auto leading-relaxed">
-            Follow this calibrated guide to synchronize your brain hemispheres and unlock deep declassified states of consciousness.
+            Follow this simple guide to get the most from a calm, focused listening session.
           </p>
         </div>
 
@@ -180,31 +193,31 @@ export default function TutorialPage() {
           <div className="absolute inset-0 bg-purple-500/5 blur-[80px] pointer-events-none" />
           <div className="relative grid gap-10 lg:grid-cols-2 items-center">
             <div className="space-y-6">
-              <p className="text-[10px] font-mono text-purple-400 uppercase tracking-[0.4em]">Fast-Track Entrainment</p>
-              <h2 className="text-3xl md:text-5xl font-light tracking-tight text-white">Hemispheric Alignment accelerators.</h2>
+              <p className="text-[10px] font-mono text-purple-400 uppercase tracking-[0.4em]">Listening Basics</p>
+              <h2 className="text-3xl md:text-5xl font-light tracking-tight text-white">Simple setup helps sessions feel better.</h2>
               <p className="text-sm leading-relaxed text-white/50 font-light">
-                To sink into target brainwave baselines even faster, combine audio frequencies with these physical and environmental practices:
+                A few small habits can make a listening session calmer and more consistent:
               </p>
               <ul className="space-y-4 text-xs font-mono text-white/70 uppercase tracking-wider">
                 <li className="flex items-center gap-3">
-                  <span className="size-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]" /> Use a sleep mask or completely darken the room.
+                  <span className="size-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]" /> Use a quiet space with fewer distractions.
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="size-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.6)]" /> Avoid listening within 60 minutes of large meals.
+                  <span className="size-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.6)]" /> Pick a time of day that matches your goal.
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="size-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]" /> Set your goal or intention out loud before the session.
+                  <span className="size-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]" /> Set one simple intention before you press play.
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="size-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.6)]" /> Hydrate with water prior to listening to aid neural conductivity.
+                  <span className="size-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.6)]" /> Keep the volume comfortable and easy on the ears.
                 </li>
               </ul>
             </div>
 
             <div className="rounded-[2.5rem] border border-white/5 bg-zinc-950/40 p-8 md:p-10 backdrop-blur-sm space-y-6">
-              <h3 className="text-xl font-medium text-white tracking-tight">The Science is Simple.</h3>
+              <h3 className="text-xl font-medium text-white tracking-tight">The idea is simple.</h3>
               <p className="text-sm text-white/40 leading-relaxed font-light">
-                Our frequency generator isolates phase structures. Your auditory nerve acts as a bridge, and your neural pathways adapt via the Frequency-Following Response. There is no magic—only declassified neuro-acoustics.
+                Cognistration is designed to make listening feel calm, intentional, and repeatable. The value is in a clear routine, a comfortable setup, and a premium audio experience.
               </p>
               <div className="flex gap-4">
                 <Link
@@ -227,9 +240,9 @@ export default function TutorialPage() {
         {/* Closing CTA */}
         <section className="text-center py-20 bg-zinc-900/30 rounded-[4rem] border border-white/5 relative overflow-hidden">
           <div className="absolute inset-0 bg-cyan-500/5 blur-[100px] pointer-events-none" />
-          <h2 className="text-3xl md:text-5xl font-light tracking-tighter mb-4">Start your synchronization sequence.</h2>
+          <h2 className="text-3xl md:text-5xl font-light tracking-tighter mb-4">Start a quieter session.</h2>
           <p className="text-white/40 text-sm max-w-md mx-auto mb-10 font-light leading-relaxed">
-            Begin with a quiet, undisturbed 15-minute slot. Choose your state, put on your headphones, and align your consciousness.
+            Begin with a quiet 15-minute slot. Put on your headphones, choose your intention, and see how the session feels.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-xs mx-auto">
             <Link 
@@ -246,12 +259,15 @@ export default function TutorialPage() {
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
             <span>Optimal Protocol Node</span>
-            <span>NeuroSync Console v1.0.5</span>
+            <span>Cognistration Console v1.0.5</span>
           </div>
           <div className="flex gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <span>&copy; 2026 NeuroSync.sys</span>
+            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <span>&copy; 2026 Cognistration.com</span>
           </div>
         </div>
       </footer>

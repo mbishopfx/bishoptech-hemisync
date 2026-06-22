@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { FollowButton } from "@/components/social/follow-button";
+import { buildPageMetadata } from "@/lib/seo";
+import { PublicTrustFooter } from "@/components/layout/PublicTrustFooter";
 import {
   Play,
   ArrowLeft,
@@ -18,16 +20,40 @@ import {
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
+export const metadata = buildPageMetadata({
+  title: "Community Feed | Cognistration",
+  description: "Public tones and updates shared by Cognistration members.",
+  path: "/community"
+});
+
+const hasSupabaseConfig = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
 
 async function getCommunityFeed() {
+  if (!hasSupabaseConfig) {
+    return [];
+  }
+
   const supabase = getSupabaseAdmin();
-  const { data } = await supabase
-    .from("feed_posts")
-    .select(feedPostSelect())
-    .eq("visibility", "public")
-    .order("created_at", { ascending: false })
-    .limit(100);
-  return data || [];
+  if (!supabase) {
+    return [];
+  }
+
+  try {
+    const { data } = await supabase
+      .from("feed_posts")
+      .select(feedPostSelect())
+      .eq("visibility", "public")
+      .order("created_at", { ascending: false })
+      .limit(100);
+    return data || [];
+  } catch (error) {
+    console.error("Community feed lookup failed:", error);
+    return [];
+  }
 }
 
 export default async function CommunityPage() {
@@ -75,9 +101,17 @@ export default async function CommunityPage() {
     )
     .slice(0, 3);
   const featuredCreator = creatorHighlights[0] || null;
-  const supabaseServer = getSupabaseServerClient();
-  const { data: sessionData } = await supabaseServer.auth.getUser();
-  const currentUser = sessionData?.user || null;
+  let currentUser = null;
+
+  if (hasSupabaseConfig) {
+    try {
+      const supabaseServer = getSupabaseServerClient();
+      const { data: sessionData } = await supabaseServer.auth.getUser();
+      currentUser = sessionData?.user || null;
+    } catch (error) {
+      console.error("Community session lookup failed:", error);
+    }
+  }
   const canFollowFeatured = Boolean(
     currentUser &&
       featuredCreator?.profile?.id &&
@@ -85,16 +119,22 @@ export default async function CommunityPage() {
   );
   let featuredFollowing = false;
 
-  if (canFollowFeatured) {
-    const supabase = getSupabaseAdmin();
-    const { data: followRow } = await supabase
-      .from("follows")
-      .select("id")
-      .eq("follower_id", currentUser.id)
-      .eq("following_id", featuredCreator.profile.id)
-      .maybeSingle();
+  if (canFollowFeatured && hasSupabaseConfig) {
+    try {
+      const supabase = getSupabaseAdmin();
+      if (supabase) {
+        const { data: followRow } = await supabase
+          .from("follows")
+          .select("id")
+          .eq("follower_id", currentUser.id)
+          .eq("following_id", featuredCreator.profile.id)
+          .maybeSingle();
 
-    featuredFollowing = Boolean(followRow);
+        featuredFollowing = Boolean(followRow);
+      }
+    } catch (error) {
+      console.error("Community follow lookup failed:", error);
+    }
   }
 
   const freshVoiceHighlights = Array.from(
@@ -127,16 +167,22 @@ export default async function CommunityPage() {
   );
   const followingProfileIds = new Set();
 
-  if (currentUser && highlightProfileIds.length > 0) {
-    const supabase = getSupabaseAdmin();
-    const { data: followRows } = await supabase
-      .from("follows")
-      .select("following_id")
-      .eq("follower_id", currentUser.id)
-      .in("following_id", highlightProfileIds);
+  if (currentUser && highlightProfileIds.length > 0 && hasSupabaseConfig) {
+    try {
+      const supabase = getSupabaseAdmin();
+      if (supabase) {
+        const { data: followRows } = await supabase
+          .from("follows")
+          .select("following_id")
+          .eq("follower_id", currentUser.id)
+          .in("following_id", highlightProfileIds);
 
-    for (const row of followRows || []) {
-      followingProfileIds.add(row.following_id);
+        for (const row of followRows || []) {
+          followingProfileIds.add(row.following_id);
+        }
+      }
+    } catch (error) {
+      console.error("Community highlight follow lookup failed:", error);
     }
   }
 
@@ -169,7 +215,7 @@ export default async function CommunityPage() {
               Global Feed
             </h1>
             <p className="mt-2 text-muted">
-              Public tones and updates shared by NeuroSync members.
+              Public tones and updates shared by Cognistration members.
             </p>
           </div>
           <Button asChild variant="secondary">
@@ -241,6 +287,22 @@ export default async function CommunityPage() {
             )}
           </div>
         </Card>
+
+        {!hasSupabaseConfig && (
+          <Card className="p-6 bg-[var(--card-bg)] shadow-premium border-none">
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)]">
+              Community unavailable
+            </p>
+            <h2 className="mt-3 text-2xl font-display text-foreground">
+              Public community data is offline in this environment.
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
+              The page stays live for navigation and search, but feed data and
+              follow state require the Supabase environment variables used in
+              production.
+            </p>
+          </Card>
+        )}
 
         <Card className="p-6 bg-[var(--card-bg)] shadow-premium border-none">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -631,6 +693,8 @@ export default async function CommunityPage() {
           )}
         </div>
       </div>
+
+      <PublicTrustFooter note="Community visitors can review policy, safety, and contact details below." />
     </main>
   );
 }

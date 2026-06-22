@@ -18,7 +18,7 @@ export function HeroImage() {
       >
         <Image
           src={heroImg}
-          alt="Bishop NeuroSync"
+          alt="Bishop Cognistration"
           priority
           className="rounded-xl bg-transparent"
         />

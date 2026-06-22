@@ -5,7 +5,7 @@ export const hemisphericCoherencePost = hemisphericCoherencePostMeta;
 
 const introParagraphs = [
   "The phrase hemispheric coherence sounds larger than it is. In most serious neuroscience contexts, it does not mean that the brain becomes a single humming crystal. It means that timing relationships across distributed networks become more orderly for a while, and that order can change what consciousness feels like from the inside.",
-  "That distinction matters because NeuroSync, binaural stimulation, and related rhythm practices are easy to oversell. The effects, when they appear, are usually about coordination, not transformation into a different species. Coherence is not enlightenment. It is a temporary reduction in internal conflict that can make attention feel cleaner, quieter, and easier to direct.",
+  "That distinction matters because Cognistration, binaural stimulation, and related rhythm practices are easy to oversell. The effects, when they appear, are usually about coordination, not transformation into a different species. Coherence is not enlightenment. It is a temporary reduction in internal conflict that can make attention feel cleaner, quieter, and easier to direct.",
   "If you keep the mechanism honest, the material gets more interesting. The useful question is not whether synchrony makes people transcend the body. The useful question is whether synchronized timing can reduce neural friction enough to alter the stability of self-experience.",
 ];
 
@@ -15,7 +15,7 @@ const sections = [
     paragraphs: [
       "A brain that feels coherent is not necessarily a brain that knows more. It is often just a brain that is wasting less energy fighting itself. That is a different claim, and it is the one the data can actually support.",
       "When rhythms line up across regions, the system can pass information with less delay and less ambiguity. The subjective result may be better focus, less mental noise, or a strange feeling of inward spaciousness. None of that requires supernatural explanations. It requires timing.",
-      "This is why people keep returning to binaural beats, hemispheric synchronization, and declassified altered-state research. They are all variations on the same hope: if the signal is cleaner, maybe the state becomes more tractable.",
+      "This is why people keep returning to binaural beats, hemispheric synchronization, and historical altered-state research. They are all variations on the same hope: if the signal is cleaner, maybe the state becomes more tractable.",
     ],
     callout: {
       label: "Big idea",
@@ -98,7 +98,7 @@ const evidence = [
     href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10200219/",
   },
   {
-    title: "Analysis and Assessment of Gateway Process — U.S. Army/CIA memo (1983)",
+    title: "Analysis of a historical altered-state memo (1983)",
     note:
       "The memo is valuable because it treats altered states as a systems problem, not because it proves any paranormal claim.",
     href: "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo152943/pdf/GOVPUB-D101-PURL-gpo152943.pdf",
@@ -181,7 +181,7 @@ export default function HemisphericCoherencePost() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            NeuroSync Blog
+            Cognistration Blog
           </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {hemisphericCoherencePost.title}
