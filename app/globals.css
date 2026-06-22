@@ -414,3 +414,226 @@ a:hover {
     font-size: 3rem;
   }
 }
+
+/* ==========================================
+   Advanced Research Paper Blog Styling
+   ========================================== */
+
+.research-paper-style {
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Research paper headings: serif, elegant, proper margins */
+.research-paper-style h1,
+.research-paper-style h2 {
+  font-family: var(--font-display), serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+  text-transform: none !important;
+}
+
+.research-paper-style h1 {
+  font-size: 2.75rem !important;
+  line-height: 1.15;
+  margin-bottom: 2rem;
+}
+
+.research-paper-style h2 {
+  font-size: 1.85rem !important;
+  line-height: 1.3;
+  margin-top: 3.5rem !important;
+  margin-bottom: 1.5rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.5rem;
+}
+
+.research-paper-style h3 {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 500;
+  font-size: 1.15rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Remove blocky nested cards from sections to make text flow continuously */
+.research-paper-style section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+/* High-grade text typography for academic readability */
+.research-paper-style p {
+  font-size: 1.05rem !important;
+  line-height: 1.85 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  margin-bottom: 1.5rem !important;
+  font-weight: 300;
+  text-align: justify;
+}
+
+/* Continuous layouts instead of multiple scattered columns */
+.research-paper-style article {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2rem !important;
+}
+
+/* List styling */
+.research-paper-style ul {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.research-paper-style li {
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  margin-bottom: 0.75rem !important;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.research-paper-style li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: rgba(6, 182, 212, 0.5);
+}
+
+/* Convert Try this block to look like a clean academic box */
+.research-paper-style section.grid {
+  display: flex !important;
+  flex-direction: column !important;
+  border-left: 3px solid rgba(6, 182, 212, 0.3) !important;
+  padding-left: 2rem !important;
+  margin-top: 3.5rem !important;
+  margin-bottom: 3.5rem !important;
+  gap: 1.5rem !important;
+}
+
+.research-paper-style section.grid > div:first-child {
+  border-right: none !important;
+  padding-right: 0 !important;
+}
+
+.research-paper-style section.grid > div:last-child {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  max-width: 100% !important;
+}
+
+/* Style callout boxes as clean, academic blockquotes */
+.research-paper-style div.rounded-2xl {
+  background: rgba(6, 182, 212, 0.02) !important;
+  border: none !important;
+  border-left: 3px solid rgba(6, 182, 212, 0.5) !important;
+  border-radius: 0.5rem !important;
+  padding: 1.5rem !important;
+  margin: 2rem 0 !important;
+}
+
+.research-paper-style div.rounded-2xl span {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.15em !important;
+  color: rgba(6, 182, 212, 0.8) !important;
+}
+
+.research-paper-style div.rounded-2xl p {
+  font-size: 1.05rem !important;
+  font-style: italic;
+  line-height: 1.7 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  margin-bottom: 0 !important;
+}
+
+/* Clean, academic layout for header metadata card */
+.research-paper-style header {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 !important;
+  padding: 0 0 3rem 0 !important;
+  box-shadow: none !important;
+  margin-bottom: 2rem !important;
+  backdrop-filter: none !important;
+}
+
+.research-paper-style header h1 {
+  font-size: 3rem !important;
+  line-height: 1.15;
+  margin-top: 1rem;
+  font-family: var(--font-display), serif;
+  color: #ffffff !important;
+}
+
+/* Metadata block under the post */
+.research-paper-style .metadata-block {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 2rem 0 0 0 !important;
+  margin-top: 4rem !important;
+  backdrop-filter: none !important;
+}
+
+/* Evidence/References snapshots */
+.research-paper-style section:has(.grid) {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding-top: 2.5rem !important;
+  margin-top: 4rem !important;
+}
+
+.research-paper-style section:has(.grid) h2 {
+  font-size: 1.5rem !important;
+  border-bottom: none !important;
+  margin-top: 0 !important;
+}
+
+.research-paper-style .grid:has(a) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.5rem !important;
+}
+
+.research-paper-style .grid a {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
+  padding-bottom: 1rem !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.research-paper-style .grid a h4 {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1.05rem !important;
+  font-weight: 400 !important;
+  color: rgba(6, 182, 212, 0.9) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.research-paper-style .grid a p {
+  font-size: 0.85rem !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0 !important;
+}
