@@ -136,7 +136,7 @@ export default function BlogArchivePage() {
         </section>
       </div>
 
-      <PublicTrustFooter note="Blog readers can review policy, safety, and contact details below." />
+      <PublicTrustFooter />
     </main>
   );
 }

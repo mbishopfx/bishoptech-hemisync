@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
@@ -436,24 +437,7 @@ export default function LandingPage() {
 
       </main>
 
-      <footer className="py-12 border-t border-white/5 bg-black/50">
-        <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex gap-8 text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
-            <span>Calm Audio Sessions</span>
-            <span>Policy, safety, and contact links are in the footer</span>
-            <span>Headphones Recommended</span>
-          </div>
-          <div className="flex flex-wrap gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
-            <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
-            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
-            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-            <span>&copy; 2026 Cognistration.com</span>
-          </div>
-        </div>
-      </footer>
+      <PublicTrustFooter />
 
       <AgenticAuthModal 
         isOpen={isAuthModalOpen} 

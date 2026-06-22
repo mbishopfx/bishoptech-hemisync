@@ -88,8 +88,8 @@ export default function BlogPostPage({ params }) {
         <div className="absolute inset-0 cyber-grid opacity-10" />
       </div>
 
-      <main className="landing-shell pt-40 pb-20 px-6 relative z-10">
-        <div className="page-shell space-y-8 max-w-4xl mx-auto research-paper-style">
+      <main className="landing-shell pt-40 pb-20 relative z-10">
+        <div className="mx-auto w-full max-w-4xl space-y-8 px-6 md:px-10 research-paper-style">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
             <Link
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-white transition-colors"
@@ -122,7 +122,7 @@ export default function BlogPostPage({ params }) {
           </div>
         </div>
       </main>
-      <PublicTrustFooter note="Article readers can review policy, safety, and contact details below." />
+      <PublicTrustFooter />
     </div>
   );
 }

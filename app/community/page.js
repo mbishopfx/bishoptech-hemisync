@@ -694,7 +694,7 @@ export default async function CommunityPage() {
         </div>
       </div>
 
-      <PublicTrustFooter note="Community visitors can review policy, safety, and contact details below." />
+      <PublicTrustFooter />
     </main>
   );
 }
