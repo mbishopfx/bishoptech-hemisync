@@ -47,3 +47,8 @@ Page style guardrails
 - Use proper headings, lists, FAQs, and clear CTA blocks.
 - Avoid raw markdown markers in rendered pages.
 - Prefer useful, conversion-oriented explanations over generic SEO filler.
+- **Card-based theme**: Blog posts must organize their contents inside glassmorphic card containers to maintain visual consistency with the `/blog` page:
+  - The outer page container must use: `className="mx-auto w-full max-w-4xl space-y-8 px-6 md:px-10 research-paper-style"` (do not wrap in `page-shell` which overrides width constraints).
+  - Post header wrapper class: `className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12"`
+  - Post section wrapper class: `className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8"`
+- **Typography**: Retain `.research-paper-style` typography rules (serif display fonts for h1/h2 headings, justified body paragraphs with clean line height, italic callout blockquotes) but do not strip section padding, backgrounds, or borders.
