@@ -218,7 +218,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-6xl md:text-8xl font-light tracking-tighter leading-[0.9] text-white"
           >
-            Calm audio for <span className="text-white/20 italic">focus, rest, and reset.</span>
+            Cognitive <span className="text-white/20 italic">Orchestration.</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
