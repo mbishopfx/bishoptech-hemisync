@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, ShieldCheck } from 'lucide-react';
 import { RecentPostsCarousel } from '@/components/blog/recent-posts-carousel';
 import { blogPosts, getRecentBlogPosts } from '@/lib/blog/posts';
 import { buildAbsoluteUrl, buildPageMetadata } from '@/lib/seo';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
 export const metadata = buildPageMetadata({
@@ -59,13 +60,22 @@ export default function BlogArchivePage() {
   const featuredPosts = blogPosts.slice(0, 12);
 
   return (
-    <main className="landing-shell">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
       />
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
-        <section className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-8 backdrop-blur-3xl md:p-12">
+      <PublicHeader />
+
+      {/* Background Effects */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
+        <div className="absolute inset-0 cyber-grid opacity-10" />
+      </div>
+
+      <main className="pt-40 pb-20 px-6 relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10">
+        <section className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-6 md:p-12 backdrop-blur-3xl">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl space-y-5">
               <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">
@@ -134,9 +144,9 @@ export default function BlogArchivePage() {
             ))}
           </div>
         </section>
-      </div>
+      </main>
 
       <PublicTrustFooter />
-    </main>
+    </div>
   );
 }

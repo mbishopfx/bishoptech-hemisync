@@ -50,7 +50,7 @@ const navItems = [
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('agent');
+  const [activeTab, setActiveTab] = useState('workshop');
   const [profile, setProfile] = useState(null);
   const [library, setLibrary] = useState([]);
   const [feed, setFeed] = useState([]);
