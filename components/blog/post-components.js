@@ -1,4 +1,6 @@
 import { blogPosts } from '@/lib/blog/posts';
+import { TheArchitectureOfAStartingRitualPostMeta } from "@/lib/blog/posts-data";
+import TheArchitectureOfAStartingRitualPost from "@/components/blog/posts/the-architecture-of-a-starting-ritual";
 
 import WhyCognistrationFeelsPrivatePost from '@/components/blog/posts/why-cognistration-feels-private';
 import CalmFirstSessionSetupPost from '@/components/blog/posts/calm-first-session-setup';
@@ -72,6 +74,7 @@ export const blogPostComponents = {
   [blogPosts[32].slug]: SleepGatePost,
   [blogPosts[33].slug]: PredictiveCodingPost,
   [blogPosts[34].slug]: ConsciousnessMechanicsPost,
+  [TheArchitectureOfAStartingRitualPostMeta.slug]: TheArchitectureOfAStartingRitualPost,
 };
 
 export function getBlogPostComponentBySlug(slug) {

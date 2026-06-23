@@ -57,7 +57,7 @@ function BlogCard({ post }) {
 
 export default function BlogArchivePage() {
   const recentPosts = getRecentBlogPosts(6);
-  const featuredPosts = blogPosts.slice(0, 12);
+  const featuredPosts = getRecentBlogPosts(12);
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
