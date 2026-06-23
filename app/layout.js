@@ -70,6 +70,12 @@ export const metadata = {
   }
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -77,6 +83,7 @@ const organizationJsonLd = {
       '@type': 'Organization',
       '@id': `${siteUrl}#organization`,
       name: siteName,
+      alternateName: 'BishopTech',
       url: siteUrl,
       logo: `${siteUrl}/images/logo.png`,
       contactPoint: [

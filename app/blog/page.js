@@ -74,8 +74,8 @@ export default function BlogArchivePage() {
         <div className="absolute inset-0 cyber-grid opacity-10" />
       </div>
 
-      <main className="pt-40 pb-20 px-6 relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10">
-        <section className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-6 md:p-12 backdrop-blur-3xl">
+      <main className="pt-28 pb-12 px-4 md:pt-40 md:pb-20 md:px-6 relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10">
+        <section className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-5 md:p-12 backdrop-blur-3xl">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl space-y-5">
               <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">
@@ -123,7 +123,9 @@ export default function BlogArchivePage() {
           </div>
         </section>
 
-        <RecentPostsCarousel posts={recentPosts} />
+        <div className="hidden md:block">
+          <RecentPostsCarousel posts={recentPosts} />
+        </div>
 
         <section className="space-y-6">
           <div className="flex items-end justify-between gap-4">

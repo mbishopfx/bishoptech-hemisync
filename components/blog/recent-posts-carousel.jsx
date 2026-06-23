@@ -39,7 +39,7 @@ export function RecentPostsCarousel({ posts = getRecentBlogPosts(6) }) {
   const trackPosts = [...visiblePosts, ...visiblePosts];
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/25 backdrop-blur-3xl px-6 py-8 shadow-2xl md:px-10 md:py-10">
+    <section className="relative w-full max-w-full overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/25 backdrop-blur-3xl px-6 py-8 shadow-2xl md:px-10 md:py-10">
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-black via-black/80 to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-black via-black/80 to-transparent" />
 

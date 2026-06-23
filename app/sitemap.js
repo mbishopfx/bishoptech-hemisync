@@ -14,7 +14,8 @@ const staticRoutes = [
   '/cookies',
   '/contact',
   '/health-warning',
-  '/ai-disclosure'
+  '/ai-disclosure',
+  '/llms.txt'
 ];
 
 export default function sitemap() {

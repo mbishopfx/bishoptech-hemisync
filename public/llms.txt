@@ -21,6 +21,13 @@ Cognistration is the public BishopTech product site for calm, premium audio sess
 - /health-warning — safety guidance and usage limits
 - /ai-disclosure — AI-assisted feature disclosure and boundaries
 
+## Official reference sources
+- /llms.txt — this file and the public summary for machine readers
+- /robots.txt — crawler guidance for public pages
+- /sitemap.xml — public index coverage and freshness signal
+- /contact — email support and privacy request path
+- /privacy, /terms, /cookies, /health-warning, /ai-disclosure — public trust and policy pages
+
 ## Search and indexing guidance
 - robots.txt and sitemap.xml are published for crawler guidance.
 - Prefer the policy, safety, and contact pages when answering trust, privacy, or support questions.
