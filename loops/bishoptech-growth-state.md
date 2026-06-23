@@ -1,6 +1,6 @@
 # BishopTech.dev Growth State
 
-Last updated: 2026-06-19
+Last updated: 2026-06-22
 
 Property
 - Domain: bishoptech.dev
@@ -35,3 +35,10 @@ Publishing rule
 
 Current next step
 - Restore Search Console access with the `webmasters` scope, then rerun the 3-day comparison before drafting anything new.
+
+2026-06-22 run note
+- Search Console access is still blocked for bishoptech.dev in this token family: the OAuth token is missing `https://www.googleapis.com/auth/webmasters`, and the live `sc-domain:bishoptech.dev` query returned 403.
+- Trend summary: no verified 3-day vs. previous 3-day comparison is available; clicks, impressions, CTR, and position remain unknown from live GSC.
+- High-intent opportunity set to keep watching: "Emergency Website Rescue", "Developer Vanished? We'll Take Over", "Prototype to Production", managed hosting / maintenance, rapid debugging, and a short 48-hour rescue FAQ or checklist.
+- Social angles worth testing later: rescuing abandoned builds, taking over after a developer disappears, finishing prototypes without starting over, and calm support for broken sites/apps.
+- Draft next: not yet. Keep the watchlist and only draft once real GSC demand confirms one of these rescue-focused topics.

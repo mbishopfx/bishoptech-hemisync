@@ -1,0 +1,202 @@
+[
+  {
+    "img": "frame_01.png",
+    "startFrame": 0,
+    "duration": 139
+  },
+  {
+    "img": "frame_02.png",
+    "startFrame": 139,
+    "duration": 139
+  },
+  {
+    "img": "frame_03.png",
+    "startFrame": 278,
+    "duration": 139
+  },
+  {
+    "img": "frame_04.png",
+    "startFrame": 417,
+    "duration": 139
+  },
+  {
+    "img": "frame_05.png",
+    "startFrame": 556,
+    "duration": 138
+  },
+  {
+    "img": "frame_06.jpeg",
+    "startFrame": 694,
+    "duration": 139
+  },
+  {
+    "img": "frame_07.jpeg",
+    "startFrame": 833,
+    "duration": 139
+  },
+  {
+    "img": "frame_08.png",
+    "startFrame": 972,
+    "duration": 139
+  },
+  {
+    "img": "frame_09.png",
+    "startFrame": 1111,
+    "duration": 139
+  },
+  {
+    "img": "frame_10.jpeg",
+    "startFrame": 1250,
+    "duration": 139
+  },
+  {
+    "img": "frame_11.jpeg",
+    "startFrame": 1389,
+    "duration": 139
+  },
+  {
+    "img": "frame_12.png",
+    "startFrame": 1528,
+    "duration": 138
+  },
+  {
+    "img": "frame_13.png",
+    "startFrame": 1666,
+    "duration": 139
+  },
+  {
+    "img": "frame_14.png",
+    "startFrame": 1805,
+    "duration": 139
+  },
+  {
+    "img": "frame_15.png",
+    "startFrame": 1944,
+    "duration": 139
+  },
+  {
+    "img": "frame_16.jpeg",
+    "startFrame": 2083,
+    "duration": 139
+  },
+  {
+    "img": "frame_17.jpeg",
+    "startFrame": 2222,
+    "duration": 139
+  },
+  {
+    "img": "frame_18.jpeg",
+    "startFrame": 2361,
+    "duration": 139
+  },
+  {
+    "img": "frame_19.jpeg",
+    "startFrame": 2500,
+    "duration": 139
+  },
+  {
+    "img": "frame_20.mp4",
+    "startFrame": 2639,
+    "duration": 139
+  },
+  {
+    "img": "frame_21.jpeg",
+    "startFrame": 2778,
+    "duration": 138
+  },
+  {
+    "img": "frame_22.mp4",
+    "startFrame": 2916,
+    "duration": 139
+  },
+  {
+    "img": "frame_23.jpeg",
+    "startFrame": 3055,
+    "duration": 139
+  },
+  {
+    "img": "frame_24.jpeg",
+    "startFrame": 3194,
+    "duration": 139
+  },
+  {
+    "img": "frame_25.mp4",
+    "startFrame": 3333,
+    "duration": 139
+  },
+  {
+    "img": "frame_26.mp4",
+    "startFrame": 3472,
+    "duration": 139
+  },
+  {
+    "img": "frame_27.mp4",
+    "startFrame": 3611,
+    "duration": 139
+  },
+  {
+    "img": "frame_28.jpeg",
+    "startFrame": 3750,
+    "duration": 138
+  },
+  {
+    "img": "frame_29.mp4",
+    "startFrame": 3888,
+    "duration": 139
+  },
+  {
+    "img": "frame_30.jpeg",
+    "startFrame": 4027,
+    "duration": 139
+  },
+  {
+    "img": "frame_31.mp4",
+    "startFrame": 4166,
+    "duration": 139
+  },
+  {
+    "img": "frame_32.jpeg",
+    "startFrame": 4305,
+    "duration": 139
+  },
+  {
+    "img": "frame_33.mp4",
+    "startFrame": 4444,
+    "duration": 139
+  },
+  {
+    "img": "frame_34.mp4",
+    "startFrame": 4583,
+    "duration": 139
+  },
+  {
+    "img": "frame_35.mp4",
+    "startFrame": 4722,
+    "duration": 139
+  },
+  {
+    "img": "frame_36.mp4",
+    "startFrame": 4861,
+    "duration": 139
+  },
+  {
+    "img": "frame_37.mp4",
+    "startFrame": 5000,
+    "duration": 138
+  },
+  {
+    "img": "frame_38.jpeg",
+    "startFrame": 5138,
+    "duration": 139
+  },
+  {
+    "img": "frame_39.mp4",
+    "startFrame": 5277,
+    "duration": 139
+  },
+  {
+    "img": "frame_40.mp4",
+    "startFrame": 5416,
+    "duration": 139
+  }
+]

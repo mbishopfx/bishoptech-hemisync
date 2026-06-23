@@ -1,0 +1,142 @@
+[
+  {
+    "img": "frame_01.png",
+    "startFrame": 0,
+    "duration": 255
+  },
+  {
+    "img": "frame_02.png",
+    "startFrame": 255,
+    "duration": 254
+  },
+  {
+    "img": "frame_03.png",
+    "startFrame": 509,
+    "duration": 255
+  },
+  {
+    "img": "frame_04.png",
+    "startFrame": 764,
+    "duration": 255
+  },
+  {
+    "img": "frame_05.png",
+    "startFrame": 1019,
+    "duration": 254
+  },
+  {
+    "img": "frame_06.png",
+    "startFrame": 1273,
+    "duration": 283
+  },
+  {
+    "img": "frame_07.png",
+    "startFrame": 1556,
+    "duration": 170
+  },
+  {
+    "img": "frame_08.png",
+    "startFrame": 1726,
+    "duration": 170
+  },
+  {
+    "img": "frame_09.png",
+    "startFrame": 1896,
+    "duration": 170
+  },
+  {
+    "img": "frame_10.png",
+    "startFrame": 2066,
+    "duration": 141
+  },
+  {
+    "img": "frame_11.png",
+    "startFrame": 2207,
+    "duration": 227
+  },
+  {
+    "img": "frame_12.png",
+    "startFrame": 2434,
+    "duration": 226
+  },
+  {
+    "img": "frame_13.png",
+    "startFrame": 2660,
+    "duration": 198
+  },
+  {
+    "img": "frame_14.png",
+    "startFrame": 2858,
+    "duration": 198
+  },
+  {
+    "img": "frame_15.png",
+    "startFrame": 3056,
+    "duration": 226
+  },
+  {
+    "img": "frame_16.png",
+    "startFrame": 3282,
+    "duration": 227
+  },
+  {
+    "img": "frame_17.png",
+    "startFrame": 3509,
+    "duration": 254
+  },
+  {
+    "img": "frame_18.png",
+    "startFrame": 3763,
+    "duration": 170
+  },
+  {
+    "img": "frame_19.png",
+    "startFrame": 3933,
+    "duration": 170
+  },
+  {
+    "img": "frame_20.png",
+    "startFrame": 4103,
+    "duration": 170
+  },
+  {
+    "img": "frame_21.png",
+    "startFrame": 4273,
+    "duration": 170
+  },
+  {
+    "img": "frame_22.png",
+    "startFrame": 4443,
+    "duration": 198
+  },
+  {
+    "img": "frame_23.png",
+    "startFrame": 4641,
+    "duration": 198
+  },
+  {
+    "img": "frame_24.png",
+    "startFrame": 4839,
+    "duration": 198
+  },
+  {
+    "img": "frame_25.png",
+    "startFrame": 5037,
+    "duration": 170
+  },
+  {
+    "img": "frame_26.png",
+    "startFrame": 5207,
+    "duration": 226
+  },
+  {
+    "img": "frame_27.png",
+    "startFrame": 5433,
+    "duration": 226
+  },
+  {
+    "img": "frame_28.png",
+    "startFrame": 5659,
+    "duration": 255
+  }
+]

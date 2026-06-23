@@ -74,6 +74,7 @@ export default function DashboardPage() {
   const [workshopError, setWorkshopError] = useState('');
   const [workshopResult, setWorkshopResult] = useState(null);
   const [workshopSavedTone, setWorkshopSavedTone] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   async function refreshWorkspace() {
     try {
@@ -363,7 +364,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white flex">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-white/5 flex flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
+      <aside className="hidden lg:flex w-72 border-r border-white/5 flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
         <div className="flex items-center gap-3 mb-12 justify-center lg:justify-start">
           <Image 
             src="/images/logo.png" 
@@ -415,14 +416,97 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen relative">
+      <main className="flex-1 w-full min-h-screen relative overflow-x-hidden">
         {/* Glow Background */}
         <div className="absolute top-0 right-0 w-[800px] h-[400px] bg-cyan-500/5 blur-[120px] pointer-events-none" />
         
-        <header className="sticky top-0 z-40 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-8 py-6 flex justify-between items-center">
-          <h1 className="text-2xl font-light tracking-tight">
-            {navItems.find(i => i.id === activeTab)?.label}
-          </h1>
+        <header className="sticky top-0 z-40 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 py-4 md:px-8 md:py-6 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="lg:hidden flex items-center gap-2">
+              <Image 
+                src="/images/logo.png" 
+                alt="BishopTech Logo" 
+                width={32} 
+                height={32} 
+                className="brightness-110 contrast-125 animate-pulse"
+              />
+              <span className="text-xs font-mono uppercase tracking-[0.3em] text-white/40 mr-1 sm:mr-2">Cognistration</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-light tracking-tight text-white/95 border-l border-white/10 pl-2 lg:border-l-0 lg:pl-0">
+              {navItems.find(i => i.id === activeTab)?.label}
+            </h1>
+          </div>
+
+          {/* Mobile Menu Dropdown Toggle */}
+          <div className="lg:hidden relative">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-all flex items-center justify-center"
+              aria-label="Toggle menu"
+            >
+              <span className="material-symbols-outlined text-xl">
+                {isMobileMenuOpen ? 'close' : 'menu'}
+              </span>
+            </button>
+
+            {/* Mobile Dropdown Panel */}
+            <AnimatePresence>
+              {isMobileMenuOpen && (
+                <>
+                  {/* Backdrop overlay */}
+                  <div 
+                    className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                  
+                  {/* Menu Dropdown Card */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-3 w-64 rounded-2xl border border-white/10 bg-zinc-950/95 p-4 backdrop-blur-2xl shadow-[0_0_30px_rgba(6,182,212,0.15)] z-50 space-y-4"
+                  >
+                    <nav className="space-y-1">
+                      {navItems.map((item) => {
+                        const isActive = activeTab === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => {
+                              setActiveTab(item.id);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left ${
+                              isActive ? 'bg-white/5 text-white font-medium border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'
+                            }`}
+                          >
+                            <span className={`material-symbols-outlined text-lg ${isActive ? 'text-cyan-400' : ''}`}>
+                              {item.icon}
+                            </span>
+                            <span className="text-sm">{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </nav>
+
+                    <div className="pt-4 border-t border-white/5">
+                      <div className="flex items-center gap-3 px-2">
+                        <Avatar className="size-8 border border-white/10">
+                          <AvatarImage src={profile?.avatar_url} />
+                          <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 overflow-hidden">
+                          <p className="text-xs font-medium truncate">{profile?.display_name || 'Member'}</p>
+                          <p className="text-[9px] font-mono text-white/40 truncate">@{profile?.username || 'user'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </header>
 
         {/* Global Background Generation Banner */}
@@ -470,7 +554,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="p-4 md:p-8 max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {activeTab === 'agent' && (
               <motion.div
