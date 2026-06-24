@@ -3,7 +3,9 @@
 Purpose
 - Monitor Google Search Console trends on a 3-day cadence.
 - Find query/page gaps that can become blog posts, landing pages, FAQ pages, and social repurposing angles.
-- Favor pages that improve click-through, conversion, and trust without drifting away from the calm, premium, trust-first brand.
+- Use the blog system message to request a deeper, article-style ghostwritten draft: more mechanism, logic, examples, and practical meaning than a short promo blurb.
+- Keep the resulting post aligned with the calm, premium, trust-first brand.
+- After publish, make sure the new URL is in the sitemap and submit the sitemap again so current and new pages are refreshed for indexing.
 
 Cadence
 - Run every 3 days.

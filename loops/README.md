@@ -20,7 +20,7 @@ Core rules
 Loop cadence
 - Morning loop: content, tone, sync, and build readiness.
 - Evening loop: backend section audit, bug sweep, and build verification.
-- SEO growth loop: every 3 days, inspect Search Console trends and turn query/page gaps into candidate pages and social angles.
+- SEO growth loop: every 3 days, inspect Search Console trends, turn query/page gaps into candidate pages and social angles, and re-ping the sitemap after publish.
 - BishopTech.dev growth loop: every 3 days, inspect bishoptech.dev Search Console trends and convert service-intent gaps into new pages that speak to builds, prototypes, debugging, hosting, and rescue work.
 - Section rotation: one backend area gets a deeper pass each session so the whole app is covered over time.
 

@@ -66,7 +66,8 @@ SEO / blog direction
   - how to create a nightly wind-down ritual
   - how premium audio experiences support consistency
   - how to choose a focus session for your workflow
-- Blog posts should read like thoughtful product education, not conspiracy or medical copy.
+- Blog posts should read like thoughtful product education and in-depth editorial writing, not conspiracy or medical copy.
+- Ghostwritten pieces should sound human, specific, and mechanically grounded, with real logic behind each claim.
 
 Tone rules for blog generation
 - Use short, readable paragraphs.
