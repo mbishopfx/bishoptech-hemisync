@@ -2,15 +2,29 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen, ShieldCheck } from 'lucide-react';
 import { RecentPostsCarousel } from '@/components/blog/recent-posts-carousel';
 import { blogPosts, getRecentBlogPosts } from '@/lib/blog/posts';
-import { buildAbsoluteUrl, buildPageMetadata } from '@/lib/seo';
+import { buildAbsoluteUrl } from '@/lib/seo';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
-export const metadata = buildPageMetadata({
-  title: 'Blog | Cognistration',
+export const metadata = {
+  title: { absolute: 'Blog — Cognistration' },
   description: 'Evidence-aware essays and product notes about consciousness mechanics, audio sessions, and the thinking behind Cognistration.',
-  path: '/blog'
-});
+  alternates: { canonical: '/blog' },
+  openGraph: {
+    title: 'Blog — Cognistration',
+    description: 'Evidence-aware essays and product notes about consciousness mechanics, audio sessions, and the thinking behind Cognistration.',
+    siteName: 'Cognistration',
+    type: 'website',
+    url: '/blog',
+    images: [{ url: '/images/logo.png', width: 512, height: 512, alt: 'Cognistration logo' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog — Cognistration',
+    description: 'Evidence-aware essays and product notes about consciousness mechanics, audio sessions, and the thinking behind Cognistration.',
+    images: ['/images/logo.png'],
+  },
+};
 
 const blogJsonLd = {
   '@context': 'https://schema.org',
@@ -57,7 +71,7 @@ function BlogCard({ post }) {
 
 export default function BlogArchivePage() {
   const recentPosts = getRecentBlogPosts(6);
-  const featuredPosts = blogPosts.slice(0, 12);
+  const featuredPosts = getRecentBlogPosts(12);
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
