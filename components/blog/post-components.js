@@ -1,6 +1,7 @@
 import { blogPosts } from '@/lib/blog/posts';
-import { TheAuditorySystemNeverSleepsPredictableSoundSafetyPostMeta } from "@/lib/blog/posts-data";
+import { TheAuditorySystemNeverSleepsPredictableSoundSafetyPostMeta, TheArchitectureOfAStartingRitualPostMeta } from "@/lib/blog/posts-data";
 import TheAuditorySystemNeverSleepsPredictableSoundSafetyPost from "@/components/blog/posts/the-auditory-system-never-sleeps-predictable-sound-safety";
+import TheArchitectureOfAStartingRitualPost from "@/components/blog/posts/the-architecture-of-a-starting-ritual";
 
 import WhyCognistrationFeelsPrivatePost from '@/components/blog/posts/why-cognistration-feels-private';
 import CalmFirstSessionSetupPost from '@/components/blog/posts/calm-first-session-setup';
@@ -77,6 +78,7 @@ export const blogPostComponents = {
   [blogPosts[34].slug]: ConsciousnessMechanicsPost,
   [blogPosts[35].slug]: QuietTenMinuteResetPost,
   [TheAuditorySystemNeverSleepsPredictableSoundSafetyPostMeta.slug]: TheAuditorySystemNeverSleepsPredictableSoundSafetyPost,
+  [TheArchitectureOfAStartingRitualPostMeta.slug]: TheArchitectureOfAStartingRitualPost,
 };
 
 export function getBlogPostComponentBySlug(slug) {
