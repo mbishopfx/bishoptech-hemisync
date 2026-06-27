@@ -1,11 +1,24 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
-import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = buildPageMetadata({
-  title: 'Health Warning | Cognistration',
+export const metadata = {
+  title: { absolute: 'Health Warning — Cognistration' },
   description: 'Health and safety warning for Cognistration on bishoptech.dev.',
-  path: '/health-warning'
-});
+  alternates: { canonical: '/health-warning' },
+  openGraph: {
+    title: 'Health Warning — Cognistration',
+    description: 'Health and safety warning for Cognistration on bishoptech.dev.',
+    siteName: 'Cognistration',
+    type: 'website',
+    url: '/health-warning',
+    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Health Warning — Cognistration',
+    description: 'Health and safety warning for Cognistration on bishoptech.dev.',
+    images: ['/images/og-preview.png'],
+  },
+};
 
 function WarningCard({ title, body }) {
   return (

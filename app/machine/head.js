@@ -12,10 +12,10 @@ export default function Head() {
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={`${siteUrl}/machine`} />
-      <meta property="og:image" content={`${siteUrl}/images/logo.png`} />
+      <meta property="og:image" content={`${siteUrl}/images/og-preview.png`} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={`${siteUrl}/images/logo.png`} />
+      <meta name="twitter:image" content={`${siteUrl}/images/og-preview.png`} />
     </>
   );
 }

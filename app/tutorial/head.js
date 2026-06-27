@@ -15,13 +15,13 @@ export default function Head() {
         content="Learn how to set up a calm listening session and use Cognistration effectively."
       />
       <meta property="og:url" content={`${siteUrl}/tutorial`} />
-      <meta property="og:image" content={`${siteUrl}/images/logo.png`} />
+      <meta property="og:image" content={`${siteUrl}/images/og-preview.png`} />
       <meta name="twitter:title" content="Tutorial | Cognistration" />
       <meta
         name="twitter:description"
         content="Learn how to set up a calm listening session and use Cognistration effectively."
       />
-      <meta name="twitter:image" content={`${siteUrl}/images/logo.png`} />
+      <meta name="twitter:image" content={`${siteUrl}/images/og-preview.png`} />
     </>
   );
 }

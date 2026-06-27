@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { blogPosts, getBlogPostBySlug } from '@/lib/blog/posts';
 import { getBlogPostComponentBySlug } from '@/components/blog/post-components';
-import { buildAbsoluteUrl, buildPageMetadata } from '@/lib/seo';
+import { buildAbsoluteUrl } from '@/lib/seo';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
@@ -37,8 +37,63 @@ function buildArticleJsonLd(post) {
       '@id': buildAbsoluteUrl(post.path)
     },
     url: buildAbsoluteUrl(post.path),
-    image: buildAbsoluteUrl('/images/logo.png')
+    image: buildAbsoluteUrl('/images/og-preview.png')
   };
+}
+
+function FallbackBlogPost({ post }) {
+  return (
+    <article className="space-y-8">
+      <header className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
+          Cognistration Blog
+        </p>
+        <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
+          {post.title}
+        </h1>
+        <p className="max-w-3xl text-balance text-sm leading-relaxed text-white/50">
+          {post.excerpt}
+        </p>
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
+          <span>{post.category}</span>
+          <span>{post.readTime}</span>
+          <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+        </div>
+      </header>
+
+      <section className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+        <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
+          Summary view
+        </h2>
+        <div className="space-y-4 text-sm leading-relaxed text-white/50">
+          <p>
+            This post is registered in the blog archive, but the custom article component was not
+            available in the current build. The summary view keeps the route live while the post
+            metadata and public links remain accessible.
+          </p>
+          <p>
+            The archive, sitemap, and article metadata still point to this page, so the published
+            slug stays verifiable even if the bespoke layout needs another pass.
+          </p>
+        </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2">
+        <Link
+          className="rounded-2xl border border-white/5 bg-zinc-950/40 p-5 text-sm text-white/70 transition-colors hover:bg-white/[0.04] hover:text-white"
+          href="/blog"
+        >
+          Back to the archive
+        </Link>
+        <Link
+          className="rounded-2xl border border-white/5 bg-zinc-950/40 p-5 text-sm text-white/70 transition-colors hover:bg-white/[0.04] hover:text-white"
+          href="/tutorial"
+        >
+          Open the setup guide
+        </Link>
+      </section>
+    </article>
+  );
 }
 
 export function generateStaticParams() {
@@ -49,18 +104,46 @@ export function generateMetadata({ params }) {
   const post = getBlogPostBySlug(params.slug);
 
   if (!post) {
-    return buildPageMetadata({
-      title: 'Blog Post | Cognistration',
+    return {
+      title: { absolute: 'Blog Post — Cognistration' },
       description: 'Cognistration blog article.',
-      path: `/blog/${params.slug}`
-    });
+      alternates: { canonical: `/blog/${params.slug}` },
+      openGraph: {
+        title: 'Blog Post — Cognistration',
+        description: 'Cognistration blog article.',
+        siteName: 'Cognistration',
+        type: 'article',
+        url: `/blog/${params.slug}`,
+        images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Blog Post — Cognistration',
+        description: 'Cognistration blog article.',
+        images: ['/images/og-preview.png'],
+      },
+    };
   }
 
-  return buildPageMetadata({
-    title: `${post.title} | Cognistration`,
+  return {
+    title: { absolute: `${post.title} — Cognistration` },
     description: post.excerpt,
-    path: post.path
-  });
+    alternates: { canonical: post.path },
+    openGraph: {
+      title: `${post.title} — Cognistration`,
+      description: post.excerpt,
+      siteName: 'Cognistration',
+      type: 'article',
+      url: post.path,
+      images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} — Cognistration`,
+      description: post.excerpt,
+      images: ['/images/og-preview.png'],
+    },
+  };
 }
 
 export default function BlogPostPage({ params }) {

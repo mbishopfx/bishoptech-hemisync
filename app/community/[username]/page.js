@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { FollowButton } from '@/components/social/follow-button';
 import { ShareProfileButton } from '@/components/social/share-profile-button';
 import { ArrowLeft, Globe, X, CheckCircle, ExternalLink } from 'lucide-react';
-import { buildPageMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60;
@@ -21,11 +20,25 @@ const hasSupabaseConfig = Boolean(
 );
 
 export function generateMetadata({ params }) {
-  return buildPageMetadata({
-    title: 'Community Profile | Cognistration',
+  return {
+    title: { absolute: 'Community Profile — Cognistration' },
     description: `Public community profile for ${params.username} on Cognistration.`,
-    path: `/community/${params.username}`
-  });
+    alternates: { canonical: `/community/${params.username}` },
+    openGraph: {
+      title: 'Community Profile — Cognistration',
+      description: `Public community profile for ${params.username} on Cognistration.`,
+      siteName: 'Cognistration',
+      type: 'profile',
+      url: `/community/${params.username}`,
+      images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Community Profile — Cognistration',
+      description: `Public community profile for ${params.username} on Cognistration.`,
+      images: ['/images/og-preview.png'],
+    },
+  };
 }
 
 async function getProfileData(username) {

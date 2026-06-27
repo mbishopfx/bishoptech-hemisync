@@ -15,13 +15,13 @@ export default function Head() {
         content="Compare Cognistration plans, free access, and premium membership options."
       />
       <meta property="og:url" content={`${siteUrl}/pricing`} />
-      <meta property="og:image" content={`${siteUrl}/images/logo.png`} />
+      <meta property="og:image" content={`${siteUrl}/images/og-preview.png`} />
       <meta name="twitter:title" content="Pricing | Cognistration" />
       <meta
         name="twitter:description"
         content="Compare Cognistration plans, free access, and premium membership options."
       />
-      <meta name="twitter:image" content={`${siteUrl}/images/logo.png`} />
+      <meta name="twitter:image" content={`${siteUrl}/images/og-preview.png`} />
     </>
   );
 }

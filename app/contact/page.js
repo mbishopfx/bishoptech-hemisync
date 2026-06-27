@@ -1,11 +1,37 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
-import { buildPageMetadata } from '@/lib/seo';
+import { buildAbsoluteUrl } from '@/lib/seo';
 
-export const metadata = buildPageMetadata({
-  title: 'Contact & Support | Cognistration',
+export const metadata = {
+  title: { absolute: 'Contact & Support — Cognistration' },
   description: 'Contact Cognistration for general questions, billing help, privacy requests, and legal notices.',
-  path: '/contact'
-});
+  alternates: { canonical: '/contact' },
+  openGraph: {
+    title: 'Contact & Support — Cognistration',
+    description: 'Contact Cognistration for general questions, billing help, privacy requests, and legal notices.',
+    siteName: 'Cognistration',
+    type: 'website',
+    url: '/contact',
+    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact & Support — Cognistration',
+    description: 'Contact Cognistration for general questions, billing help, privacy requests, and legal notices.',
+    images: ['/images/og-preview.png'],
+  },
+};
+
+const contactJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact & Support | Cognistration',
+  description: 'Contact Cognistration for general questions, billing help, privacy requests, and legal notices.',
+  url: buildAbsoluteUrl('/contact'),
+  mainEntity: {
+    '@type': 'Organization',
+    '@id': buildAbsoluteUrl('/#organization')
+  }
+};
 
 function Section({ title, children }) {
   return (
@@ -23,6 +49,10 @@ export default function ContactPage() {
       title="Contact Cognistration"
       summary="Use this page for general questions, billing help, privacy requests, and legal notices. Contact paths stay simple and direct."
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
+      />
       <Section title="General contact">
         <p>For general questions, account help, or support requests, email <a className="text-cyan-300 hover:text-cyan-200" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
       </Section>

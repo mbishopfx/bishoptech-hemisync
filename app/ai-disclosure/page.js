@@ -1,11 +1,24 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
-import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = buildPageMetadata({
-  title: 'AI Disclosure | Cognistration',
+export const metadata = {
+  title: { absolute: 'AI Disclosure — Cognistration' },
   description: 'How Cognistration uses AI-assisted features, prompts, and generated outputs on bishoptech.dev.',
-  path: '/ai-disclosure'
-});
+  alternates: { canonical: '/ai-disclosure' },
+  openGraph: {
+    title: 'AI Disclosure — Cognistration',
+    description: 'How Cognistration uses AI-assisted features, prompts, and generated outputs on bishoptech.dev.',
+    siteName: 'Cognistration',
+    type: 'website',
+    url: '/ai-disclosure',
+    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Disclosure — Cognistration',
+    description: 'How Cognistration uses AI-assisted features, prompts, and generated outputs on bishoptech.dev.',
+    images: ['/images/og-preview.png'],
+  },
+};
 
 function Section({ title, children }) {
   return (

@@ -1,11 +1,24 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
-import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = buildPageMetadata({
-  title: 'Cookie Policy | Cognistration',
+export const metadata = {
+  title: { absolute: 'Cookie Policy — Cognistration' },
   description: 'Cookie Policy for Cognistration on bishoptech.dev.',
-  path: '/cookies'
-});
+  alternates: { canonical: '/cookies' },
+  openGraph: {
+    title: 'Cookie Policy — Cognistration',
+    description: 'Cookie Policy for Cognistration on bishoptech.dev.',
+    siteName: 'Cognistration',
+    type: 'website',
+    url: '/cookies',
+    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Cookie Policy — Cognistration',
+    description: 'Cookie Policy for Cognistration on bishoptech.dev.',
+    images: ['/images/og-preview.png'],
+  },
+};
 
 function Section({ title, children }) {
   return (

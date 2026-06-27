@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
 const siteName = 'Cognistration';
-const siteDescription = 'Premium audio sessions for focus, rest, and intentional reset.';
+const siteDescription = 'Cognistration by BishopTech offers premium audio sessions for focus, rest, and intentional reset.';
 
 const displayFont = Playfair_Display({
   subsets: ['latin'],
@@ -20,8 +20,8 @@ const sansFont = Inter({
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} — Premium audio sessions for focus, rest, and intentional reset`,
-    template: `%s | ${siteName}`
+    default: `${siteName} by BishopTech — Premium audio sessions for focus, rest, and intentional reset`,
+    template: '%s — Cognistration'
   },
   description: siteDescription,
   applicationName: siteName,
@@ -40,22 +40,22 @@ export const metadata = {
     type: 'website',
     url: siteUrl,
     siteName,
-    title: `${siteName} — Premium audio sessions for focus, rest, and intentional reset`,
+    title: `${siteName} by BishopTech — Premium audio sessions for focus, rest, and intentional reset`,
     description: siteDescription,
     images: [
       {
-        url: '/images/logo.png',
-        width: 512,
-        height: 512,
-        alt: 'Cognistration logo'
+        url: '/images/og-preview.png',
+        width: 886,
+        height: 886,
+        alt: 'Cognistration preview'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${siteName} — Premium audio sessions for focus, rest, and intentional reset`,
+    title: `${siteName} by BishopTech — Premium audio sessions for focus, rest, and intentional reset`,
     description: siteDescription,
-    images: ['/images/logo.png']
+    images: ['/images/og-preview.png']
   },
   robots: {
     index: true,

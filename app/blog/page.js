@@ -16,13 +16,13 @@ export const metadata = {
     siteName: 'Cognistration',
     type: 'website',
     url: '/blog',
-    images: [{ url: '/images/logo.png', width: 512, height: 512, alt: 'Cognistration logo' }],
+    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Blog — Cognistration',
     description: 'Evidence-aware essays and product notes about consciousness mechanics, audio sessions, and the thinking behind Cognistration.',
-    images: ['/images/logo.png'],
+    images: ['/images/og-preview.png'],
   },
 };
 

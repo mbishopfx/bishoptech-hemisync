@@ -1,11 +1,24 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
-import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata = buildPageMetadata({
-  title: 'Privacy Policy | Cognistration',
+export const metadata = {
+  title: { absolute: 'Privacy Policy — Cognistration' },
   description: 'Privacy Policy for Cognistration on bishoptech.dev.',
-  path: '/privacy'
-});
+  alternates: { canonical: '/privacy' },
+  openGraph: {
+    title: 'Privacy Policy — Cognistration',
+    description: 'Privacy Policy for Cognistration on bishoptech.dev.',
+    siteName: 'Cognistration',
+    type: 'website',
+    url: '/privacy',
+    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy — Cognistration',
+    description: 'Privacy Policy for Cognistration on bishoptech.dev.',
+    images: ['/images/og-preview.png'],
+  },
+};
 
 function Section({ title, children }) {
   return (
