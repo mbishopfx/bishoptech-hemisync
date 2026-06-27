@@ -1,6 +1,12 @@
 import { blogPosts } from '@/lib/blog/posts';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
+const hasSupabaseConfig = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
 
 const staticRoutes = [
   '/',
@@ -18,7 +24,7 @@ const staticRoutes = [
   '/llms.txt'
 ];
 
-export default function sitemap() {
+export default async function sitemap() {
   const now = new Date();
   const staticEntries = staticRoutes.map((path) => ({
     url: `${siteUrl}${path}`,
@@ -34,5 +40,35 @@ export default function sitemap() {
     priority: 0.6
   }));
 
-  return [...staticEntries, ...blogEntries];
+  const profileEntries = [];
+
+  if (hasSupabaseConfig) {
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      try {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, username')
+          .eq('profile_visibility', 'public')
+          .limit(1000);
+
+        for (const profile of profiles || []) {
+          const profilePath = profile.username
+            ? `/community/${profile.username}`
+            : `/community/${profile.id}`;
+
+          profileEntries.push({
+            url: `${siteUrl}${profilePath}`,
+            lastModified: now,
+            changeFrequency: 'weekly',
+            priority: 0.6
+          });
+        }
+      } catch (error) {
+        console.warn('Failed to load public community profiles for sitemap:', error);
+      }
+    }
+  }
+
+  return [...staticEntries, ...profileEntries, ...blogEntries];
 }

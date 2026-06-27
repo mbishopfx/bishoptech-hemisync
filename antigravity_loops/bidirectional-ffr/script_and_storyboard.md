@@ -6,7 +6,7 @@ An educational script explaining how the brain processes bidirectional Frequency
 
 ## Part 1: The Conversational Script
 
-[00:00 - 00:30] Think sound-based brainwave entrainment is just a passive, one-way process? Think again. Your brain is not a simple microphone that just records incoming beats. It is a live, active prediction engine. When you listen to rhythmic auditory frequencies, your neural systems don't just follow the sound—they actively predict it. Welcome to the world of bidirectional Frequency Following Response, or FFR.
+[00:00 - 00:30] Your brain is not a simple microphone that just records incoming beats. It is a live, active prediction engine. When you listen to rhythmic auditory frequencies, your neural systems don't just follow the sound—they actively predict it. Welcome to the world of bidirectional Frequency Following Response, or FFR.
 
 [00:30 - 01:00] To understand how this works, we must first look at the bottom-up pathway. When sound waves enter your ear, they trigger rapid electrical impulses in your auditory nerve. These signals travel up into your auditory brainstem, specifically a region called the inferior colliculus. Here, firing neurons lock their phase to the exact frequency of the sound, creating a subcortical electrical duplicate of the audio wave.
 

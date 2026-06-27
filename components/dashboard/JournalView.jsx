@@ -291,4 +291,3 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
     </div>
   );
 }
-

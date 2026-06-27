@@ -11,7 +11,7 @@ import Link from 'next/link';
 export function SignupClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const plan = searchParams.get('plan') || 'starter';
+  const plan = searchParams.get('plan') || 'free';
   const priceId = searchParams.get('priceId');
   const mode = searchParams.get('mode') || (plan === 'lifetime' ? 'payment' : 'subscription');
   

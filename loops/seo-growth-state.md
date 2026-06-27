@@ -1,6 +1,6 @@
 # Cognistration SEO Growth State
 
-Last updated: 2026-06-23
+Last updated: 2026-06-26
 
 Property
 - Domain: cognistration.com
@@ -12,26 +12,30 @@ Current objective
 - Improve click-through and conversion paths while preserving the calm, premium, trust-first site theme.
 
 Current data status
-- Search Console access is still scope-blocked from this token family: `https://www.googleapis.com/auth/webmasters` is missing.
-- A live Search Console query against `sc-domain:cognistration.com` returned `403` with `insufficientPermissions` / "Request had insufficient authentication scopes.".
-- The OAuth check returned `AUTHENTICATED (partial)`, so no live query/page comparison was possible this run.
-- Keep the watchlist focused until real GSC signal arrives; do not infer trends from inaccessible data.
+- Search Console is still concentrated in the Remotion implementation cluster: the last 3 full days (2026-06-23 to 2026-06-25) produced 128 impressions and 2 clicks on `/helpful-guides/remotion-saas-implementation-video-os`, while the previous 3 full days (2026-06-20 to 2026-06-22) produced 571 impressions and 0 clicks on that same page.
+- Query rows remain zero-click and noisy; the strongest terms are internal Remotion implementation phrases like `guest call implementation plan`, `release plan for domain capture`, `sharing phase 2: events`, and `working session: growth model & milestones`.
+- There is still no meaningful search demand for builds, prototypes, debugging, hosting, rescue work, or vanished-developer language, so keep the watchlist instead of forcing a new page.
 
 Watchlist topics
-- Private wellness app positioning
-- Agent insights and premium support content
-- Private user experience and trust/privacy reassurance
-- How-to/setup/usage content that helps users understand the product quickly
+- Founder-led website/app builds and rapid prototypes
+- Managed hosting, launch monitoring, and maintenance
+- Debugging, handoff, and rescue work for abandoned or vibe-coded projects
+- Developer vanished / takeover / cleanup / continuity support
+- Small-business FAQ coverage around ownership, scope, and support after launch
 
-Today’s take
-- Top trend summary: no verified Search Console trend signal this run; the data remains sparse/inaccessible from the current token.
-- Recommended page ideas: a calm "how Cognistration works" explainer, a privacy-and-trust landing page, a practical setup/how-to page, a premium use-cases page for focus / rest / reset, and a short FAQ block around private use and expectations.
-- Social angles: quiet product clarity, privacy-first listening rituals, better routines for focus and recovery, a short explanation of why a calm audio reset feels different, and a trust-first note about what the product does not do.
-- Publish next: no — keep building the watchlist and re-run after Search Console scope is restored.
+2026-06-26 entry
+- Top trend summary: the target small-business/entrepreneur cluster is still sparse; the only real traffic is the Remotion implementation guide and its supporting terms.
+- Recommended page ideas: keep the watchlist only — a build/prototype landing page, a managed hosting page, a project-rescue/takeover page, and FAQ blocks for code ownership, debugging, and handoff.
+- Social angles: founder rescue stories, turning a rough prototype into a stable product, what to do when a developer disappears, and the difference between a build, a prototype, and a maintained product.
+- Publish next: no — wait for a stronger query cluster or a clearer conversion gap before drafting anything new.
 
 Publishing rule
 - Only publish pages that clearly map to an observed query cluster or a strong conversion gap.
 - After publish, ensure the page is in sitemap.xml and submit the URL for indexing.
 
 Current next step
-- Re-run the 3-day Search Console comparison once the `webmasters` scope is available; until then, keep the watchlist and draft only native, trust-first pages.
+- Re-run the 3-day Search Console comparison in the next cycle; until then, keep the watchlist and continue adding native, trust-first pages when they fit the product story.
+
+Recent publish
+- 2026-06-24: created `quiet-ten-minute-reset` — "How to Use Cognistration for a Quiet Ten-Minute Reset".
+- Verification: added the post component, registry entry, archive wiring, and sitemap coverage through the existing blog-post source list; `npm run build` passed and the generated site now includes `/blog/quiet-ten-minute-reset` in the prerender manifest, static HTML, and sitemap output.

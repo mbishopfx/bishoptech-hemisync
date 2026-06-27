@@ -6,6 +6,7 @@ const trustLinks = [
   { href: '/cookies', label: 'Cookies' },
   { href: '/ai-disclosure', label: 'AI Disclosure' },
   { href: '/health-warning', label: 'Health Warning' },
+  { href: '/llms.txt', label: 'llms.txt' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' }
 ];
@@ -30,7 +31,7 @@ export function PublicTrustFooter() {
               {link.label}
             </Link>
           ))}
-          <span>&copy; 2026 Cognistration.com</span>
+          <span>&copy; 2026 Cognistration</span>
         </div>
       </div>
     </footer>

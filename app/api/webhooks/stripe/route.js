@@ -61,13 +61,8 @@ export async function POST(req) {
       const userId = subscription.metadata?.user_uuid;
 
       if (userId) {
-        let planId = subscription.metadata?.planId;
+        const planId = subscription.metadata?.planId || 'premium';
         let trialExpiresAt = null;
-
-        if (!planId) {
-          const priceId = subscription.items.data[0]?.price?.id;
-          planId = priceId === 'price_1TWlb7DJtpuPVfuFfSVEXPYU' ? 'starter' : 'pro';
-        }
 
         if (subscription.trial_end) {
           trialExpiresAt = new Date(subscription.trial_end * 1000).toISOString();

@@ -1,6 +1,6 @@
 # BishopTech.dev Growth State
 
-Last updated: 2026-06-22
+Last updated: 2026-06-24
 
 Property
 - Domain: bishoptech.dev
@@ -42,3 +42,11 @@ Current next step
 - High-intent opportunity set to keep watching: "Emergency Website Rescue", "Developer Vanished? We'll Take Over", "Prototype to Production", managed hosting / maintenance, rapid debugging, and a short 48-hour rescue FAQ or checklist.
 - Social angles worth testing later: rescuing abandoned builds, taking over after a developer disappears, finishing prototypes without starting over, and calm support for broken sites/apps.
 - Draft next: not yet. Keep the watchlist and only draft once real GSC demand confirms one of these rescue-focused topics.
+
+2026-06-24 compliance / AI-search audit note
+- Policy and trust pages are present and linked from the public footer or legal shell: privacy, terms, cookies, AI disclosure, contact, and health warning.
+- `robots.txt`, `sitemap.xml`, and `llms.txt` are live and sensible; sitemap coverage includes the main public pages plus blog posts, and the latest generated lastmod is current.
+- Canonical, Open Graph, Twitter card, and JSON-LD metadata are present on the homepage, legal pages, contact, blog archive, blog posts, pricing, tutorial, and machine pages.
+- Verified via `npm run build` and live requests on a local 3001 server.
+- No blocking compliance or indexability gaps found; keep an eye on cookie-consent/legal review if the analytics or storage footprint changes.
+- 2026-06-25 audit: hardened the private utility routes with `X-Robots-Tag: noindex, nofollow, noarchive` for `/dashboard`, `/generate`, `/login`, and `/signup` in middleware, then verified the header on a local 3017 server. Public routes, robots, sitemap, and llms coverage still look healthy.

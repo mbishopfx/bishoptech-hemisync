@@ -111,7 +111,8 @@ export async function POST(req) {
       artifactId: artifacts.artifactId,
       assets,
       wav: assets.wav?.url || null,
-      webm: assets.webm?.url || null
+      webm: assets.webm?.url || null,
+      mp3: assets.webm?.url || null
     });
   } catch (err) {
     logger.error({ err }, 'audio generate error');

@@ -1,6 +1,6 @@
-# Cognistration
+# Cognistration by BishopTech
 
-Premium beats-only neural bi-directional acoustic frequencies generator built with Next.js, with Vercel handling the frontend and Railway handling the render backend.
+Public BishopTech product site for Cognistration, built with Next.js and deployed with a Vercel frontend plus a Railway render backend.
 
 ## Operating loops
 
@@ -94,6 +94,20 @@ The Railway backend should be configured with:
 1. The existing server-side env vars.
 2. `CORS_ALLOWED_ORIGINS` including the Vercel production origin.
 3. The mounted `/app/data` volume for render artifacts.
+
+## Maintenance snapshot
+
+<!-- maintenance-scan:start -->
+Git: dirty: M README.md, M antigravity_loops/bidirectional-ffr/build_video.py, M antigravity_loops/bidirectional-ffr/copy_downloads.py, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_01.mp4, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_01.png, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_02.png, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_03.png, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_04.mp4
+Railway status: Project: Cognistration
+Railway deployments: da504159-9d37-49fd-9b09-4bdaeeaf7683 | SUCCESS | 2026-05-13 19:58:05 -05:00 | 31db0d0a-3ee9-4a70-844c-b0fca0bc92fb | FAILED | 2026-05-13 19:57:31 -05:00 | dad19fd7-24b7-4411-853f-30aeb7b1c968 | REMOVED | 2026-05-13 19:26:46 -05:00
+Railway logs: no recent output
+Vercel latest: https://bishoptech-cognistration-mpis7hu6s-bishoptech.vercel.app
+Vercel logs: Ready
+YouTube channel: Cognistration | subs 4 | views 322 | videos 17
+YouTube channel published: 2026-06-13T09:31:50.427333Z
+YouTube analytics (last 7 completed days): views 256 | minutes 95.0 | avg_view_sec 38 | subs +4 / -0
+<!-- maintenance-scan:end -->
 
 ## Main routes
 

@@ -477,7 +477,8 @@ export function SessionLab() {
 
       const nextSample = {
         wav: resolveBackendAssetUrl(data.wav),
-        mp3: resolveBackendAssetUrl(data.mp3),
+        webm: resolveBackendAssetUrl(data.webm || data.mp3),
+        mp3: resolveBackendAssetUrl(data.webm || data.mp3),
         durationSec: template.sampleLengthSec
       };
 
@@ -514,7 +515,8 @@ export function SessionLab() {
 
       setRenderResult({
         wav: resolveBackendAssetUrl(data.wav),
-        mp3: resolveBackendAssetUrl(data.mp3),
+        webm: resolveBackendAssetUrl(data.webm || data.mp3),
+        mp3: resolveBackendAssetUrl(data.webm || data.mp3),
         analytics: data.analytics,
         stages: data.stages,
         journey: data.journey
@@ -1080,13 +1082,13 @@ export function SessionLab() {
                   >
                     Download WAV
                   </a>
-                  {renderResult.mp3 && (
+                  {renderResult.webm && (
                     <a
-                      href={renderResult.mp3}
-                      download="cognistration-session.mp3"
+                      href={renderResult.webm}
+                      download="cognistration-session.webm"
                       className="rounded-md bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20"
                     >
-                      Download MP3
+                      Download WebM
                     </a>
                   )}
                 </div>

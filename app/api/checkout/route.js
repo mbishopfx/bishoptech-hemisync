@@ -10,18 +10,24 @@ export async function POST(req) {
     }
 
     const stripe = new Stripe(stripeSecret);
-    const { priceId, planId, mode: requestedMode = 'subscription' } = await req.json();
+    const { priceId, planId } = await req.json();
+    const premiumPriceId = 'price_1TWlb7DJtpuPVfuFfSVEXPYU';
+    const lifetimePriceId = 'price_1TWlbTDJtpuPVfuFG5ejsTAG';
 
     if (!priceId) {
       return NextResponse.json({ error: 'Price ID is required' }, { status: 400 });
     }
 
-    const mode = planId === 'lifetime' ? 'payment' : requestedMode;
-    const expectedPriceId = planId === 'lifetime' ? 'price_1TWlbTDJtpuPVfuFG5ejsTAG' : null;
-
-    if (expectedPriceId && priceId !== expectedPriceId) {
-      return NextResponse.json({ error: 'Unexpected price ID for lifetime access' }, { status: 400 });
+    if (!['premium', 'lifetime'].includes(planId)) {
+      return NextResponse.json({ error: 'Unsupported plan selection' }, { status: 400 });
     }
+
+    const expectedPriceId = planId === 'lifetime' ? lifetimePriceId : premiumPriceId;
+    if (priceId !== expectedPriceId) {
+      return NextResponse.json({ error: 'Unexpected price ID for selected plan' }, { status: 400 });
+    }
+
+    const mode = planId === 'lifetime' ? 'payment' : 'subscription';
 
     // Authenticate user
     const token = req.headers.get('authorization')?.split(' ')[1];

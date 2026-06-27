@@ -779,9 +779,10 @@ export default function MachinePage() {
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
             <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
             <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-            <span>&copy; 2026 Cognistration.com</span>
+            <span>&copy; 2026 Cognistration</span>
           </div>
         </div>
       </footer>

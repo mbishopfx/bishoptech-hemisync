@@ -118,19 +118,19 @@ export async function POST(req) {
     });
 
     // 4) Encode
-    const { wavBuffer, mp3Buffer, mastering } = await encodeOutputs({
+    const { wavBuffer, webmBuffer, mastering } = await encodeOutputs({
       left: outL,
       right: outR,
       sampleRate: targetRate,
       wavBitDepthCode: exportProfile.wavBitDepthCode,
-      withMp3: true,
+      withWebm: true,
       kbps: exportProfile.mp3Kbps,
       masteringProfile: exportProfile.mastering
     });
     const artifacts = await persistRenderArtifacts({
       baseName: `${path.basename(resolvedPath, path.extname(resolvedPath))}-${bandHz}hz-overlay`,
       wavBuffer,
-      mp3Buffer
+      webmBuffer
     });
     const assets = Object.fromEntries(
       Object.entries(artifacts.files).map(([format, file]) => [
@@ -149,7 +149,8 @@ export async function POST(req) {
       artifactId: artifacts.artifactId,
       assets,
       wav: assets.wav?.url || null,
-      mp3: assets.mp3?.url || null,
+      webm: assets.webm?.url || null,
+      mp3: assets.webm?.url || null,
       meta: { bandHz, bpm, overlayDb, lengthSec: totalLength, exportProfile: exportProfile.id, mastering }
     });
   } catch (err) {

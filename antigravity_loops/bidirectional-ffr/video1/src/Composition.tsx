@@ -13,7 +13,7 @@ const Slide = ({ img, duration }) => {
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "cover"
+            objectFit: "contain"
           }}
           startFrom={0}
         />
@@ -31,7 +31,7 @@ const Slide = ({ img, duration }) => {
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: "contain",
           transform: `scale(${scale})`
         }}
       />

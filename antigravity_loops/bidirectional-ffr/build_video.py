@@ -3,6 +3,7 @@ import re
 import json
 import shutil
 import subprocess
+from concurrent.futures import ThreadPoolExecutor
 
 fps = 30
 base_dir = "/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration/antigravity_loops/bidirectional-ffr"
@@ -11,29 +12,18 @@ public_dir = os.path.join(base_dir, "video1/public")
 timings_path = os.path.join(public_dir, "timings.json")
 frames_src_dir = os.path.join(base_dir, "output_2026_06_22")
 
-def get_audio_duration(audio_path):
+def get_duration(path):
+    cmd = [
+        "ffprobe", "-v", "error", "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1", path
+    ]
     try:
-        result = subprocess.run(
-            ["ffprobe", "-i", audio_path, "-show_entries", "format=duration", "-v", "quiet", "-of", "csv=p=0"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        return float(result.stdout.strip())
+        return float(subprocess.check_output(cmd).decode().strip())
     except Exception as e:
-        print(f"Warning: Could not get audio duration via ffprobe: {e}")
-        return None
-
-def find_frame_file(frames_dir, idx):
-    prefix = f"frame_{idx+1:02d}."
-    for f in os.listdir(frames_dir):
-        if f.lower().startswith(prefix):
-            return f
-    # fallback default
-    return f"frame_{idx+1:02d}.png"
+        print(f"Error getting duration for {path}: {e}")
+        return 0.0
 
 # 1. Parse timestamps from storyboard prompts (Part 2)
-# Pattern: [00:00 - 00:06] or similar
 timestamp_pattern = re.compile(r'\[(\d+):(\d+)\s*-\s*(\d+):(\d+)\]')
 
 raw_timings = []
@@ -51,19 +41,35 @@ for m in matches:
 
 # Check for audio duration to scale
 audio_path = os.path.join(public_dir, "audio.mp3")
-audio_duration = None
-if os.path.exists(audio_path):
-    audio_duration = get_audio_duration(audio_path)
+if not os.path.exists(audio_path):
+    print("audio.mp3 not found in public folder. Copying from Downloads...")
+    downloads_dir = "/Users/matthewbishop"
+    audio_filename = "Downloads/ElevenLabs_2026-06-23T05_40_34_Joey Patel - Deep and Engaging_pvc_sp97_s50_sb16_v3.mp3"
+    src_audio = os.path.join(downloads_dir, audio_filename)
+    if os.path.exists(src_audio):
+        shutil.copy2(src_audio, audio_path)
+        print(f"Successfully copied audio: {audio_filename} -> {audio_path}")
+    else:
+        # fallback: search for ElevenLabs*.mp3 in Downloads
+        search_dir = "/Users/matthewbishop/Downloads"
+        for f in os.listdir(search_dir):
+            if f.startswith("ElevenLabs_") and f.endswith(".mp3"):
+                src_audio = os.path.join(search_dir, f)
+                shutil.copy2(src_audio, audio_path)
+                print(f"Successfully copied fallback audio: {f} -> {audio_path}")
+                break
+
+audio_duration = get_duration(audio_path)
 
 timings = []
-if audio_duration:
+if audio_duration > 0:
     print(f"Audio found! Scaling timings to fit audio duration of {audio_duration:.2f} seconds.")
     total_audio_frames = int(round(audio_duration * fps))
     original_total_seconds = raw_timings[-1][1]
     
     accumulated_frames = 0
     for idx, (start_time, end_time) in enumerate(raw_timings):
-        frame_name = find_frame_file(frames_src_dir, idx)
+        frame_name = f"frame_{idx+1:02d}.png"
         target_end_frame = int(round((end_time / original_total_seconds) * total_audio_frames))
         
         if idx == len(raw_timings) - 1:
@@ -79,7 +85,7 @@ if audio_duration:
 else:
     print("No audio found or duration query failed. Using raw script timings.")
     for idx, (start_time, end_time) in enumerate(raw_timings):
-        frame_name = find_frame_file(frames_src_dir, idx)
+        frame_name = f"frame_{idx+1:02d}.png"
         start_frame = start_time * fps
         duration_frames = (end_time - start_time) * fps
         timings.append({
@@ -90,7 +96,7 @@ else:
 
 print(f"Prepared {len(timings)} timestamp segments.")
 
-# 2. Write timings.json
+# Write timings.json (using .png still images)
 if not os.path.exists(public_dir):
     os.makedirs(public_dir)
 
@@ -99,7 +105,7 @@ with open(timings_path, "w", encoding="utf-8") as f:
 
 print(f"Wrote timings.json to {timings_path}")
 
-# 3. Copy frame assets (images and videos) to public directory
+# Copy frame still assets to public directory
 for item in timings:
     dest_name = item["img"]
     src_path = os.path.join(frames_src_dir, dest_name)
@@ -108,82 +114,161 @@ for item in timings:
     if os.path.exists(src_path):
         shutil.copy2(src_path, dest_path)
     else:
-        print(f"Warning: asset {dest_name} not found in source directory!")
+        print(f"Warning: still asset {dest_name} not found in source directory!")
 
-# 4. Render Horizontal Remotion Video
-print("Rendering Horizontal video using Remotion...")
+# Render Horizontal Remotion Video (Video 2: Landscape Stills)
+print("Rendering Video 2 (Landscape Stills) using Remotion...")
 video1_dir = os.path.join(base_dir, "video1")
 result_horiz = subprocess.run(
-    ["npx", "remotion", "render", "MyComp", "../output_horizontal.mp4"],
+    ["npx", "remotion", "render", "MyComp", "../output_landscape_stills.mp4"],
     cwd=video1_dir,
     capture_output=True,
     text=True
 )
-
-print("HORIZONTAL STDOUT:")
+print("LANDSCAPE STDOUT:")
 print(result_horiz.stdout)
-print("HORIZONTAL STDERR:")
-print(result_horiz.stderr)
+if result_horiz.returncode != 0:
+    print("LANDSCAPE STDERR:")
+    print(result_horiz.stderr)
 
-# 5. Render Vertical Remotion Video
-print("Rendering Vertical video using Remotion...")
+# Render Vertical Remotion Video (Video 1: Vertical Stills)
+print("Rendering Video 1 (Vertical Stills) using Remotion...")
 result_vert = subprocess.run(
-    ["npx", "remotion", "render", "MyCompVertical", "../output_vertical.mp4"],
+    ["npx", "remotion", "render", "MyCompVertical", "../output_vertical_stills.mp4"],
     cwd=video1_dir,
     capture_output=True,
     text=True
 )
-
 print("VERTICAL STDOUT:")
 print(result_vert.stdout)
-print("VERTICAL STDERR:")
-print(result_vert.stderr)
+if result_vert.returncode != 0:
+    print("VERTICAL STDERR:")
+    print(result_vert.stderr)
 
-if result_horiz.returncode == 0 and result_vert.returncode == 0:
-    print("Videos rendered successfully!")
-    slug = os.path.basename(base_dir)
-    dest_dir = os.path.join("/Users/matthewbishop/Library/Mobile Documents/com~apple~CloudDocs/YouTube:TikTok:IG", slug)
-    dest_video_horiz = os.path.join(dest_dir, f"{slug}.mp4")
-    dest_video_vert = os.path.join(dest_dir, f"{slug}-vertical.mp4")
-    dest_stills_dir = os.path.join(dest_dir, "stills")
-    dest_script = os.path.join(dest_dir, "script.md")
+# Compile Video 3 (Clips Version with mixed audio)
+print("Compiling Video 3 (Clips Version) with FFMpeg...")
+temp_clips_dir = os.path.join(base_dir, "temp_clips")
+os.makedirs(temp_clips_dir, exist_ok=True)
+
+# Build a list of ffmpeg respeeding commands
+render_tasks = []
+rescaled_clips = []
+for idx, item in enumerate(timings):
+    target_dur = item["duration"] / fps
+    src_clip_path = os.path.join(frames_src_dir, f"frame_{idx+1:02d}.mp4")
+    temp_clip_path = os.path.join(temp_clips_dir, f"rescaled_{idx+1:02d}.mp4")
+    rescaled_clips.append(temp_clip_path)
     
+    clip_dur = get_duration(src_clip_path)
+    if clip_dur == 0.0:
+        clip_dur = 6.02  # fallback
+        
+    speed_factor = target_dur / clip_dur
+    
+    # ffmpeg command to scale and adjust speed of both video and audio
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", src_clip_path,
+        "-vf", f"scale=720:1280,setpts={speed_factor}*PTS",
+        "-af", f"asetrate=44100*{1.0/speed_factor},aresample=44100",
+        "-r", "30",
+        "-c:v", "libx264",
+        "-pix_fmt", "yuv420p",
+        temp_clip_path
+    ]
+    render_tasks.append(cmd)
+
+def run_rescale(cmd):
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+print("Rescaling 40 video clips in parallel using 8 workers...")
+with ThreadPoolExecutor(max_workers=8) as executor:
+    executor.map(run_rescale, render_tasks)
+print("Rescaling completed!")
+
+# Concatenate all rescaled clips
+concat_list_path = os.path.join(temp_clips_dir, "clips.txt")
+with open(concat_list_path, "w") as f:
+    for clip_path in rescaled_clips:
+        f.write(f"file '{os.path.basename(clip_path)}'\n")
+
+temp_silent_video = os.path.join(temp_clips_dir, "concat_clips.mp4")
+print("Concatenating video segments...")
+concat_cmd = [
+    "ffmpeg", "-y",
+    "-f", "concat",
+    "-safe", "0",
+    "-i", concat_list_path,
+    "-c:v", "copy",
+    "-c:a", "copy",
+    temp_silent_video
+]
+subprocess.run(concat_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+# Merge video and voiceover, mixing audio: clip at 50%, voiceover at 100%
+print("Mixing audio and generating Video 3...")
+output_clips_path = os.path.join(base_dir, "output_vertical_clips.mp4")
+merge_cmd = [
+    "ffmpeg", "-y",
+    "-i", temp_silent_video,
+    "-i", audio_path,
+    "-filter_complex", "[0:a]volume=0.5[a0];[1:a]volume=1.0[a1];[a0][a1]amix=inputs=2:duration=first[out]",
+    "-map", "0:v",
+    "-map", "[out]",
+    "-c:v", "copy",
+    "-c:a", "aac",
+    "-b:a", "192k",
+    output_clips_path
+]
+subprocess.run(merge_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+print("Video 3 compiled successfully!")
+
+# Clean up temp clips
+shutil.rmtree(temp_clips_dir)
+
+# 8. Move outputs to iCloud and clean up public/ directory
+if result_horiz.returncode == 0 and result_vert.returncode == 0 and os.path.exists(output_clips_path):
+    print("All videos built successfully! Moving to iCloud...")
+    slug = os.path.basename(base_dir)  # bidirectional-ffr
+    dest_dir = os.path.join("/Users/matthewbishop/Library/Mobile Documents/com~apple~CloudDocs/YouTube:TikTok:IG", slug)
+    
+    os.makedirs(dest_dir, exist_ok=True)
+    dest_stills_dir = os.path.join(dest_dir, "stills")
     os.makedirs(dest_stills_dir, exist_ok=True)
     
-    # 1. Move horizontal video file
-    src_video_horiz = os.path.join(base_dir, "output_horizontal.mp4")
-    if os.path.exists(src_video_horiz):
-        if os.path.exists(dest_video_horiz):
-            os.remove(dest_video_horiz)
-        shutil.move(src_video_horiz, dest_video_horiz)
-        print(f"Moved horizontal video to: {dest_video_horiz}")
-        
-    # 2. Move vertical video file
-    src_video_vert = os.path.join(base_dir, "output_vertical.mp4")
-    if os.path.exists(src_video_vert):
-        if os.path.exists(dest_video_vert):
-            os.remove(dest_video_vert)
-        shutil.move(src_video_vert, dest_video_vert)
-        print(f"Moved vertical video to: {dest_video_vert}")
-        
-    # 3. Move the still frame photos & dynamic clips (cleaning up locally)
-    moved_assets = 0
-    if os.path.exists(public_dir):
-        for filename in os.listdir(public_dir):
-            if filename.startswith("frame_"):
-                src_asset = os.path.join(public_dir, filename)
-                dest_asset = os.path.join(dest_stills_dir, filename)
-                if os.path.exists(dest_asset):
-                    os.remove(dest_asset)
-                shutil.move(src_asset, dest_asset)
-                moved_assets += 1
-    print(f"Moved {moved_assets} frames/clips to: {dest_stills_dir}")
+    # Move files
+    # 1. Vertical stills version
+    shutil.move(os.path.join(base_dir, "output_vertical_stills.mp4"), os.path.join(dest_dir, "bidirectional-ffr-vertical-stills.mp4"))
+    # 2. Landscape stills version (replaces the main horizontal file)
+    shutil.move(os.path.join(base_dir, "output_landscape_stills.mp4"), os.path.join(dest_dir, "bidirectional-ffr.mp4"))
+    # 3. Vertical clips version (replaces the main vertical file, no zoom)
+    shutil.move(output_clips_path, os.path.join(dest_dir, "bidirectional-ffr-vertical.mp4"))
     
-    # 4. Copy the script file for easy reading
-    if os.path.exists(script_path):
-        if os.path.exists(dest_script):
-            os.remove(dest_script)
-        shutil.copy2(script_path, dest_script)
-        print(f"Copied script to: {dest_script}")
+    # Remove old naming variants to avoid cluttering iCloud folder
+    for old_file in ["bidirectional-ffr-landscape-stills.mp4", "bidirectional-ffr-vertical-clips.mp4"]:
+        old_path = os.path.join(dest_dir, old_file)
+        if os.path.exists(old_path):
+            os.remove(old_path)
+    
+    # Move still frame images to stills/ on iCloud
+    moved_assets = 0
+    for filename in os.listdir(public_dir):
+        if filename.startswith("frame_") and filename.endswith(".png"):
+            src_asset = os.path.join(public_dir, filename)
+            dest_asset = os.path.join(dest_stills_dir, filename)
+            shutil.move(src_asset, dest_asset)
+            moved_assets += 1
+    print(f"Moved {moved_assets} still assets to iCloud stills folder.")
+    
+    # Copy script
+    shutil.copy2(script_path, os.path.join(dest_dir, "script.md"))
+    print("Script copied to iCloud!")
+    
+    # Cleanup public folder
+    for filename in os.listdir(public_dir):
+        file_path = os.path.join(public_dir, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+    print("Local public/ directory cleaned up.")
 else:
-    print(f"Video render failed. Horizontal exit code: {result_horiz.returncode}, Vertical exit code: {result_vert.returncode}")
+    print("Error: Rendering or mixing failed!")

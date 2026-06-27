@@ -295,7 +295,7 @@ export default function DashboardPage() {
         base_freq_hz: audioPayload.baseFreqHz,
         delta_path: data.journey?.deltaHzPath || metadata.deltaHzPath,
         wav_url: data.assets?.wav?.url || data.wav || null,
-        mp3_url: data.assets?.mp3?.url || data.mp3 || null,
+        mp3_url: data.assets?.webm?.url || data.webm || data.assets?.mp3?.url || data.mp3 || null,
         artifact_id: data.artifactId || null,
         visibility: metadata.visibility,
         source_session_id: data.journey?.id || audioPayload.journeyPresetId,

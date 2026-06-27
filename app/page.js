@@ -227,7 +227,7 @@ export default function LandingPage() {
             transition={{ delay: 0.4 }}
             className="text-white/40 text-xl md:text-2xl font-light tracking-tight max-w-xl mx-auto leading-relaxed"
           >
-            Choose a listening session that fits the moment. Cognistration keeps the routine simple, repeatable, and easy to trust.
+            Choose a listening session that fits the moment. Cognistration by BishopTech keeps the routine simple, repeatable, and easy to trust.
           </motion.p>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Link
@@ -241,6 +241,12 @@ export default function LandingPage() {
               className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-200 transition-colors hover:bg-cyan-500/15 hover:text-cyan-100"
             >
               See How It Works
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-full border border-white/10 bg-transparent px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-white/60 transition-colors hover:border-white/20 hover:bg-white/5 hover:text-white"
+            >
+              Contact
             </Link>
           </div>
           <p className="pt-2 text-[10px] font-mono uppercase tracking-[0.28em] text-white/25">
