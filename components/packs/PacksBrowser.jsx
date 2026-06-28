@@ -4,16 +4,15 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight, Download, Play, Pause, ShieldCheck, LockKeyhole } from 'lucide-react';
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { TONE_PACKS, getTonePackBySlug, getTonePackPriceId } from '@/lib/audio/tone-packs.mjs';
 
 const PREVIEW_LIMIT_SEC = 30;
 
 export function PacksBrowser() {
-  const [packs, setPacks] = useState([]);
+  const [packs, setPacks] = useState([TONE_PACKS[0]]);
   const [ownedPackSlugs, setOwnedPackSlugs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [activeTrackId, setActiveTrackId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState('');
@@ -30,17 +29,20 @@ export function PacksBrowser() {
 
     async function load() {
       try {
-        setLoading(true);
         setError('');
-        const supabase = getSupabaseBrowserClient();
-        const { data: sessionData } = await supabase.auth.getSession();
-        const accessToken = sessionData?.session?.access_token || null;
-        const res = await fetch('/api/packs', {
-          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
-        });
-        const data = await res.json();
-        if (!res.ok || !data.ok) {
-          throw new Error(data.error || `Failed to load packs (${res.status})`);
+        const res = await fetch('/api/packs');
+        const contentType = res.headers.get('content-type') || '';
+        const text = await res.text();
+        let data = null;
+        if (contentType.includes('application/json')) {
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            data = null;
+          }
+        }
+        if (!res.ok || !data?.ok) {
+          throw new Error(data?.error || `Failed to load packs (${res.status})`);
         }
         if (!cancelled) {
           setPacks(data.packs || []);
@@ -50,8 +52,6 @@ export function PacksBrowser() {
         if (!cancelled) {
           setError(err?.message || 'Failed to load pack catalog');
         }
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     }
 
@@ -81,7 +81,7 @@ export function PacksBrowser() {
     if (!audioRef.current) return;
 
     const audio = audioRef.current;
-    const nextUrl = track.preview_url || track.download_url;
+    const nextUrl = track.preview_url || track.previewUrl || track.mp3Url || track.mp3_url || track.webmUrl || track.download_url || track.downloadUrl || track.webm_url || track.wavUrl || track.wav_url || track.playUrl;
     if (!nextUrl) return;
 
     if (activeTrackId === track.track_id && isPlaying) {

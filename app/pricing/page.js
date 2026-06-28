@@ -69,7 +69,7 @@ const plans = [
 const tonePack = TONE_PACKS[0];
 
 export default function PricingPage() {
-  const [previewTracks, setPreviewTracks] = useState([]);
+  const [previewTracks, setPreviewTracks] = useState(() => TONE_PACKS[0]?.tracks?.slice(0, 6) || []);
   const [loadingPreviewTracks, setLoadingPreviewTracks] = useState(false);
   const [activePreviewTone, setActivePreviewTone] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -113,24 +113,25 @@ export default function PricingPage() {
       })
       .catch(err => console.error('Failed to load featured active preview tone:', err));
 
-    // 2. Fetch live Foundations Pack preview tones
+    // 2. Refresh featured pack preview tones if the API is available
     async function loadPreviewTracks() {
       try {
-        setLoadingPreviewTracks(true);
-
         const res = await fetch('/api/packs');
-        const data = await res.json();
-        if (res.ok && data.ok && Array.isArray(data.packs) && data.packs.length > 0) {
-          setPreviewTracks(data.packs[0].tracks || []);
-          return;
+        const contentType = res.headers.get('content-type') || '';
+        const text = await res.text();
+        let data = null;
+        if (contentType.includes('application/json')) {
+          try {
+            data = JSON.parse(text);
+          } catch (err) {
+            data = null;
+          }
         }
-
-        setPreviewTracks(TONE_PACKS[0]?.tracks || []);
+        if (res.ok && data?.ok && Array.isArray(data.packs) && data.packs.length > 0) {
+          setPreviewTracks((data.packs[0].tracks || []).slice(0, 6));
+        }
       } catch (err) {
-        console.error('Failed to query preview pack tracks:', err);
-        setPreviewTracks(TONE_PACKS[0]?.tracks || []);
-      } finally {
-        setLoadingPreviewTracks(false);
+        console.warn('Preview pack refresh failed; using bundled catalog:', err?.message || err);
       }
     }
     loadPreviewTracks();
