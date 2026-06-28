@@ -88,7 +88,7 @@ export default function PricingPage() {
     description: 'Compare Cognistration plans and choose the right listening tier.'
   };
 
-  // Load preview data and query database serenity pack
+  // Load preview data and featured preview tones
   useEffect(() => {
     try {
       setSupabase(getSupabaseBrowserClient());
@@ -122,7 +122,7 @@ export default function PricingPage() {
       })
       .catch(err => console.error('Failed to load featured active preview tone:', err));
 
-    // 2. Fetch Serenity Catalog Tones from Supabase
+    // 2. Fetch featured preview tones from Supabase
     async function loadSerenity() {
       try {
         setLoadingSerenity(true);
@@ -137,7 +137,7 @@ export default function PricingPage() {
           setSerenityTones(data);
         }
       } catch (err) {
-        console.error('Failed to query serenity tracks:', err);
+        console.error('Failed to query preview tones:', err);
       } finally {
         setLoadingSerenity(false);
       }
@@ -298,7 +298,7 @@ export default function PricingPage() {
             <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Calibration & Sound Room</p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">Stereo Sound Preview Room.</h2>
             <p className="text-white/40 text-sm font-light leading-relaxed">
-              Calibrate your headphones and preview our high-fidelity audio side-by-side. Test either your active session preview or any of the premium Serenity seed tracks.
+              Calibrate your headphones and preview our high-fidelity audio side-by-side. Test either your active session preview or the live pack catalog on the Packs page.
             </p>
           </div>
 
@@ -387,19 +387,19 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {/* Right Column: Serenity Pack Tones */}
+            {/* Right Column: Featured Preview Tones */}
             <div className="md:col-span-7 flex flex-col">
               <div className="relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-zinc-900/30 backdrop-blur-3xl p-8 flex flex-col justify-between h-full min-h-[320px]">
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <p className="text-[9px] font-mono text-purple-400 uppercase tracking-[0.25em]">Premium Serenity Pack Tones</p>
-                    <span className="text-[9px] font-mono text-white/25 uppercase tracking-widest">Seeded Catalog</span>
+                    <p className="text-[9px] font-mono text-purple-400 uppercase tracking-[0.25em]">Featured Preview Tones</p>
+                    <span className="text-[9px] font-mono text-white/25 uppercase tracking-widest">Preview Catalog</span>
                   </div>
 
                   {loadingSerenity ? (
                     <div className="space-y-4 py-12 text-center text-white/30 text-xs font-mono">
                       <span className="animate-spin inline-block size-4 border-t border-cyan-400 rounded-full mr-2" />
-                      Loading Serenity Catalog...
+                      Loading preview catalog...
                     </div>
                   ) : serenityTones.length > 0 ? (
                     <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2 scrollbar-thin">
@@ -439,7 +439,7 @@ export default function PricingPage() {
                     </div>
                   ) : (
                     <div className="py-12 text-center text-white/35 text-xs font-light leading-relaxed">
-                      No public Serenity tracks registered. Run `node scripts/seed-serenity.mjs` inside your workspace to populate.
+                      No preview tones loaded yet. Check the <Link href="/packs" className="text-purple-300 hover:text-purple-200">Packs</Link> page for the live Foundations Pack.
                     </div>
                   )}
                 </div>
