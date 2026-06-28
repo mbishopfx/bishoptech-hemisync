@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
+import { TONE_PACKS } from '@/lib/audio/tone-packs.mjs';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { buildAbsoluteUrl } from '@/lib/seo';
 
@@ -49,9 +50,9 @@ const plans = [
   {
     name: 'Lifetime Access',
     id: 'lifetime',
-    price: '$50',
+    price: '$20',
     priceId: 'price_1TWlbTDJtpuPVfuFG5ejsTAG',
-    description: 'One-time access for people who want the full experience without a subscription.',
+    description: 'One-time access for people who want the full experience without a subscription. Tone packs are sold separately.',
     features: [
       { text: 'All premium features included', allowed: true },
       { text: 'One-time checkout', allowed: true },
@@ -65,23 +66,7 @@ const plans = [
   }
 ];
 
-const tonePack = {
-  name: 'Tone Pack 01',
-  id: 'tone-pack-01',
-  price: 'Coming soon',
-  priceId: 'price_tone_pack_pending',
-  mode: 'payment',
-  description: 'A one-time 16-tone pack reserved for the first Cognistration sample collection release.',
-  features: [
-    '16 generated preview tones',
-    'One-time purchase on Stripe',
-    'Includes the first launch pack',
-    'Public MP3 downloads'
-  ],
-  highlight: false,
-  cta: 'Pack Launch Pending',
-  disabled: true
-};
+const tonePack = TONE_PACKS[0];
 
 export default function PricingPage() {
   const [serenityTones, setSerenityTones] = useState([]);
@@ -92,6 +77,8 @@ export default function PricingPage() {
 
   const audioRef = useRef(null);
   const [supabase, setSupabase] = useState(null);
+  const tonePackPriceId = process.env.NEXT_PUBLIC_TONE_PACK_FOUNDATIONS_PRICE_ID || null;
+  const tonePackCheckoutReady = Boolean(tonePackPriceId);
 
   const pricingJsonLd = {
     '@context': 'https://schema.org',
@@ -467,15 +454,15 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* Muted Tone Pack details */}
+        {/* Available Tone Packs */}
         <section className="w-full max-w-5xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
-              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">Coming Soon</p>
-              <h2 className="text-3xl font-light tracking-tight mt-2">Cognistration Sample Pack</h2>
+              <p className="text-[10px] font-mono text-purple-300 uppercase tracking-[0.4em]">Tone Packs</p>
+              <h2 className="text-3xl font-light tracking-tight mt-2">Foundations Pack</h2>
             </div>
             <p className="max-w-xl text-left md:text-right text-sm text-white/40 font-light leading-relaxed">
-              One-time packs are reserved for the first catalog release. The card stays visible so visitors can see what is next without mistaking it for a live checkout.
+              The one-time pack is live now. Visitors can preview the tracks and buy the pack for $5.99 with Stripe.
             </p>
           </div>
 
@@ -483,10 +470,10 @@ export default function PricingPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative p-10 rounded-[3rem] border bg-zinc-900/50 border-white/5"
+              className="relative p-10 rounded-[3rem] border bg-zinc-900/50 border-purple-500/20 shadow-[0_0_40px_rgba(168,85,247,0.08)]"
             >
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest">
-                One-time pack
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-purple-500 text-black text-[10px] font-bold uppercase tracking-widest">
+                Live pack
               </div>
 
               <div className="mb-8 text-left">
@@ -510,33 +497,25 @@ export default function PricingPage() {
               </div>
 
               <button
-                disabled
+                disabled={!tonePackCheckoutReady}
                 type="button"
-                className="w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 bg-white/5 text-white/40 border border-white/10 cursor-not-allowed"
+                onClick={async () => {
+                  if (!tonePackCheckoutReady) return;
+                  await redirectToStripeCheckout({
+                    planId: tonePack.checkoutPlanId,
+                    priceId: tonePackPriceId,
+                    mode: tonePack.billingMode,
+                    fallbackPath: '/signup'
+                  });
+                }}
+                className="w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 bg-purple-500 text-black hover:bg-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.12)]"
               >
-                {tonePack.cta} <ChevronRight className="size-4" />
+                {tonePackCheckoutReady ? `Get ${tonePack.price} Pack` : 'Stripe price id pending'} <ChevronRight className="size-4" />
               </button>
             </motion.div>
           </div>
         </section>
 
-        {/* Stats segment */}
-        <section className="mt-32 w-full max-w-4xl text-center">
-          <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] mb-12">System Architecture</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: 'Plan types', value: '3' },
-              { label: 'Trial access', value: '7 days' },
-              { label: 'Billing', value: 'Stripe' },
-              { label: 'Safety', value: 'Guidance included' }
-            ].map((stat, i) => (
-              <div key={i} className="space-y-1">
-                <p className="text-white/20 text-[10px] uppercase tracking-widest">{stat.label}</p>
-                <p className="text-xl font-medium tracking-tight">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
 
       <footer className="py-12 border-t border-white/5 bg-black/50 mt-20">

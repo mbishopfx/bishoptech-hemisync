@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { matchMoodToTone } from '@/lib/ai/gemini-matcher';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { getHomepageToneById } from '@/lib/audio/homepage-tones';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,16 +60,33 @@ export async function POST(req) {
               return NextResponse.json({
                   error: 'Limit reached',
                   code: 'SUBSCRIPTION_REQUIRED',
-                  message: 'You have generated your 5 free tones for this month. Upgrade to Premium Console ($9) or Lifetime Access ($50) to unlock unlimited generations.'
+                  message: 'You have generated your 5 free tones for this month. Upgrade to Premium Console ($9) or Lifetime Access ($20) to unlock unlimited generations.'
               }, { status: 403 });
           }
       }
     }
 
-    // Match mood to tone
-    const { trackId, response: agentMessage } = await matchMoodToTone(mood);
+    // Match mood to tone from the seeded library so we can return a ready-to-play track immediately.
+    const { data: toneRows, error: toneRowsError } = await supabase
+      .from('agentic_tones')
+      .select('id,name,state,target_hz,base_freq_hz,duration_sec,description,summary,wav_url,webm_url,metadata,created_at')
+      .order('created_at', { ascending: false });
 
-    const track = getHomepageToneById(trackId);
+    if (toneRowsError) throw toneRowsError;
+
+    const tonePool = (toneRows || []).map((tone) => ({
+      ...tone,
+      targetHz: tone.target_hz,
+      baseFreqHz: tone.base_freq_hz,
+      durationSec: tone.duration_sec,
+      wavUrl: tone.wav_url,
+      webmUrl: tone.webm_url,
+      sourceType: tone.metadata?.source || 'seeded-library'
+    }));
+
+    const { trackId, response: agentMessage } = await matchMoodToTone(mood, tonePool);
+
+    const track = tonePool.find((entry) => entry.id === trackId) || tonePool.find((entry) => entry.state === 'alpha') || tonePool[0];
     if (!track) {
       throw new Error('Selected track not found in library');
     }
