@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Check, ChevronRight, Zap, Shield, Cpu, Info, DollarSign, X } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 import { TONE_PACKS } from '@/lib/audio/tone-packs.mjs';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
@@ -137,7 +138,7 @@ export default function PricingPage() {
 
   // Audio Playback Pipeline
   const handlePlayTone = (tone) => {
-    const url = tone.webmUrl || tone.wavUrl || tone.mp3Url || tone.webm_url || tone.wav_url || tone.mp3_url || tone.playUrl;
+    const url = tone.preview_url || tone.previewUrl || tone.webmUrl || tone.wavUrl || tone.mp3Url || tone.download_url || tone.downloadUrl || tone.webm_url || tone.wav_url || tone.mp3_url || tone.playUrl;
     if (!url) return;
 
     if (!audioRef.current) return;
