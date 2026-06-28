@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { getTonePackBySlug, getTonePackPriceId } from '@/lib/audio/tone-packs.mjs';
 
 export async function POST(req) {
   try {
@@ -13,21 +14,32 @@ export async function POST(req) {
     const { priceId, planId } = await req.json();
     const premiumPriceId = 'price_1TWlb7DJtpuPVfuFfSVEXPYU';
     const lifetimePriceId = 'price_1TWlbTDJtpuPVfuFG5ejsTAG';
+    const tonePack = getTonePackBySlug('foundations-pack');
+    const tonePackPriceId = getTonePackPriceId(tonePack);
 
     if (!priceId) {
       return NextResponse.json({ error: 'Price ID is required' }, { status: 400 });
     }
 
-    if (!['premium', 'lifetime'].includes(planId)) {
+    const planConfig = {
+      premium: { expectedPriceId: premiumPriceId, mode: 'subscription' },
+      lifetime: { expectedPriceId: lifetimePriceId, mode: 'payment' },
+      'tone-pack-foundations': { expectedPriceId: tonePackPriceId, mode: 'payment', packSlug: 'foundations-pack' }
+    }[planId];
+
+    if (!planConfig) {
       return NextResponse.json({ error: 'Unsupported plan selection' }, { status: 400 });
     }
 
-    const expectedPriceId = planId === 'lifetime' ? lifetimePriceId : premiumPriceId;
-    if (priceId !== expectedPriceId) {
+    if (!planConfig.expectedPriceId) {
+      return NextResponse.json({ error: 'Stripe price id is not configured for this plan' }, { status: 503 });
+    }
+
+    if (priceId !== planConfig.expectedPriceId) {
       return NextResponse.json({ error: 'Unexpected price ID for selected plan' }, { status: 400 });
     }
 
-    const mode = planId === 'lifetime' ? 'payment' : 'subscription';
+    const mode = planConfig.mode;
 
     // Authenticate user
     const token = req.headers.get('authorization')?.split(' ')[1];
@@ -69,7 +81,9 @@ export async function POST(req) {
       customer_email: user.email,
       metadata: {
         user_uuid: user.id,
-        planId: planId
+        planId: planId,
+        ...(planConfig.packSlug ? { packSlug: planConfig.packSlug } : {}),
+        priceId: priceId
       }
     });
 
