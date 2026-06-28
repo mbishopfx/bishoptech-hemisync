@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Check, ChevronRight, Zap, Shield, Cpu, Info, DollarSign, X } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 import { TONE_PACKS } from '@/lib/audio/tone-packs.mjs';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
@@ -69,14 +68,13 @@ const plans = [
 const tonePack = TONE_PACKS[0];
 
 export default function PricingPage() {
-  const [serenityTones, setSerenityTones] = useState([]);
-  const [loadingSerenity, setLoadingSerenity] = useState(false);
+  const [previewTracks, setPreviewTracks] = useState([]);
+  const [loadingPreviewTracks, setLoadingPreviewTracks] = useState(false);
   const [activePreviewTone, setActivePreviewTone] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playingToneId, setPlayingToneId] = useState(null);
 
   const audioRef = useRef(null);
-  const [supabase, setSupabase] = useState(null);
   const tonePackPriceId = process.env.NEXT_PUBLIC_TONE_PACK_FOUNDATIONS_PRICE_ID || null;
   const tonePackCheckoutReady = Boolean(tonePackPriceId);
 
@@ -88,15 +86,7 @@ export default function PricingPage() {
     description: 'Compare Cognistration plans and choose the right listening tier.'
   };
 
-  // Load preview data and featured preview tones
-  useEffect(() => {
-    try {
-      setSupabase(getSupabaseBrowserClient());
-    } catch (err) {
-      console.warn('Supabase client unavailable on pricing page:', err?.message || err);
-    }
-  }, []);
-
+  // Load preview data and featured pack preview tones
   useEffect(() => {
     // 1. Retrieve active preview tone generated from the homepage
     const saved = localStorage.getItem('active-preview-tone');
@@ -122,28 +112,28 @@ export default function PricingPage() {
       })
       .catch(err => console.error('Failed to load featured active preview tone:', err));
 
-    // 2. Fetch featured preview tones from Supabase
-    async function loadSerenity() {
+    // 2. Fetch live Foundations Pack preview tones
+    async function loadPreviewTracks() {
       try {
-        setLoadingSerenity(true);
-        if (!supabase) return;
-        const { data, error } = await supabase
-          .from('saved_tones')
-          .select('*')
-          .eq('is_serenity', true)
-          .order('created_at', { ascending: true });
-        
-        if (!error && data) {
-          setSerenityTones(data);
+        setLoadingPreviewTracks(true);
+
+        const res = await fetch('/api/packs');
+        const data = await res.json();
+        if (res.ok && data.ok && Array.isArray(data.packs) && data.packs.length > 0) {
+          setPreviewTracks(data.packs[0].tracks || []);
+          return;
         }
+
+        setPreviewTracks(TONE_PACKS[0]?.tracks || []);
       } catch (err) {
-        console.error('Failed to query preview tones:', err);
+        console.error('Failed to query preview pack tracks:', err);
+        setPreviewTracks(TONE_PACKS[0]?.tracks || []);
       } finally {
-        setLoadingSerenity(false);
+        setLoadingPreviewTracks(false);
       }
     }
-    loadSerenity();
-  }, [supabase]);
+    loadPreviewTracks();
+  }, []);
 
   // Audio Playback Pipeline
   const handlePlayTone = (tone) => {
@@ -298,7 +288,7 @@ export default function PricingPage() {
             <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Calibration & Sound Room</p>
             <h2 className="text-3xl md:text-5xl font-light tracking-tight">Stereo Sound Preview Room.</h2>
             <p className="text-white/40 text-sm font-light leading-relaxed">
-              Calibrate your headphones and preview our high-fidelity audio side-by-side. Test either your active session preview or the live pack catalog on the Packs page.
+              Calibrate your headphones and preview our high-fidelity audio side-by-side. Test either your active session preview or the live Foundations Pack tracks below.
             </p>
           </div>
 
@@ -396,14 +386,14 @@ export default function PricingPage() {
                     <span className="text-[9px] font-mono text-white/25 uppercase tracking-widest">Preview Catalog</span>
                   </div>
 
-                  {loadingSerenity ? (
+                  {loadingPreviewTracks ? (
                     <div className="space-y-4 py-12 text-center text-white/30 text-xs font-mono">
                       <span className="animate-spin inline-block size-4 border-t border-cyan-400 rounded-full mr-2" />
                       Loading preview catalog...
                     </div>
-                  ) : serenityTones.length > 0 ? (
+                  ) : previewTracks.length > 0 ? (
                     <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2 scrollbar-thin">
-                      {serenityTones.map((tone) => (
+                      {previewTracks.slice(0, 6).map((tone) => (
                         <div 
                           key={tone.id}
                           className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
@@ -414,12 +404,12 @@ export default function PricingPage() {
                         >
                           <div className="space-y-1 text-left max-w-[75%]">
                             <div className="flex items-center gap-2">
-                              <span className="text-[9px] font-mono uppercase tracking-widest text-purple-400">{tone.target_state || 'Theta'}</span>
+                              <span className="text-[9px] font-mono uppercase tracking-widest text-purple-400">{tone.target_state_label || tone.state || 'Theta'}</span>
                               <span className="text-white/25 text-[8px]">•</span>
                               <span className="text-white/40 text-[9px] font-mono">{tone.base_freq_hz}Hz Carrier</span>
                             </div>
                             <h4 className="text-sm font-medium text-white tracking-tight">{tone.name}</h4>
-                            <p className="text-[10px] text-white/35 font-light leading-normal line-clamp-1">{tone.description}</p>
+                            <p className="text-[10px] text-white/35 font-light leading-normal line-clamp-1">{tone.summary || tone.description}</p>
                           </div>
 
                           <button
@@ -446,7 +436,7 @@ export default function PricingPage() {
 
                 <div className="mt-8 pt-4 border-t border-white/5 text-[9px] font-mono uppercase tracking-widest text-white/25 flex items-center justify-between">
                   <span>Binaural-style Preview</span>
-                  <span className="text-purple-400 font-bold uppercase tracking-widest">{serenityTones.length} premium tracks loaded</span>
+                  <span className="text-purple-400 font-bold uppercase tracking-widest">{previewTracks.length} premium tracks loaded</span>
                 </div>
               </div>
             </div>
