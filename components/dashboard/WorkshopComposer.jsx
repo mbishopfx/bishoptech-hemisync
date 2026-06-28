@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Activity, Power, Zap } from 'lucide-react';
-import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
 export function WorkshopComposer({ 
   seedTone, 
@@ -21,12 +20,10 @@ export function WorkshopComposer({
   const [volume, setVolume] = useState(80);
   const [time, setTime] = useState(0);
 
-  // Session Limits & Countdown
-  const isFreeTrial = !profile?.subscription_tier || profile.subscription_tier === 'none' || profile.subscription_tier === 'free';
-  const maxDurationSec = isFreeTrial ? 300 : 3600; // 5 mins vs 1 hour
+  // Session access & countdown
+  const maxDurationSec = 3600; // 1 hour for all signed-in users
   const [sessionTime, setSessionTime] = useState(0);
   const [showLimitModal, setShowLimitModal] = useState(false);
-  const [limitModalType, setLimitModalType] = useState('free'); // 'free' | 'paid'
 
   const audioCtxRef = useRef(null);
   const leftOscRef = useRef(null);
@@ -186,11 +183,10 @@ export function WorkshopComposer({
   useEffect(() => {
     if (sessionTime >= maxDurationSec) {
       stopAudio();
-      setLimitModalType(isFreeTrial ? 'free' : 'paid');
       setShowLimitModal(true);
       setSessionTime(0);
     }
-  }, [sessionTime, maxDurationSec, isFreeTrial]);
+  }, [sessionTime, maxDurationSec]);
 
   // Keep oscillators dynamically tuned to slider values in real-time
   useEffect(() => {
@@ -421,15 +417,13 @@ export function WorkshopComposer({
                   {formatTime(maxDurationSec - sessionTime)}
                 </span>
                 <span className="text-zinc-600 font-mono text-[9px] uppercase tracking-wide">
-                  / {isFreeTrial ? "5m limit" : "1h limit"}
+                  / 1h limit
                 </span>
               </div>
 
               <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
                 <div 
-                  className={`h-full transition-all duration-1000 ${
-                    isFreeTrial ? 'bg-cyan-500' : 'bg-purple-500'
-                  }`}
+                  className="h-full transition-all duration-1000 bg-purple-500"
                   style={{ width: `${(sessionTime / maxDurationSec) * 100}%` }}
                 />
               </div>
@@ -469,61 +463,32 @@ export function WorkshopComposer({
 
       {/* Session Limit Modal */}
       {showLimitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-md animate-fade-in">
-          <Card className="relative max-w-md w-full bg-zinc-900/90 border border-white/10 rounded-[2.5rem] p-8 space-y-6 text-center shadow-[0_0_50px_rgba(6,182,212,0.15)] overflow-hidden">
-            <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/10 blur-[30px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[120px] h-[80px] bg-purple-500/10 blur-[30px] pointer-events-none" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-md animate-fade-in">
+      <Card className="relative max-w-md w-full bg-zinc-900/90 border border-white/10 rounded-[2.5rem] p-8 space-y-6 text-center shadow-[0_0_50px_rgba(6,182,212,0.15)] overflow-hidden">
+      <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/10 blur-[30px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[120px] h-[80px] bg-purple-500/10 blur-[30px] pointer-events-none" />
             
-            <div className="mx-auto size-14 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-              <Zap className="size-6 animate-pulse" />
-            </div>
+      <div className="mx-auto size-14 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+        <Zap className="size-6 animate-pulse" />
+      </div>
 
-            {limitModalType === 'free' ? (
-              <div className="space-y-3 text-left">
-                <h3 className="text-2xl font-light text-white tracking-tight text-center">5-Minute Session Complete</h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-                  Free tier accounts are capped at 5 minutes of continuous neural resonance. Upgrade to our Premium tier to unlock <strong>unrestricted 1-hour sessions</strong>, access pre-loaded high-fidelity sound beds, and save custom neural blueprints.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3 text-left">
-                <h3 className="text-2xl font-light text-white tracking-tight text-center">1-Hour Session Complete</h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-                  You have successfully completed a full 60-minute integration baseline. To prevent central nervous fatigue and promote sensory normalization, we recommend a 10-minute rest period before starting another session.
-                </p>
-              </div>
-            )}
+      <div className="space-y-3 text-left">
+        <h3 className="text-2xl font-light text-white tracking-tight text-center">1-Hour Session Complete</h3>
+        <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
+          You have successfully completed a full 60-minute integration baseline. Take a short rest before starting another session.
+        </p>
+      </div>
 
-            <div className="flex flex-col gap-3">
-              {limitModalType === 'free' ? (
-                <>
-                  <button
-                    onClick={() => {
-                      setShowLimitModal(false);
-                      void redirectToStripeCheckout();
-                    }}
-                    className="w-full py-3.5 px-4 rounded-xl bg-cyan-500 text-black font-mono text-[10px] uppercase tracking-wider font-bold hover:bg-cyan-400 transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-                  >
-                    Unlock 1-Hour Sessions
-                  </button>
-                  <button
-                    onClick={() => setShowLimitModal(false)}
-                    className="w-full py-3.5 px-4 rounded-xl bg-white/5 border border-white/5 text-zinc-400 font-mono text-[10px] uppercase tracking-wider hover:text-white hover:bg-white/10 transition-all"
-                  >
-                    Dismiss Console
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setShowLimitModal(false)}
-                  className="w-full py-3.5 px-4 rounded-xl bg-white/10 border border-white/10 text-white font-mono text-[10px] uppercase tracking-wider hover:bg-white/20 transition-all"
-                >
-                  Acknowledge & Close
-                </button>
-              )}
-            </div>
-          </Card>
-        </div>
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={() => setShowLimitModal(false)}
+          className="w-full py-3.5 px-4 rounded-xl bg-white/10 border border-white/10 text-white font-mono text-[10px] uppercase tracking-wider hover:bg-white/20 transition-all"
+        >
+          Dismiss Console
+        </button>
+      </div>
+      </Card>
+      </div>
       )}
     </div>
   );
