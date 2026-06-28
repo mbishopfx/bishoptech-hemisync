@@ -79,14 +79,14 @@ export default function DashboardPage() {
   async function refreshWorkspace() {
     try {
       setWorkspaceError('');
-      const [profileData, libraryData, feedData] = await Promise.all([
+      const [profileData, libraryResponse, feedData] = await Promise.all([
         authedFetch('/api/profile').catch(() => ({ profile: null })),
-        authedFetch('/api/library').catch(() => ({ tones: [] })),
+        fetch('/api/library', { cache: 'no-store' }).then((response) => readApiResponse(response, 'Library request failed')).catch(() => ({ tones: [] })),
         authedFetch('/api/feed').catch(() => ({ posts: [] }))
       ]);
 
       setProfile(profileData.profile);
-      setLibrary(libraryData.tones || []);
+      setLibrary(Array.isArray(libraryResponse?.tones) ? libraryResponse.tones : []);
       setFeed(feedData.posts || []);
     } catch (error) {
       console.error('Sync failure:', error);
@@ -114,6 +114,25 @@ export default function DashboardPage() {
         return;
       }
       await refreshWorkspace();
+
+      const checkoutSessionId = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('session_id')
+        : null;
+
+      if (checkoutSessionId) {
+        try {
+          await authedFetch('/api/checkout/complete', {
+            method: 'POST',
+            body: JSON.stringify({ sessionId: checkoutSessionId })
+          });
+          await refreshWorkspace();
+        } catch (syncError) {
+          console.warn('Checkout completion sync failed:', syncError?.message || syncError);
+        } finally {
+          router.replace('/dashboard');
+        }
+      }
+
       setLoading(false);
     }
     boot();

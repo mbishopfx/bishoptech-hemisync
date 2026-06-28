@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
+function getProfilePlan(planId) {
+  if (planId === 'lifetime') return 'founder';
+  if (planId === 'premium') return 'pro';
+  return 'free';
+}
+
 export async function POST(req) {
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecret) {
@@ -41,17 +47,40 @@ export async function POST(req) {
       if (userId) {
         const planId = session.metadata?.planId || 'lifetime';
 
-        await supabase
-          .from('profiles')
-          .upsert(
-            {
-              id: userId,
-              email: session.customer_email || null,
-              subscription_tier: planId,
-              trial_expires_at: null
-            },
-            { onConflict: 'id' }
-          );
+        if (planId === 'tone-pack-foundations') {
+          await supabase
+            .from('tone_pack_purchases')
+            .upsert(
+              {
+                user_id: userId,
+                pack_slug: session.metadata?.packSlug || 'foundations-pack',
+                pack_name: 'Foundations Pack',
+                price_id: session.metadata?.priceId || 'pending',
+                stripe_session_id: session.id,
+                stripe_customer_id: session.customer || null,
+                stripe_payment_intent_id: session.payment_intent || null,
+                status: 'active',
+                metadata: {
+                  planId,
+                  source: 'stripe-checkout'
+                }
+              },
+              { onConflict: 'stripe_session_id' }
+            );
+        } else {
+          await supabase
+            .from('profiles')
+            .upsert(
+              {
+                id: userId,
+                email: session.customer_email || null,
+                plan: getProfilePlan(planId),
+                subscription_tier: planId,
+                trial_expires_at: null
+              },
+              { onConflict: 'id' }
+            );
+        }
       }
       break;
     }
@@ -74,6 +103,7 @@ export async function POST(req) {
             {
               id: userId,
               email: subscription.customer_email || null,
+              plan: getProfilePlan(planId),
               subscription_tier: planId,
               trial_expires_at: trialExpiresAt
             },
