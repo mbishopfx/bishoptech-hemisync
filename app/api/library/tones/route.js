@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
 import { savedToneSelect } from '@/lib/social/serializers';
 import { scoreToneEffectiveness } from '@/lib/social/tone-effectiveness';
+import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -56,7 +57,7 @@ export async function POST(req) {
 
     if (profileError) throw profileError;
 
-    const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
+    const isFreeTrial = isFreeSubscriptionTier(profile?.subscription_tier);
 
     // 2. Enforce 5-tone library limit on Free Trial users
     if (isFreeTrial) {

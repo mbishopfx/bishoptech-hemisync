@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getSubscriptionStatusLabel, isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
@@ -290,7 +291,7 @@ export function SettingsView({ profile, onUpdateProfile }) {
     }
   };
 
-  const isFreeTrial = !profile?.subscription_tier || profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
+  const isFreeTrial = isFreeSubscriptionTier(profile?.subscription_tier);
 
   const getTierIcon = () => {
     return isFreeTrial ? 'nature_people' : 'workspace_premium';
@@ -394,7 +395,7 @@ export function SettingsView({ profile, onUpdateProfile }) {
               <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex justify-between items-center text-xs">
                 <span className="text-white/40">Membership Plan</span>
                 <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 font-mono text-[10px] text-cyan-400 uppercase tracking-wider">
-                  {(!profile?.subscription_tier || profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') ? 'Free Trial' : 'Paid Plan'}
+                  {getSubscriptionStatusLabel(profile)}
                 </span>
               </div>
               <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex justify-between items-center text-xs">

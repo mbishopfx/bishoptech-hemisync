@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
@@ -216,7 +217,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
   };
 
   const handleSaveToneToLibrary = async (tone) => {
-    const isFreeTrial = profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free';
+    const isFreeTrial = isFreeSubscriptionTier(profile?.subscription_tier);
     if (isFreeTrial) {
       await redirectToStripeCheckout();
       return;
@@ -419,7 +420,7 @@ export function FeedView({ profile, tones = [], initialFeed = [], onRefresh }) {
       {feedTab === 'resonance' ? (
         <div className="space-y-6">
           {/* Feed Broadcast Console / Composer */}
-          {profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free' ? (
+          {isFreeSubscriptionTier(profile?.subscription_tier) ? (
             <Card className="bg-zinc-900/20 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden text-center space-y-4">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.01] to-transparent pointer-events-none" />
               <span className="material-symbols-outlined text-cyan-400/40 text-3xl animate-pulse">lock</span>

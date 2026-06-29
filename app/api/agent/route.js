@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { matchMoodToTone } from '@/lib/ai/gemini-matcher';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,7 +56,7 @@ export async function POST(req) {
       }
     } else {
       // Authenticated User Logic
-      if (subscription.subscription_tier === 'none' || subscription.subscription_tier === 'free') {
+      if (isFreeSubscriptionTier(subscription.subscription_tier)) {
           if (subscription.generation_count >= 5) {
               return NextResponse.json({
                   error: 'Limit reached',
@@ -96,7 +97,7 @@ export async function POST(req) {
     if (user) {
         await supabase.rpc('increment_generation_count', { user_uuid: user.id });
 
-        const isFreeTrial = subscription?.subscription_tier === 'none' || subscription?.subscription_tier === 'free';
+        const isFreeTrial = isFreeSubscriptionTier(subscription?.subscription_tier);
 
         let shouldSave = true;
         if (isFreeTrial) {

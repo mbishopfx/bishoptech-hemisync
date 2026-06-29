@@ -16,6 +16,7 @@ import { JournalView } from '@/components/dashboard/JournalView';
 import { SettingsView } from '@/components/dashboard/SettingsView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { toBackendUrl } from '@/lib/frontend/backend-url';
+import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 
 async function readApiResponse(response, fallbackMessage = 'Request failed') {
   const contentType = response.headers.get('content-type') || '';
@@ -617,7 +618,7 @@ export default function DashboardPage() {
 
                         <button
                           onClick={() => {
-                            if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
+                            if (isFreeSubscriptionTier(profile?.subscription_tier)) {
                               void redirectToStripeCheckout();
                               return;
                             }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
 import { feedPostSelect } from '@/lib/social/serializers';
+import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -19,7 +20,7 @@ export async function POST(req) {
       .eq('id', user.id)
       .single();
 
-    if (profile?.subscription_tier === 'none' || profile?.subscription_tier === 'free') {
+    if (isFreeSubscriptionTier(profile?.subscription_tier)) {
       return NextResponse.json({
         error: 'Subscription Required',
         code: 'BROADCAST_BLOCKED',
