@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
-import { TONE_PACKS } from '@/lib/audio/tone-packs.mjs';
+import { TONE_PACKS } from '@/lib/audio/tone-packs.db.mjs';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { buildAbsoluteUrl } from '@/lib/seo';
 
@@ -76,6 +76,7 @@ export default function PricingPage() {
   const [playingToneId, setPlayingToneId] = useState(null);
 
   const audioRef = useRef(null);
+  const previewListRef = useRef(null);
   const tonePackPriceId = process.env.NEXT_PUBLIC_TONE_PACK_FOUNDATIONS_PRICE_ID || null;
   const tonePackCheckoutReady = Boolean(tonePackPriceId);
 
@@ -89,6 +90,23 @@ export default function PricingPage() {
 
   // Load preview data and featured pack preview tones
   useEffect(() => {
+    const listRoot = previewListRef.current;
+    const delegatedClick = (event) => {
+      const button = event.target.closest('button[data-preview-url]');
+      if (!button || !listRoot?.contains(button)) return;
+      const url = button.dataset.previewUrl;
+      const trackId = button.dataset.previewTrackId || url;
+      const previewSeconds = Number(button.dataset.previewSeconds || 30);
+      if (!url || !audioRef.current) return;
+      const tone = {
+        preview_url: url,
+        track_id: trackId,
+        preview_seconds: previewSeconds
+      };
+      handlePlayTone(tone);
+    };
+    listRoot?.addEventListener('click', delegatedClick);
+
     // 1. Retrieve active preview tone generated from the homepage
     const saved = localStorage.getItem('active-preview-tone');
     if (saved) {
@@ -135,17 +153,22 @@ export default function PricingPage() {
       }
     }
     loadPreviewTracks();
+
+    return () => {
+      listRoot?.removeEventListener('click', delegatedClick);
+    };
   }, []);
 
   // Audio Playback Pipeline
   const handlePlayTone = (tone) => {
     const url = tone.preview_url || tone.previewUrl || tone.webmUrl || tone.wavUrl || tone.mp3Url || tone.download_url || tone.downloadUrl || tone.webm_url || tone.wav_url || tone.mp3_url || tone.playUrl;
-    if (!url) return;
+    if (!url || !audioRef.current) return;
 
-    if (!audioRef.current) return;
     const audio = audioRef.current;
+    const trackId = tone.track_id || tone.id || url;
+    const previewSeconds = Number(tone.preview_seconds || 30);
 
-    if (playingToneId === tone.id) {
+    if (playingToneId === trackId) {
       if (isPlaying) {
         audio.pause();
         setIsPlaying(false);
@@ -154,18 +177,31 @@ export default function PricingPage() {
           .then(() => setIsPlaying(true))
           .catch(err => console.error('Acoustic playback failed:', err));
       }
-    } else {
-      audio.pause();
-      audio.src = url;
-      audio.load();
-      setPlayingToneId(tone.id);
-      audio.play()
-        .then(() => setIsPlaying(true))
-        .catch(err => {
-          console.error('Acoustic playback failed:', err);
-          setIsPlaying(false);
-        });
+      return;
     }
+
+    audio.pause();
+    audio.src = url;
+    audio.currentTime = 0;
+    audio.load();
+    setPlayingToneId(trackId);
+    audio.play()
+      .then(() => {
+        setIsPlaying(true);
+        if (audio.dataset.previewTimer) {
+          window.clearTimeout(Number(audio.dataset.previewTimer));
+        }
+        audio.dataset.previewTimer = String(window.setTimeout(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          setIsPlaying(false);
+          setPlayingToneId(null);
+        }, Math.max(1, previewSeconds * 1000)));
+      })
+      .catch(err => {
+        console.error('Acoustic playback failed:', err);
+        setIsPlaying(false);
+      });
   };
 
   return (
@@ -394,40 +430,41 @@ export default function PricingPage() {
                       Loading preview catalog...
                     </div>
                   ) : previewTracks.length > 0 ? (
-                    <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2 scrollbar-thin">
-                      {previewTracks.slice(0, 6).map((tone) => (
-                        <div 
-                          key={tone.id}
-                          className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
-                            playingToneId === tone.id && isPlaying
-                              ? 'bg-purple-500/10 border-purple-500/30 text-white shadow-[0_0_20px_rgba(168,85,247,0.05)]' 
-                              : 'bg-zinc-950/60 border-white/5 text-white/60 hover:border-white/10 hover:text-white/80'
-                          }`}
-                        >
-                          <div className="space-y-1 text-left max-w-[75%]">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[9px] font-mono uppercase tracking-widest text-purple-400">{tone.target_state_label || tone.state || 'Theta'}</span>
-                              <span className="text-white/25 text-[8px]">•</span>
-                              <span className="text-white/40 text-[9px] font-mono">{tone.base_freq_hz}Hz Carrier</span>
-                            </div>
-                            <h4 className="text-sm font-medium text-white tracking-tight">{tone.name}</h4>
-                            <p className="text-[10px] text-white/35 font-light leading-normal line-clamp-1">{tone.summary || tone.description}</p>
-                          </div>
+                    <div ref={previewListRef} className="space-y-3 max-h-[220px] overflow-y-auto pr-2 scrollbar-thin">
+                      {previewTracks.slice(0, 6).map((tone) => {
+                        const previewUrl = tone.preview_url || tone.previewUrl || tone.webmUrl || tone.wavUrl || tone.mp3Url || tone.download_url || tone.downloadUrl || tone.webm_url || tone.wav_url || tone.mp3_url || tone.playUrl;
+                        const trackId = tone.track_id || tone.id || previewUrl;
+                        const previewSeconds = Number(tone.preview_seconds || 30);
+                        const active = playingToneId === trackId && isPlaying;
 
-                          <button
-                            onClick={() => handlePlayTone(tone)}
-                            className={`size-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                              playingToneId === tone.id && isPlaying
-                                ? 'bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:scale-105'
-                                : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:scale-105'
+                        return (
+                          <div
+                            key={trackId}
+                            className={`flex items-center justify-between gap-4 rounded-2xl border p-4 transition-all ${
+                              active ? 'border-purple-500/30 bg-purple-500/10 text-white shadow-[0_0_20px_rgba(168,85,247,0.05)]' : 'border-white/5 bg-zinc-950/60 text-white/60 hover:border-white/10 hover:text-white/80'
                             }`}
                           >
-                            <span className="material-symbols-outlined text-lg">
-                              {playingToneId === tone.id && isPlaying ? 'pause' : 'play_arrow'}
-                            </span>
-                          </button>
-                        </div>
-                      ))}
+                            <div className="space-y-1 text-left max-w-[75%]">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[9px] font-mono uppercase tracking-widest text-purple-400">{tone.target_state_label || tone.state || 'Theta'}</span>
+                                <span className="text-white/25 text-[8px]">•</span>
+                                <span className="text-white/40 text-[9px] font-mono">{tone.base_freq_hz}Hz Carrier</span>
+                                <span className="text-white/25 text-[8px]">•</span>
+                                <span className="text-white/40 text-[9px] font-mono">{previewSeconds}s preview</span>
+                              </div>
+                              <h4 className="text-sm font-medium text-white tracking-tight">{tone.name}</h4>
+                              <p className="text-[10px] text-white/35 font-light leading-normal line-clamp-1">{tone.summary || tone.description}</p>
+                            </div>
+
+                            <audio
+                              controls
+                              preload="none"
+                              src={previewUrl || undefined}
+                              className="h-10 w-32 shrink-0 rounded-full bg-black/30"
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="py-12 text-center text-white/35 text-xs font-light leading-relaxed">

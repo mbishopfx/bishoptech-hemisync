@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight, Download, Play, Pause, ShieldCheck, LockKeyhole } from 'lucide-react';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
-import { TONE_PACKS, getTonePackBySlug, getTonePackPriceId } from '@/lib/audio/tone-packs.mjs';
+import { TONE_PACKS, getTonePackBySlug, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 
 const PREVIEW_LIMIT_SEC = 30;
 
@@ -234,6 +234,7 @@ export function PacksBrowser() {
           ) : (
             <div className="mt-6 space-y-3 max-h-[620px] overflow-y-auto pr-2 scrollbar-thin">
               {(pack?.tracks || []).map((track) => {
+                const previewUrl = track.preview_url || track.previewUrl || track.mp3Url || track.mp3_url || track.webmUrl || track.download_url || track.downloadUrl || track.webm_url || track.wavUrl || track.wav_url || track.playUrl;
                 const active = activeTrackId === track.track_id && isPlaying;
                 return (
                   <div
@@ -252,18 +253,13 @@ export function PacksBrowser() {
                       </div>
                       <h3 className="text-sm font-medium text-white tracking-tight truncate">{track.track_name}</h3>
                       <p className="text-[10px] text-white/35 font-light leading-normal line-clamp-1">{track.short_label}</p>
-                    </div>
-
                     <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => previewTrack(track)}
-                        className={`size-10 rounded-full flex items-center justify-center transition-all ${
-                          active ? 'bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.35)]' : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
-                        }`}
-                      >
-                        {active ? <Pause className="size-4" /> : <Play className="size-4 ml-0.5" />}
-                      </button>
+                      <audio
+                        controls
+                        preload="none"
+                        src={previewUrl || undefined}
+                        className="h-10 w-28 shrink-0 rounded-full bg-black/30"
+                      />
 
                       <button
                         type="button"
@@ -274,6 +270,7 @@ export function PacksBrowser() {
                         <Download className="size-3" />
                         {ownsPack ? 'Download' : 'Locked'}
                       </button>
+                    </div>
                     </div>
                   </div>
                 );
