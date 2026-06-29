@@ -1,7 +1,60 @@
 import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
+
+function moneyToDollars(amount = 0, currency = 'usd') {
+  return {
+    amount,
+    currency,
+    display: `${(amount / 100).toFixed(2)} ${String(currency || 'usd').toUpperCase()}`
+  };
+}
+
+async function loadStripeHealth(stripeSecret) {
+  if (!stripeSecret) {
+    return { status: 'skipped', reason: 'missing_secret' };
+  }
+
+  const stripe = new Stripe(stripeSecret);
+  const since = Math.floor(Date.now() / 1000) - 86400;
+
+  const [balance, active, trialing, pastDue, canceled, completedEvents, failedEvents, deletedEvents] = await Promise.all([
+    stripe.balance.retrieve(),
+    stripe.subscriptions.list({ status: 'active', limit: 100 }),
+    stripe.subscriptions.list({ status: 'trialing', limit: 100 }),
+    stripe.subscriptions.list({ status: 'past_due', limit: 100 }),
+    stripe.subscriptions.list({ status: 'canceled', limit: 100 }),
+    stripe.events.list({ type: 'checkout.session.completed', created: { gte: since }, limit: 100 }),
+    stripe.events.list({ type: 'payment_intent.payment_failed', created: { gte: since }, limit: 100 }),
+    stripe.events.list({ type: 'customer.subscription.deleted', created: { gte: since }, limit: 100 }),
+  ]);
+
+  const available = balance.available || [];
+  const pending = balance.pending || [];
+  const availableTotal = available.reduce((sum, item) => sum + (item.amount || 0), 0);
+  const pendingTotal = pending.reduce((sum, item) => sum + (item.amount || 0), 0);
+
+  return {
+    status: 'ok',
+    balance: {
+      available: moneyToDollars(availableTotal, available[0]?.currency),
+      pending: moneyToDollars(pendingTotal, pending[0]?.currency)
+    },
+    subscriptions: {
+      active: active.data.length,
+      trialing: trialing.data.length,
+      past_due: pastDue.data.length,
+      canceled: canceled.data.length
+    },
+    last_24h_events: {
+      checkout_session_completed: completedEvents.data.length,
+      payment_intent_failed: failedEvents.data.length,
+      customer_subscription_deleted: deletedEvents.data.length
+    }
+  };
+}
 
 export async function GET() {
   try {
@@ -10,6 +63,8 @@ export async function GET() {
     const { count, error } = await supabase.from('agentic_tones').select('*', { count: 'exact', head: true });
     
     if (error) throw error;
+
+    const stripeHealth = await loadStripeHealth(process.env.STRIPE_SECRET_KEY);
 
     return NextResponse.json({
       status: 'healthy',
@@ -23,7 +78,8 @@ export async function GET() {
       },
       database: {
         agentic_tones_count: count || 0
-      }
+      },
+      stripe: stripeHealth
     });
   } catch (err) {
     return NextResponse.json({ status: 'unhealthy', error: err.message }, { status: 500 });
