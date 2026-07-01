@@ -1,4 +1,6 @@
 import { blogPosts } from '@/lib/blog/posts';
+import { AttentionResidueIsASwitchingCostPostMeta } from "@/lib/blog/posts-data";
+import AttentionResidueIsASwitchingCostPost from "@/components/blog/posts/attention-residue-is-a-switching-cost";
 import { TheCognitiveCostOfTryingToFocusPostMeta } from "@/lib/blog/posts-data";
 import TheCognitiveCostOfTryingToFocusPost from "@/components/blog/posts/the-cognitive-cost-of-trying-to-focus";
 import Link from "next/link";
@@ -6,6 +8,7 @@ import { TheAuditorySystemNeverSleepsPredictableSoundSafetyPostMeta, TheArchitec
 import TheAuditorySystemNeverSleepsPredictableSoundSafetyPost from "@/components/blog/posts/the-auditory-system-never-sleeps-predictable-sound-safety";
 import TheArchitectureOfAStartingRitualPost from "@/components/blog/posts/the-architecture-of-a-starting-ritual";
 import ChooseCognistrationSessionRoutinePost from '@/components/blog/posts/choose-cognistration-session-routine';
+import CalmEveningWindDownPost from '@/components/blog/posts/calm-evening-wind-down';
 
 import WhyCognistrationFeelsPrivatePost from '@/components/blog/posts/why-cognistration-feels-private';
 import CalmFirstSessionSetupPost from '@/components/blog/posts/calm-first-session-setup';
@@ -172,6 +175,8 @@ export const blogPostComponents = {
   [TheAuditorySystemNeverSleepsPredictableSoundSafetyPostMeta.slug]: TheAuditorySystemNeverSleepsPredictableSoundSafetyPost,
   [TheArchitectureOfAStartingRitualPostMeta.slug]: TheArchitectureOfAStartingRitualPost,
   [TheCognitiveCostOfTryingToFocusPostMeta.slug]: TheCognitiveCostOfTryingToFocusPost,
+  ["calm-evening-wind-down"]: CalmEveningWindDownPost,
+  [AttentionResidueIsASwitchingCostPostMeta.slug]: AttentionResidueIsASwitchingCostPost,
 };
 
 export function getBlogPostComponentBySlug(slug) {
