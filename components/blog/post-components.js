@@ -1,4 +1,6 @@
 import { blogPosts } from '@/lib/blog/posts';
+import { TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPostMeta } from "@/lib/blog/posts-data";
+import TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPost from "@/components/blog/posts/the-irrelevant-speech-effect-why-overheard-conversations-break-your-focus";
 import { AttentionResidueIsASwitchingCostPostMeta } from "@/lib/blog/posts-data";
 import AttentionResidueIsASwitchingCostPost from "@/components/blog/posts/attention-residue-is-a-switching-cost";
 import { TheCognitiveCostOfTryingToFocusPostMeta } from "@/lib/blog/posts-data";
@@ -177,6 +179,7 @@ export const blogPostComponents = {
   [TheCognitiveCostOfTryingToFocusPostMeta.slug]: TheCognitiveCostOfTryingToFocusPost,
   ["calm-evening-wind-down"]: CalmEveningWindDownPost,
   [AttentionResidueIsASwitchingCostPostMeta.slug]: AttentionResidueIsASwitchingCostPost,
+  [TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPostMeta.slug]: TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPost,
 };
 
 export function getBlogPostComponentBySlug(slug) {
