@@ -27,6 +27,9 @@ Decision rules
 - If there is no meaningful GSC data yet, do not invent trends.
 - Use existing site content and product intent to build a candidate list.
 - Promote only topics that feel native to Cognistration’s voice and product promise.
+- Use a controlled frontier-consciousness cluster when the query signal supports it: Gateway Project history, consciousness and sound, altered states, multiverse philosophy, auditory perception, and philosophy of mind.
+- Treat `Gateway Project` as a historical/documentary search topic, not proof of a product mechanism. Treat multiverse language as philosophical or speculative unless the source supports a stronger claim.
+- Select one primary query per article and map it to the title, slug, excerpt, intro, one heading, internal links, and Search Console follow-up. Do not keyword-stuff.
 - Avoid sensational language, medical claims, or hype.
 
 Output format

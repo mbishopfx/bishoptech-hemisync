@@ -67,6 +67,10 @@ SEO / blog direction
   - how premium audio experiences support consistency
   - how to choose a focus session for your workflow
 - Blog posts should read like thoughtful product education and in-depth editorial writing, not conspiracy or medical copy.
+- Expand discovery with a measured editorial cluster around public Gateway Project history, consciousness, altered-state research, multiverse philosophy, auditory perception, and the philosophy of mind.
+- Use these as search-intent themes, not promises: `Gateway Project explained`, `Gateway Project and consciousness`, `consciousness and sound`, `multiverse theory and consciousness`, `what is an altered state of consciousness`, and `binaural audio and consciousness`.
+- Each post should choose one primary phrase, use it naturally in the title/slug/excerpt/introduction, and support it with related language without stuffing.
+- Gateway Project and multiverse articles must distinguish archival history, established evidence, open questions, and speculation. Cognistration must never be presented as proof, reproduction, treatment, or a guaranteed neurological outcome.
 - Ghostwritten pieces should sound human, specific, and mechanically grounded, with real logic behind each claim.
 
 Tone rules for blog generation
