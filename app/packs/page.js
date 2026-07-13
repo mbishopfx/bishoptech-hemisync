@@ -1,5 +1,6 @@
 import { PacksBrowser } from '@/components/packs/PacksBrowser';
 import { buildPageMetadata, buildAbsoluteUrl } from '@/lib/seo';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
 const packsJsonLd = {
@@ -19,6 +20,7 @@ export const metadata = buildPageMetadata({
 export default function PacksPage() {
   return (
     <>
+      <PublicHeader />
       <main className="mx-auto max-w-7xl px-6 py-28 md:px-10">
         <script
           type="application/ld+json"
