@@ -62,7 +62,23 @@ function hash(value) {
 }
 
 function sourceUrl(tone) {
-  return tone.webm_url || tone.wav_url || null;
+  const targetHost = (() => {
+    try {
+      return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '').host;
+    } catch {
+      return '';
+    }
+  })();
+
+  return [tone.webm_url, tone.wav_url].find((url) => {
+    if (!url) return false;
+    if (!targetHost) return true;
+    try {
+      return new URL(url).host === targetHost;
+    } catch {
+      return false;
+    }
+  }) || null;
 }
 
 function duration(tone) {
@@ -215,7 +231,7 @@ async function run() {
       const bundleStoragePath = `bundles/${definition.slug}.zip`;
       const bundle = await fs.readFile(bundlePath);
       const { error: bundleError } = await supabase.storage.from(BUCKET).upload(bundleStoragePath, bundle, {
-        contentType: 'application/zip',
+        contentType: 'application/octet-stream',
         upsert: true
       });
       if (bundleError) throw bundleError;
