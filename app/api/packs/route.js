@@ -4,7 +4,7 @@ import {
   TONE_PACKS,
   buildTonePackFromTracks,
   getTonePackPriceId
-} from '@/lib/audio/tone-packs.mjs';
+} from '@/lib/audio/tone-packs.db.mjs';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

@@ -53,6 +53,7 @@ export function PublicHeader() {
                     <Link href="/blog" onClick={() => setIsDropdownOpen(false)} className="px-4 py-3 rounded-xl text-white/60 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all duration-200 border border-transparent hover:border-cyan-500/10">Blog</Link>
                     <Link href="/machine" onClick={() => setIsDropdownOpen(false)} className="px-4 py-3 rounded-xl text-white/60 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all duration-200 border border-transparent hover:border-cyan-500/10">Inside the Machine</Link>
                     <Link href="/tutorial" onClick={() => setIsDropdownOpen(false)} className="px-4 py-3 rounded-xl text-white/60 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all duration-200 border border-transparent hover:border-cyan-500/10">Tutorial</Link>
+                    <Link href="/packs" onClick={() => setIsDropdownOpen(false)} className="px-4 py-3 rounded-xl text-purple-200 hover:text-white hover:bg-purple-500/5 transition-all duration-200 border border-transparent hover:border-purple-500/10">Packs</Link>
                     <Link href="/pricing" onClick={() => setIsDropdownOpen(false)} className="px-4 py-3 rounded-xl text-white/60 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all duration-200 border border-transparent hover:border-cyan-500/10">Pricing</Link>
                     <Link href="/contact" onClick={() => setIsDropdownOpen(false)} className="px-4 py-3 rounded-xl text-white/60 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all duration-200 border border-transparent hover:border-cyan-500/10">Contact</Link>
                   </motion.div>
@@ -99,6 +100,7 @@ export function PublicHeader() {
             <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
             <Link href="/machine" onClick={() => setIsMobileMenuOpen(false)}>Inside the Machine</Link>
             <Link href="/tutorial" onClick={() => setIsMobileMenuOpen(false)}>Tutorial</Link>
+            <Link href="/packs" onClick={() => setIsMobileMenuOpen(false)}>Packs</Link>
             <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
             <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
             <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>

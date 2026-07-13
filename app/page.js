@@ -231,6 +231,12 @@ export default function LandingPage() {
           </motion.p>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Link
+              href="/packs"
+              className="rounded-full border border-purple-500/25 bg-purple-500/10 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-purple-200 transition-colors hover:bg-purple-500/15 hover:text-white"
+            >
+              Browse Tone Packs
+            </Link>
+            <Link
               href="/pricing"
               className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-white/70 transition-colors hover:bg-white/10 hover:text-white"
             >
