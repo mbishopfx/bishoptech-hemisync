@@ -11,12 +11,9 @@ import { Omnibar } from '@/components/agent/Omnibar';
 import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { LibraryBrowser } from '@/components/dashboard/LibraryBrowser';
 import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
-import { FeedView } from '@/components/dashboard/FeedView';
-import { JournalView } from '@/components/dashboard/JournalView';
-import { SettingsView } from '@/components/dashboard/SettingsView';
+import { StudioView } from '@/components/dashboard/StudioView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { toBackendUrl } from '@/lib/frontend/backend-url';
-import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 
 async function readApiResponse(response, fallbackMessage = 'Request failed') {
   const contentType = response.headers.get('content-type') || '';
@@ -40,21 +37,23 @@ async function readApiResponse(response, fallbackMessage = 'Request failed') {
   }
 }
 
+const studioEnabled = process.env.NEXT_PUBLIC_STUDIO_ENABLED === 'true';
 const navItems = [
   { id: 'agent', label: 'Sync', icon: 'psychology' },
-  { id: 'library', label: 'Library', icon: 'library_music' },
   { id: 'workshop', label: 'Workshop', icon: 'architecture' },
-  { id: 'feed', label: 'Feed', icon: 'sensors' },
-  { id: 'journal', label: 'Journal', icon: 'edit_note' },
-  { id: 'settings', label: 'Settings', icon: 'settings' }
-];
+  studioEnabled ? { id: 'studio', label: 'Studio', icon: 'graphic_eq' } : null,
+  { id: 'library', label: 'Library', icon: 'library_music' }
+].filter(Boolean);
 
 export default function DashboardPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('workshop');
   const [profile, setProfile] = useState(null);
   const [library, setLibrary] = useState([]);
-  const [feed, setFeed] = useState([]);
+  const [studioProjects, setStudioProjects] = useState([]);
+  const [studioRenders, setStudioRenders] = useState([]);
+  const [selectedStudioProject, setSelectedStudioProject] = useState(null);
+  const [selectedStudioRender, setSelectedStudioRender] = useState(null);
   const [loading, setLoading] = useState(true);
   const [agentLoading, setAgentLoading] = useState(false);
   const [agentTrack, setAgentTrack] = useState(null);
@@ -62,11 +61,6 @@ export default function DashboardPage() {
   const [selectedSeedTone, setSelectedSeedTone] = useState(null);
   const [workspaceError, setWorkspaceError] = useState('');
 
-  // Custom Sync tab actions
-  const [showBroadcastBox, setShowBroadcastBox] = useState(false);
-  const [broadcastComment, setBroadcastComment] = useState('');
-  const [broadcasting, setBroadcasting] = useState(false);
-  const [broadcastSuccess, setBroadcastSuccess] = useState(false);
   const [savingTrack, setSavingTrack] = useState(false);
 
   // Parent-managed Background Workshop Generation States
@@ -76,19 +70,23 @@ export default function DashboardPage() {
   const [workshopResult, setWorkshopResult] = useState(null);
   const [workshopSavedTone, setWorkshopSavedTone] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
 
   async function refreshWorkspace() {
     try {
       setWorkspaceError('');
-      const [profileData, libraryResponse, feedData] = await Promise.all([
+      const [profileData, libraryResponse, projectsData, rendersData] = await Promise.all([
         authedFetch('/api/profile').catch(() => ({ profile: null })),
         fetch('/api/library', { cache: 'no-store' }).then((response) => readApiResponse(response, 'Library request failed')).catch(() => ({ tones: [] })),
-        authedFetch('/api/feed').catch(() => ({ posts: [] }))
+        authedFetch('/api/studio/projects').catch(() => ({ projects: [] })),
+        authedFetch('/api/studio/renders').catch(() => ({ renders: [] }))
       ]);
 
       setProfile(profileData.profile);
       setLibrary(Array.isArray(libraryResponse?.tones) ? libraryResponse.tones : []);
-      setFeed(feedData.posts || []);
+      setStudioProjects(projectsData.projects || []);
+      setStudioRenders(rendersData.renders || []);
+      return { projects: projectsData.projects || [], renders: rendersData.renders || [] };
     } catch (error) {
       console.error('Sync failure:', error);
       setWorkspaceError('We could not sync the dashboard right now. Try refreshing the page.');
@@ -114,7 +112,19 @@ export default function DashboardPage() {
         router.push('/login?next=/dashboard');
         return;
       }
-      await refreshWorkspace();
+      const workspace = await refreshWorkspace();
+
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const requestedTab = params?.get('tab');
+      const requestedRender = params?.get('render');
+      if (requestedTab && navItems.some((item) => item.id === requestedTab)) setActiveTab(requestedTab);
+      if (requestedRender) {
+        const matched = workspace?.renders?.find((item) => item.id === requestedRender);
+        if (matched) {
+          setSelectedStudioRender(matched);
+          setSelectedStudioProject(workspace?.projects?.find((item) => item.id === matched.session_id) || null);
+        }
+      }
 
       const checkoutSessionId = typeof window !== 'undefined'
         ? new URLSearchParams(window.location.search).get('session_id')
@@ -142,8 +152,6 @@ export default function DashboardPage() {
   const handleAgentGenerate = async (mood) => {
     setAgentLoading(true);
     setAgentMessage('');
-    setShowBroadcastBox(false);
-    setBroadcastComment('');
     try {
       const response = await fetch('/api/agent', {
         method: 'POST',
@@ -222,44 +230,6 @@ export default function DashboardPage() {
       setSavingTrack(false);
     }
   };
-  const handleSyncBroadcast = async () => {
-    if (!agentTrack || !agentTrack.savedToneId) {
-      await redirectToStripeCheckout();
-      return;
-    }
-
-    setBroadcasting(true);
-    setWorkspaceError('');
-    try {
-      const response = await fetch('/api/feed/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          body: broadcastComment.trim() || `Tuning into matched resonance: ${agentTrack.name}`,
-          toneId: agentTrack.savedToneId,
-          visibility: 'public'
-        })
-      });
-      const data = await readApiResponse(response, 'Failed to broadcast resonance wave');
-      if (response.ok) {
-        setBroadcastSuccess(true);
-        setBroadcastComment('');
-        setShowBroadcastBox(false);
-        await refreshWorkspace();
-        setTimeout(() => setBroadcastSuccess(false), 5000);
-      } else if (response.status === 403 && data?.code === 'BROADCAST_BLOCKED') {
-        await redirectToStripeCheckout();
-      } else {
-        setWorkspaceError(data.error || 'Failed to broadcast resonance wave');
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setBroadcasting(false);
-    }
-  };
-
-
   const handleWorkshopGenerate = async (composerPayload) => {
     setWorkshopStatus('rendering');
     setWorkshopProgress(composerPayload.isWeave ? 'Weaving neural sequences...' : 'Structuring binaural blueprints...');
@@ -353,23 +323,10 @@ export default function DashboardPage() {
     }
   };
 
-  const handleDirectJournalGenerate = async ({ state, snippet }) => {
-    const composerPayload = {
-      audioPayload: {
-        targetState: state,
-        lengthSec: 600,
-        baseFreqHz: state === 'delta' ? 150 : 220,
-        focusLevel: 5,
-        breathGuide: { pattern: 'coherent-5.5' }
-      },
-      metadata: {
-        name: `Journal Wave (${state.toUpperCase()})`,
-        description: `Binaural wave generated from conscious reflection: "${snippet}..."`,
-        visibility: 'private',
-        backgroundMode: 'none'
-      }
-    };
-    await handleWorkshopGenerate(composerPayload);
+  const handleSignOut = async () => {
+    const supabase = getSupabaseBrowserClient();
+    await supabase.auth.signOut();
+    router.push('/login');
   };
 
 
@@ -415,23 +372,47 @@ export default function DashboardPage() {
           })}
         </nav>
 
-        <div className="mt-auto pt-6 border-t border-white/5">
-          <div className="flex items-center gap-3">
+        <div className="relative mt-auto pt-6 border-t border-white/5">
+          <button
+            type="button"
+            onClick={() => setIsAccountMenuOpen((open) => !open)}
+            className="flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/5"
+            aria-expanded={isAccountMenuOpen}
+          >
             <Avatar className="size-10 border border-white/10">
               <AvatarImage src={profile?.avatar_url} />
               <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-medium truncate">{profile?.display_name || 'Member'}</p>
-              <p className="text-[10px] font-mono text-white/40 truncate">@{profile?.username || 'user'}</p>
+              <p className="text-[10px] font-mono text-white/40 truncate">{profile?.email || profile?.username || 'Account'}</p>
             </div>
-            <button 
-              onClick={() => setActiveTab('settings')}
-              className="text-white/20 hover:text-white transition-colors flex items-center justify-center"
-            >
-              <span className="material-symbols-outlined text-lg">settings</span>
-            </button>
-          </div>
+            <span className="material-symbols-outlined text-lg text-white/30">expand_more</span>
+          </button>
+
+          <AnimatePresence>
+            {isAccountMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                className="absolute bottom-16 left-0 right-0 z-50 rounded-2xl border border-white/10 bg-zinc-950/95 p-3 shadow-2xl backdrop-blur-2xl"
+              >
+                <p className="truncate px-3 py-2 text-xs text-white/60">{profile?.email || 'Signed-in account'}</p>
+                <p className="px-3 pb-2 text-[10px] font-mono uppercase tracking-widest text-cyan-300">
+                  {profile?.subscription_status || profile?.subscription_tier || 'Subscriber'}
+                </p>
+                <a href="/pricing" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white">
+                  <span className="material-symbols-outlined text-base">credit_card</span>
+                  Pricing & account
+                </a>
+                <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white">
+                  <span className="material-symbols-outlined text-base">logout</span>
+                  Sign out
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </aside>
 
@@ -518,8 +499,21 @@ export default function DashboardPage() {
                         </Avatar>
                         <div className="flex-1 overflow-hidden">
                           <p className="text-xs font-medium truncate">{profile?.display_name || 'Member'}</p>
-                          <p className="text-[9px] font-mono text-white/40 truncate">@{profile?.username || 'user'}</p>
+                          <p className="text-[9px] font-mono text-white/40 truncate">{profile?.email || profile?.username || 'Account'}</p>
                         </div>
+                      </div>
+                      <div className="mt-3 space-y-1">
+                        <p className="px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-cyan-300">
+                          {profile?.subscription_status || profile?.subscription_tier || 'Subscriber'}
+                        </p>
+                        <a href="/pricing" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white">
+                          <span className="material-symbols-outlined text-base">credit_card</span>
+                          Pricing & account
+                        </a>
+                        <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white">
+                          <span className="material-symbols-outlined text-base">logout</span>
+                          Sign out
+                        </button>
                       </div>
                     </div>
                   </motion.div>
@@ -535,7 +529,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-cyan-400 text-lg animate-spin">sync</span>
               <span className="text-xs font-mono tracking-widest text-cyan-300 uppercase">
-                Broadcast Node Active: {workshopProgress || 'Synthesizing neural waves...'}
+                Workshop Render Active: {workshopProgress || 'Synthesizing neural waves...'}
               </span>
             </div>
             <button 
@@ -600,7 +594,7 @@ export default function DashboardPage() {
                     <LibraryPlayer track={agentTrack} />
                     
                     <div className="max-w-md mx-auto flex flex-col gap-4">
-                      <div className="flex gap-4">
+                      <div className="flex">
                         <button
                           onClick={handleSyncSave}
                           disabled={savingTrack || Boolean(agentTrack.savedToneId)}
@@ -615,63 +609,7 @@ export default function DashboardPage() {
                           </span>
                           {agentTrack.savedToneId ? 'Saved to Library' : 'Save to Library'}
                         </button>
-
-                        <button
-                          onClick={() => {
-                            if (isFreeSubscriptionTier(profile?.subscription_tier)) {
-                              void redirectToStripeCheckout();
-                              return;
-                            }
-                            setShowBroadcastBox(!showBroadcastBox);
-                          }}
-                          className={`flex-1 flex items-center justify-center gap-2 rounded-2xl border px-4 py-3.5 text-xs font-mono uppercase tracking-wider transition-all ${
-                            showBroadcastBox
-                              ? 'border-purple-500/40 bg-purple-500/20 text-white'
-                              : 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20'
-                          }`}
-                        >
-                          <span className="material-symbols-outlined text-sm">sensors</span>
-                          Broadcast Wave
-                        </button>
                       </div>
-
-                      {showBroadcastBox && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          className="rounded-3xl border border-white/5 bg-zinc-900/35 backdrop-blur-2xl p-5 space-y-4 text-left"
-                        >
-                          <p className="text-[10px] font-mono uppercase tracking-widest text-white/30">
-                            Resonance Broadcast Composer
-                          </p>
-                          <textarea
-                            value={broadcastComment}
-                            onChange={(e) => setBroadcastComment(e.target.value)}
-                            placeholder="Describe the experience of this matched frequency..."
-                            className="w-full min-h-[80px] bg-transparent text-sm text-white/80 placeholder-white/20 border-0 focus:ring-0 resize-none p-0 outline-none"
-                          />
-                          <div className="flex justify-end">
-                            <button
-                              onClick={handleSyncBroadcast}
-                              disabled={broadcasting}
-                              className="inline-flex items-center gap-2 rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-4 py-2 text-[10px] font-mono uppercase tracking-wider disabled:opacity-50 transition-colors"
-                            >
-                              {broadcasting ? (
-                                <span className="material-symbols-outlined text-xs animate-spin">sync</span>
-                              ) : (
-                                <span className="material-symbols-outlined text-xs">radio</span>
-                              )}
-                              Transmit Wave
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {broadcastSuccess && (
-                        <p className="text-center text-xs font-mono text-emerald-400 uppercase tracking-widest animate-pulse">
-                          Transmission Locked & Broadcast Complete!
-                        </p>
-                      )}
                     </div>
                   </div>
                 )}
@@ -687,9 +625,16 @@ export default function DashboardPage() {
               >
                 <LibraryBrowser
                   tones={library}
+                  projects={studioProjects}
+                  renders={studioRenders}
                   onUseInWorkshop={(tone) => {
                     setSelectedSeedTone(tone);
                     setActiveTab('workshop');
+                  }}
+                  onEditProject={(project) => {
+                    setSelectedStudioProject(project);
+                    setSelectedStudioRender(studioRenders.find((render) => render.session_id === project.id) || null);
+                    setActiveTab('studio');
                   }}
                 />
               </motion.div>
@@ -720,56 +665,18 @@ export default function DashboardPage() {
               </motion.div>
             )}
 
-            {activeTab === 'feed' && (
+            {activeTab === 'studio' && studioEnabled && (
               <motion.div
-                key="feed"
+                key="studio"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
+                exit={{ opacity: 0, y: -20 }}
               >
-                <FeedView
-                  profile={profile}
-                  tones={library}
-                  initialFeed={feed}
-                  onRefresh={refreshWorkspace}
-                />
-              </motion.div>
-            )}
-
-            {activeTab === 'journal' && (
-              <motion.div
-                key="journal"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <JournalView
-                  onDirectGenerate={handleDirectJournalGenerate}
-                  onInjectToWorkshop={(params) => {
-                    setSelectedSeedTone({
-                      name: `Journal Matched Resonance`,
-                      target_state: params.state,
-                      description: params.notes,
-                      baseFreqHz: 220
-                    });
-                    setActiveTab('workshop');
-                  }}
-                />
-              </motion.div>
-            )}
-
-
-
-            {activeTab === 'settings' && (
-              <motion.div
-                key="settings"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <SettingsView
-                  profile={profile}
-                  onUpdateProfile={(updated) => {
-                    setProfile(updated);
-                  }}
+                <StudioView
+                  initialProject={selectedStudioProject}
+                  initialRender={selectedStudioRender}
+                  onChanged={refreshWorkspace}
+                  onOpenLibrary={() => setActiveTab('library')}
                 />
               </motion.div>
             )}
