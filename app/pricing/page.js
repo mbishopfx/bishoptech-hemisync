@@ -7,8 +7,7 @@ import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
-import { TONE_PACKS } from '@/lib/audio/tone-packs.db.mjs';
-import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
+import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 import { buildAbsoluteUrl } from '@/lib/seo';
 
 const plans = [
@@ -77,7 +76,7 @@ export default function PricingPage() {
 
   const audioRef = useRef(null);
   const previewListRef = useRef(null);
-  const tonePackPriceId = process.env.NEXT_PUBLIC_TONE_PACK_FOUNDATIONS_PRICE_ID || null;
+  const tonePackPriceId = getTonePackPriceId(tonePack);
   const tonePackCheckoutReady = Boolean(tonePackPriceId);
 
   const pricingJsonLd = {
@@ -488,10 +487,10 @@ export default function PricingPage() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
               <p className="text-[10px] font-mono text-purple-300 uppercase tracking-[0.4em]">Tone Packs</p>
-              <h2 className="text-3xl font-light tracking-tight mt-2">Foundations Pack</h2>
+              <h2 className="text-3xl font-light tracking-tight mt-2">Ten tone packs</h2>
             </div>
             <p className="max-w-xl text-left md:text-right text-sm text-white/40 font-light leading-relaxed">
-              The one-time pack is live now. Visitors can preview the tracks and buy the pack for $5.99 with Stripe.
+              The tone-pack storefront now offers ten state-focused collections at the same one-time price. Preview them, enter your email, and complete delivery on the Packs page.
             </p>
           </div>
 
@@ -528,18 +527,12 @@ export default function PricingPage() {
               <button
                 disabled={!tonePackCheckoutReady}
                 type="button"
-                onClick={async () => {
-                  if (!tonePackCheckoutReady) return;
-                  await redirectToStripeCheckout({
-                    planId: tonePack.checkoutPlanId,
-                    priceId: tonePackPriceId,
-                    mode: tonePack.billingMode,
-                    fallbackPath: '/signup'
-                  });
+                onClick={() => {
+                  window.location.href = '/packs';
                 }}
                 className="w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 bg-purple-500 text-black hover:bg-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.12)]"
               >
-                {tonePackCheckoutReady ? `Get ${tonePack.price} Pack` : 'Stripe price id pending'} <ChevronRight className="size-4" />
+                {tonePackCheckoutReady ? 'Choose your pack' : 'Packs are being prepared'} <ChevronRight className="size-4" />
               </button>
             </motion.div>
           </div>
