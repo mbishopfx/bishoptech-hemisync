@@ -1,22 +1,57 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronRight, LockKeyhole, Mail, Play, ShieldCheck } from 'lucide-react';
+import { animate, createScope, stagger } from 'animejs';
+import {
+  ArrowDown,
+  ArrowRight,
+  Check,
+  EnvelopeSimple,
+  Headphones,
+  Pause,
+  Play,
+  ShieldCheck,
+  Sparkle,
+  Waveform
+} from '@phosphor-icons/react';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 
 const PREVIEW_LIMIT_SEC = 30;
+const SIGNAL_STATES = [
+  ['Delta', '1–4 Hz'],
+  ['Theta', '4–8 Hz'],
+  ['Alpha', '8–13 Hz'],
+  ['Beta', '13–30 Hz'],
+  ['Gamma', '30–40 Hz']
+];
 
 function trackId(track) {
-  return track.track_id || track.trackId || track.id;
+  return track?.track_id || track?.trackId || track?.id;
 }
 
 function trackName(track) {
-  return track.track_name || track.trackName || track.name || 'Cognistration session';
+  return track?.track_name || track?.trackName || track?.name || 'Cognistration session';
 }
 
 function trackUrl(track) {
-  return track.preview_url || track.previewUrl || track.download_url || track.downloadUrl || track.webm_url || track.webmUrl || track.mp3_url || track.mp3Url;
+  return track?.preview_url || track?.previewUrl || track?.download_url || track?.downloadUrl || track?.webm_url || track?.webmUrl || track?.mp3_url || track?.mp3Url;
+}
+
+function packPriceId(pack) {
+  return pack?.priceId || getTonePackPriceId(pack);
+}
+
+function displayState(state) {
+  return state?.displayName || state?.label || state?.state || state;
+}
+
+function cardSpan(index) {
+  return index % 4 === 0 || index % 4 === 3 ? 'lg:col-span-7' : 'lg:col-span-5';
+}
+
+function formatPreviewTime(seconds) {
+  return `0:${String(Math.min(PREVIEW_LIMIT_SEC, Math.floor(seconds))).padStart(2, '0')}`;
 }
 
 export function PacksBrowser() {
@@ -25,32 +60,84 @@ export function PacksBrowser() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
-  const [activeTrackId, setActiveTrackId] = useState(null);
   const [error, setError] = useState('');
+  const [activeTrackKey, setActiveTrackKey] = useState(null);
+  const [previewTime, setPreviewTime] = useState(0);
+  const rootRef = useRef(null);
   const audioRef = useRef(null);
-  const timerRef = useRef(null);
 
-  const pack = useMemo(
-    () => packs.find((item) => item.slug === selectedSlug) || packs[0] || null,
+  const selectedPack = useMemo(
+    () => packs.find((pack) => pack.slug === selectedSlug) || packs[0] || null,
     [packs, selectedSlug]
   );
+
+  useEffect(() => {
+    const scope = createScope({
+      root: rootRef.current,
+      mediaQueries: { reduceMotion: '(prefers-reduced-motion: reduce)' }
+    }).add((self) => {
+      if (self.matches.reduceMotion) {
+        rootRef.current?.querySelectorAll('.catalog-reveal').forEach((element) => {
+          element.style.opacity = '1';
+        });
+        return;
+      }
+
+      animate('.catalog-reveal', {
+        opacity: [0, 1],
+        y: [28, 0],
+        duration: 900,
+        delay: stagger(90),
+        ease: 'out(4)'
+      });
+
+      animate('.hero-signal-bar', {
+        scaleX: stagger([0.35, 1], { from: 'center' }),
+        opacity: stagger([0.3, 0.9]),
+        duration: 1500,
+        delay: stagger(70),
+        alternate: true,
+        loop: true,
+        ease: 'inOut(3)'
+      });
+    });
+
+    return () => scope.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!activeTrackKey || !rootRef.current) return undefined;
+    const bars = rootRef.current.querySelectorAll(`[data-track-key="${activeTrackKey}"] .catalog-wave-bar`);
+    if (!bars.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+
+    const waveformAnimation = animate(bars, {
+      scaleY: stagger([0.3, 1], { from: 'center' }),
+      duration: 540,
+      delay: stagger(45),
+      alternate: true,
+      loop: true,
+      ease: 'inOut(3)'
+    });
+
+    return () => waveformAnimation.cancel();
+  }, [activeTrackKey]);
 
   useEffect(() => {
     let cancelled = false;
     const previewAudio = audioRef.current;
 
     fetch('/api/packs')
-      .then(async (res) => {
-        const text = await res.text();
-        const data = res.headers.get('content-type')?.includes('application/json') ? JSON.parse(text) : null;
-        if (!res.ok || !data?.ok) throw new Error(data?.error || 'Failed to load pack catalog');
+      .then(async (response) => {
+        const text = await response.text();
+        const data = response.headers.get('content-type')?.includes('application/json') ? JSON.parse(text) : null;
+        if (!response.ok || !data?.ok) throw new Error(data?.error || 'Failed to load the live catalog.');
         if (!cancelled && data.packs?.length) {
           setPacks(data.packs);
-          setSelectedSlug((current) => data.packs.some((item) => item.slug === current) ? current : data.packs[0].slug);
+          setSelectedSlug((current) => data.packs.some((pack) => pack.slug === current) ? current : data.packs[0].slug);
         }
       })
-      .catch((err) => {
-        if (!cancelled) setError(err?.message || 'The catalog could not be refreshed.');
+      .catch(() => {
+        if (!cancelled) setError('The live catalog could not refresh, so we are showing the current collection.');
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -58,43 +145,55 @@ export function PacksBrowser() {
 
     return () => {
       cancelled = true;
-      if (timerRef.current) clearTimeout(timerRef.current);
       previewAudio?.pause();
     };
   }, []);
 
   const stopPreview = () => {
-    audioRef.current?.pause();
-    if (audioRef.current) audioRef.current.currentTime = 0;
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setActiveTrackId(null);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setActiveTrackKey(null);
+    setPreviewTime(0);
   };
 
-  const previewTrack = async (track) => {
+  const preview = async (pack, track) => {
     const url = trackUrl(track);
     if (!url || !audioRef.current) return;
-    const id = trackId(track);
-    if (activeTrackId === id) {
+    const key = `${pack.slug}-${trackId(track)}`;
+
+    if (activeTrackKey === key) {
       stopPreview();
       return;
     }
 
     stopPreview();
+    setError('');
     audioRef.current.src = url;
     audioRef.current.load();
+
     try {
       await audioRef.current.play();
-      setActiveTrackId(id);
-      timerRef.current = setTimeout(stopPreview, PREVIEW_LIMIT_SEC * 1000);
+      setActiveTrackKey(key);
     } catch {
-      setError('Preview playback was blocked. Use the native player on the track card instead.');
+      setError('Your browser blocked audio playback. Tap preview again to start the sample.');
     }
+  };
+
+  const selectPack = (slug) => {
+    setSelectedSlug(slug);
+    setError('');
+    window.requestAnimationFrame(() => {
+      document.getElementById('pack-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   const startPurchase = async (event) => {
     event.preventDefault();
-    if (!pack) return;
+    if (!selectedPack) return;
     const normalizedEmail = email.trim().toLowerCase();
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       setError('Enter a valid email so Stripe and Cognistration can deliver your pack.');
       return;
@@ -102,93 +201,288 @@ export function PacksBrowser() {
 
     setError('');
     setPurchasing(true);
-    await redirectToStripeCheckout({
-      planId: pack.slug,
-      priceId: pack.priceId || getTonePackPriceId(pack),
-      mode: 'payment',
-      email: normalizedEmail,
-      fallbackPath: '/packs'
-    });
+    try {
+      await redirectToStripeCheckout({
+        planId: selectedPack.slug,
+        priceId: packPriceId(selectedPack),
+        mode: 'payment',
+        email: normalizedEmail,
+        fallbackPath: '/packs'
+      });
+    } catch {
+      setError('Checkout could not open. Please try again in a moment.');
+      setPurchasing(false);
+    }
+  };
+
+  const updatePreviewTime = () => {
+    const nextTime = audioRef.current?.currentTime || 0;
+    if (nextTime >= PREVIEW_LIMIT_SEC) {
+      stopPreview();
+      return;
+    }
+    setPreviewTime(nextTime);
   };
 
   return (
-    <div className="space-y-10">
-      <section className="rounded-[2.5rem] border border-white/5 bg-zinc-900/40 p-8 backdrop-blur-3xl md:p-12">
-        <div className="max-w-3xl space-y-6">
-          <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-purple-300">Tone Packs</p>
-          <h1 className="text-4xl font-light tracking-tighter text-white md:text-6xl">Preview the pack before you buy it.</h1>
-          <p className="max-w-2xl text-sm leading-7 text-white/55 md:text-base">
-            Choose a brain-state lane or a transition routine, preview the direction, enter your email, and complete the one-time Stripe checkout. Each pack is built for about 50 minutes of listening, with no account required.
+    <div ref={rootRef} className="relative isolate">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute left-1/2 top-0 h-[44rem] w-[72rem] -translate-x-1/2 rounded-full bg-cyan-200/[0.045] blur-[140px]" />
+        <div className="absolute inset-x-0 top-[46rem] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      </div>
+
+      <section className="mx-auto grid min-h-[92dvh] max-w-[1400px] items-center gap-14 px-5 pb-20 pt-32 md:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-24 lg:pt-36">
+        <div className="catalog-reveal opacity-0">
+          <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-white/55">
+            <span className="size-1.5 rounded-full bg-cyan-200" />
+            The session catalog
+          </div>
+          <h1 className="max-w-4xl text-5xl font-extralight leading-[0.94] tracking-[-0.055em] text-white md:text-7xl lg:text-[5.5rem]">
+            Find the frequency for <span className="text-white/35">right now.</span>
+          </h1>
+          <p className="mt-8 max-w-2xl text-lg font-light leading-8 text-white/55 md:text-xl">
+            Ten purpose-built collections for the moments when you need to focus, come down, create, sleep, or simply get away from the noise.
           </p>
+          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs text-white/45">
+            <span className="flex items-center gap-2"><Check weight="bold" className="size-4 text-cyan-200" /> 10 full sessions</span>
+            <span className="flex items-center gap-2"><Check weight="bold" className="size-4 text-cyan-200" /> About 50 minutes</span>
+            <span className="flex items-center gap-2"><Check weight="bold" className="size-4 text-cyan-200" /> Yours to keep</span>
+          </div>
+          <a href="#catalog" className="mt-12 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-xs uppercase tracking-[0.24em] text-white transition hover:border-cyan-200 hover:text-cyan-100">
+            Browse the collection <ArrowDown className="size-4" />
+          </a>
         </div>
-        <div className="mt-8 grid gap-3 text-xs leading-5 text-white/55 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/5 bg-black/20 p-4"><span className="font-mono text-cyan-300">01</span><p className="mt-2 text-white">Choose your state</p><p className="mt-1">Rest, dream, focus, task drive, insight, or a guided transition.</p></div>
-          <div className="rounded-2xl border border-white/5 bg-black/20 p-4"><span className="font-mono text-cyan-300">02</span><p className="mt-2 text-white">Enter your email</p><p className="mt-1">Used for Stripe receipt and a backup download link. No password.</p></div>
-          <div className="rounded-2xl border border-white/5 bg-black/20 p-4"><span className="font-mono text-cyan-300">03</span><p className="mt-2 text-white">Download instantly</p><p className="mt-1">After payment, the ZIP download starts and the pack is emailed.</p></div>
+
+        <div className="catalog-reveal relative opacity-0">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d1314]/90 p-6 shadow-[0_40px_100px_-55px_rgba(72,211,224,0.45)] md:p-9">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:44px_44px]" />
+            <div className="relative">
+              <div className="flex items-start justify-between border-b border-white/10 pb-7">
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">Frequency map</p>
+                  <p className="mt-2 text-2xl font-light tracking-tight">Five states. One library.</p>
+                </div>
+                <Waveform weight="thin" className="size-8 text-cyan-200/70" />
+              </div>
+              <div className="mt-8 space-y-5">
+                {SIGNAL_STATES.map(([name, range], rowIndex) => (
+                  <div key={name} className="grid grid-cols-[4rem_1fr_3.5rem] items-center gap-3">
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/55">{name}</span>
+                    <div className="flex h-5 items-center gap-1 overflow-hidden">
+                      {Array.from({ length: 15 }).map((_, barIndex) => (
+                        <span
+                          key={barIndex}
+                          className="hero-signal-bar h-px flex-1 origin-left bg-cyan-100/70"
+                          style={{ opacity: 0.2 + ((barIndex + rowIndex) % 5) * 0.12 }}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-right text-[10px] tabular-nums text-white/30">{range}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-10 grid grid-cols-2 gap-4 border-t border-white/10 pt-7">
+                <div>
+                  <p className="text-3xl font-extralight">$5.99</p>
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/30">one time / any pack</p>
+                </div>
+                <div className="border-l border-white/10 pl-5">
+                  <p className="text-3xl font-extralight">30 sec</p>
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/30">preview every pack</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-white/10 bg-[#121819] px-5 py-4 shadow-2xl md:block">
+            <p className="text-[9px] uppercase tracking-[0.25em] text-cyan-100/55">Headphones recommended</p>
+          </div>
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-[2rem] border border-white/5 bg-zinc-900/30 p-7 backdrop-blur-3xl md:p-10">
-          <div className="flex items-center justify-between gap-4">
+      <section id="catalog" className="scroll-mt-24 border-t border-white/10 px-5 py-24 md:px-10 lg:py-32">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="catalog-reveal mb-14 flex flex-col justify-between gap-8 opacity-0 md:flex-row md:items-end">
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-300">Catalog</p>
-              <h2 className="mt-2 text-3xl font-light tracking-tight text-white">Choose a pack</h2>
+              <p className="text-[10px] uppercase tracking-[0.32em] text-cyan-100/55">Choose by intention</p>
+              <h2 className="mt-4 text-4xl font-extralight tracking-[-0.04em] text-white md:text-6xl">The complete collection.</h2>
             </div>
-            <div className="text-right text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">{packs.length} collections</div>
+            <div className="max-w-md md:text-right">
+              <p className="text-sm font-light leading-7 text-white/45">Press play to hear a 30-second sample. When one feels right, open the pack and check out with only your email.</p>
+              <p className="mt-3 text-[9px] uppercase tracking-[0.24em] text-white/25">{loading ? 'Syncing live catalog…' : `${packs.length} packs available now`}</p>
+            </div>
           </div>
 
-          <div className="mt-6 grid gap-2 sm:grid-cols-2">
-            {packs.map((item) => (
-              <button
-                key={item.slug}
-                type="button"
-                onClick={() => { setSelectedSlug(item.slug); setError(''); }}
-                className={`rounded-xl border px-3 py-3 text-left transition-colors ${item.slug === pack?.slug ? 'border-cyan-300/30 bg-cyan-300/10 text-white' : 'border-white/5 bg-black/20 text-white/55 hover:border-white/15 hover:text-white'}`}
-              >
-                <span className="block text-[9px] font-mono uppercase tracking-[0.16em] text-white/35">{item.eyebrow}</span>
-                <span className="mt-1 block text-sm">{item.name}</span>
-              </button>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+            {packs.map((pack, index) => {
+              const previewTrack = pack.tracks?.[0];
+              const previewKey = previewTrack ? `${pack.slug}-${trackId(previewTrack)}` : null;
+              const isPlaying = previewKey && activeTrackKey === previewKey;
+              const isSelected = selectedPack?.slug === pack.slug;
+
+              return (
+                <article
+                  key={pack.slug}
+                  className={`catalog-reveal group relative overflow-hidden rounded-[1.75rem] border p-6 opacity-0 transition duration-500 md:p-8 ${cardSpan(index)} ${isSelected ? 'border-cyan-100/30 bg-cyan-100/[0.055]' : 'border-white/10 bg-white/[0.025] hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.045]'}`}
+                >
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition group-hover:opacity-100" />
+                  <div className="flex items-start justify-between gap-5">
+                    <span className="text-[10px] tabular-nums tracking-[0.2em] text-white/25">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="rounded-full border border-white/10 px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] text-white/40">{pack.eyebrow}</span>
+                  </div>
+                  <div className="mt-12 max-w-xl">
+                    <h3 className="text-3xl font-extralight tracking-[-0.035em] text-white md:text-4xl">{pack.name}</h3>
+                    <p className="mt-4 text-sm font-light leading-7 text-white/50">{pack.summary}</p>
+                  </div>
+
+                  <div className="mt-10 flex flex-col gap-5 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <button
+                      type="button"
+                      disabled={!previewTrack || !trackUrl(previewTrack)}
+                      data-track-key={previewKey || undefined}
+                      onClick={() => preview(pack, previewTrack)}
+                      className="inline-flex min-w-0 items-center gap-3 text-left disabled:cursor-not-allowed disabled:opacity-35"
+                      aria-label={`${isPlaying ? 'Stop' : 'Play'} 30-second preview of ${pack.name}`}
+                    >
+                      <span className={`grid size-11 shrink-0 place-items-center rounded-full border transition ${isPlaying ? 'border-cyan-100 bg-cyan-100 text-[#081012]' : 'border-white/15 bg-white/[0.04] text-white group-hover:border-white/30'}`}>
+                        {isPlaying ? <Pause weight="fill" className="size-4" /> : <Play weight="fill" className="ml-0.5 size-4" />}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-xs text-white/70">{previewTrack ? trackName(previewTrack) : 'Preview publishing soon'}</span>
+                        <span className="mt-1 flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/30">
+                          {isPlaying ? formatPreviewTime(previewTime) : 'Play 30 sec'}
+                          {isPlaying && (
+                            <span className="flex h-3 items-center gap-0.5" aria-hidden="true">
+                              {Array.from({ length: 6 }).map((_, barIndex) => <span key={barIndex} className="catalog-wave-bar h-full w-px bg-cyan-100" />)}
+                            </span>
+                          )}
+                        </span>
+                      </span>
+                    </button>
+                    <button type="button" onClick={() => selectPack(pack.slug)} className="inline-flex items-center justify-between gap-5 rounded-full border border-white/10 px-5 py-3 text-[10px] uppercase tracking-[0.2em] text-white/65 transition hover:border-cyan-100/40 hover:bg-cyan-100 hover:text-[#081012] active:translate-y-px sm:justify-center">
+                      View pack <ArrowRight className="size-3.5" />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {selectedPack && (
+        <section id="pack-details" className="scroll-mt-24 border-t border-white/10 px-5 py-24 md:px-10 lg:py-32">
+          <div className="mx-auto grid max-w-[1400px] gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.025] p-7 md:p-12">
+              <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-10 sm:flex-row sm:items-start">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-cyan-100/55">Your selection</p>
+                  <h2 className="mt-4 text-4xl font-extralight tracking-[-0.04em] text-white md:text-6xl">{selectedPack.name}</h2>
+                </div>
+                <div className="sm:text-right">
+                  <p className="text-4xl font-extralight">{selectedPack.price || '$5.99'}</p>
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/30">one-time purchase</p>
+                </div>
+              </div>
+
+              <p className="mt-10 max-w-3xl text-lg font-light leading-8 text-white/55">{selectedPack.description}</p>
+
+              <div className="mt-10 grid gap-8 border-y border-white/10 py-8 sm:grid-cols-2">
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.24em] text-white/30">Built for</p>
+                  <ul className="mt-5 space-y-3">
+                    {(selectedPack.bestFor || []).map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm capitalize text-white/65"><Check weight="bold" className="size-4 text-cyan-100" />{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.24em] text-white/30">Frequency states</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {(selectedPack.states || []).map((state) => (
+                      <span key={state.state || state} className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/60">{displayState(state)}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-xs text-white/40">
+                <span>{selectedPack.trackCount || selectedPack.tracks?.length || 10} full audio sessions</span>
+                <span>{selectedPack.durationLabel || 'About 50 minutes total'}</span>
+                <span>Download after payment</span>
+              </div>
+            </div>
+
+            <form onSubmit={startPurchase} className="relative overflow-hidden rounded-[2rem] border border-cyan-100/20 bg-cyan-100/[0.07] p-7 md:p-10 lg:sticky lg:top-28 lg:self-start">
+              <div className="absolute right-0 top-0 size-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-cyan-100/10 blur-3xl" />
+              <div className="relative">
+                <Sparkle weight="thin" className="size-8 text-cyan-100/70" />
+                <h2 className="mt-8 text-3xl font-extralight tracking-[-0.035em] text-white">Make it yours.</h2>
+                <p className="mt-4 text-sm font-light leading-7 text-white/50">Enter the email where you want the download link. Stripe handles payment, and your pack is delivered immediately. No account needed.</p>
+
+                <label className="mt-8 block text-[9px] uppercase tracking-[0.24em] text-white/40" htmlFor="pack-email">Delivery email</label>
+                <div className="mt-3 flex items-center gap-3 border-b border-white/20 pb-3 transition focus-within:border-cyan-100">
+                  <EnvelopeSimple weight="thin" className="size-5 text-white/35" />
+                  <input
+                    id="pack-email"
+                    required
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full bg-transparent py-2 text-base font-light text-white outline-none placeholder:text-white/20"
+                  />
+                </div>
+
+                <button type="submit" disabled={purchasing || loading || !packPriceId(selectedPack)} className="mt-7 inline-flex w-full items-center justify-between rounded-full bg-cyan-100 px-6 py-4 text-[10px] font-medium uppercase tracking-[0.22em] text-[#071012] transition hover:bg-white active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50">
+                  {purchasing ? 'Opening secure checkout…' : `Buy for ${selectedPack.price || '$5.99'}`}
+                  <ArrowRight className="size-4" />
+                </button>
+
+                <div className="mt-7 flex items-start gap-3 border-t border-white/10 pt-6 text-xs font-light leading-5 text-white/35">
+                  <ShieldCheck weight="thin" className="mt-0.5 size-5 shrink-0 text-cyan-100/60" />
+                  One payment. Secure checkout. The audio is an intentional listening tool, not medical treatment or a guaranteed outcome.
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+      )}
+
+      <section className="border-t border-white/10 px-5 py-20 md:px-10">
+        <div className="mx-auto grid max-w-[1400px] gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-center">
+          <div>
+            <Headphones weight="thin" className="size-9 text-cyan-100/70" />
+            <h2 className="mt-6 text-3xl font-extralight tracking-[-0.035em] md:text-4xl">Preview. Choose. Press play.</h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {[
+              ['01', 'Listen', 'Try the embedded 30-second sample on any collection.'],
+              ['02', 'Choose', 'Open the pack that matches the state you want to practice.'],
+              ['03', 'Download', 'Pay once and receive the full collection by email.']
+            ].map(([number, title, copy]) => (
+              <div key={number} className="border-l border-white/10 pl-5">
+                <p className="text-[9px] tracking-[0.2em] text-cyan-100/50">{number}</p>
+                <p className="mt-4 text-sm text-white/75">{title}</p>
+                <p className="mt-2 text-xs font-light leading-6 text-white/35">{copy}</p>
+              </div>
             ))}
           </div>
-
-          <div className="mt-7 border-t border-white/5 pt-7">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-purple-300">Selected</p>
-                <h2 className="mt-2 text-3xl font-light tracking-tight text-white">{pack?.name || 'Tone Pack'}</h2>
-              </div>
-              <div className="text-right"><p className="text-2xl font-light text-white">{pack?.price || '$5.99'}</p><p className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/30">one-time</p></div>
-            </div>
-            <p className="mt-5 text-sm leading-7 text-white/55">{pack?.description || pack?.summary}</p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {(pack?.states || []).map((state) => <span key={state.state || state} className="rounded-full border border-white/10 px-3 py-2 text-[10px] font-mono uppercase tracking-[0.18em] text-white/55">{state.displayName || state.label || state}</span>)}
-            </div>
-            <div className="mt-7 space-y-3">
-              {(pack?.features || []).map((feature) => <div key={feature} className="flex items-center gap-3 text-sm text-white/65"><Check className="size-4 text-cyan-300" />{feature}</div>)}
-            </div>
-          </div>
-
-          <form onSubmit={startPurchase} className="mt-8 border-t border-white/5 pt-7">
-            <label htmlFor="pack-email" className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/45"><Mail className="size-3" /> Delivery email</label>
-            <input id="pack-email" required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" className="mt-3 w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-cyan-300/40" />
-            <button type="submit" disabled={loading || purchasing || !pack} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-4 text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-200 transition-colors hover:bg-cyan-500/15 hover:text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60">{purchasing ? 'Opening Stripe…' : `Buy ${pack?.name || 'Tone Pack'}`} <ChevronRight className="size-3" /></button>
-            <div className="mt-4 flex items-start gap-2 text-xs leading-5 text-white/35"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-300" />Secure one-time checkout. Your email is used for receipt and delivery only.</div>
-          </form>
-        </div>
-
-        <div className="rounded-[2rem] border border-white/5 bg-zinc-900/30 p-7 backdrop-blur-3xl md:p-10">
-          <div className="flex items-center justify-between gap-4">
-            <div><p className="text-[10px] font-mono uppercase tracking-[0.35em] text-purple-300">Tracks</p><h2 className="mt-2 text-3xl font-light tracking-tight text-white">Preview and listen</h2></div>
-            <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">30 second clips</div>
-          </div>
-          <p className="mt-5 text-sm leading-6 text-white/45">{pack?.summary}</p>
-          {pack?.tracks?.length ? <div className="mt-6 max-h-[680px] space-y-3 overflow-y-auto pr-2 scrollbar-thin">{pack.tracks.map((track) => { const id = trackId(track); const active = id === activeTrackId; return <div key={id} className={`flex items-center justify-between gap-3 rounded-2xl border p-4 ${active ? 'border-purple-500/30 bg-purple-500/10' : 'border-white/5 bg-black/20 hover:border-white/10'}`}><div className="min-w-0"><div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest text-purple-300"><span>{track.state || 'state'}</span><span className="text-white/20">•</span><span>{track.preview_seconds || PREVIEW_LIMIT_SEC}s preview</span></div><h3 className="mt-1 truncate text-sm text-white">{trackName(track)}</h3><p className="mt-1 text-[10px] text-white/35">{track.short_label || 'Binaural-style preview'}</p></div><div className="flex shrink-0 items-center gap-2"><button type="button" onClick={() => previewTrack(track)} className="inline-flex size-9 items-center justify-center rounded-full border border-purple-300/20 bg-purple-300/10 text-purple-200" aria-label={`Preview ${trackName(track)}`}><Play className="size-3" /></button><audio controls preload="none" src={trackUrl(track) || undefined} className="h-9 w-28" /></div></div>; })}</div> : <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-8 text-center text-sm leading-6 text-white/45"><LockKeyhole className="mx-auto mb-3 size-5 text-white/25" />The live pack manifest is still syncing. The preview fallback will remain available while the weekly builder refreshes Supabase.</div>}
         </div>
       </section>
 
-      {error && <div className="rounded-2xl border border-red-300/20 bg-red-300/10 px-5 py-4 text-sm text-red-100">{error}</div>}
-      <audio ref={audioRef} preload="none" onEnded={() => setActiveTrackId(null)} />
+      {error && (
+        <div className="fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-2xl border border-amber-200/20 bg-[#171714]/95 px-5 py-4 text-sm text-amber-50 shadow-2xl backdrop-blur-xl" role="status">
+          {error}
+        </div>
+      )}
+
+      <audio
+        ref={audioRef}
+        preload="none"
+        onTimeUpdate={updatePreviewTime}
+        onEnded={stopPreview}
+      />
     </div>
   );
 }
