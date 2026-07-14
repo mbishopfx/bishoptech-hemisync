@@ -79,12 +79,12 @@ function StagePath({ stages, totalDuration }) {
       <div className="relative h-24 overflow-hidden rounded-xl border border-white/[0.04] bg-[radial-gradient(circle_at_50%_130%,rgba(168,85,247,.17),transparent_62%),linear-gradient(180deg,rgba(34,211,238,.035),transparent)]">
         <svg viewBox="0 0 100 42" preserveAspectRatio="none" className="absolute inset-0 size-full" aria-label="Session frequency curve" role="img">
           <defs>
-            <linearGradient id="studioCurve" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#22d3ee" /><stop offset="0.55" stopColor="#818cf8" /><stop offset="1" stopColor="#c084fc" /></linearGradient>
+            <linearGradient id="studioCurve" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0" stopColor="#22d3ee" /><stop offset="55%" stopColor="#818cf8" /><stop offset="100%" stopColor="#c084fc" /></linearGradient>
           </defs>
           {[10, 20, 30].map((y) => <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="rgba(255,255,255,.055)" strokeWidth=".35" />)}
-          <polyline points={path} fill="none" stroke="rgba(34,211,238,.12)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-          <polyline points={path} fill="none" stroke="url(#studioCurve)" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" />
-          {points.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.65" fill="#050505" stroke="#67e8f9" strokeWidth=".75" />)}
+          <polyline points={path} fill="none" stroke="rgba(34,211,238,.22)" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points={path} fill="none" stroke="url(#studioCurve)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          {points.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.9" fill="#050505" stroke="#a5f3fc" strokeWidth=".85" />)}
         </svg>
         <div className="absolute inset-x-3 bottom-2 flex justify-between text-[8px] font-mono uppercase tracking-[0.16em] text-white/25"><span>Opening</span><span>Core</span><span>Return</span></div>
       </div>
@@ -374,7 +374,7 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
                       <button type="button" onClick={() => previewingStageId === stage.id ? stopPreview() : previewStage(stage)} className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] font-mono uppercase text-white/55 hover:border-cyan-500/30 hover:text-cyan-200">{previewingStageId === stage.id ? 'Stop' : 'Preview'}</button>
                     </div>
                   </div>
-                  <div className="mt-4 border-t border-white/5 pt-4"><StudioSlider label="Stage length" value={Number((stage.durationSec / 60).toFixed(2))} min={0.25} max={Math.min(60, Math.max(5, Math.ceil(totalDuration / 60)))} step={0.25} unit=" min" compact onChange={(value) => updateStage(stage.id, { durationSec: Math.max(15, Math.round(value * 60)) })} /></div>
+                  <div className="mt-4 border-t border-white/5 pt-4"><StudioSlider label="Stage length" value={Number((stage.durationSec / 60).toFixed(2))} min={0.25} max={Math.min(60, Math.max(5, Math.ceil(totalDuration / 60)))} step={0.01} unit=" min" compact onChange={(value) => updateStage(stage.id, { durationSec: Math.max(15, Math.round(value * 60)) })} /></div>
                   {showPro && <div className="mt-4 grid gap-x-5 gap-y-4 border-t border-white/5 pt-4 sm:grid-cols-2 lg:grid-cols-3">
                     <label className="text-[9px] font-mono uppercase text-white/30">State<select value={stage.brainState} onChange={(event) => updateStage(stage.id, { brainState: event.target.value })} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white">{STATE_OPTIONS.map((state) => <option key={state}>{state}</option>)}</select></label>
                     <StudioSlider label="Carrier frequency" value={stage.carrierHz} min={50} max={2000} unit=" Hz" compact onChange={(value) => updateStage(stage.id, { carrierHz: value })} />
