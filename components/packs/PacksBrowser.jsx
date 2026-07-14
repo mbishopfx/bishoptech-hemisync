@@ -8,14 +8,13 @@ import {
   Check,
   EnvelopeSimple,
   Headphones,
-  Pause,
-  Play,
   ShieldCheck,
   Sparkle,
   Waveform
 } from '@phosphor-icons/react';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
+import { CylinderPackCatalog } from '@/components/packs/CylinderPackCatalog';
 
 const PREVIEW_LIMIT_SEC = 30;
 const SIGNAL_STATES = [
@@ -30,10 +29,6 @@ function trackId(track) {
   return track?.track_id || track?.trackId || track?.id;
 }
 
-function trackName(track) {
-  return track?.track_name || track?.trackName || track?.name || 'Cognistration session';
-}
-
 function trackUrl(track) {
   return track?.preview_url || track?.previewUrl || track?.download_url || track?.downloadUrl || track?.webm_url || track?.webmUrl || track?.mp3_url || track?.mp3Url;
 }
@@ -44,14 +39,6 @@ function packPriceId(pack) {
 
 function displayState(state) {
   return state?.displayName || state?.label || state?.state || state;
-}
-
-function cardSpan(index) {
-  return index % 4 === 0 || index % 4 === 3 ? 'lg:col-span-7' : 'lg:col-span-5';
-}
-
-function formatPreviewTime(seconds) {
-  return `0:${String(Math.min(PREVIEW_LIMIT_SEC, Math.floor(seconds))).padStart(2, '0')}`;
 }
 
 export function PacksBrowser() {
@@ -299,75 +286,15 @@ export function PacksBrowser() {
         </div>
       </section>
 
-      <section id="catalog" className="scroll-mt-24 border-t border-white/10 px-5 py-24 md:px-10 lg:py-32">
-        <div className="mx-auto max-w-[1400px]">
-          <div className="catalog-reveal mb-14 flex flex-col justify-between gap-8 opacity-0 md:flex-row md:items-end">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.32em] text-cyan-100/55">Choose by intention</p>
-              <h2 className="mt-4 text-4xl font-extralight tracking-[-0.04em] text-white md:text-6xl">The complete collection.</h2>
-            </div>
-            <div className="max-w-md md:text-right">
-              <p className="text-sm font-light leading-7 text-white/45">Press play to hear a 30-second sample. When one feels right, open the pack and check out with only your email.</p>
-              <p className="mt-3 text-[9px] uppercase tracking-[0.24em] text-white/25">{loading ? 'Syncing live catalog…' : `${packs.length} packs available now`}</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            {packs.map((pack, index) => {
-              const previewTrack = pack.tracks?.[0];
-              const previewKey = previewTrack ? `${pack.slug}-${trackId(previewTrack)}` : null;
-              const isPlaying = previewKey && activeTrackKey === previewKey;
-              const isSelected = selectedPack?.slug === pack.slug;
-
-              return (
-                <article
-                  key={pack.slug}
-                  className={`catalog-reveal group relative overflow-hidden rounded-[1.75rem] border p-6 opacity-0 transition duration-500 md:p-8 ${cardSpan(index)} ${isSelected ? 'border-cyan-100/30 bg-cyan-100/[0.055]' : 'border-white/10 bg-white/[0.025] hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.045]'}`}
-                >
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition group-hover:opacity-100" />
-                  <div className="flex items-start justify-between gap-5">
-                    <span className="text-[10px] tabular-nums tracking-[0.2em] text-white/25">{String(index + 1).padStart(2, '0')}</span>
-                    <span className="rounded-full border border-white/10 px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] text-white/40">{pack.eyebrow}</span>
-                  </div>
-                  <div className="mt-12 max-w-xl">
-                    <h3 className="text-3xl font-extralight tracking-[-0.035em] text-white md:text-4xl">{pack.name}</h3>
-                    <p className="mt-4 text-sm font-light leading-7 text-white/50">{pack.summary}</p>
-                  </div>
-
-                  <div className="mt-10 flex flex-col gap-5 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
-                    <button
-                      type="button"
-                      disabled={!previewTrack || !trackUrl(previewTrack)}
-                      data-track-key={previewKey || undefined}
-                      onClick={() => preview(pack, previewTrack)}
-                      className="inline-flex min-w-0 items-center gap-3 text-left disabled:cursor-not-allowed disabled:opacity-35"
-                      aria-label={`${isPlaying ? 'Stop' : 'Play'} 30-second preview of ${pack.name}`}
-                    >
-                      <span className={`grid size-11 shrink-0 place-items-center rounded-full border transition ${isPlaying ? 'border-cyan-100 bg-cyan-100 text-[#081012]' : 'border-white/15 bg-white/[0.04] text-white group-hover:border-white/30'}`}>
-                        {isPlaying ? <Pause weight="fill" className="size-4" /> : <Play weight="fill" className="ml-0.5 size-4" />}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-xs text-white/70">{previewTrack ? trackName(previewTrack) : 'Preview publishing soon'}</span>
-                        <span className="mt-1 flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/30">
-                          {isPlaying ? formatPreviewTime(previewTime) : 'Play 30 sec'}
-                          {isPlaying && (
-                            <span className="flex h-3 items-center gap-0.5" aria-hidden="true">
-                              {Array.from({ length: 6 }).map((_, barIndex) => <span key={barIndex} className="catalog-wave-bar h-full w-px bg-cyan-100" />)}
-                            </span>
-                          )}
-                        </span>
-                      </span>
-                    </button>
-                    <button type="button" onClick={() => selectPack(pack.slug)} className="inline-flex items-center justify-between gap-5 rounded-full border border-white/10 px-5 py-3 text-[10px] uppercase tracking-[0.2em] text-white/65 transition hover:border-cyan-100/40 hover:bg-cyan-100 hover:text-[#081012] active:translate-y-px sm:justify-center">
-                      View pack <ArrowRight className="size-3.5" />
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <CylinderPackCatalog
+        packs={packs}
+        loading={loading}
+        selectedSlug={selectedSlug}
+        activeTrackKey={activeTrackKey}
+        previewTime={previewTime}
+        onPreview={preview}
+        onSelect={selectPack}
+      />
 
       {selectedPack && (
         <section id="pack-details" className="scroll-mt-24 border-t border-white/10 px-5 py-24 md:px-10 lg:py-32">
