@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 
 export async function POST(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { projectId } = await params;
     const body = await req.json().catch(() => ({}));
     const supabase = getSupabaseAdmin();

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { ensureProfile, jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { savedToneSelect } from '@/lib/social/serializers';
 import { scoreToneEffectiveness } from '@/lib/social/tone-effectiveness';
 import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
@@ -43,7 +43,7 @@ function cleanTonePayload(body = {}) {
 
 export async function POST(req) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     await ensureProfile(user);
     const supabase = getSupabaseAdmin();
     const payload = cleanTonePayload(await req.json());

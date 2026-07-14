@@ -2,12 +2,11 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { getTonePackBySlug, getTonePackPriceId } from '@/lib/audio/tone-packs.mjs';
+import { MONTHLY_PLAN_ID, MONTHLY_PRICE_ID } from '@/lib/billing/plans';
+import { hasPlatformAccess } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const PREMIUM_PRICE_ID = 'price_1TWlb7DJtpuPVfuFfSVEXPYU';
-const LIFETIME_PRICE_ID = 'price_1TWlbTDJtpuPVfuFG5ejsTAG';
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
@@ -84,12 +83,7 @@ export async function POST(req) {
       return NextResponse.json({ url: session.url, sessionId: session.id });
     }
 
-    const planConfig = {
-      premium: { expectedPriceId: PREMIUM_PRICE_ID, mode: 'subscription' },
-      lifetime: { expectedPriceId: LIFETIME_PRICE_ID, mode: 'payment' }
-    }[planId];
-
-    if (!planConfig || priceId !== planConfig.expectedPriceId) {
+    if (!['monthly', 'premium'].includes(planId) || priceId !== MONTHLY_PRICE_ID) {
       return NextResponse.json({ error: 'Unsupported plan selection' }, { status: 400 });
     }
 
@@ -98,25 +92,33 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Authentication required for account plans' }, { status: 401 });
     }
 
+    const supabase = getSupabaseAdmin();
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('entitlement_type,billing_status,subscription_tier,stripe_customer_id,stripe_subscription_id,payment_method_attached')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (hasPlatformAccess(profile)) {
+      return NextResponse.json({ error: 'This account already has platform access' }, { status: 409 });
+    }
+
     const stripe = new Stripe(stripeSecret);
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [{ price: priceId, quantity: 1 }],
-      mode: planConfig.mode,
-      ...(planConfig.mode === 'subscription'
-        ? {
-            subscription_data: {
-              trial_period_days: 7,
-              metadata: { planId, user_uuid: user.id }
-            }
-          }
-        : {}),
+      payment_method_collection: 'always',
+      line_items: [{ price: MONTHLY_PRICE_ID, quantity: 1 }],
+      mode: 'subscription',
+      subscription_data: {
+        metadata: { planId: MONTHLY_PLAN_ID, user_uuid: user.id }
+      },
       success_url: `${siteUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/pricing`,
+      cancel_url: `${siteUrl}/login?subscription=required`,
       client_reference_id: user.id,
-      customer_email: user.email,
-      metadata: { user_uuid: user.id, planId, priceId }
+      ...(profile?.stripe_customer_id
+        ? { customer: profile.stripe_customer_id }
+        : { customer_email: user.email }),
+      metadata: { user_uuid: user.id, planId: MONTHLY_PLAN_ID, priceId: MONTHLY_PRICE_ID }
     });
 
     return NextResponse.json({ url: session.url, sessionId: session.id });

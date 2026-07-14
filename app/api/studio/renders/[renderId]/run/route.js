@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { renderStudioProject, STUDIO_RENDER_BUCKET, uploadStudioRender } from '@/lib/studio/render';
 import { getRenderClaimDecision } from '@/lib/studio/lifecycle';
@@ -31,7 +31,7 @@ export async function POST(req, { params }) {
   let userId = null;
   const supabase = getSupabaseAdmin();
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     userId = user.id;
     ({ renderId } = await params);
     const { data: record, error: recordError } = await supabase

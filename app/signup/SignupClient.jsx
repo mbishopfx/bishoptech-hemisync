@@ -2,19 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
 export function SignupClient() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const plan = searchParams.get('plan') || 'free';
-  const priceId = searchParams.get('priceId');
-  const mode = searchParams.get('mode') || (plan === 'lifetime' ? 'payment' : 'subscription');
-  
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,6 +19,21 @@ export function SignupClient() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    const normalizedUsername = username.trim().toLowerCase();
+    try {
+      const availabilityResponse = await fetch(`/api/account/username?value=${encodeURIComponent(normalizedUsername)}`, { cache: 'no-store' });
+      const availability = await availabilityResponse.json();
+      if (!availabilityResponse.ok || !availability.available) {
+        setError(availability.error || 'That username is already taken.');
+        setLoading(false);
+        return;
+      }
+    } catch {
+      setError('We could not check that username. Please try again.');
+      setLoading(false);
+      return;
+    }
     
     const supabase = getSupabaseBrowserClient();
     const { data, error: signupError } = await supabase.auth.signUp({
@@ -31,7 +41,8 @@ export function SignupClient() {
       password,
       options: {
         data: {
-          requested_plan: plan
+          username: normalizedUsername,
+          requested_plan: 'monthly'
         }
       }
     });
@@ -43,29 +54,10 @@ export function SignupClient() {
     }
 
     if (data.session) {
-      // If auto-logged in, try to go to checkout if priceId exists, else dashboard
-      if (priceId) {
-          try {
-              const res = await fetch('/api/checkout', {
-                  method: 'POST',
-                  headers: { 
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${data.session.access_token}`
-                  },
-                  body: JSON.stringify({ priceId, planId: plan, mode })
-              });
-              const checkoutData = await res.json();
-              if (checkoutData.url) {
-                  window.location.href = checkoutData.url;
-                  return;
-              }
-          } catch (err) {
-              console.error('Auto-checkout failed', err);
-          }
-      }
-      router.push('/dashboard');
+      await redirectToStripeCheckout({ fallbackPath: '/login' });
+      return;
     } else {
-      setError('Please check your email to verify your account.');
+      setError('Check your email to verify your account. After verification, sign in to complete the $9 monthly checkout.');
       setLoading(false);
     }
   };
@@ -85,10 +77,23 @@ export function SignupClient() {
               Step 01: Account setup
             </div>
             <h1 className="text-3xl font-light tracking-tight mb-2">Create your account</h1>
-            <p className="text-white/40 text-sm">Choose the <strong>{plan.toUpperCase()}</strong> plan.{plan === 'lifetime' ? ' Lifetime access is a one-time purchase.' : ' A 7-day trial is included with subscription plans.'}</p>
+            <p className="text-white/40 text-sm">Create your login, then securely add your card through Stripe for <strong className="text-white">$9/month</strong>.</p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_.-]/g, '').slice(0, 32))}
+                required
+                minLength={3}
+                autoComplete="username"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
+                placeholder="Your username"
+              />
+            </div>
             <div className="space-y-2">
               <label className="text-[10px] font-mono uppercase tracking-widest text-white/30 ml-4">Email address</label>
               <input 
@@ -96,6 +101,7 @@ export function SignupClient() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
                 placeholder="name@company.com"
               />
@@ -108,6 +114,8 @@ export function SignupClient() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={8}
+                autoComplete="new-password"
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:ring-1 focus:ring-cyan-500/50 outline-none transition-all"
                 placeholder="Minimum 8 characters"
               />
@@ -120,7 +128,7 @@ export function SignupClient() {
               disabled={loading}
               className="w-full py-4 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
             >
-              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Create account <ArrowRight className="size-4" /></>}
+              {loading ? <Loader2 className="size-5 animate-spin" /> : <>Create account & continue <ArrowRight className="size-4" /></>}
             </button>
           </form>
 

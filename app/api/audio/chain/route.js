@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { requireAuthenticatedUser, ensureProfile, jsonError } from '@/lib/auth/session';
+import { requirePlatformSubscriber, ensureProfile, jsonError } from '@/lib/auth/session';
 import { decodeAudioFile } from '@/lib/audio/engine/import';
 import { encodeOutputs } from '@/lib/audio/engine/pipeline';
 import { persistRenderArtifacts } from '@/lib/audio/render-artifacts';
@@ -104,7 +104,7 @@ export async function POST(req) {
 
   try {
     // 1. Authenticate user
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     await ensureProfile(user);
 
     const body = await req.json();

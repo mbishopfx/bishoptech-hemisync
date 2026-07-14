@@ -1,10 +1,10 @@
 export const metadata = {
   title: { absolute: 'Pricing — Cognistration' },
-  description: 'Compare Cognistration plans, free access, and premium membership options.',
+  description: 'Cognistration is one complete private audio studio membership for $9 per month.',
   alternates: { canonical: '/pricing' },
   openGraph: {
     title: 'Pricing — Cognistration',
-    description: 'Compare Cognistration plans, free access, and premium membership options.',
+    description: 'Cognistration is one complete private audio studio membership for $9 per month.',
     siteName: 'Cognistration',
     type: 'website',
     url: '/pricing',
@@ -13,7 +13,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Pricing — Cognistration',
-    description: 'Compare Cognistration plans, free access, and premium membership options.',
+    description: 'Cognistration is one complete private audio studio membership for $9 per month.',
     images: ['/images/og-preview.png'],
   },
 };

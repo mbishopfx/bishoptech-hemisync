@@ -2,15 +2,11 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
+import { checkoutGrantsAccess, subscriptionProfilePatch } from '@/lib/billing/stripe-subscription';
+import { MONTHLY_PLAN_ID } from '@/lib/billing/plans';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-function getProfilePlan(planId) {
-  if (planId === 'lifetime') return 'founder';
-  if (planId === 'premium') return 'pro';
-  return 'free';
-}
 
 export async function POST(req) {
   try {
@@ -41,26 +37,41 @@ export async function POST(req) {
     const { data: authData, error: authError } = await supabase.auth.getUser(token);
     if (authError || !authData?.user) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    const planId = checkoutSession.metadata?.planId || 'lifetime';
+    const planId = checkoutSession.metadata?.planId;
     const userId = checkoutSession.client_reference_id || checkoutSession.metadata?.user_uuid;
     if (!userId || userId !== authData.user.id) {
       return NextResponse.json({ error: 'Checkout session does not belong to this account' }, { status: 403 });
     }
 
-    await supabase
+    if (!['monthly', 'premium'].includes(planId) || checkoutSession.mode !== 'subscription') {
+      return NextResponse.json({ error: 'Checkout session is not a Cognistration membership' }, { status: 400 });
+    }
+    const subscriptionId = typeof checkoutSession.subscription === 'string'
+      ? checkoutSession.subscription
+      : checkoutSession.subscription?.id;
+    if (!subscriptionId) {
+      return NextResponse.json({ error: 'Stripe subscription is not available yet' }, { status: 409 });
+    }
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+      expand: ['default_payment_method', 'items.data.price']
+    });
+    if (!checkoutGrantsAccess(checkoutSession, subscription)) {
+      return NextResponse.json({ error: 'The first subscription payment has not completed' }, { status: 409 });
+    }
+
+    const { error: profileError } = await supabase
       .from('profiles')
       .upsert(
         {
           id: userId,
           email: authData.user.email || checkoutSession.customer_email || null,
-          plan: getProfilePlan(planId),
-          subscription_tier: planId,
-          trial_expires_at: null
+          ...subscriptionProfilePatch(subscription, { paymentMethodAttached: true })
         },
         { onConflict: 'id' }
       );
+    if (profileError) throw profileError;
 
-    return NextResponse.json({ ok: true, planId, sessionId });
+    return NextResponse.json({ ok: true, planId: MONTHLY_PLAN_ID, sessionId });
   } catch (error) {
     console.error('Checkout completion sync failed:', error);
     return NextResponse.json({ error: error?.message || 'Checkout sync failed' }, { status: 500 });

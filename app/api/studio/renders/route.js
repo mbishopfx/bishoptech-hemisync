@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { STUDIO_RENDER_BUCKET } from '@/lib/studio/render';
 
@@ -10,7 +10,7 @@ const RENDER_SELECT = 'id,session_id,user_id,bucket,wav_path,mp3_path,status,pha
 
 export async function GET(req) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { data, error } = await getSupabaseAdmin()
       .from('renders')
       .select(RENDER_SELECT)
@@ -27,7 +27,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { projectId } = await req.json();
     const supabase = getSupabaseAdmin();
     const { data: project, error: projectError } = await supabase

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { validateStudioSpec } from '@/lib/studio/spec';
 
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 
 export async function GET(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { projectId } = await params;
     const { data, error } = await getSupabaseAdmin()
       .from('session_specs')
@@ -26,7 +26,7 @@ export async function GET(req, { params }) {
 
 export async function PATCH(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { projectId } = await params;
     const body = await req.json();
     const patch = { updated_at: new Date().toISOString() };

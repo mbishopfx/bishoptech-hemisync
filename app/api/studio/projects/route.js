@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ensureProfile, jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { ensureProfile, jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { validateStudioSpec } from '@/lib/studio/spec';
 
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 
 export async function GET(req) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('session_specs')
@@ -26,7 +26,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     await ensureProfile(user);
     const body = await req.json();
     const spec = validateStudioSpec(body.spec);
