@@ -33,6 +33,66 @@ function phaseLabel(phase) {
   })[phase] || 'Ready';
 }
 
+function StudioSlider({ label, value, min, max, step = 1, unit = '', onChange, tone = 'cyan', compact = false }) {
+  const numericValue = Number(value);
+  const progress = ((numericValue - min) / Math.max(1, max - min)) * 100;
+  const activeColor = tone === 'purple' ? '#a855f7' : '#22d3ee';
+
+  return (
+    <label className={`block ${compact ? 'space-y-1.5' : 'space-y-2.5'}`}>
+      <span className="flex items-center justify-between gap-3">
+        <span className="text-[9px] font-mono uppercase tracking-[0.16em] text-white/35">{label}</span>
+        <output className={`rounded-full border px-2.5 py-1 text-[10px] font-mono ${tone === 'purple' ? 'border-purple-500/20 bg-purple-500/10 text-purple-200' : 'border-cyan-500/20 bg-cyan-500/10 text-cyan-200'}`}>
+          {numericValue}{unit}
+        </output>
+      </span>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={numericValue}
+        onChange={(event) => onChange(Number(event.target.value))}
+        aria-label={label}
+        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-cyan-400 [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:bg-cyan-300 [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:bg-cyan-300 [&::-webkit-slider-thumb]:shadow-[0_0_16px_rgba(34,211,238,.55)]"
+        style={{ background: `linear-gradient(90deg, ${activeColor} 0%, ${activeColor} ${progress}%, rgba(255,255,255,.09) ${progress}%, rgba(255,255,255,.09) 100%)` }}
+      />
+      {!compact && <span className="flex justify-between text-[8px] font-mono uppercase text-white/20"><span>{min}{unit}</span><span>{max}{unit}</span></span>}
+    </label>
+  );
+}
+
+function StagePath({ stages, totalDuration }) {
+  let elapsed = 0;
+  const points = stages.map((stage) => {
+    const duration = Number(stage.durationSec || 0);
+    const x = ((elapsed + duration / 2) / Math.max(1, totalDuration)) * 100;
+    const averageDelta = (Number(stage.deltaHz.from) + Number(stage.deltaHz.to)) / 2;
+    const y = 36 - (Math.min(40, averageDelta) / 40) * 30;
+    elapsed += duration;
+    return { id: stage.id, x, y };
+  });
+  const path = points.map((point) => `${point.x},${point.y}`).join(' ');
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-black/35 p-3">
+      <div className="relative h-24 overflow-hidden rounded-xl border border-white/[0.04] bg-[radial-gradient(circle_at_50%_130%,rgba(168,85,247,.17),transparent_62%),linear-gradient(180deg,rgba(34,211,238,.035),transparent)]">
+        <svg viewBox="0 0 100 42" preserveAspectRatio="none" className="absolute inset-0 size-full" aria-label="Session frequency curve" role="img">
+          <defs>
+            <linearGradient id="studioCurve" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#22d3ee" /><stop offset="0.55" stopColor="#818cf8" /><stop offset="1" stopColor="#c084fc" /></linearGradient>
+          </defs>
+          {[10, 20, 30].map((y) => <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="rgba(255,255,255,.055)" strokeWidth=".35" />)}
+          <polyline points={path} fill="none" stroke="rgba(34,211,238,.12)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points={path} fill="none" stroke="url(#studioCurve)" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" />
+          {points.map((point) => <circle key={point.id} cx={point.x} cy={point.y} r="1.65" fill="#050505" stroke="#67e8f9" strokeWidth=".75" />)}
+        </svg>
+        <div className="absolute inset-x-3 bottom-2 flex justify-between text-[8px] font-mono uppercase tracking-[0.16em] text-white/25"><span>Opening</span><span>Core</span><span>Return</span></div>
+      </div>
+      <div className="mt-2 flex gap-1.5 overflow-hidden">{stages.map((stage, index) => <span key={stage.id} className="min-w-0 flex-1 truncate rounded-full bg-white/[0.035] px-2 py-1 text-center text-[8px] font-mono text-white/35">{index + 1}. {stage.name}</span>)}</div>
+    </div>
+  );
+}
+
 export function StudioView({ initialProject = null, initialRender = null, onChanged, onOpenLibrary }) {
   const [project, setProject] = useState(initialProject);
   const [name, setName] = useState(initialProject?.name || 'My Cognistration Session');
@@ -296,26 +356,30 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
 
             <div>
               <div className="flex items-center justify-between"><span className="text-[10px] font-mono uppercase tracking-widest text-white/35">Duration</span><span className={`text-xs font-mono ${durationValid ? 'text-cyan-300' : 'text-amber-300'}`}>{formatDuration(totalDuration)}</span></div>
-              <div className="mt-3 flex flex-wrap gap-2">{DURATION_PRESETS.map((minutes) => <button key={minutes} type="button" onClick={() => setDurationMinutes(minutes)} className={`rounded-full border px-4 py-2 text-xs font-mono ${Math.round(totalDuration / 60) === minutes ? 'border-cyan-500/40 bg-cyan-500/15 text-cyan-200' : 'border-white/10 bg-white/5 text-white/45 hover:text-white'}`}>{minutes} min</button>)}<label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3"><span className="text-[10px] font-mono uppercase text-white/30">Custom</span><input type="number" min="5" max="120" value={Math.round(totalDuration / 60)} onChange={(event) => setDurationMinutes(event.target.value)} className="w-14 bg-transparent py-2 text-xs text-white outline-none" /><span className="text-[10px] text-white/30">min</span></label></div>
+              <div className="mt-3 flex flex-wrap gap-2">{DURATION_PRESETS.map((minutes) => <button key={minutes} type="button" onClick={() => setDurationMinutes(minutes)} className={`rounded-full border px-4 py-2 text-xs font-mono transition ${Math.round(totalDuration / 60) === minutes ? 'border-cyan-500/40 bg-cyan-500/15 text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,.08)]' : 'border-white/[0.07] bg-white/[0.025] text-white/40 hover:border-white/15 hover:text-white'}`}>{minutes} min</button>)}</div>
+              <div className="mt-4 rounded-2xl border border-white/[0.06] bg-black/25 px-4 py-3">
+                <StudioSlider label="Custom duration" value={Math.round(totalDuration / 60)} min={5} max={120} unit=" min" onChange={setDurationMinutes} />
+              </div>
             </div>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-4"><div><p className="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400">Stage Timeline</p><p className="mt-1 text-xs text-white/35">Each stage becomes a smooth frequency path in the final render.</p></div><div className="flex items-center gap-2"><button type="button" onClick={() => previewingStageId === 'session-preview' ? stopPreview() : previewSession()} className="rounded-full border border-purple-500/25 bg-purple-500/10 px-3 py-1 text-[10px] font-mono uppercase text-purple-200">{previewingStageId === 'session-preview' ? 'Stop preview' : 'Preview session'}</button><span className="rounded-full border border-white/10 px-3 py-1 text-[10px] font-mono text-white/35">{spec.stages.length} stages</span></div></div>
+              <StagePath stages={spec.stages} totalDuration={totalDuration} />
               <div className="grid gap-3">{spec.stages.map((stage, index) => (
-                <div key={stage.id} className="rounded-2xl border border-white/8 bg-black/30 p-4">
-                  <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
+                <div key={stage.id} className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.035] to-black/30 p-4 transition hover:border-cyan-500/15">
+                  <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
                     <div className="flex min-w-0 flex-1 items-center gap-3"><span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-cyan-500/25 bg-cyan-500/10 text-xs font-mono text-cyan-300">{index + 1}</span><input value={stage.name} onChange={(event) => updateStage(stage.id, { name: event.target.value })} className="min-w-0 flex-1 bg-transparent text-sm font-medium text-white outline-none" /></div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <label className="text-[10px] font-mono uppercase text-white/30">Minutes <input type="number" min="0.25" step="0.25" value={Number((stage.durationSec / 60).toFixed(2))} onChange={(event) => updateStage(stage.id, { durationSec: Math.max(15, Math.round(Number(event.target.value) * 60)) })} className="ml-2 w-16 rounded-lg border border-white/10 bg-zinc-950 px-2 py-1.5 text-white" /></label>
                       <span className="text-[10px] font-mono uppercase text-purple-300">{stage.deltaHz.from} → {stage.deltaHz.to} Hz</span>
                       <button type="button" onClick={() => previewingStageId === stage.id ? stopPreview() : previewStage(stage)} className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] font-mono uppercase text-white/55 hover:border-cyan-500/30 hover:text-cyan-200">{previewingStageId === stage.id ? 'Stop' : 'Preview'}</button>
                     </div>
                   </div>
-                  {showPro && <div className="mt-4 grid gap-3 border-t border-white/5 pt-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="mt-4 border-t border-white/5 pt-4"><StudioSlider label="Stage length" value={Number((stage.durationSec / 60).toFixed(2))} min={0.25} max={Math.min(60, Math.max(5, Math.ceil(totalDuration / 60)))} step={0.25} unit=" min" compact onChange={(value) => updateStage(stage.id, { durationSec: Math.max(15, Math.round(value * 60)) })} /></div>
+                  {showPro && <div className="mt-4 grid gap-x-5 gap-y-4 border-t border-white/5 pt-4 sm:grid-cols-2 lg:grid-cols-3">
                     <label className="text-[9px] font-mono uppercase text-white/30">State<select value={stage.brainState} onChange={(event) => updateStage(stage.id, { brainState: event.target.value })} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white">{STATE_OPTIONS.map((state) => <option key={state}>{state}</option>)}</select></label>
-                    <label className="text-[9px] font-mono uppercase text-white/30">Carrier Hz<input type="number" min="50" max="2000" value={stage.carrierHz} onChange={(event) => updateStage(stage.id, { carrierHz: clamp(event.target.value, 50, 2000) })} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white" /></label>
-                    <label className="text-[9px] font-mono uppercase text-white/30">Start differential<input type="number" min="0.1" max="40" step="0.1" value={stage.deltaHz.from} onChange={(event) => updateStageDelta(stage.id, 'from', event.target.value)} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white" /></label>
-                    <label className="text-[9px] font-mono uppercase text-white/30">End differential<input type="number" min="0.1" max="40" step="0.1" value={stage.deltaHz.to} onChange={(event) => updateStageDelta(stage.id, 'to', event.target.value)} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white" /></label>
+                    <StudioSlider label="Carrier frequency" value={stage.carrierHz} min={50} max={2000} unit=" Hz" compact onChange={(value) => updateStage(stage.id, { carrierHz: value })} />
+                    <StudioSlider label="Starting differential" value={stage.deltaHz.from} min={0.1} max={40} step={0.1} unit=" Hz" tone="purple" compact onChange={(value) => updateStageDelta(stage.id, 'from', value)} />
+                    <StudioSlider label="Ending differential" value={stage.deltaHz.to} min={0.1} max={40} step={0.1} unit=" Hz" tone="purple" compact onChange={(value) => updateStageDelta(stage.id, 'to', value)} />
                   </div>}
                 </div>
               ))}</div>
@@ -327,7 +391,7 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
               <div className="space-y-3"><p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Entrainment modes</p>{Object.entries(spec.entrainmentModes).map(([mode, enabled]) => <label key={mode} className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2 text-xs capitalize text-white/60"><span>{mode}</span><input type="checkbox" checked={enabled} onChange={(event) => setSpec((current) => ({ ...current, entrainmentModes: { ...current.entrainmentModes, [mode]: event.target.checked } }))} className="accent-cyan-500" /></label>)}</div>
               <div className="space-y-3"><p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Background layer</p><select value={spec.background.type === 'asset' ? spec.background.assetId : spec.background.type} onChange={(event) => { const value = event.target.value; setSpec((current) => ({ ...current, background: value === 'none' ? { type: 'none' } : value === 'ocean' ? { type: 'ocean', mixDb: -24 } : { type: 'asset', assetId: value, mixDb: -25, crossfadeSec: 2.5 } })); }} className="w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white"><option value="none">Pure signal</option><option value="ocean">Synthesized ocean</option>{AmbientAssetOptions.map((asset) => <option key={asset.id} value={asset.id}>{asset.name}</option>)}</select>{spec.background.type !== 'none' && <label className="block text-[9px] font-mono uppercase text-white/30">Mix {spec.background.mixDb} dB<input type="range" min="-60" max="-6" value={spec.background.mixDb} onChange={(event) => setSpec((current) => ({ ...current, background: { ...current.background, mixDb: Number(event.target.value) } }))} className="mt-2 w-full accent-cyan-500" /></label>}</div>
               <div className="space-y-3"><p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Breath modulation</p><label className="flex items-center justify-between text-xs text-white/55"><span>Enable gentle modulation</span><input type="checkbox" checked={spec.breathGuide.enabled} onChange={(event) => setSpec((current) => ({ ...current, breathGuide: { ...current.breathGuide, enabled: event.target.checked } }))} className="accent-cyan-500" /></label><select value={spec.breathGuide.pattern} onChange={(event) => setSpec((current) => ({ ...current, breathGuide: { ...current.breathGuide, pattern: event.target.value } }))} className="w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white"><option value="coherent-5.5">Coherent 5.5</option><option value="4-7-8">4-7-8</option><option value="box">Box</option></select></div>
-              <div className="space-y-3"><p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Master and delivery</p><div className="grid grid-cols-2 gap-2"><label className="text-[9px] font-mono uppercase text-white/30">Fade in<input type="number" min="0" max="60" value={spec.fades.inSec} onChange={(event) => setSpec((current) => ({ ...current, fades: { ...current.fades, inSec: clamp(event.target.value, 0, 60) } }))} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white" /></label><label className="text-[9px] font-mono uppercase text-white/30">Fade out<input type="number" min="0" max="60" value={spec.fades.outSec} onChange={(event) => setSpec((current) => ({ ...current, fades: { ...current.fades, outSec: clamp(event.target.value, 0, 60) } }))} className="mt-1 w-full rounded-xl border border-white/10 bg-zinc-950 px-3 py-2 text-xs text-white" /></label></div><div className="flex gap-4">{['wav', 'mp3'].map((format) => <label key={format} className="flex items-center gap-2 text-xs uppercase text-white/55"><input type="checkbox" checked={spec.exportFormats.includes(format)} onChange={(event) => setSpec((current) => { const formats = event.target.checked ? [...new Set([...current.exportFormats, format])] : current.exportFormats.filter((item) => item !== format); return { ...current, exportFormats: formats.length ? formats : [format] }; })} className="accent-cyan-500" />{format}</label>)}</div></div>
+              <div className="space-y-3"><p className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">Master and delivery</p><StudioSlider label="Fade in" value={spec.fades.inSec} min={0} max={60} unit=" sec" compact onChange={(value) => setSpec((current) => ({ ...current, fades: { ...current.fades, inSec: value } }))} /><StudioSlider label="Fade out" value={spec.fades.outSec} min={0} max={60} unit=" sec" compact onChange={(value) => setSpec((current) => ({ ...current, fades: { ...current.fades, outSec: value } }))} /><div className="flex gap-4">{['wav', 'mp3'].map((format) => <label key={format} className="flex items-center gap-2 text-xs uppercase text-white/55"><input type="checkbox" checked={spec.exportFormats.includes(format)} onChange={(event) => setSpec((current) => { const formats = event.target.checked ? [...new Set([...current.exportFormats, format])] : current.exportFormats.filter((item) => item !== format); return { ...current, exportFormats: formats.length ? formats : [format] }; })} className="accent-cyan-500" />{format}</label>)}</div></div>
             </div>}
           </div>
 
@@ -337,6 +401,8 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
               <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-4"><div className="flex justify-between text-[10px] font-mono uppercase tracking-widest"><span className="text-white/35">Status</span><span className="text-cyan-300">{phaseLabel(render?.phase)}</span></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/5"><div className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all" style={{ width: `${render?.progress || 0}%` }} /></div>{render?.error && <p className="mt-3 text-xs leading-5 text-red-300">{render.error}</p>}</div>
               <div className="grid grid-cols-2 gap-2 text-[10px] font-mono uppercase text-white/35"><div className="rounded-xl border border-white/5 p-3"><span>Duration</span><p className="mt-1 text-white/70">{formatDuration(totalDuration)}</p></div><div className="rounded-xl border border-white/5 p-3"><span>Master</span><p className="mt-1 text-white/70">24-bit / 48 kHz</p></div></div>
               <button type="button" onClick={startRender} disabled={!durationValid || renderActive || saving} className="w-full rounded-2xl bg-cyan-300 px-4 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-black hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-35">{renderActive ? phaseLabel(render.phase) : render?.phase === 'failed' ? 'Retry Render' : 'Render Session'}</button>
+              {error && <div role="alert" className="rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs leading-5 text-red-200">{error}</div>}
+              {message && <div role="status" className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.08] px-3 py-2 text-xs leading-5 text-emerald-200">{message}</div>}
               <p className="text-[10px] leading-5 text-white/30">Use stereo headphones at a moderate volume. This is an intentional listening tool, not medical treatment.</p>
               {render?.phase === 'completed' && <div className="space-y-2 border-t border-white/5 pt-4">{downloads?.wav && <a href={downloads.wav} className="flex w-full items-center justify-center rounded-xl border border-white/10 px-4 py-2.5 text-xs font-mono uppercase text-white/65 hover:border-cyan-500/30 hover:text-cyan-200">Download WAV</a>}{downloads?.mp3 && <a href={downloads.mp3} className="flex w-full items-center justify-center rounded-xl border border-white/10 px-4 py-2.5 text-xs font-mono uppercase text-white/65 hover:border-cyan-500/30 hover:text-cyan-200">Download MP3</a>}<button type="button" onClick={emailCopy} disabled={emailing} className="w-full rounded-xl border border-purple-500/25 bg-purple-500/10 px-4 py-2.5 text-xs font-mono uppercase text-purple-200 disabled:opacity-40">{emailing ? 'Sending…' : 'Email Me a Copy'}</button><div className="grid grid-cols-2 gap-2"><button type="button" onClick={() => duplicateProject('duplicate')} className="rounded-xl border border-white/10 px-3 py-2 text-[9px] font-mono uppercase text-white/50 hover:text-white">Duplicate Project</button><button type="button" onClick={() => duplicateProject('version')} className="rounded-xl border border-white/10 px-3 py-2 text-[9px] font-mono uppercase text-white/50 hover:text-white">Create New Version</button></div><button type="button" onClick={onOpenLibrary} className="w-full text-[10px] font-mono uppercase tracking-widest text-cyan-300/70 hover:text-cyan-200">View in Library →</button></div>}
             </div>
@@ -344,7 +410,6 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
         </div>
       </Card>
 
-      {(message || error) && <div className={`rounded-2xl border px-4 py-3 text-sm ${error ? 'border-red-500/20 bg-red-500/10 text-red-200' : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-200'}`}>{error || message}</div>}
     </div>
   );
 }

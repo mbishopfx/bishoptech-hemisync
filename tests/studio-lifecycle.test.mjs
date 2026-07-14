@@ -30,3 +30,12 @@ test('dashboard navigation and data flow omit social surfaces while preserving S
   assert.match(source, /Save to Library/);
   assert.match(source, /id: 'studio', label: 'Studio'/);
 });
+
+test('Studio profile bootstrap does not depend on retired social counters', async () => {
+  const source = await readFile(new URL('../lib/auth/session.js', import.meta.url), 'utf8');
+  const migration = await readFile(new URL('../supabase/migrations/202607130003_profile_generation_counter.sql', import.meta.url), 'utf8');
+  assert.match(source, /PROFILE_BOOTSTRAP_SELECT/);
+  assert.doesNotMatch(source, /profileSelect\(/);
+  assert.match(migration, /add column if not exists generation_count/);
+  assert.match(migration, /increment_generation_count/);
+});
