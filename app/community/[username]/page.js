@@ -90,9 +90,6 @@ export default async function PublicProfilePage({ params }) {
       <main className="landing-shell">
         <div className="max-w-4xl mx-auto w-full flex flex-col gap-10">
           <Card className="relative overflow-hidden border-none shadow-premium bg-[var(--card-bg)] p-8">
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[var(--accent-gold-strong)]">
-              Community profile unavailable
-            </p>
             <h1 className="mt-2 text-3xl font-display text-foreground">
               Public profile data is offline in this environment.
             </h1>

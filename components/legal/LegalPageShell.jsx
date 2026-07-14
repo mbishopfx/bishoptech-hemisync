@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
-export function LegalPageShell({ eyebrow, title, summary, children }) {
+export function LegalPageShell({ title, summary, children }) {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
       <PublicHeader />
@@ -14,7 +14,6 @@ export function LegalPageShell({ eyebrow, title, summary, children }) {
 
       <main className="pt-40 pb-24 px-6 relative z-10 max-w-4xl mx-auto">
         <div className="mb-10 space-y-4">
-          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">{eyebrow}</p>
           <h1 className="text-4xl md:text-6xl font-light tracking-tighter text-white">{title}</h1>
           <p className="max-w-3xl text-sm md:text-base leading-7 text-white/55">{summary}</p>
           <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.25em] text-white/35">

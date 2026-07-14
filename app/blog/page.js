@@ -92,9 +92,6 @@ export default function BlogArchivePage() {
         <section className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-5 md:p-12 backdrop-blur-3xl">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl space-y-5">
-              <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">
-                Cognistration Blog
-              </p>
               <h1 className="text-4xl font-light tracking-tighter text-white md:text-6xl">
                 Essays, guides, and product notes with a calmer voice.
               </h1>

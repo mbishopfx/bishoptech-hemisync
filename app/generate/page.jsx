@@ -33,7 +33,6 @@ export default function GeneratePage() {
               <span className="signal-chip">Save + Track</span>
             </div>
             <div className="space-y-4">
-              <p className="section-label">Builder</p>
               <h1 className="section-title text-5xl leading-none text-[var(--text-primary)] sm:text-6xl">
                 Design a session, preview it, and ship the render.
               </h1>

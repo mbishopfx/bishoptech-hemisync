@@ -340,7 +340,6 @@ export default function MachinePage() {
       <main className="pt-40 pb-40 px-6 relative z-10 max-w-6xl mx-auto">
         {/* Title and Intro */}
         <section className="text-center space-y-6 max-w-3xl mx-auto mb-20">
-          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Neuro-Acoustic Engine</p>
           <h1 className="text-5xl md:text-7xl font-light tracking-tighter">Inside the Machine.</h1>
           <p className="text-white/40 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light font-sans">
             This page presents a visual explanation of the audio experience and the controls that shape it. It is designed to stay clear, calm, and easy to understand.

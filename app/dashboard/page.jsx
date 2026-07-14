@@ -38,13 +38,12 @@ async function readApiResponse(response, fallbackMessage = 'Request failed') {
   }
 }
 
-const studioEnabled = process.env.NEXT_PUBLIC_STUDIO_ENABLED === 'true';
 const navItems = [
   { id: 'agent', label: 'Sync', icon: 'psychology' },
   { id: 'workshop', label: 'Workshop', icon: 'architecture' },
-  studioEnabled ? { id: 'studio', label: 'Studio', icon: 'graphic_eq' } : null,
+  { id: 'studio', label: 'Studio', icon: 'graphic_eq' },
   { id: 'library', label: 'Library', icon: 'library_music' }
-].filter(Boolean);
+];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -354,8 +353,8 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white flex">
       {/* Sidebar */}
-      <aside className="hidden lg:flex w-72 border-r border-white/5 flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
-        <div className="flex items-center gap-3 mb-12 justify-center lg:justify-start">
+      <aside className="hidden md:flex w-72 border-r border-white/5 flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
+        <div className="flex items-center gap-3 mb-12 justify-center md:justify-start">
           <Image 
             src="/images/logo.png" 
             alt="BishopTech Logo" 
@@ -436,7 +435,7 @@ export default function DashboardPage() {
         
         <header className="sticky top-0 z-40 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 py-4 md:px-8 md:py-6 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="lg:hidden flex items-center gap-2">
+            <div className="md:hidden flex items-center gap-2">
               <Image 
                 src="/images/logo.png" 
                 alt="BishopTech Logo" 
@@ -444,15 +443,14 @@ export default function DashboardPage() {
                 height={32} 
                 className="brightness-110 contrast-125 animate-pulse"
               />
-              <span className="text-xs font-mono uppercase tracking-[0.3em] text-white/40 mr-1 sm:mr-2">Cognistration</span>
             </div>
-            <h1 className="text-xl md:text-2xl font-light tracking-tight text-white/95 border-l border-white/10 pl-2 lg:border-l-0 lg:pl-0">
+            <h1 className="text-xl md:text-2xl font-light tracking-tight text-white/95 border-l border-white/10 pl-2 md:border-l-0 md:pl-0">
               {navItems.find(i => i.id === activeTab)?.label}
             </h1>
           </div>
 
           {/* Mobile Menu Dropdown Toggle */}
-          <div className="lg:hidden relative">
+          <div className="md:hidden relative">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-all flex items-center justify-center"
@@ -678,7 +676,7 @@ export default function DashboardPage() {
               </motion.div>
             )}
 
-            {activeTab === 'studio' && studioEnabled && (
+            {activeTab === 'studio' && (
               <motion.div
                 key="studio"
                 initial={{ opacity: 0, y: 20 }}

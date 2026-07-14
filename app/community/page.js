@@ -210,7 +210,6 @@ export default async function CommunityPage() {
       <div className="max-w-3xl mx-auto w-full flex flex-col gap-8">
         <div className="flex items-center justify-between">
           <div>
-            <p className="section-label">Community</p>
             <h1 className="mt-2 text-4xl font-display font-normal text-foreground">
               Global Feed
             </h1>

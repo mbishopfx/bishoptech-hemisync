@@ -45,9 +45,6 @@ function FallbackBlogPost({ post }) {
   return (
     <article className="space-y-8">
       <header className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
-        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-          Cognistration Blog
-        </p>
         <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
           {post.title}
         </h1>

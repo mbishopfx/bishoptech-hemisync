@@ -220,10 +220,6 @@ export function PacksBrowser() {
 
       <section className="mx-auto grid min-h-[92dvh] max-w-[1400px] items-center gap-14 px-5 pb-20 pt-32 md:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-24 lg:pt-36">
         <div className="catalog-reveal opacity-0">
-          <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-white/55">
-            <span className="size-1.5 rounded-full bg-cyan-200" />
-            The session catalog
-          </div>
           <h1 className="max-w-4xl text-5xl font-extralight leading-[0.94] tracking-[-0.055em] text-white md:text-7xl lg:text-[5.5rem]">
             Find the frequency for <span className="text-white/35">right now.</span>
           </h1>

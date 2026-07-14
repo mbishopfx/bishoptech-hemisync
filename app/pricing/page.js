@@ -185,7 +185,6 @@ export default function PricingPage() {
 
       <main className="pt-40 pb-20 px-6 relative z-10 flex flex-col items-center max-w-7xl mx-auto">
         <div className="text-center space-y-6 max-w-3xl mb-20">
-          <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Pricing</p>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

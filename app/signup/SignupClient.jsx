@@ -73,9 +73,6 @@ export function SignupClient() {
           className="w-full max-w-md bg-zinc-900/50 backdrop-blur-2xl border border-white/5 p-10 rounded-[3rem] shadow-2xl"
         >
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono tracking-widest uppercase mb-4">
-              Step 01: Account setup
-            </div>
             <h1 className="text-3xl font-light tracking-tight mb-2">Create your account</h1>
             <p className="text-white/40 text-sm">Create your login, then securely add your card through Stripe for <strong className="text-white">$9/month</strong>.</p>
           </div>

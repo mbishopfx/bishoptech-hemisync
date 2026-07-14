@@ -15,7 +15,7 @@ export function PublicHeader() {
       <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between lg:justify-center relative">
         
         {/* Left-side Logo (Mobile/Tablet only or hidden on desktop for perfect center) */}
-        <div className="lg:absolute lg:left-10">
+        <div className="md:absolute md:left-10">
           <Link href="/" className="flex items-center gap-3">
              <Image 
                 src="/images/logo.png" 
@@ -27,7 +27,7 @@ export function PublicHeader() {
           </Link>
         </div>
 
-        <div className="hidden lg:flex items-center gap-3 absolute right-10">
+        <div className="hidden md:flex items-center gap-3 absolute right-10">
           {/* Menu Dropdown Container */}
           <div className="relative">
             <button
@@ -77,7 +77,7 @@ export function PublicHeader() {
         </div>
 
         {/* Mobile Toggle */}
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <button 
             className="p-2 text-white/50 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -94,7 +94,7 @@ export function PublicHeader() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="lg:hidden absolute top-20 w-full bg-zinc-900 border-b border-white/10 p-8 flex flex-col items-center gap-8 text-[12px] font-bold tracking-[0.4em] uppercase z-[101]"
+            className="md:hidden absolute top-20 w-full bg-zinc-950/95 border-b border-white/10 p-8 flex flex-col items-center gap-7 text-[12px] font-light tracking-[0.22em] uppercase backdrop-blur-2xl z-[101]"
           >
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
             <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>

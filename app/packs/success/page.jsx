@@ -58,7 +58,6 @@ export default function PacksSuccessPage() {
     <main className="mx-auto flex min-h-[75vh] max-w-3xl items-center px-6 py-28 md:px-10">
       <section className="w-full rounded-[2.5rem] border border-cyan-300/15 bg-zinc-950/70 p-8 text-center md:p-14">
         <CheckCircle2 className="mx-auto size-12 text-emerald-300" />
-        <p className="mt-7 text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-300">Stripe checkout complete</p>
         <h1 className="mt-4 text-4xl font-light tracking-tight text-white md:text-6xl">Your audio is ready.</h1>
         <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/60">{status}</p>
         {status.includes('started') && <LoaderCircle className="mx-auto mt-7 size-5 animate-spin text-cyan-300" />}

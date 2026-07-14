@@ -80,10 +80,35 @@ html {
 
 body {
   font-family: var(--font-sans), sans-serif;
+  font-weight: 300;
   background: var(--bg-0);
   letter-spacing: 0;
   color: var(--color-foreground);
   transition: background 0.4s ease, color 0.4s ease;
+}
+
+h1 {
+  font-weight: 200 !important;
+}
+
+button,
+input,
+select,
+textarea,
+a[class*='rounded-full'],
+a[class*='rounded-xl'] {
+  font-family: var(--font-sans), sans-serif !important;
+}
+
+button,
+a[class*='rounded-full'],
+a[class*='rounded-xl'] {
+  font-weight: 300 !important;
+}
+
+/* Eyebrow labels immediately above page titles are intentionally retired. */
+p:has(+ h1) {
+  display: none !important;
 }
 
 .material-symbols-outlined {

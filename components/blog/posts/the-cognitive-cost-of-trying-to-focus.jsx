@@ -170,9 +170,6 @@ export default function TheCognitiveCostOfTryingToFocusPost() {
       <header className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
-            Cognistration Blog
-          </p>
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
             {post.title}
           </h1>
