@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { STUDIO_RENDER_BUCKET } from '@/lib/studio/render';
 
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 
 export async function GET(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { renderId } = await params;
     const { data, error } = await getSupabaseAdmin()
       .from('renders')

@@ -2,14 +2,27 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
+import { checkoutGrantsAccess, subscriptionProfilePatch } from '@/lib/billing/stripe-subscription';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function getProfilePlan(planId) {
-  if (planId === 'lifetime') return 'founder';
-  if (planId === 'premium') return 'pro';
-  return 'free';
+async function syncSubscriptionProfile(supabase, userId, subscription, email = null, options = {}) {
+  if (!userId) return;
+  const { data: current, error: readError } = await supabase
+    .from('profiles')
+    .select('entitlement_type,subscription_tier')
+    .eq('id', userId)
+    .maybeSingle();
+  if (readError) throw readError;
+  if (current?.entitlement_type === 'lifetime' || current?.subscription_tier === 'lifetime') return;
+
+  const { error } = await supabase.from('profiles').upsert({
+    id: userId,
+    ...(email ? { email } : {}),
+    ...subscriptionProfilePatch(subscription, options)
+  }, { onConflict: 'id' });
+  if (error) throw error;
 }
 
 export async function POST(req) {
@@ -22,9 +35,9 @@ export async function POST(req) {
   const body = await req.text();
   const signature = req.headers.get('stripe-signature');
   let event;
+  const stripe = new Stripe(stripeSecret);
 
   try {
-    const stripe = new Stripe(stripeSecret);
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
   } catch (error) {
     console.error(`Webhook Error: ${error.message}`);
@@ -38,7 +51,7 @@ export async function POST(req) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object;
-        const planId = session.metadata?.planId || 'lifetime';
+        const planId = session.metadata?.planId;
 
         if (session.metadata?.productType === 'tone-pack' || session.metadata?.packSlug) {
           await fulfillTonePackPurchase({ stripeSession: session, supabase });
@@ -46,53 +59,40 @@ export async function POST(req) {
         }
 
         const userId = session.client_reference_id || session.metadata?.user_uuid;
-        if (userId) {
-          await supabase
-            .from('profiles')
-            .upsert(
-              {
-                id: userId,
-                email: session.customer_email || null,
-                plan: getProfilePlan(planId),
-                subscription_tier: planId,
-                trial_expires_at: null
-              },
-              { onConflict: 'id' }
-            );
+        if (userId && ['monthly', 'premium'].includes(planId) && session.mode === 'subscription') {
+          const subscriptionId = typeof session.subscription === 'string'
+            ? session.subscription
+            : session.subscription?.id;
+          if (subscriptionId) {
+            const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+              expand: ['default_payment_method', 'items.data.price']
+            });
+            if (checkoutGrantsAccess(session, subscription)) {
+              await syncSubscriptionProfile(
+                supabase,
+                userId,
+                subscription,
+                session.customer_details?.email || session.customer_email || null,
+                { paymentMethodAttached: true }
+              );
+            }
+          }
         }
         break;
       }
       case 'customer.subscription.created':
-      case 'customer.subscription.updated': {
+      case 'customer.subscription.updated':
+      case 'customer.subscription.paused':
+      case 'customer.subscription.resumed': {
         const subscription = event.data.object;
         const userId = subscription.metadata?.user_uuid;
-        if (userId) {
-          const planId = subscription.metadata?.planId || 'premium';
-          const trialExpiresAt = subscription.trial_end
-            ? new Date(subscription.trial_end * 1000).toISOString()
-            : null;
-
-          await supabase
-            .from('profiles')
-            .upsert(
-              {
-                id: userId,
-                email: subscription.customer_email || null,
-                plan: getProfilePlan(planId),
-                subscription_tier: planId,
-                trial_expires_at: trialExpiresAt
-              },
-              { onConflict: 'id' }
-            );
-        }
+        await syncSubscriptionProfile(supabase, userId, subscription);
         break;
       }
       case 'customer.subscription.deleted': {
         const subscription = event.data.object;
         const userId = subscription.metadata?.user_uuid;
-        if (userId) {
-          await supabase.from('profiles').update({ subscription_tier: 'none' }).eq('id', userId);
-        }
+        await syncSubscriptionProfile(supabase, userId, subscription);
         break;
       }
       default:

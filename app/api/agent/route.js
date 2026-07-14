@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { matchMoodToTone } from '@/lib/ai/gemini-matcher';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { isFreeSubscriptionTier } from '@/lib/billing/entitlements';
+import { hasPlatformAccess, isFreeSubscriptionTier } from '@/lib/billing/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +32,7 @@ export async function POST(req) {
           // Check profile for generation count and subscription status
           const { data: profile } = await supabase
             .from('profiles')
-            .select('generation_count, subscription_tier, trial_expires_at')
+            .select('generation_count,subscription_tier,entitlement_type,billing_status,stripe_customer_id,stripe_subscription_id')
             .eq('id', user.id)
             .single();
           
@@ -51,19 +51,16 @@ export async function POST(req) {
         return NextResponse.json({ 
           error: 'Free limit reached', 
           code: 'AUTH_REQUIRED',
-          message: `You have used your ${FREE_TRIAL_LIMIT} free trial generations. Please create an account to continue.`
+          message: `You have used your ${FREE_TRIAL_LIMIT} public preview generations. Create an account and subscribe to continue.`
         }, { status: 403 });
       }
     } else {
-      // Authenticated User Logic
-      if (isFreeSubscriptionTier(subscription.subscription_tier)) {
-          if (subscription.generation_count >= 5) {
-              return NextResponse.json({
-                  error: 'Limit reached',
-                  code: 'SUBSCRIPTION_REQUIRED',
-                  message: 'You have generated your 5 free tones for this month. Upgrade to Premium Console ($9) or Lifetime Access ($20) to unlock unlimited generations.'
-              }, { status: 403 });
-          }
+      if (!hasPlatformAccess(subscription)) {
+        return NextResponse.json({
+          error: 'Membership required',
+          code: 'SUBSCRIPTION_REQUIRED',
+          message: 'Complete the $9 monthly membership to use the Cognistration platform.'
+        }, { status: 403 });
       }
     }
 

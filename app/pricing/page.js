@@ -5,65 +5,30 @@ import { motion } from 'framer-motion';
 import { Check, ChevronRight, Zap, Shield, Cpu, Info, DollarSign, X } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 import { buildAbsoluteUrl } from '@/lib/seo';
+import { MONTHLY_PLAN } from '@/lib/billing/plans';
 
-const plans = [
-  {
-    name: 'Free Trial',
-    id: 'free',
-    price: '$0',
-    priceId: 'free',
-    description: 'Try the core listening experience without commitment.',
-    features: [
-      { text: 'Generate up to 5 tones per month', allowed: true },
-      { text: 'Access to full soundwave library', allowed: true },
-      { text: 'Cannot export master WAV/MP3 files', allowed: false },
-      { text: 'Cannot broadcast to global feed', allowed: false },
-      { text: 'Cannot listen to collective feeds', allowed: false }
-    ],
-    highlight: false,
-    cta: 'Access Free Console',
-    mode: 'free'
-  },
-  {
-    name: 'Premium Console',
-    id: 'premium',
+const plans = [{
+    name: 'Cognistration Membership',
+    id: MONTHLY_PLAN.id,
     price: '$9',
-    priceId: 'price_1TWlb7DJtpuPVfuFfSVEXPYU',
-    description: 'Full access to the listening tools, exports, and saved sessions.',
+    priceId: MONTHLY_PLAN.priceId,
+    description: 'One private workspace for building, rendering, saving, and downloading custom audio sessions.',
     features: [
-      { text: 'Unlimited tone generation', allowed: true },
-      { text: 'High-fidelity WAV/MP3 exports', allowed: true },
-      { text: 'Save sessions to your library', allowed: true },
-      { text: 'Access the public collection', allowed: true },
-      { text: 'Session playback controls and history', allowed: true },
-      { text: '7-Day Full Access Trial Included', allowed: true }
+      { text: 'Full Sync, Workshop, and Studio access', allowed: true },
+      { text: 'Private 192 kbps MP3 exports', allowed: true },
+      { text: 'Editable staged frequency journeys', allowed: true },
+      { text: 'Private project and export library', allowed: true },
+      { text: 'Secure downloads and email delivery', allowed: true },
+      { text: 'Cancel anytime through Stripe', allowed: true }
     ],
     highlight: true,
-    cta: 'Start Premium',
+    cta: 'Create account & subscribe',
     mode: 'subscription'
-  },
-  {
-    name: 'Lifetime Access',
-    id: 'lifetime',
-    price: '$20',
-    priceId: 'price_1TWlbTDJtpuPVfuFG5ejsTAG',
-    description: 'One-time access for people who want the full experience without a subscription. Tone packs are sold separately.',
-    features: [
-      { text: 'All premium features included', allowed: true },
-      { text: 'One-time checkout', allowed: true },
-      { text: 'No recurring monthly billing', allowed: true },
-      { text: 'Access to future feature updates', allowed: true },
-      { text: 'Same listening experience as Premium', allowed: true }
-    ],
-    highlight: false,
-    cta: 'Choose Lifetime',
-    mode: 'payment'
-  }
-];
+  }];
 
 const tonePack = TONE_PACKS[0];
 
@@ -84,7 +49,7 @@ export default function PricingPage() {
     '@type': 'WebPage',
     name: 'Pricing | Cognistration',
     url: buildAbsoluteUrl('/pricing'),
-    description: 'Compare Cognistration plans and choose the right listening tier.'
+    description: 'One complete private Cognistration audio studio membership for $9 per month.'
   };
 
   // Load preview data and featured pack preview tones
@@ -226,15 +191,14 @@ export default function PricingPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-light tracking-tighter text-white"
           >
-            Choose a <span className="text-white/20 italic">calm listening plan.</span>
+            One membership. <span className="text-white/20 italic">The complete studio.</span>
           </motion.h1>
           <p className="text-white/40 text-lg md:text-xl font-light max-w-xl mx-auto leading-relaxed">
-            Choose the plan that fits how you use Cognistration. Subscription plans include a 7-day trial. Lifetime access is a one-time purchase.
+            Build and keep private audio sessions for $9 per month. Your account activates after secure Stripe checkout.
           </p>
         </div>
 
-        {/* 3-Column Plan Grid */}
-        <div className="grid md:grid-cols-3 gap-8 w-full max-w-6xl mb-32">
+        <div className="grid gap-8 w-full max-w-xl mb-32">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.id}
@@ -258,7 +222,7 @@ export default function PricingPage() {
                   <div className="flex items-baseline gap-1">
                     <span className="text-5xl font-bold tracking-tight">{plan.price}</span>
                     <span className="text-white/30 text-sm">
-                      {plan.id === 'lifetime' ? ' /one-time' : plan.id === 'free' ? '' : '/month'}
+                      /month
                     </span>
                   </div>
                   <p className="text-white/40 text-sm mt-4 leading-relaxed min-h-[40px]">{plan.description}</p>
@@ -286,17 +250,6 @@ export default function PricingPage() {
               <button
                 onClick={async () => {
                   try {
-                    if (plan.id === 'free') {
-                      const supabaseClient = getSupabaseBrowserClient();
-                      const { data } = await supabaseClient.auth.getSession();
-                      if (data.session) {
-                        window.location.href = '/dashboard';
-                      } else {
-                        window.location.href = '/signup?plan=free';
-                      }
-                      return;
-                    }
-
                     await redirectToStripeCheckout({
                       planId: plan.id,
                       priceId: plan.priceId,
@@ -305,7 +258,7 @@ export default function PricingPage() {
                     });
                   } catch (err) {
                     console.error('Checkout redirect failed', err);
-                    window.location.href = `/signup?plan=${plan.id}&priceId=${plan.priceId}&mode=${plan.mode}`;
+                    window.location.href = '/signup';
                   }
                 }}
                 className={`

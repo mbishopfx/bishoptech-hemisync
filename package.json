@@ -8,6 +8,7 @@
     "start": "node .next/standalone/server.js",
     "lint": "eslint .",
     "test:studio": "node --experimental-default-type=module --test tests/studio-*.test.mjs",
+    "test:billing": "node --experimental-default-type=module --test tests/billing-*.test.mjs",
     "verify:supabase": "node scripts/verify-supabase-wiring.mjs",
     "prerender:samples": "node scripts/prerender-template-samples.mjs",
     "packs:build": "node scripts/build-tone-packs.mjs",

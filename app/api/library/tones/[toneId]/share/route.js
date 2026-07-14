@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { feedPostSelect } from '@/lib/social/serializers';
 
 export const dynamic = 'force-dynamic';
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 
 export async function POST(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { toneId } = await params;
     const body = await req.json().catch(() => ({}));
     const supabase = getSupabaseAdmin();

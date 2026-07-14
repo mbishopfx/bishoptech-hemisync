@@ -38,7 +38,7 @@ export default function CookiesPage() {
     >
       <Section title="What we use">
         <p>We use cookies, local storage, and similar technologies to keep users signed in, remember playback state, preserve preferences, measure product performance, and understand how the site is used.</p>
-        <p>For unauthenticated visitors, Cognistration also uses a short-lived usage counter cookie to enforce free trial limits. That cookie is functional, not advertising-based.</p>
+        <p>For unauthenticated visitors, Cognistration also uses a short-lived usage counter cookie to enforce public preview limits. That cookie is functional, not advertising-based.</p>
       </Section>
 
       <Section title="Why we use them">

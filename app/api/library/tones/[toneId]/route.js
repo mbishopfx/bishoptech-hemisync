@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
-import { jsonError, requireAuthenticatedUser } from '@/lib/auth/session';
+import { jsonError, requirePlatformSubscriber } from '@/lib/auth/session';
 import { savedToneSelect } from '@/lib/social/serializers';
 import { scoreToneEffectiveness } from '@/lib/social/tone-effectiveness';
 
@@ -52,7 +52,7 @@ function cleanPatch(body = {}) {
 
 export async function PATCH(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { toneId } = await params;
     const { data, error } = await getSupabaseAdmin()
       .from('saved_tones')
@@ -73,7 +73,7 @@ export async function PATCH(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
-    const { user } = await requireAuthenticatedUser(req);
+    const { user } = await requirePlatformSubscriber(req);
     const { toneId } = await params;
     const { error } = await getSupabaseAdmin()
       .from('saved_tones')

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { authedFetch } from '@/lib/frontend/api';
+import { authedFetch, getAccessToken } from '@/lib/frontend/api';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { Omnibar } from '@/components/agent/Omnibar';
 import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
@@ -14,6 +14,7 @@ import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
 import { StudioView } from '@/components/dashboard/StudioView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { toBackendUrl } from '@/lib/frontend/backend-url';
+import { getSubscriptionStatusLabel } from '@/lib/billing/entitlements';
 
 async function readApiResponse(response, fallbackMessage = 'Request failed') {
   const contentType = response.headers.get('content-type') || '';
@@ -112,6 +113,28 @@ export default function DashboardPage() {
         router.push('/login?next=/dashboard');
         return;
       }
+
+      const checkoutSessionId = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('session_id')
+        : null;
+
+      if (checkoutSessionId) {
+        try {
+          await authedFetch('/api/checkout/complete', {
+            method: 'POST',
+            body: JSON.stringify({ sessionId: checkoutSessionId })
+          });
+        } catch (syncError) {
+          console.warn('Checkout completion sync failed:', syncError?.message || syncError);
+        }
+      }
+
+      const accessData = await authedFetch('/api/account/access').catch(() => ({ access: { granted: false } }));
+      if (!accessData.access?.granted) {
+        router.replace('/login?subscription=required&next=/dashboard');
+        return;
+      }
+
       const workspace = await refreshWorkspace();
 
       const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
@@ -126,22 +149,8 @@ export default function DashboardPage() {
         }
       }
 
-      const checkoutSessionId = typeof window !== 'undefined'
-        ? new URLSearchParams(window.location.search).get('session_id')
-        : null;
-
       if (checkoutSessionId) {
-        try {
-          await authedFetch('/api/checkout/complete', {
-            method: 'POST',
-            body: JSON.stringify({ sessionId: checkoutSessionId })
-          });
-          await refreshWorkspace();
-        } catch (syncError) {
-          console.warn('Checkout completion sync failed:', syncError?.message || syncError);
-        } finally {
-          router.replace('/dashboard');
-        }
+        router.replace('/dashboard');
       }
 
       setLoading(false);
@@ -153,9 +162,13 @@ export default function DashboardPage() {
     setAgentLoading(true);
     setAgentMessage('');
     try {
+      const token = await getAccessToken();
       const response = await fetch('/api/agent', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({ mood })
       });
       const data = await readApiResponse(response, 'Agent request failed');
@@ -165,7 +178,7 @@ export default function DashboardPage() {
         await refreshWorkspace();
       } else if (response.status === 403) {
         if (data?.code === 'AUTH_REQUIRED') {
-          window.location.href = '/signup?plan=free';
+          window.location.href = '/signup';
           return;
         }
 
@@ -400,7 +413,7 @@ export default function DashboardPage() {
               >
                 <p className="truncate px-3 py-2 text-xs text-white/60">{profile?.email || 'Signed-in account'}</p>
                 <p className="px-3 pb-2 text-[10px] font-mono uppercase tracking-widest text-cyan-300">
-                  {profile?.subscription_status || profile?.subscription_tier || 'Subscriber'}
+                  {getSubscriptionStatusLabel(profile)}
                 </p>
                 <a href="/pricing" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white">
                   <span className="material-symbols-outlined text-base">credit_card</span>
@@ -504,7 +517,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="mt-3 space-y-1">
                         <p className="px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-cyan-300">
-                          {profile?.subscription_status || profile?.subscription_tier || 'Subscriber'}
+                          {getSubscriptionStatusLabel(profile)}
                         </p>
                         <a href="/pricing" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white">
                           <span className="material-symbols-outlined text-base">credit_card</span>

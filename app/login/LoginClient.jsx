@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { PublicHeader } from '@/components/layout/PublicHeader';
-import { Loader2, ArrowRight, Github } from 'lucide-react';
+import { Loader2, ArrowRight, CreditCard, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 
 export function LoginClient() {
   const router = useRouter();
@@ -16,7 +17,9 @@ export function LoginClient() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [subscriptionRequired, setSubscriptionRequired] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export function LoginClient() {
     setError(null);
     
     const supabase = getSupabaseBrowserClient();
-    const { error: loginError } = await supabase.auth.signInWithPassword({
+    const { data, error: loginError } = await supabase.auth.signInWithPassword({
       email,
       password
     });
@@ -33,8 +36,34 @@ export function LoginClient() {
       setError(loginError.message);
       setLoading(false);
     } else {
-      router.push(next);
+      try {
+        const response = await fetch('/api/account/access', {
+          headers: { Authorization: `Bearer ${data.session.access_token}` },
+          cache: 'no-store'
+        });
+        const result = await response.json();
+        if (response.ok && result.access?.granted) {
+          router.push(next);
+          return;
+        }
+        setSubscriptionRequired(true);
+      } catch {
+        setError('We could not verify your membership. Please try again.');
+      }
+      setLoading(false);
     }
+  };
+
+  const startCheckout = async () => {
+    setCheckoutLoading(true);
+    setError(null);
+    await redirectToStripeCheckout({ fallbackPath: '/pricing' });
+    setCheckoutLoading(false);
+  };
+
+  const signOut = async () => {
+    await getSupabaseBrowserClient().auth.signOut();
+    setSubscriptionRequired(false);
   };
 
   return (
@@ -104,6 +133,49 @@ export function LoginClient() {
           <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
         </div>
       </footer>
+
+      <AnimatePresence>
+        {subscriptionRequired && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 px-5 backdrop-blur-xl"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="relative w-full max-w-md overflow-hidden rounded-[2.5rem] border border-cyan-400/20 bg-zinc-950 p-8 shadow-[0_0_80px_rgba(34,211,238,0.12)] sm:p-10"
+            >
+              <div className="absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+              <div className="mb-6 flex size-14 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-300">
+                <CreditCard className="size-6" />
+              </div>
+              <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.32em] text-cyan-300">Membership required</p>
+              <h2 className="text-3xl font-light tracking-tight">Unlock your private audio studio.</h2>
+              <p className="mt-4 text-sm leading-6 text-white/45">
+                Your account is ready, but an active Cognistration membership is required to enter the platform.
+              </p>
+              <div className="my-7 rounded-2xl border border-white/8 bg-white/[0.03] p-5">
+                <div className="flex items-end justify-between gap-4">
+                  <div><p className="font-medium">Complete membership</p><p className="mt-1 text-xs text-white/35">Cancel anytime through Stripe</p></div>
+                  <p className="text-2xl font-semibold">$9<span className="text-sm font-normal text-white/35">/mo</span></p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={startCheckout}
+                disabled={checkoutLoading}
+                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-5 py-3 font-semibold text-black transition hover:bg-cyan-200 disabled:opacity-50"
+              >
+                {checkoutLoading ? <Loader2 className="size-5 animate-spin" /> : <>Continue to secure checkout <ArrowRight className="size-4" /></>}
+              </button>
+              <p className="mt-4 flex items-center justify-center gap-2 text-[10px] text-white/30"><ShieldCheck className="size-3 text-cyan-400" /> Card details are handled securely by Stripe</p>
+              <button type="button" onClick={signOut} className="mt-6 w-full text-xs text-white/30 transition hover:text-white/60">Sign out</button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
