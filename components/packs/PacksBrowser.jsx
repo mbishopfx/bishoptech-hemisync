@@ -2,16 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { animate, createScope, stagger } from 'animejs';
-import {
-  ArrowDown,
-  ArrowRight,
-  Check,
-  EnvelopeSimple,
-  Headphones,
-  ShieldCheck,
-  Sparkle,
-  Waveform
-} from '@phosphor-icons/react';
+import { ArrowDown, ArrowRight, Check, EnvelopeSimple, Headphones, ShieldCheck, Sparkle, Waveform } from '@phosphor-icons/react';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 import { CylinderPackCatalog } from '@/components/packs/CylinderPackCatalog';
@@ -53,10 +44,7 @@ export function PacksBrowser() {
   const rootRef = useRef(null);
   const audioRef = useRef(null);
 
-  const selectedPack = useMemo(
-    () => packs.find((pack) => pack.slug === selectedSlug) || packs[0] || null,
-    [packs, selectedSlug]
-  );
+  const selectedPack = useMemo(() => packs.find((pack) => pack.slug === selectedSlug) || packs[0] || null, [packs, selectedSlug]);
 
   useEffect(() => {
     const scope = createScope({
@@ -120,7 +108,7 @@ export function PacksBrowser() {
         if (!response.ok || !data?.ok) throw new Error(data?.error || 'Failed to load the live catalog.');
         if (!cancelled && data.packs?.length) {
           setPacks(data.packs);
-          setSelectedSlug((current) => data.packs.some((pack) => pack.slug === current) ? current : data.packs[0].slug);
+          setSelectedSlug((current) => (data.packs.some((pack) => pack.slug === current) ? current : data.packs[0].slug));
         }
       })
       .catch(() => {
@@ -147,7 +135,8 @@ export function PacksBrowser() {
 
   const preview = async (pack, track) => {
     const url = trackUrl(track);
-    if (!url || !audioRef.current) return;
+    const audio = audioRef.current;
+    if (!url || !audio) return;
     const key = `${pack.slug}-${trackId(track)}`;
 
     if (activeTrackKey === key) {
@@ -155,16 +144,19 @@ export function PacksBrowser() {
       return;
     }
 
-    stopPreview();
+    audio.pause();
+    audio.currentTime = 0;
     setError('');
-    audioRef.current.src = url;
-    audioRef.current.load();
+    setPreviewTime(0);
+    setActiveTrackKey(key);
+    audio.src = url;
+    audio.volume = 1;
 
     try {
-      await audioRef.current.play();
-      setActiveTrackKey(key);
+      await audio.play();
     } catch {
-      setError('Your browser blocked audio playback. Tap preview again to start the sample.');
+      stopPreview();
+      setError('The preview could not start. Check your volume, then tap play again.');
     }
   };
 
@@ -227,11 +219,20 @@ export function PacksBrowser() {
             Ten purpose-built collections for the moments when you need to focus, come down, create, sleep, or simply get away from the noise.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs text-white/45">
-            <span className="flex items-center gap-2"><Check weight="bold" className="size-4 text-cyan-200" /> 10 full sessions</span>
-            <span className="flex items-center gap-2"><Check weight="bold" className="size-4 text-cyan-200" /> About 50 minutes</span>
-            <span className="flex items-center gap-2"><Check weight="bold" className="size-4 text-cyan-200" /> Yours to keep</span>
+            <span className="flex items-center gap-2">
+              <Check weight="bold" className="size-4 text-cyan-200" /> 10 full sessions
+            </span>
+            <span className="flex items-center gap-2">
+              <Check weight="bold" className="size-4 text-cyan-200" /> About 50 minutes
+            </span>
+            <span className="flex items-center gap-2">
+              <Check weight="bold" className="size-4 text-cyan-200" /> Yours to keep
+            </span>
           </div>
-          <a href="#catalog" className="mt-12 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-xs uppercase tracking-[0.24em] text-white transition hover:border-cyan-200 hover:text-cyan-100">
+          <a
+            href="#catalog"
+            className="mt-12 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-xs uppercase tracking-[0.24em] text-white transition hover:border-cyan-200 hover:text-cyan-100"
+          >
             Browse the collection <ArrowDown className="size-4" />
           </a>
         </div>
@@ -256,7 +257,9 @@ export function PacksBrowser() {
                         <span
                           key={barIndex}
                           className="hero-signal-bar h-px flex-1 origin-left bg-cyan-100/70"
-                          style={{ opacity: 0.2 + ((barIndex + rowIndex) % 5) * 0.12 }}
+                          style={{
+                            opacity: 0.2 + ((barIndex + rowIndex) % 5) * 0.12
+                          }}
                         />
                       ))}
                     </div>
@@ -314,7 +317,10 @@ export function PacksBrowser() {
                   <p className="text-[9px] uppercase tracking-[0.24em] text-white/30">Built for</p>
                   <ul className="mt-5 space-y-3">
                     {(selectedPack.bestFor || []).map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm capitalize text-white/65"><Check weight="bold" className="size-4 text-cyan-100" />{item}</li>
+                      <li key={item} className="flex items-center gap-3 text-sm capitalize text-white/65">
+                        <Check weight="bold" className="size-4 text-cyan-100" />
+                        {item}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -322,7 +328,9 @@ export function PacksBrowser() {
                   <p className="text-[9px] uppercase tracking-[0.24em] text-white/30">Frequency states</p>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {(selectedPack.states || []).map((state) => (
-                      <span key={state.state || state} className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/60">{displayState(state)}</span>
+                      <span key={state.state || state} className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/60">
+                        {displayState(state)}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -335,14 +343,21 @@ export function PacksBrowser() {
               </div>
             </div>
 
-            <form onSubmit={startPurchase} className="relative overflow-hidden rounded-[2rem] border border-cyan-100/20 bg-cyan-100/[0.07] p-7 md:p-10 lg:sticky lg:top-28 lg:self-start">
+            <form
+              onSubmit={startPurchase}
+              className="relative overflow-hidden rounded-[2rem] border border-cyan-100/20 bg-cyan-100/[0.07] p-7 md:p-10 lg:sticky lg:top-28 lg:self-start"
+            >
               <div className="absolute right-0 top-0 size-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-cyan-100/10 blur-3xl" />
               <div className="relative">
                 <Sparkle weight="thin" className="size-8 text-cyan-100/70" />
                 <h2 className="mt-8 text-3xl font-extralight tracking-[-0.035em] text-white">Make it yours.</h2>
-                <p className="mt-4 text-sm font-light leading-7 text-white/50">Enter the email where you want the download link. Stripe handles payment, and your pack is delivered immediately. No account needed.</p>
+                <p className="mt-4 text-sm font-light leading-7 text-white/50">
+                  Enter the email where you want the download link. Stripe handles payment, and your pack is delivered immediately. No account needed.
+                </p>
 
-                <label className="mt-8 block text-[9px] uppercase tracking-[0.24em] text-white/40" htmlFor="pack-email">Delivery email</label>
+                <label className="mt-8 block text-[9px] uppercase tracking-[0.24em] text-white/40" htmlFor="pack-email">
+                  Delivery email
+                </label>
                 <div className="mt-3 flex items-center gap-3 border-b border-white/20 pb-3 transition focus-within:border-cyan-100">
                   <EnvelopeSimple weight="thin" className="size-5 text-white/35" />
                   <input
@@ -357,7 +372,11 @@ export function PacksBrowser() {
                   />
                 </div>
 
-                <button type="submit" disabled={purchasing || loading || !packPriceId(selectedPack)} className="mt-7 inline-flex w-full items-center justify-between rounded-full bg-cyan-100 px-6 py-4 text-[10px] font-medium uppercase tracking-[0.22em] text-[#071012] transition hover:bg-white active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50">
+                <button
+                  type="submit"
+                  disabled={purchasing || loading || !packPriceId(selectedPack)}
+                  className="mt-7 inline-flex w-full items-center justify-between rounded-full bg-cyan-100 px-6 py-4 text-[10px] font-medium uppercase tracking-[0.22em] text-[#071012] transition hover:bg-white active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50"
+                >
                   {purchasing ? 'Opening secure checkout…' : `Buy for ${selectedPack.price || '$5.99'}`}
                   <ArrowRight className="size-4" />
                 </button>
@@ -395,17 +414,15 @@ export function PacksBrowser() {
       </section>
 
       {error && (
-        <div className="fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-2xl border border-amber-200/20 bg-[#171714]/95 px-5 py-4 text-sm text-amber-50 shadow-2xl backdrop-blur-xl" role="status">
+        <div
+          className="fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-2xl border border-amber-200/20 bg-[#171714]/95 px-5 py-4 text-sm text-amber-50 shadow-2xl backdrop-blur-xl"
+          role="status"
+        >
           {error}
         </div>
       )}
 
-      <audio
-        ref={audioRef}
-        preload="none"
-        onTimeUpdate={updatePreviewTime}
-        onEnded={stopPreview}
-      />
+      <audio ref={audioRef} preload="metadata" playsInline onTimeUpdate={updatePreviewTime} onEnded={stopPreview} />
     </div>
   );
 }
