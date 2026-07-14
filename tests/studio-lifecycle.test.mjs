@@ -39,3 +39,10 @@ test('Studio profile bootstrap does not depend on retired social counters', asyn
   assert.match(migration, /add column if not exists generation_count/);
   assert.match(migration, /increment_generation_count/);
 });
+
+test('Railway render endpoint accepts authenticated cross-origin starts', async () => {
+  const source = await readFile(new URL('../app/api/studio/renders/[renderId]/run/route.js', import.meta.url), 'utf8');
+  assert.match(source, /export function OPTIONS/);
+  assert.match(source, /Access-Control-Allow-Headers.*Authorization/);
+  assert.match(source, /corsJson/);
+});

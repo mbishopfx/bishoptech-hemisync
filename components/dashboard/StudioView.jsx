@@ -99,6 +99,7 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
   const [spec, setSpec] = useState(() => initialProject?.spec || createStudioSpecFromPreset({ durationSec: 20 * 60 }));
   const [showPro, setShowPro] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [startingRender, setStartingRender] = useState(false);
   const [render, setRender] = useState(initialRender);
   const [downloads, setDownloads] = useState(null);
   const [message, setMessage] = useState('');
@@ -267,6 +268,17 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
     return () => clearInterval(interval);
   }, [render?.id, render?.phase, refreshRender]);
 
+  const runRender = async (renderId) => {
+    const token = await getAccessToken();
+    const response = await fetch(toBackendUrl(`/api/studio/renders/${renderId}/run`), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || 'Railway render failed');
+    await refreshRender(renderId);
+  };
+
   const startRender = async () => {
     setError('');
     setMessage('');
@@ -281,17 +293,28 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
       });
       activeRenderId = initialized.render.id;
       setRender(initialized.render);
-      const token = await getAccessToken();
-      const response = await fetch(toBackendUrl(`/api/studio/renders/${initialized.render.id}/run`), {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || 'Railway render failed');
-      await refreshRender(initialized.render.id);
+      setStartingRender(true);
+      await runRender(initialized.render.id);
     } catch (cause) {
       setError(cause.message || 'Render failed.');
       if (activeRenderId) await refreshRender(activeRenderId).catch(() => {});
+    } finally {
+      setStartingRender(false);
+    }
+  };
+
+  const resumeQueuedRender = async () => {
+    if (!render?.id) return;
+    setError('');
+    setMessage('');
+    setStartingRender(true);
+    try {
+      await runRender(render.id);
+    } catch (cause) {
+      setError(cause.message || 'Render could not be resumed.');
+      await refreshRender(render.id).catch(() => {});
+    } finally {
+      setStartingRender(false);
     }
   };
 
@@ -400,7 +423,7 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
               <div className="flex items-center justify-between"><div><p className="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400">Render</p><h3 className="mt-1 text-xl font-light text-white">Private master</h3></div><span className={`size-3 rounded-full ${render?.phase === 'failed' ? 'bg-red-400' : render?.phase === 'completed' ? 'bg-emerald-400' : renderActive ? 'animate-pulse bg-cyan-400' : 'bg-white/20'}`} /></div>
               <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-4"><div className="flex justify-between text-[10px] font-mono uppercase tracking-widest"><span className="text-white/35">Status</span><span className="text-cyan-300">{phaseLabel(render?.phase)}</span></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/5"><div className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all" style={{ width: `${render?.progress || 0}%` }} /></div>{render?.error && <p className="mt-3 text-xs leading-5 text-red-300">{render.error}</p>}</div>
               <div className="grid grid-cols-2 gap-2 text-[10px] font-mono uppercase text-white/35"><div className="rounded-xl border border-white/5 p-3"><span>Duration</span><p className="mt-1 text-white/70">{formatDuration(totalDuration)}</p></div><div className="rounded-xl border border-white/5 p-3"><span>Master</span><p className="mt-1 text-white/70">24-bit / 48 kHz</p></div></div>
-              <button type="button" onClick={startRender} disabled={!durationValid || renderActive || saving} className="w-full rounded-2xl bg-cyan-300 px-4 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-black hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-35">{renderActive ? phaseLabel(render.phase) : render?.phase === 'failed' ? 'Retry Render' : 'Render Session'}</button>
+              <button type="button" onClick={render?.phase === 'queued' ? resumeQueuedRender : startRender} disabled={!durationValid || startingRender || (renderActive && render?.phase !== 'queued') || saving} className="w-full rounded-2xl bg-cyan-300 px-4 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-black hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-35">{startingRender ? 'Starting Railway…' : render?.phase === 'queued' ? 'Start Queued Render' : renderActive ? phaseLabel(render.phase) : render?.phase === 'failed' ? 'Retry Render' : 'Render Session'}</button>
               {error && <div role="alert" className="rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs leading-5 text-red-200">{error}</div>}
               {message && <div role="status" className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.08] px-3 py-2 text-xs leading-5 text-emerald-200">{message}</div>}
               <p className="text-[10px] leading-5 text-white/30">Use stereo headphones at a moderate volume. This is an intentional listening tool, not medical treatment.</p>

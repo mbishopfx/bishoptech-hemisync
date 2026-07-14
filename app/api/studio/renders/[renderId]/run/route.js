@@ -8,6 +8,24 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 export const maxDuration = 900;
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+  'Access-Control-Max-Age': '86400'
+};
+
+function corsJson(body, init = {}) {
+  return NextResponse.json(body, {
+    ...init,
+    headers: { ...CORS_HEADERS, ...(init.headers || {}) }
+  });
+}
+
+export function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
+}
+
 export async function POST(req, { params }) {
   let renderId = null;
   let userId = null;
@@ -26,10 +44,10 @@ export async function POST(req, { params }) {
     if (recordError) throw recordError;
     const claimDecision = getRenderClaimDecision(record);
     if (claimDecision === 'completed') {
-      return NextResponse.json({ ok: true, alreadyCompleted: true, renderId });
+      return corsJson({ ok: true, alreadyCompleted: true, renderId });
     }
     if (claimDecision === 'running') {
-      return NextResponse.json({ error: 'This render is already running' }, { status: 409 });
+      return corsJson({ error: 'This render is already running' }, { status: 409 });
     }
 
     const claimedAt = new Date().toISOString();
@@ -43,7 +61,7 @@ export async function POST(req, { params }) {
       .maybeSingle();
     if (claimError) throw claimError;
     if (!claim) {
-      return NextResponse.json({ error: 'This render was claimed by another worker' }, { status: 409 });
+      return corsJson({ error: 'This render was claimed by another worker' }, { status: 409 });
     }
 
     const output = await renderStudioProject(record.session_specs.spec);
@@ -88,7 +106,7 @@ export async function POST(req, { params }) {
       .select('id,status,phase,progress,wav_path,mp3_path,validation,metadata')
       .single();
     if (error) throw error;
-    return NextResponse.json({ ok: true, render: data });
+    return corsJson({ ok: true, render: data });
   } catch (error) {
     if (renderId && userId && supabase) {
       await supabase.from('renders').update({
@@ -101,6 +119,6 @@ export async function POST(req, { params }) {
       }).eq('id', renderId).eq('user_id', userId);
     }
     const { body, status } = jsonError(error);
-    return NextResponse.json(body, { status });
+    return corsJson(body, { status });
   }
 }
