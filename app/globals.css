@@ -159,6 +159,45 @@ a:hover {
   opacity: 0.8;
 }
 
+.studio-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 0.375rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+}
+
+.studio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid #071014;
+  border-radius: 9999px;
+  background: #a5f3fc;
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.24), 0 0 18px rgba(34, 211, 238, 0.55);
+  cursor: grab;
+}
+
+.studio-range::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
+
+.studio-range::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border: 3px solid #071014;
+  border-radius: 9999px;
+  background: #a5f3fc;
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.24), 0 0 18px rgba(34, 211, 238, 0.55);
+  cursor: grab;
+}
+
+.studio-range:focus-visible {
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+}
+
 .relaxing-overlay {
   position: fixed;
   inset: 0;

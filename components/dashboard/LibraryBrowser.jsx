@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BRAIN_STATE_ORDER, getBrainStateMeta, groupLibraryTonesByState, normalizeLibraryTone, resolveBrainState } from '@/lib/audio/library-groups';
+import { authedFetch } from '@/lib/frontend/api';
 
 function ToneCard({ tone, onUseInWorkshop }) {
   const meta = getBrainStateMeta(resolveBrainState(tone));
@@ -22,11 +23,6 @@ function ToneCard({ tone, onUseInWorkshop }) {
             <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-white/55">
               {sourceLabel}
             </span>
-            {tone.visibility && (
-              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-white/55">
-                {tone.visibility}
-              </span>
-            )}
           </div>
           <h3 className="text-lg font-medium truncate">{tone.name}</h3>
           <p className="mt-2 text-sm leading-6 text-white/55 line-clamp-3">{tone.description || tone.summary || 'No description available.'}</p>
@@ -70,9 +66,67 @@ function ToneCard({ tone, onUseInWorkshop }) {
   );
 }
 
-export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
+function ProjectCard({ project, onEdit }) {
+  const duration = Math.round((project.spec?.durationSec || 0) / 60);
+  return (
+    <Card className="rounded-3xl border-white/5 bg-zinc-900/40 p-5 backdrop-blur-xl">
+      <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400">Private project · v{project.version}</p>
+      <h3 className="mt-2 text-lg font-medium text-white">{project.name}</h3>
+      <p className="mt-2 text-sm leading-6 text-white/45">{project.spec?.description || 'Editable staged Cognistration session.'}</p>
+      <div className="mt-4 flex items-center justify-between text-[10px] font-mono uppercase text-white/30"><span>{duration} min</span><span>{project.spec?.stages?.length || 0} stages</span></div>
+      <button type="button" onClick={() => onEdit?.(project)} className="mt-4 w-full rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-4 py-2.5 text-xs font-mono uppercase text-cyan-200 hover:bg-cyan-500/20">Open in Studio</button>
+    </Card>
+  );
+}
+
+function RenderCard({ render, onEditProject }) {
+  const [busy, setBusy] = useState('');
+  const [notice, setNotice] = useState('');
+  const project = render.session_specs;
+  const download = async (format) => {
+    setBusy(format);
+    setNotice('');
+    try {
+      const data = await authedFetch(`/api/studio/renders/${render.id}/downloads`);
+      const url = data.downloads?.[format];
+      if (!url) throw new Error(`${format.toUpperCase()} is unavailable`);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.rel = 'noopener';
+      anchor.click();
+    } catch (error) {
+      setNotice(error.message);
+    } finally {
+      setBusy('');
+    }
+  };
+  const email = async () => {
+    setBusy('email');
+    setNotice('');
+    try {
+      const data = await authedFetch(`/api/studio/renders/${render.id}/email`, { method: 'POST' });
+      setNotice(`Sent to ${data.sentTo}`);
+    } catch (error) {
+      setNotice(error.message);
+    } finally {
+      setBusy('');
+    }
+  };
+  return (
+    <Card className="rounded-3xl border-white/5 bg-zinc-900/40 p-5 backdrop-blur-xl">
+      <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-mono uppercase tracking-[0.25em] text-purple-300">Private export</p><h3 className="mt-2 text-lg font-medium text-white">{project?.name || 'Studio Render'}</h3></div><span className={`rounded-full border px-2.5 py-1 text-[9px] font-mono uppercase ${render.phase === 'completed' ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300' : render.phase === 'failed' ? 'border-red-500/25 bg-red-500/10 text-red-300' : 'border-cyan-500/25 bg-cyan-500/10 text-cyan-300'}`}>{render.phase}</span></div>
+      <div className="mt-4 grid grid-cols-2 gap-2 text-[10px] font-mono uppercase text-white/30"><div className="rounded-xl border border-white/5 p-3">Duration<p className="mt-1 text-white/65">{Math.round((render.metadata?.durationSec || project?.spec?.durationSec || 0) / 60)} min</p></div><div className="rounded-xl border border-white/5 p-3">Quality<p className="mt-1 text-white/65">192 kbps / 48 kHz</p></div></div>
+      {render.phase === 'completed' && <div className="mt-4 grid grid-cols-2 gap-2">{render.wav_path && <button type="button" onClick={() => download('wav')} disabled={busy} className="rounded-xl border border-white/10 px-3 py-2 text-[10px] font-mono uppercase text-white/60">{busy === 'wav' ? 'Opening…' : 'Legacy WAV'}</button>}{render.mp3_path && <button type="button" onClick={() => download('mp3')} disabled={busy} className={`${render.wav_path ? '' : 'col-span-2'} rounded-xl border border-white/10 px-3 py-2 text-[10px] font-mono uppercase text-white/60`}>{busy === 'mp3' ? 'Opening…' : 'Download MP3'}</button>}<button type="button" onClick={email} disabled={busy} className="col-span-2 rounded-xl border border-purple-500/20 bg-purple-500/10 px-3 py-2 text-[10px] font-mono uppercase text-purple-200">{busy === 'email' ? 'Sending…' : 'Email Me a Copy'}</button></div>}
+      {project && <button type="button" onClick={() => onEditProject?.(project)} className="mt-3 w-full text-[10px] font-mono uppercase tracking-widest text-cyan-300/70">Open project →</button>}
+      {notice && <p className="mt-3 text-xs text-white/45">{notice}</p>}
+    </Card>
+  );
+}
+
+export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseInWorkshop, onEditProject }) {
   const [query, setQuery] = useState('');
   const [activeState, setActiveState] = useState('all');
+  const [section, setSection] = useState('catalog');
 
   const normalizedTones = useMemo(() => tones.map(normalizeLibraryTone), [tones]);
   const grouped = useMemo(() => groupLibraryTonesByState(normalizedTones), [normalizedTones]);
@@ -114,10 +168,10 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
       <div className="space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="section-label">Tone Library</p>
-            <h2 className="section-title mt-2 text-4xl text-[var(--text-primary)]">Browse by brain state</h2>
+            <p className="section-label">Private Audio Library</p>
+            <h2 className="section-title mt-2 text-4xl text-[var(--text-primary)]">Projects, exports, and curated tones</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">
-              Choose a tone, preview it, and send it straight into the workshop to build your own Cognistration file.
+              Reopen editable Studio projects, retrieve private masters, or choose a curated tone for the Workshop.
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 p-2">
@@ -131,7 +185,11 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 border-b border-white/5 pb-4">
+          {[['catalog', 'Curated Tones'], ['projects', `My Projects (${projects.length})`], ['exports', `My Exports (${renders.length})`]].map(([id, label]) => <button type="button" key={id} onClick={() => setSection(id)} className={`rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.18em] ${section === id ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' : 'border-white/10 bg-white/5 text-white/45 hover:text-white'}`}>{label}</button>)}
+        </div>
+
+        {section === 'catalog' && <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActiveState('all')}
@@ -152,10 +210,14 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
               </button>
             );
           })}
-        </div>
+        </div>}
       </div>
 
-      {totalVisible === 0 ? (
+      {section === 'projects' && (projects.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{projects.map((item) => <ProjectCard key={item.id} project={item} onEdit={onEditProject} />)}</div> : <Card className="border-white/5 bg-zinc-900/40 p-10 text-center"><h3 className="text-xl font-light text-white/70">No Studio projects yet</h3><p className="mt-2 text-sm text-white/35">Create your first private session in Cognistration Studio.</p></Card>)}
+
+      {section === 'exports' && (renders.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{renders.map((item) => <RenderCard key={item.id} render={item} onEditProject={onEditProject} />)}</div> : <Card className="border-white/5 bg-zinc-900/40 p-10 text-center"><h3 className="text-xl font-light text-white/70">No exports yet</h3><p className="mt-2 text-sm text-white/35">Completed Railway renders will appear here.</p></Card>)}
+
+      {section === 'catalog' && (totalVisible === 0 ? (
         <Card className="border-white/5 bg-zinc-900/40 p-10 text-center">
           <span className="material-symbols-outlined text-white/15 text-5xl mx-auto block mb-2">library_music</span>
           <h3 className="mt-4 text-xl font-light text-white/70">No tones found</h3>
@@ -190,7 +252,7 @@ export function LibraryBrowser({ tones = [], onUseInWorkshop }) {
             );
           })}
         </div>
-      )}
+      ))}
     </div>
   );
 }
