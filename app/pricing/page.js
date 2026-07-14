@@ -188,7 +188,7 @@ export default function PricingPage() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-light tracking-tighter text-white"
+            className="text-4xl leading-[0.95] sm:text-5xl md:text-7xl font-light tracking-tighter text-white"
           >
             One membership. <span className="text-white/20 italic">The complete studio.</span>
           </motion.h1>

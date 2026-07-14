@@ -91,6 +91,11 @@ h1 {
   font-weight: 200 !important;
 }
 
+h2,
+h3 {
+  font-weight: 300 !important;
+}
+
 button,
 input,
 select,
@@ -103,6 +108,11 @@ a[class*='rounded-xl'] {
 button,
 a[class*='rounded-full'],
 a[class*='rounded-xl'] {
+  font-weight: 300 !important;
+}
+
+.rounded-full {
+  font-family: var(--font-sans), sans-serif !important;
   font-weight: 300 !important;
 }
 
