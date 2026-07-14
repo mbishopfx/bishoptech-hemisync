@@ -47,4 +47,5 @@ test('Railway render endpoint accepts authenticated cross-origin starts', async 
   assert.match(source, /Access-Control-Allow-Headers.*Authorization/);
   assert.match(source, /corsJson/);
   assert.match(corsSource, /DEFAULT_ALLOWED_HEADERS = 'Authorization,/);
+  assert.match(corsSource, /\$\+\*\?\./);
 });
