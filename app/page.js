@@ -227,7 +227,7 @@ export default function LandingPage() {
             transition={{ delay: 0.4 }}
             className="text-white/40 text-xl md:text-2xl font-light tracking-tight max-w-xl mx-auto leading-relaxed"
           >
-            Choose a listening session that fits the moment. Cognistration by BishopTech keeps the routine simple, repeatable, and easy to trust.
+            Orchestrate your escape from the noise with binaural frequency-following response audio sessions built for focus, rest, and intentional reset.
           </motion.p>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Link

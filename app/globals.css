@@ -249,7 +249,7 @@ a:hover {
 }
 
 .section-title {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
   letter-spacing: -0.03em;
   line-height: 1.05;
 }
@@ -269,7 +269,7 @@ a:hover {
 }
 
 .hero-title {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
   font-size: clamp(3rem, 6vw, 5.5rem);
   line-height: 1;
   letter-spacing: -0.04em;
@@ -331,7 +331,7 @@ a:hover {
   margin-top: 0.5rem;
   color: var(--text-primary);
   font-size: 2rem;
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
 }
 
 .landing-signal__grid {
@@ -400,7 +400,7 @@ a:hover {
   max-width: 800px;
   color: var(--text-primary);
   font-size: clamp(2.5rem, 4vw, 4rem);
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 400;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -465,7 +465,7 @@ a:hover {
 /* Research paper headings: serif, elegant, proper margins */
 .research-paper-style h1,
 .research-paper-style h2 {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 300;
   letter-spacing: -0.02em;
   color: #ffffff !important;
@@ -596,7 +596,7 @@ a:hover {
   font-size: 3rem !important;
   line-height: 1.15;
   margin-top: 1rem;
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
   color: #ffffff !important;
 }
 

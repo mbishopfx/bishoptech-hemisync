@@ -19,9 +19,9 @@ export const metadata = buildPageMetadata({
 
 export default function PacksPage() {
   return (
-    <>
+    <div className="min-h-screen overflow-x-hidden bg-[#080c0d] text-white">
       <PublicHeader />
-      <main className="mx-auto max-w-7xl px-6 py-28 md:px-10">
+      <main>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(packsJsonLd) }}
@@ -29,6 +29,6 @@ export default function PacksPage() {
         <PacksBrowser />
       </main>
       <PublicTrustFooter />
-    </>
+    </div>
   );
 }

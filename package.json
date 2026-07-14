@@ -17,6 +17,7 @@
     "seed:demo-community": "node scripts/seed-demo-community.mjs"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -27,6 +28,7 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "2.44.0",
     "@vercel/analytics": "^1.6.1",
+    "animejs": "^4.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "3.6.0",

@@ -1,5 +1,5 @@
 import './globals.css';
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -7,14 +7,16 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
 const siteName = 'Cognistration';
 const siteDescription = 'Cognistration by BishopTech offers premium audio sessions for focus, rest, and intentional reset.';
 
-const displayFont = Playfair_Display({
+const displayFont = Outfit({
   subsets: ['latin'],
-  variable: '--font-display'
+  variable: '--font-display',
+  weight: ['200', '300', '400', '500', '600', '700']
 });
 
-const sansFont = Inter({
+const sansFont = Outfit({
   subsets: ['latin'],
-  variable: '--font-sans'
+  variable: '--font-sans',
+  weight: ['200', '300', '400', '500', '600', '700']
 });
 
 export const metadata = {
