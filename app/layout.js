@@ -138,7 +138,7 @@ export default function RootLayout({ children }) {
           <div className="fixed inset-0 cyber-glow opacity-30 pointer-events-none z-[-1]" />
           
           <div className="flex min-h-screen">
-            <main className="flex-1 flex flex-col min-h-screen relative z-0">
+            <main className="min-w-0 flex-1 flex flex-col min-h-screen relative z-0">
               {children}
             </main>
           </div>
