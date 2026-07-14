@@ -42,7 +42,9 @@ test('Studio profile bootstrap does not depend on retired social counters', asyn
 
 test('Railway render endpoint accepts authenticated cross-origin starts', async () => {
   const source = await readFile(new URL('../app/api/studio/renders/[renderId]/run/route.js', import.meta.url), 'utf8');
+  const corsSource = await readFile(new URL('../lib/http/cors.js', import.meta.url), 'utf8');
   assert.match(source, /export function OPTIONS/);
   assert.match(source, /Access-Control-Allow-Headers.*Authorization/);
   assert.match(source, /corsJson/);
+  assert.match(corsSource, /DEFAULT_ALLOWED_HEADERS = 'Authorization,/);
 });
