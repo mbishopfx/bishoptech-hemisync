@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const SITE_NAME = "Cognistration";
 export const SITE_URL = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://bishoptech.dev",
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://cognistration.com",
 );
 export const SITE_DESCRIPTION =
   "Cognistration is a premium audio app for focus, rest, and intentional reset.";
@@ -14,6 +14,10 @@ export const PUBLIC_ROUTES = [
   "/community",
   "/pricing",
   "/tutorial",
+  "/tutorial/meditation-self-exploration",
+  "/tutorial/dreamwork-lucid-dreaming",
+  "/tutorial/astral-projection-out-of-body-experiences",
+  "/tutorial/remote-viewing-stargate-documents",
   "/machine",
   "/privacy",
   "/terms",
@@ -53,9 +57,9 @@ export function buildPageMetadata({
       images: [
         {
           url: SITE_OG_IMAGE,
-          width: 512,
-          height: 512,
-          alt: `${SITE_NAME} preview image`,
+          width: 1254,
+          height: 1254,
+          alt: `${SITE_NAME} brainwave mark`,
         },
       ],
     },

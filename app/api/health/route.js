@@ -74,7 +74,7 @@ export async function GET() {
         has_ai_gateway_key: !!(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || process.env.VERCEL || process.env.OPENAI_API_KEY),
         has_stripe_secret: !!process.env.STRIPE_SECRET_KEY,
         has_stripe_webhook_secret: !!process.env.STRIPE_WEBHOOK_SECRET,
-        site_url: process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev'
+        site_url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com'
       },
       database: {
         agentic_tones_count: count || 0

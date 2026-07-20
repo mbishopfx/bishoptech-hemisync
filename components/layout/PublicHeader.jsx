@@ -78,7 +78,11 @@ export function PublicHeader() {
 
         {/* Mobile Toggle */}
         <div className="md:hidden">
-          <button 
+          <button
+            type="button"
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="public-mobile-menu"
             className="p-2 text-white/50 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -91,6 +95,7 @@ export function PublicHeader() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            id="public-mobile-menu"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}

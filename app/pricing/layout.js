@@ -8,7 +8,7 @@ export const metadata = {
     siteName: 'Cognistration',
     type: 'website',
     url: '/pricing',
-    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+    images: [{ url: '/images/og-preview.png', width: 1254, height: 1254, alt: 'Cognistration brain and waveform mark' }],
   },
   twitter: {
     card: 'summary_large_image',

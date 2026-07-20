@@ -16,7 +16,7 @@ export const metadata = {
     siteName: 'Cognistration',
     type: 'website',
     url: '/blog',
-    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+    images: [{ url: '/images/og-preview.png', width: 1254, height: 1254, alt: 'Cognistration brainwave mark' }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -38,7 +38,7 @@ const blogJsonLd = {
     url: buildAbsoluteUrl('/'),
     logo: {
       '@type': 'ImageObject',
-      url: buildAbsoluteUrl('/images/logo.png')
+      url: buildAbsoluteUrl('/images/cognistration-mark.png')
     }
   }
 };

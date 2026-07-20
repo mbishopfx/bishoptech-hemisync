@@ -739,11 +739,11 @@ export default function MachinePage() {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <Image 
-              src="/images/logo.png" 
-              alt="Cognistration Logo" 
-              width={80} 
-              height={80} 
+            <Image
+              src="/images/cognistration-mark.png"
+              alt="Cognistration brainwave mark"
+              width={80}
+              height={80}
               className="mx-auto animate-pulse"
             />
             <h2 className="text-3xl md:text-5xl font-light tracking-tighter">Explore the demo gently.</h2>

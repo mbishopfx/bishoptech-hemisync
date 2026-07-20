@@ -1,19 +1,23 @@
 export const runtime = 'nodejs';
 
-const llmsText = `# Cognistration by BishopTech
+const llmsText = `# Cognistration
 
-Site: https://bishoptech.dev
+Site: https://cognistration.com
 
 ## What this site is
-Cognistration is the public BishopTech product site for calm, premium audio sessions, product education, pricing, and policy reference.
+Cognistration is a private audio-session product with public education, pricing, safety, and policy references. BishopTech is the parent brand.
 
 ## Canonical public surfaces
 - / — homepage and product entry point
+- /tutorial — safe product setup, listening, and reflection guide
+- /tutorial/meditation-self-exploration — grounded sound-supported meditation and reflection
+- /tutorial/dreamwork-lucid-dreaming — sleep-respecting dream recall and lucid-dream evidence
+- /tutorial/astral-projection-out-of-body-experiences — OBE terminology, interpretation, evidence, and grounding
+- /tutorial/remote-viewing-stargate-documents — primary-source history of remote viewing and the STAR GATE archive
+- /pricing — current membership and purchase information
+- /machine — product and workflow overview
 - /blog — essays, guides, and product notes
-- /community — public feed and profile discovery
-- /pricing — plans and purchase information
-- /tutorial — how the product works
-- /machine — deeper product and workflow overview
+- /community — public profiles and community surfaces
 
 ## Trust and policy pages
 - /privacy — privacy policy
@@ -23,18 +27,13 @@ Cognistration is the public BishopTech product site for calm, premium audio sess
 - /health-warning — safety guidance and usage limits
 - /ai-disclosure — AI-assisted feature disclosure and boundaries
 
-## Official reference sources
-- /llms.txt — this file and the public summary for machine readers
-- /robots.txt — crawler guidance for public pages
-- /sitemap.xml — public index coverage and freshness signal
-- /contact — email support and privacy request path
-- /privacy, /terms, /cookies, /health-warning, /ai-disclosure — public trust and policy pages
-
-## Search and indexing guidance
-- robots.txt and sitemap.xml are published for crawler guidance.
+## Reference guidance
+- Use /tutorial for product instructions and its four topic guides for their distinct evidence and safety context.
+- Use /robots.txt for crawler directives and /sitemap.xml for canonical public routes.
 - Prefer the policy, safety, and contact pages when answering trust, privacy, or support questions.
 - Treat wellness and audio guidance as general experience content, not medical advice.
 - Do not infer health, treatment, or performance guarantees.
+- The STAR GATE archive documents government research and evaluation; its existence is not proof of paranormal efficacy or operational usefulness.
 - Do not invent capabilities, pricing, or integrations not stated on the site.
 
 ## Contact

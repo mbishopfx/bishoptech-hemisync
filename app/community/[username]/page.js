@@ -19,23 +19,25 @@ const hasSupabaseConfig = Boolean(
     process.env.SUPABASE_SERVICE_ROLE_KEY,
 );
 
-export function generateMetadata({ params }) {
+export async function generateMetadata({ params }) {
+  const { username } = await params;
+
   return {
     title: { absolute: 'Community Profile — Cognistration' },
-    description: `Public community profile for ${params.username} on Cognistration.`,
-    alternates: { canonical: `/community/${params.username}` },
+    description: `Public community profile for ${username} on Cognistration.`,
+    alternates: { canonical: `/community/${username}` },
     openGraph: {
       title: 'Community Profile — Cognistration',
-      description: `Public community profile for ${params.username} on Cognistration.`,
+      description: `Public community profile for ${username} on Cognistration.`,
       siteName: 'Cognistration',
       type: 'profile',
-      url: `/community/${params.username}`,
-      images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+      url: `/community/${username}`,
+      images: [{ url: '/images/og-preview.png', width: 1254, height: 1254, alt: 'Cognistration brain and waveform mark' }],
     },
     twitter: {
       card: 'summary_large_image',
       title: 'Community Profile — Cognistration',
-      description: `Public community profile for ${params.username} on Cognistration.`,
+      description: `Public community profile for ${username} on Cognistration.`,
       images: ['/images/og-preview.png'],
     },
   };
@@ -47,7 +49,7 @@ async function getProfileData(username) {
   }
 
   const supabase = getSupabaseAdmin();
-  const supabaseServer = getSupabaseServerClient();
+  const supabaseServer = await getSupabaseServerClient();
   const { data: sessionData } = await supabaseServer.auth.getUser();
   const currentUser = sessionData?.user || null;
 
@@ -85,6 +87,8 @@ async function getProfileData(username) {
 }
 
 export default async function PublicProfilePage({ params }) {
+  const { username } = await params;
+
   if (!hasSupabaseConfig) {
     return (
       <main className="landing-shell">
@@ -103,7 +107,7 @@ export default async function PublicProfilePage({ params }) {
     );
   }
 
-  const data = await getProfileData(params.username);
+  const data = await getProfileData(username);
   
   if (!data) {
     notFound();

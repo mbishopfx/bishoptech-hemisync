@@ -1,7 +1,7 @@
 import { blogPosts } from '@/lib/blog/posts';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
+const siteUrl = 'https://cognistration.com';
 const hasSupabaseConfig = Boolean(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
@@ -14,6 +14,10 @@ const staticRoutes = [
   '/community',
   '/pricing',
   '/tutorial',
+  '/tutorial/meditation-self-exploration',
+  '/tutorial/dreamwork-lucid-dreaming',
+  '/tutorial/astral-projection-out-of-body-experiences',
+  '/tutorial/remote-viewing-stargate-documents',
   '/machine',
   '/privacy',
   '/terms',

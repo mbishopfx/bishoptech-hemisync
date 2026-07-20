@@ -11,6 +11,23 @@ import Image from 'next/image';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser';
 import { isHomepageGeneratedTone, HOMEPAGE_STATE_TONES } from '@/lib/audio/homepage-tones';
 
+const siteUrl = 'https://cognistration.com';
+const siteDescription = 'Cognistration by BishopTech offers premium audio sessions for focus, rest, and intentional reset.';
+const homepageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${siteUrl}/#webpage`,
+  name: 'Cognistration Home',
+  url: siteUrl,
+  description: siteDescription,
+  isPartOf: {
+    '@id': `${siteUrl}/#website`,
+  },
+  about: {
+    '@id': `${siteUrl}/#organization`,
+  },
+};
+
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [agentMessage, setAgentMessage] = useState('');
@@ -200,6 +217,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }} />
       <PublicHeader />
 
       {/* Background Effects */}
@@ -435,11 +453,11 @@ export default function LandingPage() {
         >
           <div className="flex items-center gap-3 grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
             <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/40">Powered by</span>
-            <Image 
-              src="/images/logo.png" 
-              alt="BishopTech" 
-              width={24} 
-              height={24} 
+            <Image
+              src="/images/cognistration-mark.png"
+              alt="Cognistration brainwave mark"
+              width={24}
+              height={24}
               className="opacity-50"
             />
             <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/60">BishopTech</span>

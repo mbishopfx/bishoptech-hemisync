@@ -8,7 +8,7 @@ import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
 const siteName = 'Cognistration';
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
 
 function buildArticleJsonLd(post) {
   return {
@@ -29,7 +29,7 @@ function buildArticleJsonLd(post) {
       url: buildAbsoluteUrl('/'),
       logo: {
         '@type': 'ImageObject',
-        url: buildAbsoluteUrl('/images/logo.png')
+        url: buildAbsoluteUrl('/images/cognistration-mark.png')
       }
     },
     mainEntityOfPage: {
@@ -111,7 +111,7 @@ export function generateMetadata({ params }) {
         siteName: 'Cognistration',
         type: 'article',
         url: `/blog/${params.slug}`,
-        images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+        images: [{ url: '/images/og-preview.png', width: 1254, height: 1254, alt: 'Cognistration brainwave mark' }],
       },
       twitter: {
         card: 'summary_large_image',
@@ -132,7 +132,7 @@ export function generateMetadata({ params }) {
       siteName: 'Cognistration',
       type: 'article',
       url: post.path,
-      images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+      images: [{ url: '/images/og-preview.png', width: 1254, height: 1254, alt: 'Cognistration brainwave mark' }],
     },
     twitter: {
       card: 'summary_large_image',

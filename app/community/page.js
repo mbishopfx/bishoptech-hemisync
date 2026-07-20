@@ -105,7 +105,7 @@ export default async function CommunityPage() {
 
   if (hasSupabaseConfig) {
     try {
-      const supabaseServer = getSupabaseServerClient();
+      const supabaseServer = await getSupabaseServerClient();
       const { data: sessionData } = await supabaseServer.auth.getUser();
       currentUser = sessionData?.user || null;
     } catch (error) {

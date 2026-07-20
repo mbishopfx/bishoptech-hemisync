@@ -355,11 +355,11 @@ export default function DashboardPage() {
       {/* Sidebar */}
       <aside className="hidden md:flex w-72 border-r border-white/5 flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
         <div className="flex items-center gap-3 mb-12 justify-center md:justify-start">
-          <Image 
-            src="/images/logo.png" 
-            alt="BishopTech Logo" 
-            width={40} 
-            height={40} 
+          <Image
+            src="/images/cognistration-mark.png"
+            alt="Cognistration brain and waveform mark"
+            width={40}
+            height={40}
             className="brightness-110 contrast-125 animate-pulse"
           />
         </div>
@@ -436,11 +436,11 @@ export default function DashboardPage() {
         <header className="sticky top-0 z-40 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 py-4 md:px-8 md:py-6 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="md:hidden flex items-center gap-2">
-              <Image 
-                src="/images/logo.png" 
-                alt="BishopTech Logo" 
-                width={32} 
-                height={32} 
+              <Image
+                src="/images/cognistration-mark.png"
+                alt="Cognistration brain and waveform mark"
+                width={32}
+                height={32}
                 className="brightness-110 contrast-125 animate-pulse"
               />
             </div>

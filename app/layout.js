@@ -3,7 +3,7 @@ import { Outfit } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
 const siteName = 'Cognistration';
 const siteDescription = 'Cognistration by BishopTech offers premium audio sessions for focus, rest, and intentional reset.';
 
@@ -47,9 +47,9 @@ export const metadata = {
     images: [
       {
         url: '/images/og-preview.png',
-        width: 886,
-        height: 886,
-        alt: 'Cognistration preview'
+        width: 1254,
+        height: 1254,
+        alt: 'Cognistration brainwave mark'
       }
     ]
   },
@@ -83,11 +83,11 @@ const organizationJsonLd = {
   '@graph': [
     {
       '@type': 'Organization',
-      '@id': `${siteUrl}#organization`,
+      '@id': `${siteUrl}/#organization`,
       name: siteName,
       alternateName: 'BishopTech',
       url: siteUrl,
-      logo: `${siteUrl}/images/logo.png`,
+      logo: `${siteUrl}/images/cognistration-mark.png`,
       contactPoint: [
         {
           '@type': 'ContactPoint',
@@ -99,25 +99,12 @@ const organizationJsonLd = {
     },
     {
       '@type': 'WebSite',
-      '@id': `${siteUrl}#website`,
+      '@id': `${siteUrl}/#website`,
       name: siteName,
       url: siteUrl,
       description: siteDescription,
       publisher: {
-        '@id': `${siteUrl}#organization`
-      }
-    },
-    {
-      '@type': 'WebPage',
-      '@id': `${siteUrl}#webpage`,
-      name: `${siteName} Home`,
-      url: siteUrl,
-      description: siteDescription,
-      isPartOf: {
-        '@id': `${siteUrl}#website`
-      },
-      about: {
-        '@id': `${siteUrl}#organization`
+        '@id': `${siteUrl}/#organization`
       }
     }
   ]

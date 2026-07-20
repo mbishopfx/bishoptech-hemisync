@@ -1,20 +1,25 @@
+const title = 'How to Use Cognistration Safely and Intentionally';
+const description = 'Prepare, listen, and reflect with a clear Cognistration routine, practical safety guidance, and a responsible overview of binaural-beat research.';
+const canonical = 'https://cognistration.com/tutorial';
+const mark = 'https://cognistration.com/images/cognistration-mark.png';
+
 export const metadata = {
-  title: { absolute: 'Tutorial — Cognistration' },
-  description: 'Learn how to set up a calm listening session and use Cognistration effectively.',
-  alternates: { canonical: '/tutorial' },
+  title: { absolute: `${title} — Cognistration` },
+  description,
+  alternates: { canonical },
   openGraph: {
-    title: 'Tutorial — Cognistration',
-    description: 'Learn how to set up a calm listening session and use Cognistration effectively.',
+    title: `${title} — Cognistration`,
+    description,
     siteName: 'Cognistration',
     type: 'website',
-    url: '/tutorial',
-    images: [{ url: '/images/og-preview.png', width: 886, height: 886, alt: 'Cognistration preview' }],
+    url: canonical,
+    images: [{ url: mark, width: 1254, height: 1254, alt: 'Cognistration brain and waveform mark' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Tutorial — Cognistration',
-    description: 'Learn how to set up a calm listening session and use Cognistration effectively.',
-    images: ['/images/og-preview.png'],
+    title: `${title} — Cognistration`,
+    description,
+    images: [mark],
   },
 };
 
