@@ -23,7 +23,7 @@ export function LiquidHeader({ onOpenAuth }) {
       </Link>
 
       {/* Center (Desktop): Liquid Glass Navigation Pill with Core Pages */}
-      <nav className="hidden md:flex items-center gap-6 lg:gap-8 liquid-glass rounded-full px-6 lg:px-8 py-3 pointer-events-auto">
+      <nav className="!absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 rounded-full px-6 py-3 pointer-events-auto liquid-glass lg:gap-8 md:flex">
         <Link href="/" className="text-white text-sm font-medium transition-opacity hover:opacity-100">
           Home
         </Link>
