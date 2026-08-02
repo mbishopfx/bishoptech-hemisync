@@ -9,25 +9,25 @@ import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 import { buildAbsoluteUrl } from '@/lib/seo';
-import { MONTHLY_PLAN } from '@/lib/billing/plans';
+import { LIFETIME_PLAN } from '@/lib/billing/plans';
 
 const plans = [{
-    name: 'Cognistration Membership',
-    id: MONTHLY_PLAN.id,
-    price: '$9',
-    priceId: MONTHLY_PLAN.priceId,
-    description: 'One private workspace for building, rendering, saving, and downloading custom audio sessions.',
+    name: 'Cognistration Lifetime Access',
+    id: LIFETIME_PLAN.id,
+    price: '$20',
+    priceId: LIFETIME_PLAN.priceId,
+    description: 'One private workspace for building, rendering, saving, and downloading custom audio sessions. Pay once and keep access.',
     features: [
       { text: 'Full Sync, Workshop, and Studio access', allowed: true },
       { text: 'Private 192 kbps MP3 exports', allowed: true },
       { text: 'Editable staged frequency journeys', allowed: true },
       { text: 'Private project and export library', allowed: true },
       { text: 'Secure downloads and email delivery', allowed: true },
-      { text: 'Cancel anytime through Stripe', allowed: true }
+      { text: 'Lifetime access with no monthly cost', allowed: true }
     ],
     highlight: true,
-    cta: 'Create account & subscribe',
-    mode: 'subscription'
+    cta: 'Create account & unlock',
+    mode: 'payment'
   }];
 
 const tonePack = TONE_PACKS[0];
@@ -49,7 +49,7 @@ export default function PricingPage() {
     '@type': 'WebPage',
     name: 'Pricing | Cognistration',
     url: buildAbsoluteUrl('/pricing'),
-    description: 'One complete private Cognistration audio studio membership for $9 per month.'
+    description: 'One complete private Cognistration audio studio with lifetime access for a one-time $20 payment.'
   };
 
   // Load preview data and featured pack preview tones
@@ -190,10 +190,10 @@ export default function PricingPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl leading-[0.95] sm:text-5xl md:text-7xl font-light tracking-tighter text-white"
           >
-            One membership. <span className="text-white/20 italic">The complete studio.</span>
+            One payment. <span className="text-white/20 italic">The complete studio.</span>
           </motion.h1>
           <p className="text-white/40 text-lg md:text-xl font-light max-w-xl mx-auto leading-relaxed">
-            Build and keep private audio sessions for $9 per month. Your account activates after secure Stripe checkout.
+            Build and keep private audio sessions for $20 once. Your account activates after secure Stripe checkout, with no monthly billing.
           </p>
         </div>
 
@@ -221,7 +221,7 @@ export default function PricingPage() {
                   <div className="flex items-baseline gap-1">
                     <span className="text-5xl font-bold tracking-tight">{plan.price}</span>
                     <span className="text-white/30 text-sm">
-                      /month
+                      one time
                     </span>
                   </div>
                   <p className="text-white/40 text-sm mt-4 leading-relaxed min-h-[40px]">{plan.description}</p>

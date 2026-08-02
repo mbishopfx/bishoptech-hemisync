@@ -8,6 +8,7 @@ import {
 } from '../lib/billing/entitlements.js';
 import {
   checkoutGrantsAccess,
+  lifetimeProfilePatch,
   subscriptionGrantsAccess,
   subscriptionProfilePatch
 } from '../lib/billing/stripe-subscription.js';
@@ -21,7 +22,7 @@ const activeMonthly = {
   payment_method_attached: true
 };
 
-test('only grandfathered lifetime and active Stripe monthly profiles receive access', () => {
+test('lifetime profiles and legacy active Stripe monthly profiles receive access', () => {
   assert.equal(isLifetimeMember({ subscription_tier: 'lifetime' }), true);
   assert.equal(hasPlatformAccess({ entitlement_type: 'lifetime', billing_status: 'active' }), true);
   assert.equal(isActiveMonthlySubscriber(activeMonthly), true);
@@ -38,7 +39,7 @@ test('only grandfathered lifetime and active Stripe monthly profiles receive acc
   });
 });
 
-test('Stripe membership provisioning requires the configured monthly price and active status', () => {
+test('legacy Stripe membership provisioning still requires its configured monthly price and active status', () => {
   const subscription = {
     id: 'sub_paid',
     status: 'active',
@@ -59,6 +60,20 @@ test('Stripe membership provisioning requires the configured monthly price and a
     stripe_customer_id: 'cus_paid',
     stripe_subscription_id: 'sub_paid',
     payment_method_attached: true,
+    trial_expires_at: null
+  });
+});
+
+test('a paid lifetime checkout maps to permanent platform access', () => {
+  assert.deepEqual(lifetimeProfilePatch({ customer: 'cus_lifetime' }), {
+    plan: 'founder',
+    subscription_tier: 'lifetime',
+    entitlement_type: 'lifetime',
+    billing_status: 'active',
+    stripe_customer_id: 'cus_lifetime',
+    stripe_subscription_id: null,
+    payment_method_attached: true,
+    grandfathered_at: null,
     trial_expires_at: null
   });
 });

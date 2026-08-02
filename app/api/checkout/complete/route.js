@@ -2,8 +2,13 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
-import { checkoutGrantsAccess, subscriptionProfilePatch } from '@/lib/billing/stripe-subscription';
-import { MONTHLY_PLAN_ID } from '@/lib/billing/plans';
+import {
+  checkoutGrantsAccess,
+  lifetimeCheckoutGrantsAccess,
+  lifetimeProfilePatch,
+  subscriptionProfilePatch
+} from '@/lib/billing/stripe-subscription';
+import { LIFETIME_PLAN_ID, LIFETIME_PRICE_ID } from '@/lib/billing/plans';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -43,8 +48,44 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Checkout session does not belong to this account' }, { status: 403 });
     }
 
-    if (!['monthly', 'premium'].includes(planId) || checkoutSession.mode !== 'subscription') {
+    if (planId === LIFETIME_PLAN_ID) {
+      if (!LIFETIME_PRICE_ID) {
+        return NextResponse.json({ error: 'Lifetime price is not configured' }, { status: 503 });
+      }
+      if (!lifetimeCheckoutGrantsAccess(checkoutSession)) {
+        return NextResponse.json({ error: 'The lifetime payment has not completed' }, { status: 409 });
+      }
+
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('entitlement_type,subscription_tier')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (currentProfile?.entitlement_type === 'lifetime' || currentProfile?.subscription_tier === 'lifetime') {
+        return NextResponse.json({ ok: true, planId: LIFETIME_PLAN_ID, sessionId });
+      }
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert(
+          {
+            id: userId,
+            email: authData.user.email || checkoutSession.customer_email || null,
+            ...lifetimeProfilePatch(checkoutSession)
+          },
+          { onConflict: 'id' }
+        );
+      if (profileError) throw profileError;
+
+      return NextResponse.json({ ok: true, planId: LIFETIME_PLAN_ID, sessionId });
+    }
+
+    if (checkoutSession.mode !== 'subscription') {
       return NextResponse.json({ error: 'Checkout session is not a Cognistration membership' }, { status: 400 });
+    }
+    if (!['monthly', 'premium'].includes(planId)) {
+      return NextResponse.json({ error: 'Checkout session is not a supported legacy membership' }, { status: 400 });
     }
     const subscriptionId = typeof checkoutSession.subscription === 'string'
       ? checkoutSession.subscription
@@ -71,7 +112,7 @@ export async function POST(req) {
       );
     if (profileError) throw profileError;
 
-    return NextResponse.json({ ok: true, planId: MONTHLY_PLAN_ID, sessionId });
+    return NextResponse.json({ ok: true, planId: 'legacy-monthly', sessionId });
   } catch (error) {
     console.error('Checkout completion sync failed:', error);
     return NextResponse.json({ error: error?.message || 'Checkout sync failed' }, { status: 500 });

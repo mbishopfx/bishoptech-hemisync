@@ -6,15 +6,17 @@ async function source(path) {
   return readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 }
 
-test('public pricing exposes one $9 monthly membership and no lifetime or free account plan', async () => {
+test('public pricing exposes one $20 lifetime payment and no public monthly plan', async () => {
   const pricing = await source('app/pricing/page.js');
   const plans = await source('lib/billing/plans.js');
-  assert.match(pricing, /id: MONTHLY_PLAN\.id/);
-  assert.match(plans, /MONTHLY_PLAN_ID = 'monthly'/);
-  assert.match(pricing, /price: '\$9'/);
-  assert.doesNotMatch(pricing, /id: 'lifetime'/);
+  assert.match(pricing, /id: LIFETIME_PLAN\.id/);
+  assert.match(plans, /LIFETIME_PLAN_ID = 'lifetime'/);
+  assert.match(pricing, /price: '\$20'/);
+  assert.match(plans, /price_1TWlbTDJtpuPVfuFG5ejsTAG/);
+  assert.match(pricing, /mode: 'payment'/);
+  assert.doesNotMatch(pricing, /\$9|\$\s*\/month|MONTHLY_PLAN/);
   assert.doesNotMatch(pricing, /id: 'free'/);
-  assert.doesNotMatch(pricing, /7-Day|Free Trial|Lifetime Access/);
+  assert.doesNotMatch(pricing, /7-Day|Free Trial/);
 });
 
 test('signup always continues to Stripe and login checks entitlement before dashboard access', async () => {
@@ -28,14 +30,14 @@ test('signup always continues to Stripe and login checks entitlement before dash
   assert.match(dashboard, /access\?\.granted/);
 });
 
-test('checkout has no trial or lifetime mode and sensitive Studio routes require membership', async () => {
+test('checkout creates the one-time lifetime path and sensitive Studio routes require access', async () => {
   const checkout = await source('app/api/checkout/route.js');
   const studioProjects = await source('app/api/studio/projects/route.js');
   const studioRenders = await source('app/api/studio/renders/route.js');
-  assert.match(checkout, /mode: 'subscription'/);
-  assert.match(checkout, /payment_method_collection: 'always'/);
+  assert.match(checkout, /LIFETIME_PRICE_ID/);
+  assert.match(checkout, /mode: 'payment'/);
+  assert.doesNotMatch(checkout, /mode: 'subscription'/);
   assert.doesNotMatch(checkout, /trial_period_days/);
-  assert.doesNotMatch(checkout, /LIFETIME_PRICE_ID/);
   assert.match(studioProjects, /requirePlatformSubscriber/);
   assert.match(studioRenders, /requirePlatformSubscriber/);
 });

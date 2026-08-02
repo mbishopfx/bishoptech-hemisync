@@ -42,7 +42,7 @@ export function SignupClient() {
       options: {
         data: {
           username: normalizedUsername,
-          requested_plan: 'monthly'
+          requested_plan: 'lifetime'
         }
       }
     });
@@ -57,7 +57,7 @@ export function SignupClient() {
       await redirectToStripeCheckout({ fallbackPath: '/login' });
       return;
     } else {
-      setError('Check your email to verify your account. After verification, sign in to complete the $9 monthly checkout.');
+      setError('Check your email to verify your account. After verification, sign in to complete the $20 one-time checkout.');
       setLoading(false);
     }
   };
@@ -74,7 +74,7 @@ export function SignupClient() {
         >
           <div className="text-center mb-8">
             <h1 className="text-3xl font-light tracking-tight mb-2">Create your account</h1>
-            <p className="text-white/40 text-sm">Create your login, then securely add your card through Stripe for <strong className="text-white">$9/month</strong>.</p>
+            <p className="text-white/40 text-sm">Create your login, then securely unlock the platform through Stripe for <strong className="text-white">$20 one time</strong>.</p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-6">

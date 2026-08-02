@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
-import { checkoutGrantsAccess, subscriptionProfilePatch } from '@/lib/billing/stripe-subscription';
+import {
+  checkoutGrantsAccess,
+  lifetimeCheckoutGrantsAccess,
+  lifetimeProfilePatch,
+  subscriptionProfilePatch
+} from '@/lib/billing/stripe-subscription';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,6 +26,24 @@ async function syncSubscriptionProfile(supabase, userId, subscription, email = n
     id: userId,
     ...(email ? { email } : {}),
     ...subscriptionProfilePatch(subscription, options)
+  }, { onConflict: 'id' });
+  if (error) throw error;
+}
+
+async function syncLifetimeProfile(supabase, userId, checkoutSession, email = null) {
+  if (!userId) return;
+  const { data: current, error: readError } = await supabase
+    .from('profiles')
+    .select('entitlement_type,subscription_tier')
+    .eq('id', userId)
+    .maybeSingle();
+  if (readError) throw readError;
+  if (current?.entitlement_type === 'lifetime' || current?.subscription_tier === 'lifetime') return;
+
+  const { error } = await supabase.from('profiles').upsert({
+    id: userId,
+    ...(email ? { email } : {}),
+    ...lifetimeProfilePatch(checkoutSession)
   }, { onConflict: 'id' });
   if (error) throw error;
 }
@@ -59,6 +82,16 @@ export async function POST(req) {
         }
 
         const userId = session.client_reference_id || session.metadata?.user_uuid;
+        if (userId && lifetimeCheckoutGrantsAccess(session)) {
+          await syncLifetimeProfile(
+            supabase,
+            userId,
+            session,
+            session.customer_details?.email || session.customer_email || null
+          );
+          break;
+        }
+
         if (userId && ['monthly', 'premium'].includes(planId) && session.mode === 'subscription') {
           const subscriptionId = typeof session.subscription === 'string'
             ? session.subscription

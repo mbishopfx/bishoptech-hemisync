@@ -154,12 +154,12 @@ export function LoginClient() {
               <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.32em] text-cyan-300">Membership required</p>
               <h2 className="text-3xl font-light tracking-tight">Unlock your private audio studio.</h2>
               <p className="mt-4 text-sm leading-6 text-white/45">
-                Your account is ready, but an active Cognistration membership is required to enter the platform.
+                Your account is ready, but Cognistration lifetime access is required to enter the platform.
               </p>
               <div className="my-7 rounded-2xl border border-white/8 bg-white/[0.03] p-5">
                 <div className="flex items-end justify-between gap-4">
-                  <div><p className="font-medium">Complete membership</p><p className="mt-1 text-xs text-white/35">Cancel anytime through Stripe</p></div>
-                  <p className="text-2xl font-semibold">$9<span className="text-sm font-normal text-white/35">/mo</span></p>
+                  <div><p className="font-medium">Unlock lifetime access</p><p className="mt-1 text-xs text-white/35">One payment through Stripe</p></div>
+                  <p className="text-2xl font-semibold">$20<span className="text-sm font-normal text-white/35"> once</span></p>
                 </div>
               </div>
               <button
