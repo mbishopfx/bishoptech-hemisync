@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,10 +8,10 @@ import { Omnibar } from '@/components/agent/Omnibar';
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { LiquidHeader } from '@/components/layout/LiquidHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
-import { IosAppCarousel } from '@/components/marketing/IosAppCarousel';
+import { ToneMachineDemo } from '@/components/machine/ToneMachineDemo';
 import { HomepageTonePacksSection } from '@/components/packs/HomepageTonePacksSection';
 import { ProcessingParticleBackground } from '@/components/visuals/ProcessingParticleBackground';
-import { isHomepageGeneratedTone, HOMEPAGE_STATE_TONES } from '@/lib/audio/homepage-tones';
+import { YouTubeEmbed } from '@/components/media/YouTubeEmbed';
 
 const siteUrl = 'https://cognistration.com';
 const siteDescription = 'Cognistration offers holistic wellness and binaural frequency sessions for focus, rest, and natural mind healing.';
@@ -34,111 +34,7 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [agentMessage, setAgentMessage] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [currentPreviewTone, setCurrentPreviewTone] = useState(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const audioRef = useRef(null);
 
-  const [playingToneId, setPlayingToneId] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const formatTime = (time) => {
-    const mins = Math.floor(time / 60);
-    const secs = Math.floor(time % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const loadSavedHomepageTone = () => {
-    if (typeof window === 'undefined') return null;
-    const saved = localStorage.getItem('active-preview-tone');
-    if (!saved) return null;
-    try {
-      const parsed = JSON.parse(saved);
-      return isHomepageGeneratedTone(parsed) ? parsed : null;
-    } catch {
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadPreviewTone() {
-      try {
-        const response = await fetch('/api/audio/preview-tone', { cache: 'no-store' });
-        const data = await response.json();
-        if (!response.ok || !data.ok || cancelled) {
-          const savedTone = loadSavedHomepageTone();
-          if (savedTone && !cancelled) {
-            setCurrentPreviewTone(savedTone);
-          } else if (!cancelled) {
-            setCurrentPreviewTone(HOMEPAGE_STATE_TONES[1]); // Default to Alpha Focus
-          }
-          return;
-        }
-        if (data.tone && !cancelled) {
-          setCurrentPreviewTone(data.tone);
-          localStorage.setItem('active-preview-tone', JSON.stringify(data.tone));
-        }
-      } catch (error) {
-        console.error('Failed to load featured preview tone:', error);
-        const savedTone = loadSavedHomepageTone();
-        if (savedTone && !cancelled) {
-          setCurrentPreviewTone(savedTone);
-        } else if (!cancelled) {
-          setCurrentPreviewTone(HOMEPAGE_STATE_TONES[1]);
-        }
-      }
-    }
-
-    loadPreviewTone();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const activeState = currentPreviewTone?.state || 'alpha';
-
-  const stateConfig = {
-    theta: {
-      accentClass: 'text-purple-300',
-      borderClass: 'border-purple-500/30',
-      shadowClass: 'shadow-[0_0_50px_rgba(168,85,247,0.15)]',
-      waveClass: 'bg-purple-400',
-      glowDot: 'bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.8)]',
-    },
-    alpha: {
-      accentClass: 'text-cyan-300',
-      borderClass: 'border-cyan-500/30',
-      shadowClass: 'shadow-[0_0_50px_rgba(6,182,212,0.15)]',
-      waveClass: 'bg-cyan-400',
-      glowDot: 'bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]',
-    },
-    delta: {
-      accentClass: 'text-blue-300',
-      borderClass: 'border-blue-500/30',
-      shadowClass: 'shadow-[0_0_50px_rgba(59,130,246,0.15)]',
-      waveClass: 'bg-blue-400',
-      glowDot: 'bg-blue-400 shadow-[0_0_8px_rgba(59,130,246,0.8)]',
-    },
-    beta: {
-      accentClass: 'text-rose-300',
-      borderClass: 'border-rose-500/30',
-      shadowClass: 'shadow-[0_0_50px_rgba(244,63,94,0.15)]',
-      waveClass: 'bg-rose-400',
-      glowDot: 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.8)]',
-    },
-    gamma: {
-      accentClass: 'text-emerald-300',
-      borderClass: 'border-emerald-500/30',
-      shadowClass: 'shadow-[0_0_50px_rgba(16,185,129,0.15)]',
-      waveClass: 'bg-emerald-400',
-      glowDot: 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]',
-    },
-  };
-
-  const currentConfig = stateConfig[activeState] || stateConfig.alpha;
 
   const handleGenerate = async (mood) => {
     setIsLoading(true);
@@ -163,57 +59,10 @@ export default function LandingPage() {
       }
 
       setAgentMessage(data.agentMessage);
-
-      audioRef.current?.pause();
-      setIsPlaying(false);
-
-      const track = data.track || null;
-      setCurrentPreviewTone(track);
-      if (track) {
-        localStorage.setItem('active-preview-tone', JSON.stringify(track));
-      }
     } catch (err) {
       console.error('Failed to connect to agent:', err);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handlePlayTone = (tone) => {
-    const url =
-      tone?.webmUrl ||
-      tone?.wavUrl ||
-      tone?.mp3Url ||
-      tone?.webm_url ||
-      tone?.wav_url ||
-      tone?.mp3_url ||
-      tone?.playUrl;
-    if (!url || !audioRef.current) return;
-
-    const audio = audioRef.current;
-
-    if (playingToneId === tone.id) {
-      if (isPlaying) {
-        audio.pause();
-        setIsPlaying(false);
-      } else {
-        audio
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch((err) => console.error('Playback failed:', err));
-      }
-    } else {
-      audio.pause();
-      audio.src = url;
-      audio.load();
-      setPlayingToneId(tone.id);
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => {
-          console.error('Playback failed:', err);
-          setIsPlaying(false);
-        });
     }
   };
 
@@ -280,141 +129,12 @@ export default function LandingPage() {
         </div>
 
         {/* AI Omnibar / Interactive Prompt Input & State Player */}
-        <div className="relative z-10 w-full max-w-2xl mx-auto mt-12 space-y-8">
+        <div className="relative z-10 w-full max-w-6xl mx-auto mt-12 space-y-8">
           <div className="w-full">
             <Omnibar onGenerate={handleGenerate} isLoading={isLoading} agentMessage={agentMessage} />
           </div>
 
-          {currentPreviewTone && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full"
-            >
-              <div
-                className={`liquid-glass p-6 sm:p-8 rounded-3xl space-y-6 bg-zinc-950/70 border backdrop-blur-2xl transition-all duration-500 ${currentConfig.borderClass} ${currentConfig.shadowClass}`}
-              >
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <p
-                      className={`font-mono text-[9px] uppercase tracking-[0.25em] flex items-center gap-2 ${currentConfig.accentClass}`}
-                    >
-                      <span className={`animate-pulse size-1.5 rounded-full ${currentConfig.glowDot}`} />
-                      {currentPreviewTone.state || 'Stereo'} State Active
-                    </p>
-
-                    <select
-                      value={currentPreviewTone?.id || ''}
-                      onChange={(e) => {
-                        const selected = HOMEPAGE_STATE_TONES.find((t) => t.id === e.target.value);
-                        if (selected) {
-                          setCurrentPreviewTone(selected);
-                          localStorage.setItem('active-preview-tone', JSON.stringify(selected));
-                          if (playingToneId !== selected.id) {
-                            audioRef.current?.pause();
-                            setIsPlaying(false);
-                          }
-                        }
-                      }}
-                      className="bg-black/60 border border-white/20 text-[10px] font-mono uppercase tracking-widest focus:outline-none cursor-pointer rounded-full px-4 py-1.5 text-white/90 transition-colors"
-                    >
-                      {HOMEPAGE_STATE_TONES.map((t) => (
-                        <option key={t.id} value={t.id} className="bg-zinc-900 text-white">
-                          {t.name} ({t.state.toUpperCase()})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="text-center sm:text-left">
-                    <h3 className="text-white text-lg font-medium leading-snug">{currentPreviewTone.name}</h3>
-                    <p className="text-white/50 text-xs mt-0.5">
-                      {currentPreviewTone.targetHz ? `${currentPreviewTone.targetHz}Hz` : 'Dynamic'} Pure Binaural Tone
-                    </p>
-                  </div>
-
-                  {/* Audio Wave Visualizer */}
-                  {playingToneId === currentPreviewTone.id && isPlaying && (
-                    <div className="h-8 flex items-center justify-center gap-1 bg-black/40 rounded-xl px-4 border border-white/10">
-                      {Array.from({ length: 16 }).map((_, waveIdx) => (
-                        <motion.div
-                          key={waveIdx}
-                          animate={{ height: [4, 18, 4] }}
-                          transition={{
-                            duration: 0.5 + Math.random() * 0.5,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
-                            delay: waveIdx * 0.04,
-                          }}
-                          className={`w-1 rounded-full ${currentConfig.waveClass}`}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Progress Bar */}
-                  <div className="flex flex-col gap-1.5">
-                    <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden relative">
-                      <motion.div
-                        className={`absolute inset-y-0 left-0 ${currentConfig.waveClass}`}
-                        style={{
-                          width: `${
-                            playingToneId === currentPreviewTone.id
-                              ? duration
-                                ? (currentTime / duration) * 100
-                                : 0
-                              : 0
-                          }%`,
-                        }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-[9px] font-mono text-white/40 uppercase tracking-widest">
-                      <span>{playingToneId === currentPreviewTone.id ? formatTime(currentTime) : '0:00'}</span>
-                      <span>{playingToneId === currentPreviewTone.id ? formatTime(duration) : '0:00'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-center pt-2">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handlePlayTone(currentPreviewTone)}
-                    type="button"
-                    className="size-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_25px_rgba(255,255,255,0.3)] transition-all"
-                  >
-                    <span className="material-symbols-outlined text-2xl font-bold">
-                      {playingToneId === currentPreviewTone.id && isPlaying ? 'pause' : 'play_arrow'}
-                    </span>
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Unified single-channel audio player */}
-          <audio
-            ref={audioRef}
-            preload="auto"
-            onTimeUpdate={() => {
-              if (audioRef.current) {
-                setCurrentTime(audioRef.current.currentTime);
-              }
-            }}
-            onLoadedMetadata={() => {
-              if (audioRef.current) {
-                setDuration(audioRef.current.duration);
-              }
-            }}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            onEnded={() => {
-              setIsPlaying(false);
-              setPlayingToneId(null);
-              setCurrentTime(0);
-              setDuration(0);
-            }}
-          />
+          <ToneMachineDemo />
         </div>
       </section>
 
@@ -493,7 +213,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <IosAppCarousel />
+      <section id="video-feature" aria-label="Cognistration on YouTube" className="relative overflow-hidden border-y border-white/8 bg-zinc-950/80 py-24 sm:py-32">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/30 to-transparent" />
+        <div className="relative mx-auto max-w-5xl px-6 sm:px-8">
+          <YouTubeEmbed
+            src="https://www.youtube.com/embed/ent5GbBVubk?si=6m3yK2iZ7ehx47Ph"
+            title="Cognistration on YouTube"
+          />
+        </div>
+      </section>
 
       {/* One-time platform offer: make the new price the clearest conversion point. */}
       <section id="access" aria-labelledby="access-title" className="relative overflow-hidden bg-zinc-950 py-24 sm:py-32">

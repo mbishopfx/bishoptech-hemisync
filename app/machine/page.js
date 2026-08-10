@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Zap, Cpu, Lock, Eye, ArrowRight, FileText, Activity, AlertTriangle, Play, HelpCircle, Check, Power } from 'lucide-react';
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { YouTubeVideoCatalog } from '@/components/media/YouTubeVideoCatalog';
 import { buildAbsoluteUrl } from '@/lib/seo';
 
 function UnicodeCyberBadge({ icon: IconComponent, index, colorClass }) {
@@ -719,6 +720,8 @@ export default function MachinePage() {
             </div>
           </div>
         </section>
+
+        <YouTubeVideoCatalog />
 
         {/* Secret Easter Egg Link */}
         <div className="flex justify-center mb-40">

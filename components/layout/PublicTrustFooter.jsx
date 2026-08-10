@@ -4,6 +4,7 @@ const trustLinks = [
   { href: '/terms', label: 'Terms' },
   { href: '/privacy', label: 'Privacy' },
   { href: '/cookies', label: 'Cookies' },
+  { href: '/services', label: 'Services' },
   { href: '/ai-disclosure', label: 'AI Disclosure' },
   { href: '/health-warning', label: 'Health Warning' },
   { href: '/llms.txt', label: 'llms.txt' },
@@ -31,6 +32,14 @@ export function PublicTrustFooter() {
               {link.label}
             </Link>
           ))}
+          <a
+            href="https://apps.apple.com/us/app/cognistration/id6780132617"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[10px] font-mono uppercase tracking-widest text-white/65 transition-colors hover:border-cyan-200/40 hover:text-white"
+          >
+            Available on iOS
+          </a>
           <span>&copy; 2026 Cognistration</span>
         </div>
       </div>
