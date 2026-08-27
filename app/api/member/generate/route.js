@@ -68,6 +68,9 @@ export async function POST(req) {
     if (existingProject) {
       const existingRender = await latestRenderForProject(supabase, user.id, existingProject.id);
       const plan = await buildMemberSessionPlan(input, { useAi: false });
+      if (plan.status !== 'completed') {
+        return NextResponse.json({ ...plan, correlationId }, { headers: { 'cache-control': 'no-store' } });
+      }
       return NextResponse.json({
         ...plan,
         correlationId,
@@ -79,6 +82,9 @@ export async function POST(req) {
     }
 
     const plan = await buildMemberSessionPlan(input, { useAi: false });
+    if (plan.status !== 'completed') {
+      return NextResponse.json({ ...plan, correlationId }, { headers: { 'cache-control': 'no-store' } });
+    }
     const spec = {
       ...plan.studioSpec,
       agenticRequestId: input.idempotencyKey || null,

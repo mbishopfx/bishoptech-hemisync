@@ -7,6 +7,7 @@ Cognistration turns a person’s next intention into a personal listening sessio
 ## Live app
 
 - https://cognistration.com
+- Public challenge cockpit: https://cognistration.com/try
 - Human-facing ChatGPT connection address: https://cognistration.com/connect
 - REST/OpenAPI compatibility fallback: https://cognistration.com/openapi.json
 
@@ -24,7 +25,10 @@ for the prior-versus-new boundary.
 
 ## Demo video
 
-Submission video: add the final public YouTube URL to the Devpost submission before submitting. A local reference render may be kept in the working tree for review, but a raw video download is not a substitute for the required public YouTube link.
+Submission video: upload the final local reference render to YouTube and add the
+public URL to the Devpost submission before submitting. The repository contains
+the script and metadata for the recording, but the account-owned YouTube upload
+and final Devpost field remain user-controlled.
 
 ## Optional ChatGPT connection
 
@@ -63,18 +67,41 @@ repeats those interactions. The widget calls the public recommendation and
 pack tools through the MCP Apps bridge, so the model does not need to rerun the
 render tool for every slider or direction change.
 
+The no-sign-in `/try` cockpit makes the primary challenge path reproducible in
+one tab: intent clarification, ranked comparison, an arrive/practice/close
+ritual plan, the visible machine widget, a technical session recipe, and a
+human-confirmed preview. A vague request returns bounded choices instead of a
+guess. A calibration phrase such as “too intense” applies a small, explained
+adjustment. Safety-shaped medical or crisis language routes to the canonical
+health-warning page without repeating or storing the request.
+
 For the pack route, the agent searches first, presents a published pack and track, then requests an explicit confirmation before local preview audio starts. For “gamma at 246 Hz,” it sets the visible state and carrier exactly. For “make the carrier smaller,” it reads the current state before choosing a lower bounded value.
 
-Signed-in members can additionally use the private workspace tools to prepare a longer session, create a private project with an idempotency key, start a render after confirmation, and retrieve signed downloads. Public discovery and planning remain read-only; public commerce actions are narrow, hosted, and confirmation-gated.
+Signed-in members can additionally use the private workspace tools to prepare a
+longer session, create a private project with an idempotency key, start a render
+after confirmation, and retrieve signed downloads. The member bridge also
+exposes the same free clarification, calibration, comparison, ritual, cue, and
+recipe helpers inside the authenticated dashboard. Public discovery and
+planning remain read-only; public commerce actions are narrow, hosted, and
+confirmation-gated.
+
+The live machine-payment path is an optional agent-to-agent bonus: the server
+advertises a fixed $0.50 USD session resource, returns a real HTTP 402 payment
+challenge when no credential is supplied, and verifies the provider receipt
+before fulfillment. The payment passport is a fail-closed staged contract with
+an expiry, fixed amount/product/recipient/scope, and idempotency key; it is not
+accepted as a substitute for provider verification or used for unrestricted
+spending.
 
 ## Implementation map
 
-- `components/machine/ToneMachineDemo.jsx` registers the fifteen homepage tools with `document.modelContext.registerTool`.
+- `components/machine/ToneMachineDemo.jsx` registers the eighteen homepage tools with `document.modelContext.registerTool`.
 - `lib/agentic/webmcp-contract.js` defines the bounded input/output contracts, relative carrier nudge, session planning, and confirmation annotations.
 - `lib/agentic/tone-capability.js` owns catalog validation, intention matching, AI-first classification, and deterministic fallback.
 - `app/api/agent/route.js` provides the public REST fallback used by the hero and browser bridge.
 - `app/api/mcp/route.js` exposes the public JSON-RPC catalog, policy, account, iPhone app offer, session guidance, narrow hosted-commerce operations, and skill surface.
 - `lib/agentic/session-capability.js` provides deterministic comparisons, timed plans, cues, and explicit no-save/no-audio boundaries.
+- `lib/agentic/safety-capability.js` and `lib/agentic/recipe-capability.js` keep safety routing and technical-only recipe export bounded and local.
 - `app/api/agent/intent-guidance`, `app/api/agent/tone-calibrate`, `app/api/agent/tone-compare`, `app/api/agent/session-plan`, and `app/api/agent/session-cue` provide REST fallbacks for the same intent and session journeys.
 - `lib/agentic/machine-capability.js` defines the versioned MCP Apps render contract and submission-safe CSP metadata.
 - `lib/agentic/machine-widget.js` serves the self-contained ChatGPT machine widget with the Aurora visual, bridge calls, and explicit local audio preview.
@@ -87,13 +114,14 @@ Signed-in members can additionally use the private workspace tools to prepare a 
 
 - Public tools can inspect and shape only the public session machine.
 - Audio playback, account creation, payment, private record creation, and render starts require human confirmation or user submission.
+- A recipe contains only bounded technical settings, a safe intention label, and privacy metadata; it never includes diary content.
 - Private member routes require Supabase Auth and paid platform entitlement, and every query is scoped to the authenticated user.
 - Model output is treated as untrusted classification data and must resolve to an approved catalog ID.
 - The product describes listening cues and routines; it does not diagnose, treat, or guarantee a neurological outcome.
 
 ## Judge walkthrough
 
-Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a reproducible local Chrome run, open `chrome://flags/#enable-webmcp-testing`, set the flag to Enabled, relaunch Chrome, and visit the live homepage. The homepage should expose fifteen browser tools: state, absolute controls, relative carrier nudge, intention matching, intent clarification, sensory calibration, direction comparison, session planning, session cues, pack search, pack preview, policy, account options, generic preview, and signup navigation. The public MCP endpoint should expose twenty-three tools, including `get_ios_app_offer`, `clarify_intention`, `calibrate_tone`, `compare_tone_directions`, `plan_listening_session`, and `get_session_cue`. Confirm that the iPhone offer returns the App Store URL and $2.99 one-time price without a payment side effect. Confirm that intention matching selects a public tone, a vague request returns three bounded directions, a `too_bright` calibration lowers the carrier without crossing the published floor, a relaxation search returns a published pack, an unconfirmed pack preview returns `CONFIRMATION_REQUIRED`, a 20-minute plan returns arrive/practice/close phases, a cue does not echo diary content, and a gamma/246 Hz control call is reflected in the visible state. In the connected ChatGPT app, ask “open the tone machine for gamma at 246 Hz” and verify that the `text/html;profile=mcp-app` widget renders the Aurora visual, shows Gamma/246 Hz, offers the session guidance and calibration actions, and leaves audio off until the play button is pressed. Start at the live homepage and follow the short recording script in `DEMO-SCRIPT.md`. A normal browser should still provide the complete human controls without either agent surface.
+Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a reproducible local Chrome run, open `chrome://flags/#enable-webmcp-testing`, set the flag to Enabled, relaunch Chrome, and visit `/try` first. The cockpit should expose the eighteen public browser tools: state, absolute controls, relative carrier nudge, intention matching, intent clarification, sensory calibration, direction comparison, session planning, session cues, pack search, pack preview, policy, account options, generic preview, signup navigation, ritual begin, ritual advance, and technical recipe preparation. The public MCP endpoint should expose twenty-four tools, including `get_ios_app_offer`, `clarify_intention`, `calibrate_tone`, `compare_tone_directions`, `plan_listening_session`, `get_session_cue`, and `prepare_session_recipe`; the authenticated member bridge exposes eleven bounded tools. Confirm that the iPhone offer returns the App Store URL and $2.99 one-time price without a payment side effect. Confirm that intention matching selects a public tone, a vague request returns three bounded directions, a `too_bright` calibration lowers the carrier without crossing the published floor, a relaxation search returns a published pack, an unconfirmed pack preview returns `CONFIRMATION_REQUIRED`, a 20-minute plan returns arrive/practice/close phases, a cue does not echo diary content, the recipe contains no raw intention/diary text, and a gamma/246 Hz control call is reflected in the visible state. Send a medical or crisis-shaped request and verify the safety redirect points to `/health-warning`. In the connected ChatGPT app, ask “open the tone machine for gamma at 246 Hz” and verify that the `text/html;profile=mcp-app` widget renders the Aurora visual, shows Gamma/246 Hz, offers the session guidance and calibration actions, and leaves audio off until the play button is pressed. The `/try` payment panel should show live machine-payment status and a no-credential HTTP 402 challenge without creating a charge. Start at the live cockpit and follow the short recording script in `DEMO-SCRIPT.md`. A normal browser should still provide the complete human controls without either agent surface.
 
 ## Judging-fit summary
 
@@ -107,9 +135,15 @@ Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a rep
 ```bash
 npm install
 npm run test:agentic
+npm run test:edge
 npm run test:billing
 npm run test:studio
-npm run build
+npm run lint
 ```
 
-Production environment variables are required for authenticated Supabase and server-side model operations. Never commit `.env*` files or provider keys.
+The repository intentionally does not run a local production build because the
+checked-in project instructions route build verification through CI/CD. Push to
+`main`, wait for the Vercel deployment to become Ready, then verify the live
+routes and the deployed Cloudflare worker. Production environment variables are
+required for authenticated Supabase and server-side model operations. Never
+commit `.env*` files or provider keys.

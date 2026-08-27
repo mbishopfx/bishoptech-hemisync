@@ -20,6 +20,7 @@ const staticRoutes = [
   '/tutorial/astral-projection-out-of-body-experiences',
   '/tutorial/remote-viewing-stargate-documents',
   '/machine',
+  '/try',
   '/privacy',
   '/terms',
   '/cookies',

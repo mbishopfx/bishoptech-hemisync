@@ -113,6 +113,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
         <Link href="/" className={`${isLight ? 'text-[#1d302c]' : 'text-white'} transition-opacity hover:opacity-75`}>Home</Link>
         <Link href="/packs" className={`transition ${mutedLink}`}>Packs</Link>
         <Link href="/machine" className={`transition ${mutedLink}`}>Machine</Link>
+        <Link href="/try" className={`transition ${mutedLink}`}>Agent demo</Link>
         <Link href="/tutorial" className={`transition ${mutedLink}`}>Tutorial</Link>
         <Link href="/blog" className={`transition ${mutedLink}`}>Blog</Link>
         <Link href="/pricing" className={`transition ${mutedLink}`}>Pricing</Link>
@@ -158,6 +159,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
         <Link href="/" onClick={() => setMenuOpen(false)} className={`text-xl font-medium ${isLight ? 'text-[#1d302c]' : 'text-white'}`}>Home</Link>
         <Link href="/packs" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Tone Packs</Link>
         <Link href="/machine" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Inside the Machine</Link>
+        <Link href="/try" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Agent demo</Link>
         <Link href="/tutorial" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Tutorial</Link>
         <Link href="/blog" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Blog</Link>
         <Link href="/pricing" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Pricing</Link>

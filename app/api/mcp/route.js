@@ -39,6 +39,8 @@ import { AccountOptionsInputSchema, publicAccountOptions } from '@/lib/agentic/a
 import { getSkill, listSkills, readSkillResource, skillCatalogSummary } from '@/lib/agentic/skill-capability';
 import { buildSessionPlan, compareToneDirections, getSessionCue, sessionGuideCatalog } from '@/lib/agentic/session-capability';
 import { calibrateTone, clarifyIntention, intentGuidanceCatalog } from '@/lib/agentic/intent-capability';
+import { buildSessionRecipe } from '@/lib/agentic/recipe-capability';
+import { safetyRedirectForIntention } from '@/lib/agentic/safety-capability';
 import { createTonePackCheckout, getTonePackDelivery } from '@/lib/commerce/agent-checkout.mjs';
 import { autonomousPaymentOptions } from '@/lib/commerce/ap2.mjs';
 import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
@@ -355,11 +357,23 @@ async function callTool(name, args, request) {
 
   if (name === 'recommend_tone') {
     const parsed = IntentionInputSchema.parse(args || {});
+    const safetyRedirect = safetyRedirectForIntention(parsed.intention, {
+      capabilityId: 'cognistration-tone-intention',
+      version: '0.1.0'
+    });
+    if (safetyRedirect) {
+      return toolSuccess({
+        ...safetyRedirect,
+        tone: null,
+        rationale: safetyRedirect.safety.message
+      });
+    }
     const result = await matchIntentionToTone({ intention: parsed.intention, tones: PUBLIC_TONE_CATALOG, useAi: false });
     return toolSuccess({
       capabilityId: result.capabilityId,
       version: result.version,
       correlationId: result.correlationId,
+      status: 'completed',
       tone: result.tone,
       rationale: result.response
     });
@@ -383,6 +397,10 @@ async function callTool(name, args, request) {
 
   if (name === 'get_session_cue') {
     return toolSuccess(getSessionCue(args || {}));
+  }
+
+  if (name === 'prepare_session_recipe') {
+    return toolSuccess(buildSessionRecipe(args || {}));
   }
 
   if (name === 'search_public_tone_packs') {
@@ -456,6 +474,35 @@ async function callTool(name, args, request) {
   }
 
   if (name === 'open_machine_generator') {
+    const safetyRedirect = args?.intention
+      ? safetyRedirectForIntention(args.intention, {
+        capabilityId: 'cognistration-machine-generator',
+        version: '0.1.0'
+      })
+      : null;
+    if (safetyRedirect) {
+      return toolSuccess({
+        capabilityId: 'cognistration-machine-generator',
+        version: '0.1.0',
+        resourceUri: MACHINE_WIDGET_RESOURCE_URI,
+        controls: {
+          targetState: 'theta',
+          carrierHz: 200,
+          beatHz: 6,
+          volume: 72,
+          isPlaying: false,
+          stateVersion: 1
+        },
+        tone: null,
+        seededBy: 'balanced-start',
+        availableActions: ['open_health_warning'],
+        message: safetyRedirect.safety.message,
+        status: 'safety_redirect',
+        safety: safetyRedirect.safety,
+        nextAction: safetyRedirect.nextAction,
+        boundaries: safetyRedirect.boundaries
+      });
+    }
     const machine = await buildMachineGeneratorState(args || {});
     return toolSuccess(machine, {
       ui: { resourceUri: MACHINE_WIDGET_RESOURCE_URI },

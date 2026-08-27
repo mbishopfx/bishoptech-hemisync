@@ -7,9 +7,16 @@ Cognistration DNS.
 
 It proxies only `/mcp` to the canonical Vercel endpoint and exposes a small
 `/health` check. It carries MCP protocol headers through, adds CORS headers for
-compatible agent hosts, and intentionally stores no sessions, payment
+compatible agent hosts from an explicit origin allowlist, and intentionally stores no sessions, payment
 credentials, or user content. It does not enable AP2 or agent-to-agent
-payments; those remain provider-gated on the canonical endpoint.
+payments; the live $0.50 machine-payment challenge remains on the canonical
+endpoint. The worker is stateless by design: Durable Objects are not enabled
+because the current MCP route has no edge-owned session state to coordinate.
+
+The default allowlist is `cognistration.com`, `www.cognistration.com`,
+`chatgpt.com`, `www.chatgpt.com`, and `chat.openai.com`. Add any deliberate
+additional origins through the comma-separated `CORS_ALLOWED_ORIGINS` Worker
+variable; arbitrary `Origin` reflection is not allowed.
 
 ## Validate and deploy
 
@@ -19,6 +26,8 @@ From the repository root:
 npx --yes wrangler@latest deploy --config cloudflare/mcp-edge/wrangler.jsonc --dry-run
 npx --yes wrangler@latest deploy --config cloudflare/mcp-edge/wrangler.jsonc
 ```
+
+Run the edge unit checks from the repository root with `npm run test:edge`.
 
 The deploy command returns a `workers.dev` URL. Verify it before sharing it
 with an agent:

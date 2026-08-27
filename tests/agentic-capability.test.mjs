@@ -43,8 +43,11 @@ import { MEMBER_WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.j
 import { MemberPlanInputSchema, buildMemberSessionPlan, journeyPresetForState } from '../lib/agentic/member-capability.js';
 import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { calibrateTone, clarifyIntention } from '../lib/agentic/intent-capability.js';
+import { buildSessionRecipe, SessionRecipeInputSchema } from '../lib/agentic/recipe-capability.js';
+import { safetyCategoryForIntention, safetyRedirectForIntention } from '../lib/agentic/safety-capability.js';
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
 import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
+import { createPaymentPassport, verifyPaymentPassport, PAYMENT_PASSPORT_TTL_SEC } from '../lib/commerce/payment-passport.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
 
@@ -287,6 +290,57 @@ test('tone calibration is bounded, deterministic, and audio-free', () => {
   assert.throws(() => calibrateTone({ feedback: 'too_quiet', carrierHz: 401 }));
 });
 
+test('safety-aware routing catches medical and crisis intentions before planning', async () => {
+  assert.equal(safetyCategoryForIntention('I need medical advice for anxiety'), 'medical');
+  assert.equal(safetyCategoryForIntention('I might hurt myself'), 'crisis');
+  assert.equal(safetyCategoryForIntention('I need a focused writing block'), null);
+
+  const guidance = await clarifyIntention({ intention: 'I need medical advice for anxiety' });
+  assert.equal(guidance.status, 'safety_redirect');
+  assert.equal(guidance.safety.route, '/health-warning');
+  assert.equal(guidance.boundaries.audioStarted, false);
+  assert.doesNotMatch(JSON.stringify(guidance), /medical advice for anxiety/i);
+
+  const plan = await buildSessionPlan({ intention: 'I might hurt myself tonight', durationMin: 20 });
+  assert.equal(plan.status, 'safety_redirect');
+  assert.equal(plan.safety.category, 'crisis');
+  assert.equal(plan.boundaries.recordSaved, false);
+  assert.ok(safetyRedirectForIntention('emergency support').correlationId);
+});
+
+test('technical session recipes are portable without diary or account content', () => {
+  const recipe = buildSessionRecipe({
+    targetState: 'alpha',
+    carrierHz: 246,
+    beatHz: 10,
+    volume: 64,
+    durationSec: 900,
+    intentionLabel: 'focus'
+  });
+
+  assert.equal(recipe.recipe.recipeVersion, 'cognistration-session-recipe-v1');
+  assert.equal(recipe.recipe.targetState, 'alpha');
+  assert.equal(recipe.recipe.intentionLabel, 'Set a clear direction');
+  assert.equal(recipe.privacy.storage, 'none');
+  assert.equal(recipe.privacy.diaryContentIncluded, false);
+  assert.doesNotMatch(JSON.stringify(recipe.recipe), /journal text|private diary|account email/i);
+  assert.throws(() => SessionRecipeInputSchema.parse({ durationSec: 59 }));
+  assert.throws(() => SessionRecipeInputSchema.parse({ intention: 'journal text' }));
+});
+
+test('payment passports are fixed, expiring, signed intents and never credentials', () => {
+  const now = new Date('2026-08-27T12:00:00.000Z');
+  const passport = createPaymentPassport({ secret: 'test-passport-secret', idempotencyKey: 'demo-passport-1', now });
+  assert.equal(passport.amountCents, 50);
+  assert.equal(passport.product, 'machine-session');
+  assert.equal(passport.recipient, 'cognistration.com');
+  assert.equal(verifyPaymentPassport(passport, { secret: 'test-passport-secret', now }).valid, true);
+  assert.equal(verifyPaymentPassport({ ...passport, amountCents: 51 }, { secret: 'test-passport-secret', now }).code, 'AMOUNT_NOT_ALLOWED');
+  assert.equal(verifyPaymentPassport(passport, { secret: 'wrong-secret', now }).code, 'SIGNATURE_INVALID');
+  assert.equal(verifyPaymentPassport(passport, { secret: 'test-passport-secret', now: new Date(now.getTime() + PAYMENT_PASSPORT_TTL_SEC * 1000) }).code, 'PASSPORT_EXPIRED');
+  assert.throws(() => createPaymentPassport({ secret: 'test-passport-secret', idempotencyKey: 'short', now }));
+});
+
 test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(MCP_PROTOCOL_VERSION, '2026-07-28');
   assert.deepEqual(MCP_TOOLS.map((tool) => tool.name), [
@@ -299,6 +353,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'compare_tone_directions',
     'plan_listening_session',
     'get_session_cue',
+    'prepare_session_recipe',
     'search_public_tone_packs',
     'get_public_tone_pack',
     'get_policy_info',
@@ -342,8 +397,14 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_plan_listening_session' && tool.annotations.readOnlyHint));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_clarify_intention' && tool.annotations.readOnlyHint));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_calibrate_tone' && tool.sideEffect === 'updates_visible_controls'));
+  assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_begin_ritual' && tool.sideEffect === 'updates_visible_controls'));
+  assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_advance_ritual' && tool.annotations.idempotentHint));
+  assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_prepare_session_recipe' && tool.annotations.readOnlyHint));
   assert.equal(MCP_TOOLS.find((tool) => tool.name === 'create_tone_pack_checkout').annotations.openWorldHint, true);
   assert.equal(MCP_TOOLS.find((tool) => tool.name === 'revoke_workshop_access').annotations.openWorldHint, true);
+  assert.ok(MCP_TOOLS.some((tool) => tool.name === 'prepare_session_recipe' && tool.annotations.readOnlyHint));
+  assert.ok(MEMBER_WEBMCP_TOOL_DEFINITIONS.length >= 11);
+  assert.ok(MEMBER_WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_member_plan_listening_session' && tool.authorization === 'authenticated_member'));
   assert.ok(MEMBER_WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_member_generate_tone' && tool.consent === 'explicit_confirmation_required'));
 });
 
@@ -460,6 +521,10 @@ test('OpenAPI fallback is derived from the same public registry', () => {
   assert.ok(document.components.schemas.ToneCalibration);
   assert.ok(document.paths['/api/agent/session-plan'].post);
   assert.ok(document.paths['/api/agent/session-cue'].post);
+  assert.ok(document.paths['/api/agent/session-recipe'].post);
+  assert.ok(document.components.schemas.SessionRecipe);
+  assert.ok(document.components.schemas.SafetyDetails);
+  assert.deepEqual(document.components.schemas.ToneRecommendation.properties.track.anyOf[1], { type: 'null' });
   assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get);
   assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get.responses['200'].content['application/json'].schema.required.includes('webUrl'));
   assert.ok(document.paths['/api/agent/commerce/workshop-access'].get);
@@ -468,6 +533,25 @@ test('OpenAPI fallback is derived from the same public registry', () => {
   assert.ok(document.paths['/api/machine-payments/tone'].post.requestBody.content['application/json'].schema.properties.carrierHz);
   assert.ok(document.components.schemas.UcpCheckout.properties.status.enum.includes('complete_in_progress'));
   assert.doesNotMatch(JSON.stringify(document), /service_role|OPENAI_API_KEY|STRIPE_SECRET|arbitrary SQL/i);
+});
+
+test('the challenge cockpit is discoverable and keeps the human preview boundary visible', async () => {
+  const cockpit = await readFile(new URL('../components/challenge/TryCockpit.jsx', import.meta.url), 'utf8');
+  const page = await readFile(new URL('../app/try/page.js', import.meta.url), 'utf8');
+  const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
+  const sitemap = await readFile(new URL('../app/sitemap.js', import.meta.url), 'utf8');
+  const robots = await readFile(new URL('../app/robots.js', import.meta.url), 'utf8');
+  assert.match(page, /WebMCP challenge cockpit/);
+  assert.match(cockpit, /data-testid="try-step-intention"/);
+  assert.match(cockpit, /data-testid="try-step-comparison"/);
+  assert.match(cockpit, /data-testid="try-step-plan"/);
+  assert.match(cockpit, /data-testid="try-step-machine"/);
+  assert.match(cockpit, /data-testid="try-step-payment"/);
+  assert.match(cockpit, /No charge was submitted by this page/);
+  assert.match(cockpit, /Start preview is still a human click/);
+  assert.match(header, /href="\/try"/);
+  assert.match(sitemap, /'\/try'/);
+  assert.match(robots, /'\/try'/);
 });
 
 test('machine payment routes use major-unit pricing and bind custom tone requests', async () => {

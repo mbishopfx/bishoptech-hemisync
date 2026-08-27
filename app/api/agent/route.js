@@ -11,6 +11,7 @@ import {
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { tryGetAuthenticatedUser } from '@/lib/auth/session';
 import { hasPlatformAccess, isFreeSubscriptionTier } from '@/lib/billing/entitlements';
+import { safetyRedirectForIntention } from '@/lib/agentic/safety-capability';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -67,6 +68,20 @@ export async function POST(req) {
 
   try {
     IntentionInputSchema.parse({ intention });
+
+    const safetyRedirect = safetyRedirectForIntention(intention, {
+      capabilityId: 'cognistration-tone-intention',
+      version: '0.1.0'
+    });
+    if (safetyRedirect) {
+      return NextResponse.json({
+        ok: true,
+        ...safetyRedirect,
+        agentMessage: safetyRedirect.safety.message,
+        usage: { recorded: false, publicPreview: false },
+        track: null
+      }, { headers: { 'cache-control': 'no-store' } });
+    }
 
     const { user } = await tryGetAuthenticatedUser(req);
     const supabase = getOptionalAdminClient();

@@ -95,6 +95,12 @@ export function MemberWebMcpBridge() {
     const tools = [
       buildTool(definitions.cognistration_member_get_workspace, () => memberRequest('/api/member/workspace')),
       buildTool(definitions.cognistration_member_prepare_session, (input) => memberRequest('/api/member/plan', { method: 'POST', body: input })),
+      buildTool(definitions.cognistration_member_clarify_intention, (input) => memberRequest('/api/agent/intent-guidance', { method: 'POST', body: input })),
+      buildTool(definitions.cognistration_member_calibrate_tone, (input) => memberRequest('/api/agent/tone-calibrate', { method: 'POST', body: input })),
+      buildTool(definitions.cognistration_member_compare_tone_directions, (input) => memberRequest('/api/agent/tone-compare', { method: 'POST', body: input })),
+      buildTool(definitions.cognistration_member_plan_listening_session, (input) => memberRequest('/api/agent/session-plan', { method: 'POST', body: input })),
+      buildTool(definitions.cognistration_member_get_session_cue, (input) => memberRequest('/api/agent/session-cue', { method: 'POST', body: input || {} })),
+      buildTool(definitions.cognistration_member_prepare_session_recipe, (input) => memberRequest('/api/agent/session-recipe', { method: 'POST', body: input || {} })),
       buildTool(definitions.cognistration_member_generate_tone, async (input = {}) => {
         if (input.confirmed !== true) {
           return {

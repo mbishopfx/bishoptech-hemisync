@@ -8,6 +8,7 @@
     "enabled": true
   },
   "vars": {
-    "UPSTREAM_MCP_ENDPOINT": "https://cognistration.com/api/mcp"
+    "UPSTREAM_MCP_ENDPOINT": "https://cognistration.com/api/mcp",
+    "CORS_ALLOWED_ORIGINS": "https://cognistration.com,https://www.cognistration.com,https://chatgpt.com,https://www.chatgpt.com,https://chat.openai.com"
   }
 }

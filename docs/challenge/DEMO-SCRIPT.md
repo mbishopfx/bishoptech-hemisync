@@ -2,21 +2,29 @@
 
 Target length: 2 minutes 30 seconds or less. Record a public YouTube video with system audio enabled.
 
-## 0:00–0:20 — The problem
+## 0:00–0:15 — The problem
 
-Show the Cognistration homepage.
+Open https://cognistration.com/try.
 
 Say: “Most listening apps make me browse a catalog before I know what I need. Cognistration starts with the next moment instead: I describe how I want to use my attention, and the session takes shape around that.”
 
-## 0:20–0:50 — Human-first entry point
+## 0:15–0:45 — Intent to direction
 
-Click the hero input and enter: “I need a calm place to start writing.” Submit it.
+In the cockpit, enter: “I need a calm place to start writing.” Submit it.
 
-Show the matched tone, the visible session direction, and the audio preview control. Start the preview manually so the audience hears the result.
+Show the matched tone, the ranked comparison, and the visible session direction. If the request is changed to “I need something better,” press “Help me choose” and show the three bounded choices instead of an invented guess.
 
 Say: “The matcher stays inside Cognistration’s public tone library. The response is a starting direction, not a medical promise.”
 
-## 0:50–1:40 — Agent and human together
+## 0:45–1:25 — Ritual and human control
+
+Press “Plan 20 minutes.” Show the three phases: `arrive → practice → close`, with a cue and duration for each. Press “Give me a cue,” then “Prepare recipe.” Point out that the recipe contains technical settings only; there is no diary export or cloud journal.
+
+Press “Too intense” or “Slower.” Show the bounded adjustment and its explanation. Start the preview manually so the audience hears the result.
+
+Say: “The agent can shape the session, but playback and meaningful side effects stay with the person.”
+
+## 1:25–2:05 — Agent and human together
 
 Switch to a compatible ChatGPT in-app browser or Chrome WebMCP session. For the local Chrome path, enable `chrome://flags/#enable-webmcp-testing` and relaunch first. Ask the agent:
 
@@ -38,28 +46,24 @@ explicit preview” yourself. Then type “I need a clear mind before writing”
 the widget, choose “Find a tone,” and point out that the machine remains mounted
 while the public recommendation tool updates its tone card.
 
-If time allows, press “Plan 20 minutes” and “Give me a cue” to show that the same machine can move from sound selection into a bounded practice plan.
-
 If time allows, press “Help me choose” with a broad request, then use “Too
 bright” or “Too intense” to show the feedback loop. The machine proposes a
 bounded visible adjustment and keeps audio off until the person chooses to
 start it again.
 
-## 1:40–2:10 — The orchestrator advantage
+## 2:05–2:30 — The orchestrator advantage and close
 
-Scroll to the orchestrator section.
+Show the live payment panel on `/try` and explain: “The public path is free. As
+an extra agent-to-agent demonstration, Cognistration advertises a fixed
+fifty-cent session resource. Without a provider credential the live server
+returns a real 402 challenge, and no charge is created in this recording.”
 
-Say: “The differentiator is not a playlist. It is an editable orchestrator: intention becomes a tone, a state, a carrier, a beat, and eventually a private session someone can refine and export.”
+Then show the safety link or submit a medical-shaped test request in a separate
+tab and point to `/health-warning`.
 
-Adjust one visible control manually to show that human input and agent input meet in the same interface.
+Say: “The differentiator is not a playlist. It is an editable orchestrator: intention becomes a tone, a state, a carrier, a beat, and a short ritual, with agents helping where structured control is useful and the person staying in charge. Cognistration does not diagnose or guarantee a brain state.”
 
-## 2:10–2:30 — Close
-
-Show the “What it does not do” section and the platform CTA.
-
-Say: “Cognistration does not diagnose or guarantee a brain state. It gives people a clear, repeatable way to shape sound around a real moment, with agents helping where structured control is useful and the person staying in charge.”
-
-End on the live URL: https://cognistration.com
+End on the live URL: https://cognistration.com/try
 
 ## Optional iPhone app close
 

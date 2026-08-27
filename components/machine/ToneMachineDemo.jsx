@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Lightning, Power, Pulse } from '@phosphor-icons/react';
 import { nativeWebMcpTool, WEBMCP_TOOL_DEFINITIONS, WEBMCP_CONTRACT_ID, WEBMCP_CONTRACT_VERSION } from '@/lib/agentic/webmcp-contract';
+import { buildSessionRecipe, sessionRecipeInputFromControls } from '@/lib/agentic/recipe-capability';
+import { RitualConductor } from './RitualConductor';
 
 const DEFAULT_MAX_DURATION_SEC = 120;
 
@@ -68,7 +70,7 @@ function browserCorrelationId() {
   return `browser-${Date.now()}`;
 }
 
-export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, workshopAccess = null }) {
+export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, workshopAccess = null, ritualPlan: initialRitualPlan = null }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [carrierFreq, setCarrierFreq] = useState(200);
   const [targetState, setTargetState] = useState('theta');
@@ -80,6 +82,9 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
   const [webmcpStatus, setWebmcpStatus] = useState('checking');
   const [agentActivity, setAgentActivity] = useState('');
   const [packPreview, setPackPreview] = useState(null);
+  const [ritualPlan, setRitualPlan] = useState(initialRitualPlan?.phases?.length ? initialRitualPlan : null);
+  const [ritualPhase, setRitualPhase] = useState(initialRitualPlan?.phases?.[0]?.id || null);
+  const [recipeMessage, setRecipeMessage] = useState('');
   const maxDurationSec = workshopAccess?.valid ? 60 * 60 : DEFAULT_MAX_DURATION_SEC;
   const isWorkshopAccess = Boolean(workshopAccess?.valid);
 
@@ -268,6 +273,15 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         };
       }
 
+      if (data.status === 'safety_redirect') {
+        setAgentActivity(data.safety?.message || 'Please review the Cognistration health and safety page before continuing.');
+        return agentResult('safety_redirect', {
+          safety: data.safety,
+          nextAction: data.nextAction,
+          boundaries: data.boundaries
+        });
+      }
+
       const applied = applyToneSettings(data.track || {});
       setAgentActivity(`Your session is set to ${applied.targetState} with ${data.track?.name || 'a public tone'}.`);
       return {
@@ -326,7 +340,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
 
     try {
       const data = await fetchAgentCapability('/api/agent/intent-guidance', { intention });
-      return agentResult('completed', { guidance: data.guidance });
+      return agentResult(data.guidance?.status === 'safety_redirect' ? 'safety_redirect' : 'completed', { guidance: data.guidance });
     } catch (error) {
       return agentResult('failed', {
         error: { code: error.code || 'INTENT_GUIDANCE_UNAVAILABLE', safeMessage: 'The direction helper could not be reached. Try one of the visible state controls.', retryable: Boolean(error.retryable) }
@@ -378,7 +392,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
 
     try {
       const data = await fetchAgentCapability('/api/agent/tone-compare', { intention, limit });
-      return agentResult('completed', { comparison: data.comparison });
+      return agentResult(data.comparison?.status === 'safety_redirect' ? 'safety_redirect' : 'completed', { comparison: data.comparison });
     } catch (error) {
       return agentResult('failed', {
         error: { code: error.code || 'TONE_COMPARISON_UNAVAILABLE', safeMessage: 'The tone comparison could not be reached. Try the visible controls instead.', retryable: Boolean(error.retryable) }
@@ -404,7 +418,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         ...(input.mode ? { mode: input.mode } : {}),
         ...(input.targetState ? { targetState: input.targetState } : {})
       });
-      return agentResult('completed', { plan: data.plan });
+      return agentResult(data.plan?.status === 'safety_redirect' ? 'safety_redirect' : 'completed', { plan: data.plan });
     } catch (error) {
       return agentResult('failed', {
         error: { code: error.code || 'SESSION_PLAN_UNAVAILABLE', safeMessage: 'The session plan could not be reached. The visible machine is still ready to tune.', retryable: Boolean(error.retryable) }
@@ -426,13 +440,122 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         ...(intention ? { intention } : {}),
         ...(input.mode ? { mode: input.mode } : {})
       });
-      return agentResult('completed', { cue: data.cue });
+      return agentResult(data.cue?.status === 'safety_redirect' ? 'safety_redirect' : 'completed', { cue: data.cue });
     } catch (error) {
       return agentResult('failed', {
         error: { code: error.code || 'SESSION_CUE_UNAVAILABLE', safeMessage: 'The session cue could not be reached. Try a visible machine direction instead.', retryable: Boolean(error.retryable) }
       });
     }
   }, [agentResult, fetchAgentCapability]);
+
+  const beginRitualForAgent = useCallback(async (input = {}) => {
+    const result = await planListeningSessionForAgent(input);
+    if (result.status !== 'completed' || !result.plan?.phases?.length) return result;
+
+    const firstPhase = result.plan.phases[0];
+    const controls = applyToneSettings(firstPhase.controls);
+    setRitualPlan(result.plan);
+    setRitualPhase(firstPhase.id);
+    setAgentActivity(`Three-act ritual staged at ${firstPhase.label.toLowerCase()}. Audio remains off until you confirm a preview.`);
+    return agentResult('completed', {
+      plan: result.plan,
+      activePhase: firstPhase.id,
+      phase: firstPhase,
+      controls,
+      manualTransition: true
+    });
+  }, [agentResult, applyToneSettings, planListeningSessionForAgent]);
+
+  const advanceRitualForAgent = useCallback((input = {}) => {
+    const phaseId = input.phase;
+    if (!['arrive', 'practice', 'close'].includes(phaseId)) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_RITUAL_PHASE', safeMessage: 'Choose arrive, practice, or close.', retryable: false }
+      });
+    }
+
+    const phase = ritualPlan?.phases?.find((candidate) => candidate.id === phaseId);
+    if (!phase) {
+      return agentResult('needs_input', {
+        error: { code: 'RITUAL_NOT_STARTED', safeMessage: 'Start a ritual before selecting a phase.', retryable: false }
+      });
+    }
+
+    const controls = applyToneSettings(phase.controls);
+    setRitualPhase(phaseId);
+    setAgentActivity(`${phase.label} is staged with ${controls.targetState} controls. Audio remains off until you confirm a preview.`);
+    return agentResult('completed', { activePhase: phaseId, phase, controls, manualTransition: true });
+  }, [agentResult, applyToneSettings, ritualPlan]);
+
+  const prepareSessionRecipeForAgent = useCallback((input = {}) => {
+    try {
+      const current = sessionStateRef.current || {};
+      const recipe = buildSessionRecipe(sessionRecipeInputFromControls({
+        targetState: input.targetState ?? current.targetState ?? 'theta',
+        carrierHz: input.carrierHz ?? current.carrierHz ?? 200,
+        beatHz: input.beatHz ?? current.beatHz ?? 6,
+        volume: input.volume ?? current.volume ?? 72,
+        durationSec: input.durationSec ?? 120,
+        intentionLabel: input.intentionLabel ?? 'reflect'
+      }));
+      return recipe;
+    } catch {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_SESSION_RECIPE', safeMessage: 'Use a published intention label and keep the recipe settings within their published bounds.', retryable: false }
+      });
+    }
+  }, [agentResult]);
+
+  const selectRitualPhase = useCallback((phaseId) => {
+    const phase = ritualPlan?.phases?.find((candidate) => candidate.id === phaseId);
+    if (!phase) return;
+    const controls = applyToneSettings(phase.controls);
+    setRitualPhase(phaseId);
+    setAgentActivity(`${phase.label} is staged with ${controls.targetState} controls.`);
+  }, [applyToneSettings, ritualPlan]);
+
+  const buildLocalRecipe = useCallback(() => buildSessionRecipe(sessionRecipeInputFromControls({
+    targetState,
+    carrierHz: carrierFreq,
+    beatHz: beatFreq,
+    volume,
+    durationSec: ritualPlan?.totalDurationSec || 120,
+    intentionLabel: ({ delta: 'rest', theta: 'reflect', alpha: 'focus', beta: 'momentum', gamma: 'synthesis' })[targetState] || 'reflect'
+  })), [beatFreq, carrierFreq, targetState, volume, ritualPlan]);
+
+  const exportLocalRecipe = useCallback(() => {
+    try {
+      const recipe = buildLocalRecipe().recipe;
+      const blob = new Blob([JSON.stringify(recipe, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'cognistration-session-recipe.json';
+      anchor.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      setRecipeMessage('Recipe exported. Only technical settings were included.');
+    } catch {
+      setRecipeMessage('The recipe could not be exported in this browser.');
+    }
+  }, [buildLocalRecipe]);
+
+  const shareLocalRecipe = useCallback(async () => {
+    try {
+      const recipe = buildLocalRecipe().recipe;
+      const text = JSON.stringify(recipe, null, 2);
+      if (navigator.share) {
+        await navigator.share({ title: 'Cognistration session recipe', text });
+        setRecipeMessage('Recipe shared. Only technical settings were included.');
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        setRecipeMessage('Recipe copied. Only technical settings were included.');
+      } else {
+        throw new Error('sharing unavailable');
+      }
+    } catch (error) {
+      if (error?.name !== 'AbortError') setRecipeMessage('Sharing is unavailable here; use Export JSON instead.');
+    }
+  }, [buildLocalRecipe]);
 
   const nudgeCarrierForAgent = useCallback((input = {}) => {
     const direction = input.direction;
@@ -618,6 +741,9 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     cognistration_compare_tone_directions: compareToneDirectionsForAgent,
     cognistration_plan_listening_session: planListeningSessionForAgent,
     cognistration_get_session_cue: getSessionCueForAgent,
+    cognistration_begin_ritual: beginRitualForAgent,
+    cognistration_advance_ritual: advanceRitualForAgent,
+    cognistration_prepare_session_recipe: prepareSessionRecipeForAgent,
     cognistration_search_tone_packs: searchTonePacksForAgent,
     cognistration_preview_tone_pack: previewTonePackForAgent,
     cognistration_get_policy_info: getPolicyInfoForAgent,
@@ -672,6 +798,14 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     const applied = applyToneSettings(agentTone);
     setAgentActivity(`Your session is set to ${applied.targetState} with ${agentTone.name || 'a public tone'}.`);
   }, [agentTone, applyToneSettings]);
+
+  useEffect(() => {
+    if (!initialRitualPlan?.phases?.length) return;
+    const firstPhase = initialRitualPlan.phases[0];
+    setRitualPlan(initialRitualPlan);
+    setRitualPhase((current) => initialRitualPlan.phases.some((phase) => phase.id === current) ? current : firstPhase.id);
+    applyToneSettings(firstPhase.controls);
+  }, [applyToneSettings, initialRitualPlan]);
 
   useEffect(() => {
     let frame;
@@ -787,6 +921,12 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
           </div>
         )}
       </div>
+
+      {ritualPlan && (
+        <div className="mb-8">
+          <RitualConductor plan={ritualPlan} activePhase={ritualPhase} onSelectPhase={selectRitualPhase} />
+        </div>
+      )}
 
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-6 lg:col-span-7">
@@ -919,6 +1059,19 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
                           <p className="mt-1 text-xs text-white/35">{state.range}</p>
                 </button>
               ))}
+            </div>
+
+            <div data-testid="session-recipe" className="space-y-3 rounded-2xl border border-white/10 bg-[#101815]/60 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm font-medium text-white/75">Portable session recipe</p>
+                <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white/35">Technical settings only</span>
+              </div>
+              <p className="text-xs leading-5 text-white/40">Export or share the current direction without diary text, account data, or audio.</p>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={exportLocalRecipe} className="rounded-full bg-[#d7eadf] px-3.5 py-2 text-xs font-medium text-[#17332e] transition hover:bg-white">Export JSON</button>
+                <button type="button" onClick={shareLocalRecipe} className="rounded-full border border-white/15 px-3.5 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white">Share / copy</button>
+              </div>
+              {recipeMessage && <p className="text-xs leading-5 text-[#b6ddcc]/80" aria-live="polite">{recipeMessage}</p>}
             </div>
           </div>
         </div>
