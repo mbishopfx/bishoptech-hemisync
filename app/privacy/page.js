@@ -25,6 +25,7 @@ export default function PrivacyPage() {
   return (
     <LegalPageShell
       title="Cognistration privacy policy"
+      activeHref="/privacy"
       summary="This policy describes the information Cognistration receives when you create an account, use a session, contact support, make a purchase, or use an AI-assisted feature."
     >
       <PolicySection id="information-you-provide" title="Information you provide">
@@ -32,7 +33,7 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection id="automatic-information" title="Information collected automatically">
-        <p>Depending on how you use the site, hosting and security systems may receive technical information such as browser and device details, IP address, request and page activity, cookies, local-storage values, and product analytics events. Some of these values are needed for sign-in, playback, public-preview limits, security, or site measurement.</p>
+        <p>Depending on how you use the site, hosting and security systems may receive technical information such as browser and device details, IP address, request and page activity, cookies sent with a request, and product analytics events. Your browser may also keep cookies, local-storage values, and playback or preview state on your device. Some of these values are needed for sign-in, playback, public-preview limits, security, or site measurement.</p>
       </PolicySection>
 
       <PolicySection id="uses" title="How we use information">
@@ -52,6 +53,10 @@ export default function PrivacyPage() {
 
       <PolicySection id="payments" title="Payments">
         <p>Payments are processed by Stripe or another payment processor shown at checkout. Cognistration does not store full payment-card numbers in its application data. The processor may collect and retain payment and transaction information under its own terms and policies.</p>
+      </PolicySection>
+
+      <PolicySection id="security" title="How we protect information">
+        <p>We use HTTPS for the production site, access controls for authenticated data, and security features provided by our hosting, database, authentication, and payment providers. Payment details are entered through hosted payment checkout rather than Cognistration’s audio tools. No online service is completely risk-free, so please use a unique password and contact support promptly if you suspect unauthorized access.</p>
       </PolicySection>
 
       <PolicySection id="cookies-and-storage" title="Cookies and local storage">

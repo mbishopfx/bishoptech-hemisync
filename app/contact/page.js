@@ -38,6 +38,7 @@ export default function ContactPage() {
   return (
     <LegalPageShell
       title="Cognistration support"
+      activeHref="/contact"
       summary="Use one direct support path for account questions, billing, privacy requests, and product feedback."
     >
       <script

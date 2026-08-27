@@ -11,7 +11,7 @@ const policyLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
-export function LegalPageShell({ title, summary, lastUpdated = 'August 27, 2026', children }) {
+export function LegalPageShell({ title, summary, activeHref, lastUpdated = 'August 27, 2026', children }) {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#eef1ee] font-sans text-[#1d302c] selection:bg-[#b6ddcc]/60">
       <a
@@ -54,7 +54,8 @@ export function LegalPageShell({ title, summary, lastUpdated = 'August 27, 2026'
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="transition-colors hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]"
+                    aria-current={link.href === activeHref ? 'page' : undefined}
+                    className={`transition-colors hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477] ${link.href === activeHref ? 'font-medium text-[#315e55]' : ''}`}
                   >
                     {link.label}
                   </Link>

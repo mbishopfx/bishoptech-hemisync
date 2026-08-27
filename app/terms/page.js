@@ -25,6 +25,7 @@ export default function TermsPage() {
   return (
     <LegalPageShell
       title="Cognistration terms of use"
+      activeHref="/terms"
       summary="These Terms govern your use of Cognistration, including its audio sessions, tone library, private workspace, account features, and digital purchases."
     >
       <PolicySection id="agreement" title="Your agreement">
@@ -55,7 +56,7 @@ export default function TermsPage() {
       </PolicySection>
 
       <PolicySection id="content" title="Your content and generated results">
-        <p>You keep ownership of content you submit. You give Cognistration the limited permission needed to host, process, store, reproduce, and display that content to provide, secure, and improve the features you use. If you choose to publish content through a public or community feature, it may be visible to others as described at the time you publish it.</p>
+        <p>You keep ownership of content you submit. You give Cognistration the limited permission needed to host, process, store, reproduce, and display that content to provide, secure, and maintain the features you use. If you choose to publish content through a public or community feature, it may be visible to others as described at the time you publish it.</p>
         <p>You are responsible for having the rights to submit content and for reviewing generated suggestions before you use or share them. Automated output may be inaccurate, incomplete, or not unique.</p>
       </PolicySection>
 

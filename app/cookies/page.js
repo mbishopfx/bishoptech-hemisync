@@ -25,6 +25,7 @@ export default function CookiesPage() {
   return (
     <LegalPageShell
       title="Cognistration cookie policy"
+      activeHref="/cookies"
       summary="Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback, preview limits, and product operation."
     >
       <PolicySection id="what-we-use" title="What we use">

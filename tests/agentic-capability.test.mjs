@@ -120,6 +120,32 @@ test('policy and account routes have source links and preserve user-controlled s
   assert.throws(() => AccountOptionsInputSchema.parse({ email: 'user@example.test' }));
 });
 
+test('public policy pages use the shared light shell and state their active route', async () => {
+  const shell = await readFile(new URL('../components/legal/LegalPageShell.jsx', import.meta.url), 'utf8');
+  assert.match(shell, /aria-current=\{link\.href === activeHref \? 'page' : undefined\}/);
+  assert.match(shell, /bg-\[#eef1ee\]/);
+  assert.doesNotMatch(shell, /<p[^>]*>[^<]*<\/p>\s*<h1/);
+
+  const pageSources = await Promise.all([
+    readFile(new URL('../app/health-warning/page.js', import.meta.url), 'utf8'),
+    readFile(new URL('../app/ai-disclosure/page.js', import.meta.url), 'utf8'),
+    readFile(new URL('../app/contact/page.js', import.meta.url), 'utf8'),
+    readFile(new URL('../app/terms/page.js', import.meta.url), 'utf8'),
+    readFile(new URL('../app/privacy/page.js', import.meta.url), 'utf8')
+  ]);
+
+  for (const [source, href] of pageSources.map((source, index) => [source, ['/health-warning', '/ai-disclosure', '/contact', '/terms', '/privacy'][index]])) {
+    assert.match(source, new RegExp(`activeHref=\"${href}\"`));
+    assert.match(source, /<LegalPageShell/);
+  }
+
+  const privacy = pageSources[4];
+  assert.match(privacy, /Your browser may also keep cookies, local-storage values/);
+  assert.match(privacy, /How we protect information/);
+  assert.match(privacy, /HTTPS for the production site/);
+  assert.match(pageSources[3], /provide, secure, and maintain the features you use/);
+});
+
 test('the iPhone app offer is public, bounded, and user-purchased', async () => {
   const offer = publicIosAppOffer();
   assert.equal(offer.capabilityId, IOS_APP_CAPABILITY_ID);
