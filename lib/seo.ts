@@ -13,6 +13,8 @@ export const PUBLIC_ROUTES = [
   "/blog",
   "/community",
   "/pricing",
+  "/packs",
+  "/services",
   "/tutorial",
   "/tutorial/meditation-self-exploration",
   "/tutorial/dreamwork-lucid-dreaming",

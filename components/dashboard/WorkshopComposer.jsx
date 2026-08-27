@@ -254,10 +254,10 @@ export function WorkshopComposer({
     <div className="space-y-6">
       {/* Tab Header Section */}
       <div className="space-y-2">
-        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Acoustic Console</p>
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Listening Workshop</p>
         <h2 className="text-3xl font-light text-white tracking-tight">Cognistration Workshop</h2>
         <p className="max-w-3xl text-xs leading-relaxed text-zinc-400 font-light font-sans">
-          Calibrate stereophonic phase shifts and carrier baselines in real-time. Plug in your stereo headphones, power on the synthesis console, and tune your brain state baselines dynamically.
+          Shape the left and right tones, set a comfortable rhythm, and build a listening session that fits the moment. Headphones recommended.
         </p>
       </div>
 
@@ -270,13 +270,13 @@ export function WorkshopComposer({
             
             {/* Real-time Oscilloscope Panel */}
             <div className="space-y-4">
-              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Real-time Auditory Oscillations</p>
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Session pattern</p>
               <div className="border border-white/5 bg-black/60 rounded-2xl p-5 space-y-4 relative overflow-hidden">
                 
                 {/* Left Ear Wave */}
                 <div className="space-y-1 relative z-10">
                   <div className="flex justify-between text-[9px] font-mono text-cyan-400 uppercase tracking-widest">
-                    <span>Left Ear Carrier (L)</span>
+                    <span>Left channel</span>
                     <span>{carrierFreq} Hz</span>
                   </div>
                   <svg className="w-full h-12 text-cyan-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
@@ -287,7 +287,7 @@ export function WorkshopComposer({
                 {/* Right Ear Wave */}
                 <div className="space-y-1 relative z-10">
                   <div className="flex justify-between text-[9px] font-mono text-purple-400 uppercase tracking-widest">
-                    <span>Right Ear Carrier (R)</span>
+                    <span>Right channel</span>
                     <span>{carrierFreq + beatFreq} Hz</span>
                   </div>
                   <svg className="w-full h-12 text-purple-500/80" viewBox="0 0 400 80" preserveAspectRatio="none">
@@ -298,7 +298,7 @@ export function WorkshopComposer({
                 {/* Center Glowing Differential Entrainment Wave */}
                 <div className="space-y-1 pt-4 border-t border-white/5 relative z-10">
                   <div className="flex justify-between text-[9px] font-mono text-cyan-300 uppercase tracking-widest">
-                    <span>Binaural Differential Entrainment (R - L)</span>
+                    <span>Perceived rhythm</span>
                     <span className="font-bold">{beatFreq} Hz ({activeBrainState.toUpperCase()})</span>
                   </div>
                   <svg className="w-full h-16 text-cyan-300" viewBox="0 0 400 100" preserveAspectRatio="none">
@@ -321,12 +321,12 @@ export function WorkshopComposer({
 
             {/* Sliders Console (Under Visualizer UX) */}
             <div className="space-y-4 pt-4 border-t border-white/5">
-              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Signal Calibration Controls</p>
+              <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">Session controls</p>
               
               {/* Base Carrier Frequency Slider */}
               <div className="space-y-1">
                 <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
-                  <span>Base Carrier Frequency</span>
+                  <span>Shared tone</span>
                   <span>{carrierFreq} Hz</span>
                 </div>
                 <input
@@ -342,7 +342,7 @@ export function WorkshopComposer({
               {/* Binaural Beat Frequency Slider */}
               <div className="space-y-1">
                 <div className="flex justify-between text-[9px] font-mono uppercase text-white/40">
-                  <span>Binaural Beat Frequency (Differential)</span>
+                  <span>Rhythm</span>
                   <span>{beatFreq} Hz</span>
                 </div>
                 <input
@@ -378,7 +378,7 @@ export function WorkshopComposer({
             <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-3">
               <Activity className="size-4 text-cyan-400 shrink-0" />
               <p className="text-[9px] font-mono uppercase tracking-wider text-white/60">
-                R - L DIFFERENCE MATCHES EEG BASELINE: {beatFreq}Hz
+                Current listening cue: {beatFreq} Hz
               </p>
             </div>
 
@@ -389,7 +389,7 @@ export function WorkshopComposer({
             
             {/* Power Switch Toggle */}
             <div className="space-y-2">
-              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Hardware Interface</p>
+              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Preview</p>
               <button
                 onClick={togglePower}
                 className={`w-full py-3.5 px-6 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-bold border transition-all flex items-center justify-center gap-3 ${
@@ -399,16 +399,16 @@ export function WorkshopComposer({
                 }`}
               >
                 <Power className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
-                <span>Power: {isPlaying ? 'ONLINE' : 'OFFLINE'}</span>
+                <span>{isPlaying ? 'Stop preview' : 'Start preview'}</span>
               </button>
             </div>
 
             {/* Dynamic Countdown Clock */}
             <div className="p-4 rounded-2xl bg-zinc-950/60 border border-white/5 space-y-2 select-none">
               <div className="flex justify-between text-[10px] font-mono uppercase tracking-wider">
-                <span className="text-zinc-500">Session Calibration Node</span>
+                <span className="text-zinc-500">Session time</span>
                 <span className={isPlaying ? "text-cyan-400 font-bold animate-pulse text-[9px]" : "text-zinc-600 text-[9px]"}>
-                  {isPlaying ? "ACTIVE" : "STANDBY"}
+                  {isPlaying ? "PLAYING" : "READY"}
                 </span>
               </div>
               
@@ -431,7 +431,7 @@ export function WorkshopComposer({
 
             {/* State presets */}
             <div className="space-y-2">
-              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Target Baselines</p>
+              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Listening directions</p>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'delta', label: 'Delta', hz: 3, range: '0.5 - 4 Hz' },
@@ -473,9 +473,9 @@ export function WorkshopComposer({
       </div>
 
       <div className="space-y-3 text-left">
-        <h3 className="text-2xl font-light text-white tracking-tight text-center">1-Hour Session Complete</h3>
+        <h3 className="text-2xl font-light text-white tracking-tight text-center">Session complete</h3>
         <p className="text-xs text-zinc-400 leading-relaxed font-sans font-light">
-          You have successfully completed a full 60-minute integration baseline. Take a short rest before starting another session.
+          You have completed a full 60-minute session. Take a short rest before starting another one.
         </p>
       </div>
 
@@ -484,7 +484,7 @@ export function WorkshopComposer({
           onClick={() => setShowLimitModal(false)}
           className="w-full py-3.5 px-4 rounded-xl bg-white/10 border border-white/10 text-white font-mono text-[10px] uppercase tracking-wider hover:bg-white/20 transition-all"
         >
-          Dismiss Console
+          Close
         </button>
       </div>
       </Card>

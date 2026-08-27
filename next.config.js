@@ -7,10 +7,17 @@ function normalizeOrigin(value) {
 }
 
 const backendOrigin = normalizeOrigin(process.env.BACKEND_ORIGIN);
+const FFMPEG_BINARY = './node_modules/ffmpeg-static/ffmpeg';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  outputFileTracingIncludes: {
+    '/api/studio/renders/[renderId]/run': [FFMPEG_BINARY],
+    '/api/audio/**': [FFMPEG_BINARY],
+    '/api/admin/generate-library': [FFMPEG_BINARY],
+    '/api/mcp': ['./skills/**/*']
+  },
   turbopack: {
     root: __dirname,
   },
@@ -23,7 +30,7 @@ const nextConfig = {
     return {
       fallback: [
         {
-          source: '/api/:path((?!agent|admin|health).*)',
+          source: '/api/:path((?!agent|admin|health|mcp|capabilities|member).*)',
           destination: `${backendOrigin}/api/:path*`
         }
       ]

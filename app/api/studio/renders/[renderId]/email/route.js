@@ -27,7 +27,7 @@ export async function POST(req, { params }) {
     if (!user.email) return NextResponse.json({ error: 'Your account has no delivery email' }, { status: 400 });
     assertDeliveryCooldown(record);
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev';
     const renderUrl = `${siteUrl}/dashboard?tab=studio&render=${encodeURIComponent(renderId)}`;
     const now = new Date().toISOString();
     let claimQuery = supabase.from('renders').update({

@@ -1,70 +1,51 @@
 'use client';
 
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight, LockKey, X } from '@phosphor-icons/react';
 import Link from 'next/link';
 
 export function AgenticAuthModal({ isOpen, onClose }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            className="absolute inset-0 bg-[#13201d]/80 backdrop-blur-md"
           />
-          
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-[2.5rem] p-10 overflow-hidden"
-          >
-            {/* Background Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-cyan-500/10 blur-[100px] pointer-events-none" />
 
-            <button 
-              onClick={onClose}
-              className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors text-white/40"
-            >
-              <X className="size-5" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 18 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 18 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-title"
+            className="relative w-full max-w-md rounded-[2rem] border border-[#cbd6cf] bg-[#f7f8f5] p-8 text-[#1d302c] shadow-2xl sm:p-10"
+          >
+            <button type="button" onClick={onClose} className="absolute right-5 top-5 rounded-full p-2 text-[#7a8983] transition hover:bg-[#e5ece7] hover:text-[#1d302c]" aria-label="Close account prompt">
+              <X className="size-5" aria-hidden="true" />
             </button>
 
-            <div className="flex flex-col items-center text-center gap-6">
-              <div className="size-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400">
-                <ShieldCheck className="size-8" />
-              </div>
-
-              <div className="space-y-2">
-                <h2 className="text-2xl font-medium text-white">Continue your journey</h2>
-                <p className="text-white/40 text-sm leading-relaxed">
-                  You&apos;ve used your free session. Join the community to unlock an expanded frequency library and persistent session tracking.
-                </p>
-              </div>
-
-              <div className="flex flex-col w-full gap-3 mt-4">
-                <Link 
-                  href="/signup"
-                  className="w-full py-4 rounded-2xl bg-white text-black font-medium flex items-center justify-center gap-2 hover:bg-zinc-200 transition-colors"
-                >
-                  Create Account <ArrowRight className="size-4" />
-                </Link>
-                <Link 
-                  href="/login"
-                  className="w-full py-4 rounded-2xl bg-white/5 text-white font-medium border border-white/5 hover:bg-white/10 transition-colors"
-                >
-                  Sign In
-                </Link>
-              </div>
-
-              <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-2">
-                Secured by Cognistration
-              </p>
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-[#dcece2] text-[#315e55]">
+              <LockKey className="size-6" weight="duotone" aria-hidden="true" />
             </div>
+            <h2 id="auth-modal-title" className="mt-7 text-3xl font-medium tracking-[-0.045em]">Keep building your practice.</h2>
+            <p className="mt-4 text-sm leading-6 text-[#66746f]">Create an account to unlock the private workspace, expanded tone library, and saved sessions.</p>
+
+            <div className="mt-8 flex flex-col gap-3">
+              <Link href="/signup" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#1d302c] px-5 py-3.5 text-sm font-medium text-white transition hover:bg-[#315e55] active:translate-y-px">
+                Create your account <ArrowRight className="size-4" weight="bold" aria-hidden="true" />
+              </Link>
+              <Link href="/login" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#bfcfc5] px-5 py-3.5 text-sm font-medium text-[#315e55] transition hover:border-[#6b9587] hover:bg-[#edf4ef] active:translate-y-px">
+                Sign in
+              </Link>
+            </div>
+
+            <p className="mt-7 text-xs leading-5 text-[#7a8983]">You stay in control of every account and payment step.</p>
           </motion.div>
         </div>
       )}

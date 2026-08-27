@@ -5,6 +5,8 @@ const publicRoutes = [
   '/blog',
   '/community',
   '/pricing',
+  '/packs',
+  '/services',
   '/tutorial',
   '/tutorial/meditation-self-exploration',
   '/tutorial/dreamwork-lucid-dreaming',
@@ -18,6 +20,8 @@ const publicRoutes = [
   '/health-warning',
   '/ai-disclosure',
   '/llms.txt',
+  '/agent-instructions.md',
+  '/openapi.json',
 ];
 
 export default function robots() {

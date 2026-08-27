@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
+import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
 export function LegalPageShell({ title, summary, children }) {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
-      <PublicHeader />
+      <PublicHeader theme="dark" />
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
@@ -30,6 +31,7 @@ export function LegalPageShell({ title, summary, children }) {
           {children}
         </div>
       </main>
+      <PublicTrustFooter />
     </div>
   );
 }

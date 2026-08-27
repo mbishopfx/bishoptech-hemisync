@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from '@phosphor-icons/react/dist/ssr';
 import { blogPosts, getBlogPostBySlug } from '@/lib/blog/posts';
 import { getBlogPostComponentBySlug } from '@/components/blog/post-components';
 import { buildAbsoluteUrl } from '@/lib/seo';
@@ -44,25 +44,25 @@ function buildArticleJsonLd(post) {
 function FallbackBlogPost({ post }) {
   return (
     <article className="space-y-8">
-      <header className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
-        <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
+      <header className="space-y-5 rounded-[1.75rem] border border-[#cbd6cf] bg-white/70 px-7 py-10 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl md:px-10 md:py-12">
+        <h1 className="text-balance text-4xl font-medium leading-[0.98] tracking-[-0.055em] text-[#1d302c] md:text-6xl">
           {post.title}
         </h1>
-        <p className="max-w-3xl text-balance text-sm leading-relaxed text-white/50">
+        <p className="max-w-3xl text-balance text-base leading-7 text-[#60716b]">
           {post.excerpt}
         </p>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#779187]">
           <span>{post.category}</span>
           <span>{post.readTime}</span>
           <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
         </div>
       </header>
 
-      <section className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
-        <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
+      <section className="space-y-5 rounded-[1.75rem] border border-[#cbd6cf] bg-white/70 p-7 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl md:p-8">
+        <h2 className="text-3xl font-medium leading-tight tracking-[-0.045em] text-[#1d302c] md:text-4xl">
           Summary view
         </h2>
-        <div className="space-y-4 text-sm leading-relaxed text-white/50">
+        <div className="space-y-4 text-sm leading-7 text-[#60716b]">
           <p>
             This post is registered in the blog archive, but the custom article component was not
             available in the current build. The summary view keeps the route live while the post
@@ -77,13 +77,13 @@ function FallbackBlogPost({ post }) {
 
       <section className="grid gap-4 md:grid-cols-2">
         <Link
-          className="rounded-2xl border border-white/5 bg-zinc-950/40 p-5 text-sm text-white/70 transition-colors hover:bg-white/[0.04] hover:text-white"
+          className="rounded-[1.5rem] border border-[#cbd6cf] bg-white/60 p-5 text-sm font-medium text-[#315e55] transition-colors hover:border-[#9db9aa] hover:bg-white hover:text-[#1d302c]"
           href="/blog"
         >
           Back to the archive
         </Link>
         <Link
-          className="rounded-2xl border border-white/5 bg-zinc-950/40 p-5 text-sm text-white/70 transition-colors hover:bg-white/[0.04] hover:text-white"
+          className="rounded-[1.5rem] border border-[#cbd6cf] bg-white/60 p-5 text-sm font-medium text-[#315e55] transition-colors hover:border-[#9db9aa] hover:bg-white hover:text-[#1d302c]"
           href="/tutorial"
         >
           Open the setup guide
@@ -97,20 +97,21 @@ export function generateStaticParams() {
   return blogPosts.map(({ slug }) => ({ slug }));
 }
 
-export function generateMetadata({ params }) {
-  const post = getBlogPostBySlug(params.slug);
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const post = getBlogPostBySlug(slug);
 
   if (!post) {
     return {
       title: { absolute: 'Blog Post — Cognistration' },
       description: 'Cognistration blog article.',
-      alternates: { canonical: `/blog/${params.slug}` },
+      alternates: { canonical: `/blog/${slug}` },
       openGraph: {
         title: 'Blog Post — Cognistration',
         description: 'Cognistration blog article.',
         siteName: 'Cognistration',
         type: 'article',
-        url: `/blog/${params.slug}`,
+        url: `/blog/${slug}`,
         images: [{ url: '/images/og-preview.png', width: 1254, height: 1254, alt: 'Cognistration brainwave mark' }],
       },
       twitter: {
@@ -143,16 +144,17 @@ export function generateMetadata({ params }) {
   };
 }
 
-export default function BlogPostPage({ params }) {
-  const PostComponent = getBlogPostComponentBySlug(params.slug);
-  const post = getBlogPostBySlug(params.slug);
+export default async function BlogPostPage({ params }) {
+  const { slug } = await params;
+  const PostComponent = getBlogPostComponentBySlug(slug);
+  const post = getBlogPostBySlug(slug);
 
   if (!PostComponent || !post) {
     notFound();
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
+    <div className="blog-light-theme min-h-[100dvh] overflow-x-hidden bg-[#eef1ee] text-[#1d302c] font-sans selection:bg-[#b6ddcc]/60">
       {post ? (
         <script
           type="application/ld+json"
@@ -161,41 +163,36 @@ export default function BlogPostPage({ params }) {
       ) : null}
       <PublicHeader />
 
-      {/* Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
-        <div className="absolute inset-0 cyber-grid opacity-10" />
-      </div>
-
-      <main className="landing-shell pt-40 pb-20 relative z-10">
-        <div className="mx-auto w-full max-w-4xl space-y-8 px-6 md:px-10 research-paper-style">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+      <main className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
+        <div className="mx-auto w-full max-w-5xl space-y-8 research-paper-style">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#cbd6cf] pb-4">
             <Link
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-[#b8cbc0] bg-white/70 px-4 py-2 text-sm font-medium text-[#315e55] transition-colors hover:border-[#7fa594] hover:bg-white"
               href="/blog"
             >
               <ArrowLeft className="size-3.5" /> Back to archive
             </Link>
             <Link
-              className="hidden rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-white transition-colors md:inline-flex"
+              className="hidden rounded-full border border-[#b8cbc0] bg-white/70 px-4 py-2 text-sm font-medium text-[#315e55] transition-colors hover:border-[#7fa594] hover:bg-white md:inline-flex"
               href="/"
             >
               Home
             </Link>
           </div>
 
-          <PostComponent />
+          <div className="blog-article-body">
+            <PostComponent />
+          </div>
 
-          <div className="rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-6 shadow-2xl metadata-block">
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
+          <div className="metadata-block rounded-[1.75rem] border border-[#cbd6cf] bg-white/60 p-6 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl">
+            <p className="text-sm font-medium text-[#315e55]">
               Post metadata
             </p>
-            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#779187]">
               <span>Read Time: {post.readTime}</span>
               <span>Published: {new Date(post.publishedAt).toLocaleDateString()}</span>
               <span>Category: {post.category}</span>
-              <Link href="/ai-disclosure" className="hover:text-white transition-colors">
+                <Link href="/ai-disclosure" className="transition-colors hover:text-[#1d302c]">
                 AI Disclosure
               </Link>
             </div>

@@ -122,9 +122,23 @@ function selectTracks(tones, definition) {
   return selected;
 }
 
+async function fetchWithRetry(url, attempts = 3) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(30000) });
+      if (!response.ok) throw new Error(`Could not fetch ${url}: ${response.status}`);
+      return response;
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+    }
+  }
+  throw lastError;
+}
+
 async function downloadTo(filePath, url) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Could not fetch ${url}: ${response.status}`);
+  const response = await fetchWithRetry(url);
   const buffer = Buffer.from(await response.arrayBuffer());
   await fs.writeFile(filePath, buffer);
   return buffer.length;

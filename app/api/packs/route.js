@@ -5,6 +5,12 @@ import {
   buildTonePackFromTracks,
   getTonePackPriceId
 } from '@/lib/audio/tone-packs.db.mjs';
+import {
+  TonePackSearchInputSchema,
+  TonePackSlugInputSchema,
+  getPublicTonePack,
+  searchPublicTonePacks
+} from '@/lib/agentic/pack-capability';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -13,7 +19,46 @@ function isMissingTable(error) {
   return String(error?.message || '').toLowerCase().includes('does not exist');
 }
 
-export async function GET() {
+function agentHeaders() {
+  return {
+    'cache-control': 'public, max-age=300, s-maxage=300',
+    vary: 'Accept'
+  };
+}
+
+function agentCatalogResponse(requestUrl) {
+  const slug = requestUrl.searchParams.get('slug');
+  if (slug !== null) {
+    const parsedSlug = TonePackSlugInputSchema.safeParse({ slug });
+    if (!parsedSlug.success) {
+      return NextResponse.json({ ok: false, code: 'INVALID_INPUT', error: 'Provide a valid public tone-pack slug.' }, { status: 400, headers: agentHeaders() });
+    }
+
+    const pack = getPublicTonePack(parsedSlug.data.slug);
+    if (!pack) {
+      return NextResponse.json({ ok: false, code: 'NOT_FOUND', error: 'That public tone-pack slug is not in the approved catalog.' }, { status: 404, headers: agentHeaders() });
+    }
+
+    return NextResponse.json({ ok: true, pack, source: 'agentic-public' }, { headers: agentHeaders() });
+  }
+
+  const input = {
+    ...(requestUrl.searchParams.has('query') ? { query: requestUrl.searchParams.get('query') } : {}),
+    ...(requestUrl.searchParams.has('state') ? { state: requestUrl.searchParams.get('state') } : {}),
+    ...(requestUrl.searchParams.has('limit') ? { limit: requestUrl.searchParams.get('limit') } : {})
+  };
+  const parsed = TonePackSearchInputSchema.safeParse(input);
+  if (!parsed.success) {
+    return NextResponse.json({ ok: false, code: 'INVALID_INPUT', error: 'Use a short query, a published tone state, and a limit from 1 to 20.' }, { status: 400, headers: agentHeaders() });
+  }
+
+  return NextResponse.json({ ok: true, packs: searchPublicTonePacks(parsed.data), source: 'agentic-public' }, { headers: agentHeaders() });
+}
+
+export async function GET(request) {
+  const requestUrl = new URL(request.url);
+  if (requestUrl.searchParams.get('agent') === '1') return agentCatalogResponse(requestUrl);
+
   try {
     const fallback = TONE_PACKS.map((pack) => ({
       ...pack,

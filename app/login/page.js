@@ -3,11 +3,11 @@ import { LoginClient } from './LoginClient';
 
 export const metadata = {
   title: { absolute: 'Sign In — Cognistration' },
-  description: 'Secure sign-in for the Cognistration portal.',
+  description: 'Secure sign-in for your private Cognistration listening workspace.',
   alternates: { canonical: '/login' },
   openGraph: {
     title: 'Sign In — Cognistration',
-    description: 'Secure sign-in for the Cognistration portal.',
+    description: 'Secure sign-in for your private Cognistration listening workspace.',
     siteName: 'Cognistration',
     type: 'website',
     url: '/login',
@@ -16,7 +16,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Sign In — Cognistration',
-    description: 'Secure sign-in for the Cognistration portal.',
+    description: 'Secure sign-in for your private Cognistration listening workspace.',
     images: ['/images/og-preview.png'],
   },
   robots: {
@@ -27,7 +27,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-[100dvh] bg-[#eef1ee]" />}>
       <LoginClient />
     </Suspense>
   );

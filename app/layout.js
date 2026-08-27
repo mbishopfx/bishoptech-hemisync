@@ -1,28 +1,38 @@
 import './globals.css';
-import { Outfit } from 'next/font/google';
+import { DM_Mono, Manrope } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
+import { buildAbsoluteUrl } from '@/lib/seo';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
 const siteName = 'Cognistration';
-const siteDescription = 'Cognistration by BishopTech offers premium audio sessions for focus, rest, and intentional reset.';
+const siteDescription = 'Cognistration turns a simple intention into a personal listening session for focus, rest, and intentional reset.';
 
-const displayFont = Outfit({
+const displayFont = Manrope({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['200', '300', '400', '500', '600', '700']
+  weight: ['300', '400', '500', '600', '700']
 });
 
-const sansFont = Outfit({
+const sansFont = Manrope({
   subsets: ['latin'],
   variable: '--font-sans',
-  weight: ['200', '300', '400', '500', '600', '700']
+  weight: ['300', '400', '500', '600', '700']
 });
+
+const monoFont = DM_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500']
+});
+
+const organizationId = buildAbsoluteUrl('/#organization');
+const websiteId = buildAbsoluteUrl('/#website');
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} by BishopTech — Premium audio sessions for focus, rest, and intentional reset`,
+    default: `${siteName} — Personal audio sessions for focus, rest, and intentional reset`,
     template: '%s — Cognistration'
   },
   description: siteDescription,
@@ -42,7 +52,7 @@ export const metadata = {
     type: 'website',
     url: siteUrl,
     siteName,
-    title: `${siteName} by BishopTech — Premium audio sessions for focus, rest, and intentional reset`,
+    title: `${siteName} — Personal audio sessions for focus, rest, and intentional reset`,
     description: siteDescription,
     images: [
       {
@@ -83,7 +93,7 @@ const organizationJsonLd = {
   '@graph': [
     {
       '@type': 'Organization',
-      '@id': `${siteUrl}/#organization`,
+      '@id': organizationId,
       name: siteName,
       alternateName: 'BishopTech',
       url: siteUrl,
@@ -99,12 +109,12 @@ const organizationJsonLd = {
     },
     {
       '@type': 'WebSite',
-      '@id': `${siteUrl}/#website`,
+      '@id': websiteId,
       name: siteName,
       url: siteUrl,
       description: siteDescription,
       publisher: {
-        '@id': `${siteUrl}/#organization`
+        '@id': organizationId
       }
     }
   ]
@@ -114,18 +124,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${displayFont.variable} ${sansFont.variable} min-h-screen bg-background text-foreground font-sans selection:bg-cyan-500/30`}
+        className={`${displayFont.variable} ${sansFont.variable} ${monoFont.variable} min-h-[100dvh] bg-background text-foreground font-sans selection:bg-emerald-700/20`}
       >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="fixed inset-0 cyber-grid opacity-20 pointer-events-none z-[-1]" />
-          <div className="fixed inset-0 cyber-glow opacity-30 pointer-events-none z-[-1]" />
-          
-          <div className="flex min-h-screen">
-            <main className="min-w-0 flex-1 flex flex-col min-h-screen relative z-0">
+          <div className="flex min-h-[100dvh]">
+            <main className="min-w-0 flex-1 flex flex-col min-h-[100dvh] relative z-0">
               {children}
             </main>
           </div>

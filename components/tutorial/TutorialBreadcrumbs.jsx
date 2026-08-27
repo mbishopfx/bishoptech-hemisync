@@ -22,16 +22,16 @@ export function TutorialBreadcrumbs({ current, currentUrl }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <nav aria-label="Breadcrumb" className="overflow-x-auto">
-        <ol className="flex min-w-max items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/45">
+        <ol className="flex min-w-max items-center gap-2 text-xs text-[#87968f]">
           {items.map((item, index) => (
             <li key={item.url} className="flex items-center gap-2">
-              {index > 0 && <CaretRight className="size-3 text-white/20" aria-hidden="true" />}
+              {index > 0 && <CaretRight className="size-3 text-[#b1beb7]" aria-hidden="true" />}
               {item.href ? (
-                <Link href={item.href} className="rounded-sm py-2 transition hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-100">
+                <Link href={item.href} className="rounded-sm py-2 transition hover:text-[#315e55] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#548477]">
                   {item.name}
                 </Link>
               ) : (
-                <span aria-current="page" className="py-2 text-white/70">{item.name}</span>
+                <span aria-current="page" className="py-2 text-[#4e625b]">{item.name}</span>
               )}
             </li>
           ))}

@@ -1,8 +1,11 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { AppleLogo, ArrowLeft, ArrowRight, Check, EnvelopeSimple } from '@phosphor-icons/react';
+import { AppleLogo, ArrowLeft, ArrowRight, ArrowSquareOut, Check } from '@phosphor-icons/react';
+import { ScrollRevealHeading } from '@/components/marketing/ScrollRevealHeading';
+
+const APP_STORE_URL = 'https://apps.apple.com/us/app/cognistration/id6780132617';
 
 const APP_SCREENSHOTS = [
   {
@@ -12,17 +15,17 @@ const APP_SCREENSHOTS = [
   },
   {
     src: '/images/ios-app/slide1-tune-your-brain-waves.png',
-    alt: 'Cognistration iOS screen for tuning brain waves',
-    label: 'Tune your brain waves'
+    alt: 'Cognistration iPhone screen for shaping a listening session',
+    label: 'Shape your session'
   },
   {
     src: '/images/ios-app/slide2-enter-deep-flow-state.png',
-    alt: 'Cognistration iOS screen for entering a deep flow state',
-    label: 'Enter deep flow'
+    alt: 'Cognistration iPhone screen for starting a focused session',
+    label: 'Start a focused session'
   },
   {
     src: '/images/ios-app/slide3-custom-binaural-beats.png',
-    alt: 'Cognistration iOS screen for custom binaural beats',
+    alt: 'Cognistration iPhone screen for custom audio controls',
     label: 'Build your pattern'
   },
   {
@@ -32,8 +35,8 @@ const APP_SCREENSHOTS = [
   },
   {
     src: '/images/ios-app/slide5-build-mindful-habits.png',
-    alt: 'Cognistration iOS screen about building mindful habits',
-    label: 'Build the habit'
+    alt: 'Cognistration iPhone screen for building a listening routine',
+    label: 'Build the routine'
   },
   {
     src: '/images/ios-app/breathe-relax-recharge.png',
@@ -42,189 +45,146 @@ const APP_SCREENSHOTS = [
   },
   {
     src: '/images/ios-app/detox-for-the-mind.png',
-    alt: 'Cognistration iOS screen about a digital detox for the mind',
+    alt: 'Cognistration iOS screen for a quiet reset',
     label: 'Reset the noise'
   }
 ];
 
-const MANUAL_JOIN_HREF = `mailto:matt@bishoptech.dev?subject=${encodeURIComponent('Cognistration iOS waitlist')}&body=${encodeURIComponent('Please add me to the Cognistration iOS waitlist. My email is: ')}`;
+function wrapIndex(index) {
+  return (index + APP_SCREENSHOTS.length) % APP_SCREENSHOTS.length;
+}
 
-function IosWaitlistForm() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('idle');
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setStatus('loading');
-
-    try {
-      const response = await fetch('/api/ios-waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, website: '' })
-      });
-
-      if (!response.ok) {
-        throw new Error('Waitlist request failed');
-      }
-
-      setEmail('');
-      setStatus('success');
-    } catch {
-      setStatus('error');
-    }
-  }
-
-  return (
-    <div className="mt-8">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="min-w-0 flex-1">
-          <label htmlFor="ios-waitlist-email" className="mb-2 block text-[10px] font-mono uppercase tracking-[0.22em] text-white/45">
-            Email for iOS updates
-          </label>
-          <div className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-3 transition-colors focus-within:border-cyan-300/60">
-            <EnvelopeSimple aria-hidden="true" weight="light" className="size-5 shrink-0 text-cyan-200/70" />
-            <input
-              id="ios-waitlist-email"
-              type="email"
-              required
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-                if (status !== 'idle') setStatus('idle');
-              }}
-              placeholder="you@example.com"
-              autoComplete="email"
-              className="min-w-0 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/25"
-            />
-          </div>
-        </div>
-        <input
-          aria-hidden="true"
-          tabIndex={-1}
-          autoComplete="off"
-          name="website"
-          className="absolute -left-[9999px] h-px w-px opacity-0"
-          value=""
-          readOnly
-        />
-        <button
-          type="submit"
-          disabled={status === 'loading'}
-          className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-5 text-sm font-medium text-zinc-950 transition duration-300 hover:bg-white active:translate-y-px disabled:cursor-wait disabled:opacity-60"
-        >
-          {status === 'loading' ? 'Saving…' : 'Join the waitlist'}
-          <ArrowRight aria-hidden="true" weight="bold" className="size-4" />
-        </button>
-      </form>
-
-      {status === 'success' && (
-        <p className="mt-3 flex items-center gap-2 text-xs text-cyan-200">
-          <Check aria-hidden="true" weight="bold" className="size-4" />
-          You are on the list. We will email you when the iOS app is ready.
-        </p>
-      )}
-      {status === 'error' && (
-        <p className="mt-3 text-xs leading-5 text-white/55">
-          We could not save that online.{' '}
-          <a href={MANUAL_JOIN_HREF} className="text-cyan-200 underline decoration-cyan-200/40 underline-offset-4 hover:text-white">
-            Email us to join manually.
-          </a>
-        </p>
-      )}
-      {status === 'idle' && <p className="mt-3 text-[11px] leading-5 text-white/35">Coming soon. No recurring email campaign—just a release note when it is ready.</p>}
-    </div>
-  );
+function relativeIndex(index, activeIndex) {
+  let delta = index - activeIndex;
+  const half = APP_SCREENSHOTS.length / 2;
+  if (delta > half) delta -= APP_SCREENSHOTS.length;
+  if (delta < -half) delta += APP_SCREENSHOTS.length;
+  return delta;
 }
 
 export function IosAppCarousel() {
-  const scrollerRef = useRef(null);
-  const slideRefs = useRef([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
-  function setIndexFromScroll() {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const progress = scroller.scrollWidth - scroller.clientWidth;
-    const nextIndex = progress > 0
-      ? Math.round((scroller.scrollLeft / progress) * (APP_SCREENSHOTS.length - 1))
-      : 0;
-    setActiveIndex(Math.max(0, Math.min(APP_SCREENSHOTS.length - 1, nextIndex)));
+  function moveBy(offset) {
+    setActiveIndex((current) => wrapIndex(current + offset));
   }
 
-  function scrollToIndex(index) {
-    const safeIndex = Math.max(0, Math.min(APP_SCREENSHOTS.length - 1, index));
-    slideRefs.current[safeIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    setActiveIndex(safeIndex);
-  }
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncMotionPreference = () => setShouldReduceMotion(mediaQuery.matches);
+
+    syncMotionPreference();
+    mediaQuery.addEventListener?.('change', syncMotionPreference);
+
+    return () => mediaQuery.removeEventListener?.('change', syncMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    if (isPaused || shouldReduceMotion) return undefined;
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => wrapIndex(current + 1));
+    }, 4800);
+    return () => window.clearInterval(timer);
+  }, [isPaused, shouldReduceMotion]);
 
   return (
-    <section id="ios-app" aria-labelledby="ios-app-title" className="relative overflow-hidden border-y border-white/8 bg-zinc-950/80 py-24 sm:py-32">
-      <div className="absolute right-[-10rem] top-1/3 h-[28rem] w-[28rem] rounded-full bg-cyan-400/[0.07] blur-[120px]" />
-      <div className="relative mx-auto grid max-w-7xl gap-14 px-6 sm:px-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-center lg:gap-20">
+    <section id="ios-app" aria-labelledby="ios-app-title" className="relative scroll-mt-24 overflow-hidden bg-[#202b28] py-24 text-white sm:py-32">
+      <div className="absolute right-[-10rem] top-1/3 h-[28rem] w-[28rem] rounded-full bg-[#b6ddcc]/[0.07] blur-[120px]" aria-hidden="true" />
+      <div className="relative mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-center lg:gap-20 lg:px-12">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.28em] text-cyan-200/70">
-            <AppleLogo aria-hidden="true" weight="thin" className="size-4" />
-            Cognistration for iOS
-          </div>
-          <h2 id="ios-app-title" className="mt-5 max-w-xl text-4xl font-light leading-[1.05] tracking-[-0.045em] text-white sm:text-5xl">
-            Your baseline, in your pocket.
-          </h2>
-          <p className="mt-6 max-w-xl text-base font-light leading-8 text-white/55 sm:text-lg">
-            The coming iOS app makes it easier to start a session before the noise takes over. Set a pattern, watch the state move, and build a private ritual you can carry into the rest of your day.
+          <ScrollRevealHeading id="ios-app-title" className="max-w-xl text-4xl font-medium leading-[1.02] tracking-[-0.055em] text-white sm:text-6xl">
+            The full Cognistration app, for $2.99 once.
+          </ScrollRevealHeading>
+          <p className="mt-7 max-w-xl text-base leading-8 text-white/65 sm:text-lg">
+            Download Cognistration for iPhone and keep the complete listening experience close. Custom controls, on-device audio, saved presets, and a private routine—one purchase, no subscription.
           </p>
-          <IosWaitlistForm />
+          <div className="mt-8 space-y-3 text-sm text-white/75">
+            <div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Full app access after one purchase</div>
+            <div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Custom controls, presets, and reminders</div>
+            <div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> No account, ads, feed, or recurring subscription</div>
+          </div>
+          <p className="mt-7 max-w-xl border-l border-[#b6ddcc]/30 pl-4 text-sm leading-6 text-white/60">
+            The iPhone app runs on-device instead of routing each session through a cloud service. With less infrastructure to maintain, we can offer full access for a one-time $2.99.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <a href={APP_STORE_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white active:translate-y-px">
+              <AppleLogo className="size-4" weight="fill" aria-hidden="true" /> Download on the App Store <ArrowSquareOut className="size-4" aria-hidden="true" />
+            </a>
+            <span className="text-sm text-white/45">iPhone · iOS 18 or later</span>
+          </div>
+          <p className="mt-5 text-xs leading-5 text-white/40">App Store price shown for the United States. Apple controls final availability and regional pricing.</p>
         </div>
 
-        <div role="region" aria-roledescription="carousel" aria-label="Cognistration iOS app previews" className="min-w-0">
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <p className="text-xs text-white/35">App preview / {String(activeIndex + 1).padStart(2, '0')} of {String(APP_SCREENSHOTS.length).padStart(2, '0')}</p>
+        <div
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Cognistration iOS app previews"
+          className="min-w-0"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setIsPaused(false);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'ArrowLeft') moveBy(-1);
+            if (event.key === 'ArrowRight') moveBy(1);
+          }}
+        >
+          <div className="mb-3 flex items-center justify-between gap-4 px-2 sm:px-8">
+            <p className="text-xs text-white/40" aria-live="polite">iPhone preview / {String(activeIndex + 1).padStart(2, '0')} of {String(APP_SCREENSHOTS.length).padStart(2, '0')}</p>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => scrollToIndex(activeIndex - 1)}
-                disabled={activeIndex === 0}
+                onClick={() => moveBy(-1)}
                 aria-label="Previous iOS app preview"
-                className="inline-flex size-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-white/65 transition hover:border-cyan-200/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-25"
+                className="inline-flex size-10 items-center justify-center rounded-full bg-white/[0.06] text-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_30px_rgba(0,0,0,0.12)] transition hover:bg-white/[0.12] hover:text-white"
               >
                 <ArrowLeft aria-hidden="true" weight="light" className="size-4" />
               </button>
               <button
                 type="button"
-                onClick={() => scrollToIndex(activeIndex + 1)}
-                disabled={activeIndex === APP_SCREENSHOTS.length - 1}
+                onClick={() => moveBy(1)}
                 aria-label="Next iOS app preview"
-                className="inline-flex size-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] text-white/65 transition hover:border-cyan-200/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-25"
+                className="inline-flex size-10 items-center justify-center rounded-full bg-white/[0.06] text-white/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_10px_30px_rgba(0,0,0,0.12)] transition hover:bg-white/[0.12] hover:text-white"
               >
                 <ArrowRight aria-hidden="true" weight="light" className="size-4" />
               </button>
             </div>
           </div>
 
-          <div ref={scrollerRef} onScroll={setIndexFromScroll} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 pr-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {APP_SCREENSHOTS.map((screenshot, index) => (
-              <figure
-                key={screenshot.src}
-                ref={(node) => {
-                  slideRefs.current[index] = node;
-                }}
-                className="w-[78vw] max-w-[270px] shrink-0 snap-center overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.35)]"
-              >
-                <Image src={screenshot.src} alt={screenshot.alt} width={1290} height={2796} sizes="(max-width: 640px) 78vw, 270px" className="h-auto w-full" />
-                <figcaption className="border-t border-white/8 px-5 py-4 text-xs text-white/50">{screenshot.label}</figcaption>
-              </figure>
-            ))}
+          <div className="ios-carousel-stage" tabIndex={0}>
+            {APP_SCREENSHOTS.map((screenshot, index) => {
+              const position = relativeIndex(index, activeIndex);
+              const slot = position === -1 ? 'left' : position === 0 ? 'center' : position === 1 ? 'right' : 'hidden';
+
+              return (
+                <figure key={screenshot.src} className={`ios-carousel-card ios-carousel-card--${slot}`} aria-hidden={slot !== 'center'}>
+                  <Image
+                    src={screenshot.src}
+                    alt={slot === 'center' ? screenshot.alt : ''}
+                    width={1290}
+                    height={2796}
+                    sizes="(max-width: 640px) 168px, 248px"
+                    className="block h-auto w-full rounded-[2rem]"
+                  />
+                  <figcaption className="sr-only">{screenshot.label}</figcaption>
+                </figure>
+              );
+            })}
           </div>
 
-          <div className="mt-2 flex gap-2" aria-label="Choose an iOS app preview">
+          <div className="mt-1 flex items-center justify-center gap-2" aria-label="Choose an iOS app preview">
             {APP_SCREENSHOTS.map((screenshot, index) => (
               <button
                 key={screenshot.src}
                 type="button"
-                onClick={() => scrollToIndex(index)}
+                onClick={() => setActiveIndex(index)}
                 aria-label={`Show ${screenshot.label}`}
                 aria-current={activeIndex === index ? 'true' : undefined}
-                className={`h-1 rounded-full transition-all ${activeIndex === index ? 'w-8 bg-cyan-200' : 'w-2 bg-white/20 hover:bg-white/45'}`}
+                className={`h-1 rounded-full transition-all ${activeIndex === index ? 'w-8 bg-[#b6ddcc]' : 'w-2 bg-white/20 hover:bg-white/45'}`}
               />
             ))}
           </div>

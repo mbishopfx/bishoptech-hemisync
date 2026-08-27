@@ -13,6 +13,7 @@ const staticRoutes = [
   '/blog',
   '/community',
   '/pricing',
+  '/packs',
   '/tutorial',
   '/tutorial/meditation-self-exploration',
   '/tutorial/dreamwork-lucid-dreaming',
@@ -25,23 +26,22 @@ const staticRoutes = [
   '/contact',
   '/health-warning',
   '/ai-disclosure',
-  '/llms.txt'
+  '/llms.txt',
+  '/agent-instructions.md',
 ];
 
 export default async function sitemap() {
-  const now = new Date();
   const staticEntries = staticRoutes.map((path) => ({
     url: `${siteUrl}${path}`,
-    lastModified: now,
     changeFrequency: path === '/' ? 'daily' : 'weekly',
-    priority: path === '/' ? 1 : 0.7
+    priority: path === '/' ? 1 : 0.7,
   }));
 
   const blogEntries = blogPosts.map((post) => ({
     url: `${siteUrl}${post.path}`,
     lastModified: new Date(post.publishedAt),
     changeFrequency: 'monthly',
-    priority: 0.6
+    priority: 0.6,
   }));
 
   const profileEntries = [];
@@ -63,9 +63,8 @@ export default async function sitemap() {
 
           profileEntries.push({
             url: `${siteUrl}${profilePath}`,
-            lastModified: now,
             changeFrequency: 'weekly',
-            priority: 0.6
+            priority: 0.6,
           });
         }
       } catch (error) {

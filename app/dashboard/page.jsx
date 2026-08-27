@@ -15,6 +15,7 @@ import { StudioView } from '@/components/dashboard/StudioView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { toBackendUrl } from '@/lib/frontend/backend-url';
 import { getSubscriptionStatusLabel } from '@/lib/billing/entitlements';
+import { MemberWebMcpBridge } from '@/components/agent/MemberWebMcpBridge';
 
 async function readApiResponse(response, fallbackMessage = 'Request failed') {
   const contentType = response.headers.get('content-type') || '';
@@ -244,7 +245,7 @@ export default function DashboardPage() {
   };
   const handleWorkshopGenerate = async (composerPayload) => {
     setWorkshopStatus('rendering');
-    setWorkshopProgress(composerPayload.isWeave ? 'Weaving neural sequences...' : 'Structuring binaural blueprints...');
+    setWorkshopProgress(composerPayload.isWeave ? 'Building a layered listening session...' : 'Preparing your listening session...');
     setWorkshopError('');
     setWorkshopResult(null);
     setWorkshopSavedTone(null);
@@ -256,10 +257,10 @@ export default function DashboardPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(composerPayload.weavePayload)
         });
-        const data = await readApiResponse(response, 'Neural sequence weave failed');
+        const data = await readApiResponse(response, 'Layered session build failed');
 
         if (!response.ok) {
-          throw new Error(data?.error || 'Neural sequence weave failed');
+          throw new Error(data?.error || 'Layered session build failed');
         }
 
         setWorkshopResult(data);
@@ -286,7 +287,7 @@ export default function DashboardPage() {
 
       setWorkshopResult(data);
       setWorkshopStatus('saving');
-      setWorkshopProgress('Archiving custom binaural wave to your neural library...');
+      setWorkshopProgress('Saving your custom listening session to your library...');
 
       // 2. Save tone in database
       const savePayload = {
@@ -344,24 +345,28 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <span className="material-symbols-outlined text-4xl text-cyan-500 animate-spin">sync</span>
+      <div className="min-h-[100dvh] bg-[#eef1ee] text-[#1d302c] flex items-center justify-center">
+        <span className="material-symbols-outlined text-4xl text-[#548477] animate-spin">sync</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="workspace-theme min-h-[100dvh] bg-[#eef1ee] text-[#1d302c] flex">
       {/* Sidebar */}
-      <aside className="hidden md:flex w-72 border-r border-white/5 flex-col p-6 sticky top-0 h-screen bg-black/40 backdrop-blur-3xl z-50">
-        <div className="flex items-center gap-3 mb-12 justify-center md:justify-start">
+      <aside className="hidden min-h-[100dvh] w-72 flex-col border-r border-[#cbd6cf] bg-[#f7f8f5]/90 p-6 backdrop-blur-xl md:sticky md:top-0 md:flex">
+        <div className="mb-12 flex items-center gap-3 justify-center md:justify-start">
           <Image
             src="/images/cognistration-mark.png"
             alt="Cognistration brain and waveform mark"
             width={40}
             height={40}
-            className="brightness-110 contrast-125 animate-pulse"
+            className="rounded-xl border border-[#cbd6cf] shadow-[0_8px_20px_rgba(45,65,59,0.08)]"
           />
+          <div>
+            <p className="text-sm font-semibold tracking-[-0.02em] text-[#1d302c]">Cognistration</p>
+            <p className="mt-1 text-xs text-[#87968f]">Private listening workspace</p>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -371,11 +376,11 @@ export default function DashboardPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all ${
-                  isActive ? 'bg-white/5 text-white font-medium border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'
+                className={`w-full flex items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-all ${
+                  isActive ? 'border-[#b8cbc0] bg-white text-[#1d302c] font-medium shadow-[0_8px_20px_rgba(45,65,59,0.05)]' : 'border-transparent text-[#7a8983] hover:bg-white/70 hover:text-[#315e55]'
                 }`}
               >
-                <span className={`material-symbols-outlined text-lg ${isActive ? 'text-cyan-400' : ''}`}>
+                <span className={`material-symbols-outlined text-lg ${isActive ? 'text-[#548477]' : ''}`}>
                   {item.icon}
                 </span>
                 {item.label}
@@ -384,22 +389,22 @@ export default function DashboardPage() {
           })}
         </nav>
 
-        <div className="relative mt-auto pt-6 border-t border-white/5">
+        <div className="relative mt-auto border-t border-[#cbd6cf] pt-6">
           <button
             type="button"
             onClick={() => setIsAccountMenuOpen((open) => !open)}
-            className="flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/5"
+            className="flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/70"
             aria-expanded={isAccountMenuOpen}
           >
-            <Avatar className="size-10 border border-white/10">
+            <Avatar className="size-10 border border-[#cbd6cf]">
               <AvatarImage src={profile?.avatar_url} />
               <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-medium truncate">{profile?.display_name || 'Member'}</p>
-              <p className="text-[10px] font-mono text-white/40 truncate">{profile?.email || profile?.username || 'Account'}</p>
+              <p className="truncate text-xs text-[#87968f]">{profile?.email || profile?.username || 'Account'}</p>
             </div>
-            <span className="material-symbols-outlined text-lg text-white/30">expand_more</span>
+            <span className="material-symbols-outlined text-lg text-[#87968f]">expand_more</span>
           </button>
 
           <AnimatePresence>
@@ -408,17 +413,17 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
-                className="absolute bottom-16 left-0 right-0 z-50 rounded-2xl border border-white/10 bg-zinc-950/95 p-3 shadow-2xl backdrop-blur-2xl"
+                className="absolute bottom-16 left-0 right-0 z-50 rounded-2xl border border-[#cbd6cf] bg-white/95 p-3 shadow-[0_20px_45px_rgba(45,65,59,0.12)] backdrop-blur-xl"
               >
-                <p className="truncate px-3 py-2 text-xs text-white/60">{profile?.email || 'Signed-in account'}</p>
-                <p className="px-3 pb-2 text-[10px] font-mono uppercase tracking-widest text-cyan-300">
+                <p className="truncate px-3 py-2 text-sm text-[#60716b]">{profile?.email || 'Signed-in account'}</p>
+                <p className="px-3 pb-2 text-xs font-medium text-[#548477]">
                   {getSubscriptionStatusLabel(profile)}
                 </p>
-                <a href="/pricing" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white">
+                <a href="/pricing" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#60716b] hover:bg-[#eef1ee] hover:text-[#1d302c]">
                   <span className="material-symbols-outlined text-base">credit_card</span>
                   Pricing & account
                 </a>
-                <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/5 hover:text-white">
+                <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-[#60716b] hover:bg-[#eef1ee] hover:text-[#1d302c]">
                   <span className="material-symbols-outlined text-base">logout</span>
                   Sign out
                 </button>
@@ -429,11 +434,16 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 w-full min-h-screen relative overflow-x-hidden">
-        {/* Glow Background */}
-        <div className="absolute top-0 right-0 w-[800px] h-[400px] bg-cyan-500/5 blur-[120px] pointer-events-none" />
+      <main className="relative min-h-[100dvh] w-full flex-1 overflow-x-hidden bg-gradient-to-b from-[#eef1ee] via-[#f7f8f5] to-[#e6eee8]">
+        <div className="sr-only" aria-live="polite">
+          Private workspace controls are available when supported.
+        </div>
+        <div className="absolute right-6 top-24 z-30 hidden max-w-xs lg:block">
+          <MemberWebMcpBridge />
+        </div>
+        <div className="pointer-events-none absolute right-0 top-0 h-[400px] w-[800px] bg-[#dbece2]/55 blur-[120px]" />
         
-        <header className="sticky top-0 z-40 bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 py-4 md:px-8 md:py-6 flex justify-between items-center">
+        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#cbd6cf]/80 bg-[#eef1ee]/88 px-6 py-4 backdrop-blur-xl md:px-10 md:py-5">
           <div className="flex items-center gap-3">
             <div className="md:hidden flex items-center gap-2">
               <Image
@@ -441,10 +451,10 @@ export default function DashboardPage() {
                 alt="Cognistration brain and waveform mark"
                 width={32}
                 height={32}
-                className="brightness-110 contrast-125 animate-pulse"
+                className="rounded-lg border border-[#cbd6cf]"
               />
             </div>
-            <h1 className="text-xl md:text-2xl font-light tracking-tight text-white/95 border-l border-white/10 pl-2 md:border-l-0 md:pl-0">
+            <h1 className="border-l border-[#cbd6cf] pl-2 text-xl font-medium tracking-[-0.035em] text-[#1d302c] md:border-l-0 md:pl-0 md:text-2xl">
               {navItems.find(i => i.id === activeTab)?.label}
             </h1>
           </div>
@@ -453,7 +463,7 @@ export default function DashboardPage() {
           <div className="md:hidden relative">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-all flex items-center justify-center"
+              className="flex items-center justify-center rounded-xl border border-[#b8cbc0] bg-white/70 p-2 text-[#60716b] transition-all hover:bg-white hover:text-[#1d302c]"
               aria-label="Toggle menu"
             >
               <span className="material-symbols-outlined text-xl">
@@ -467,7 +477,7 @@ export default function DashboardPage() {
                 <>
                   {/* Backdrop overlay */}
                   <div 
-                    className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+                    className="fixed inset-0 z-40 bg-[#1d302c]/20 backdrop-blur-sm"
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   
@@ -477,7 +487,7 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-3 w-64 rounded-2xl border border-white/10 bg-zinc-950/95 p-4 backdrop-blur-2xl shadow-[0_0_30px_rgba(6,182,212,0.15)] z-50 space-y-4"
+                    className="absolute right-0 z-50 mt-3 w-64 space-y-4 rounded-2xl border border-[#cbd6cf] bg-white/95 p-4 shadow-[0_18px_40px_rgba(45,65,59,0.12)] backdrop-blur-xl"
                   >
                     <nav className="space-y-1">
                       {navItems.map((item) => {
@@ -490,10 +500,10 @@ export default function DashboardPage() {
                               setIsMobileMenuOpen(false);
                             }}
                             className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left ${
-                              isActive ? 'bg-white/5 text-white font-medium border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'
+                              isActive ? 'border border-[#b8cbc0] bg-[#eef1ee] text-[#1d302c] font-medium' : 'border border-transparent text-[#7a8983] hover:bg-[#f7f8f5] hover:text-[#315e55]'
                             }`}
                           >
-                            <span className={`material-symbols-outlined text-lg ${isActive ? 'text-cyan-400' : ''}`}>
+                            <span className={`material-symbols-outlined text-lg ${isActive ? 'text-[#548477]' : ''}`}>
                               {item.icon}
                             </span>
                             <span className="text-sm">{item.label}</span>
@@ -502,26 +512,26 @@ export default function DashboardPage() {
                       })}
                     </nav>
 
-                    <div className="pt-4 border-t border-white/5">
+                    <div className="border-t border-[#dbe2dd] pt-4">
                       <div className="flex items-center gap-3 px-2">
-                        <Avatar className="size-8 border border-white/10">
+                        <Avatar className="size-8 border border-[#cbd6cf]">
                           <AvatarImage src={profile?.avatar_url} />
                           <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 overflow-hidden">
                           <p className="text-xs font-medium truncate">{profile?.display_name || 'Member'}</p>
-                          <p className="text-[9px] font-mono text-white/40 truncate">{profile?.email || profile?.username || 'Account'}</p>
+                          <p className="truncate text-xs text-[#87968f]">{profile?.email || profile?.username || 'Account'}</p>
                         </div>
                       </div>
                       <div className="mt-3 space-y-1">
-                        <p className="px-3 py-1 text-[9px] font-mono uppercase tracking-widest text-cyan-300">
+                        <p className="px-3 py-1 text-xs font-medium text-[#548477]">
                           {getSubscriptionStatusLabel(profile)}
                         </p>
-                        <a href="/pricing" className="flex items-center gap-3 rounded-xl px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white">
+                        <a href="/pricing" className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-[#60716b] hover:bg-[#eef1ee] hover:text-[#1d302c]">
                           <span className="material-symbols-outlined text-base">credit_card</span>
                           Pricing & account
                         </a>
-                        <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white">
+                        <button type="button" onClick={handleSignOut} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-[#60716b] hover:bg-[#eef1ee] hover:text-[#1d302c]">
                           <span className="material-symbols-outlined text-base">logout</span>
                           Sign out
                         </button>
@@ -536,29 +546,29 @@ export default function DashboardPage() {
 
         {/* Global Background Generation Banner */}
         {['rendering', 'saving'].includes(workshopStatus) && (
-          <div className="mx-8 mt-6 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 flex items-center justify-between shadow-[0_0_15px_rgba(6,182,212,0.15)] animate-pulse">
+          <div className="mx-5 mt-6 flex items-center justify-between gap-4 rounded-2xl border border-[#a8c7b8] bg-[#e5f1e9] px-4 py-3 shadow-[0_10px_28px_rgba(45,65,59,0.06)] animate-pulse md:mx-10">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-cyan-400 text-lg animate-spin">sync</span>
-              <span className="text-xs font-mono tracking-widest text-cyan-300 uppercase">
-                Workshop Render Active: {workshopProgress || 'Synthesizing neural waves...'}
+              <span className="material-symbols-outlined text-[#548477] text-lg animate-spin">sync</span>
+              <span className="text-sm text-[#315e55]">
+                Building your session: {workshopProgress || 'Preparing your listening session...'}
               </span>
             </div>
             <button 
               onClick={() => setActiveTab('workshop')}
-              className="text-[10px] font-mono text-cyan-400 hover:text-cyan-200 border border-cyan-500/30 px-3 py-1 rounded-full transition-colors"
+              className="rounded-full border border-[#9db9aa] px-3 py-1 text-xs font-medium text-[#315e55] transition-colors hover:bg-white"
             >
-              Open Console
+              Open Workshop
             </button>
           </div>
         )}
 
         {/* Global Background Complete Success Banner */}
         {workshopStatus === 'completed' && workshopSavedTone && (
-          <div className="mx-8 mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 flex items-center justify-between shadow-[0_0_15px_rgba(16,185,129,0.15)] animate-bounce" style={{ animationDuration: '3s' }}>
+          <div className="mx-5 mt-6 flex items-center justify-between gap-4 rounded-2xl border border-[#a8c7b8] bg-[#e5f1e9] px-4 py-3 shadow-[0_10px_28px_rgba(45,65,59,0.06)] animate-bounce md:mx-10" style={{ animationDuration: '3s' }}>
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
-              <span className="text-xs font-mono tracking-widest text-emerald-300 uppercase">
-                Success: Custom tone &quot;{workshopSavedTone.name}&quot; saved to Neural Archive.
+              <span className="material-symbols-outlined text-[#548477] text-lg">check_circle</span>
+              <span className="text-sm text-[#315e55]">
+                Saved: Custom tone &quot;{workshopSavedTone.name}&quot; is in your library.
               </span>
             </div>
             <button 
@@ -566,7 +576,7 @@ export default function DashboardPage() {
                 setWorkshopStatus('idle');
                 setActiveTab('library');
               }}
-              className="text-[10px] font-mono text-emerald-400 hover:text-emerald-200 border border-emerald-500/30 px-3 py-1 rounded-full transition-colors"
+              className="rounded-full border border-[#9db9aa] px-3 py-1 text-xs font-medium text-[#315e55] transition-colors hover:bg-white"
             >
               View Library
             </button>
@@ -574,12 +584,12 @@ export default function DashboardPage() {
         )}
 
         {workspaceError && (
-          <div className="mx-8 mt-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+          <div className="mx-5 mt-6 rounded-2xl border border-[#caa778]/45 bg-[#fbf5eb] px-4 py-3 text-sm text-[#8b6038] md:mx-10">
             {workspaceError}
           </div>
         )}
 
-        <div className="p-4 md:p-8 max-w-5xl mx-auto">
+        <div className="mx-auto w-full max-w-6xl p-5 md:p-10">
           <AnimatePresence mode="wait">
             {activeTab === 'agent' && (
               <motion.div
@@ -587,17 +597,18 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-12 py-12"
+                className="space-y-10 py-8"
               >
-                <div className="text-center space-y-4">
-                  <h2 className="text-4xl font-light tracking-tight">What state do you need?</h2>
-                  <p className="text-white/40 text-lg max-w-md mx-auto">Describe your goal or current emotion.</p>
+                <div className="max-w-2xl space-y-4">
+                  <h2 className="text-4xl font-medium tracking-[-0.055em] text-[#1d302c] md:text-5xl">What state do you need?</h2>
+                  <p className="max-w-md text-lg text-[#60716b]">Describe your goal or current emotion.</p>
                 </div>
                 
                 <Omnibar 
                   onGenerate={handleAgentGenerate} 
                   isLoading={agentLoading} 
                   agentMessage={agentMessage} 
+                  theme="light"
                 />
 
                 {agentTrack && (

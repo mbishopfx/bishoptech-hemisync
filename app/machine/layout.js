@@ -1,10 +1,10 @@
 export const metadata = {
-  title: { absolute: 'Inside the Machine — Cognistration' },
-  description: 'See how Cognistration organizes listening, generation, and account workflows.',
+  title: { absolute: 'The Cognistration Machine — Personal Audio Sessions' },
+  description: 'See how Cognistration shapes personal listening sessions from intention, sound, rhythm, and pacing.',
   alternates: { canonical: '/machine' },
   openGraph: {
-    title: 'Inside the Machine — Cognistration',
-    description: 'See how Cognistration organizes listening, generation, and account workflows.',
+    title: 'The Cognistration Machine — Personal Audio Sessions',
+    description: 'See how Cognistration shapes personal listening sessions from intention, sound, rhythm, and pacing.',
     siteName: 'Cognistration',
     type: 'website',
     url: '/machine',
@@ -12,8 +12,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Inside the Machine — Cognistration',
-    description: 'See how Cognistration organizes listening, generation, and account workflows.',
+    title: 'The Cognistration Machine — Personal Audio Sessions',
+    description: 'See how Cognistration shapes personal listening sessions from intention, sound, rhythm, and pacing.',
     images: ['/images/og-preview.png'],
   },
 };

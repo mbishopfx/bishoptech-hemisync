@@ -1,6 +1,8 @@
 import { blogPosts } from '@/lib/blog/posts';
 import { TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPostMeta } from "@/lib/blog/posts-data";
 import TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPost from "@/components/blog/posts/the-irrelevant-speech-effect-why-overheard-conversations-break-your-focus";
+import { agentInsightsPersonalAudioRoutinePostMeta } from "@/lib/blog/posts-data";
+import AgentInsightsPersonalAudioRoutinePost from "@/components/blog/posts/agent-insights-personal-audio-routine";
 import { AttentionResidueIsASwitchingCostPostMeta } from "@/lib/blog/posts-data";
 import AttentionResidueIsASwitchingCostPost from "@/components/blog/posts/attention-residue-is-a-switching-cost";
 import { TheCognitiveCostOfTryingToFocusPostMeta } from "@/lib/blog/posts-data";
@@ -134,6 +136,7 @@ function QuietTenMinuteResetPost() {
 
 
 export const blogPostComponents = {
+  [agentInsightsPersonalAudioRoutinePostMeta.slug]: AgentInsightsPersonalAudioRoutinePost,
   [blogPosts[0].slug]: WhyCognistrationFeelsPrivatePost,
   [blogPosts[1].slug]: CalmFirstSessionSetupPost,
   [blogPosts[2].slug]: PulvinarPrecisionBrokerPost,

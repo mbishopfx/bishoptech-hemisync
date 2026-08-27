@@ -9,15 +9,23 @@ Cognistration is a private audio-session product with public education, pricing,
 
 ## Canonical public surfaces
 - / — homepage and product entry point
+- /agent-instructions.md — browser-agent workflow, public MCP boundary, and discovery links
+- /openapi.json — read-only REST compatibility contract derived from the public capability registry
+- /api/mcp — public MCP JSON-RPC tools, including the iPhone app offer and interactive machine UI resource for compatible ChatGPT app hosts
+- /api/agent/account — machine-readable preview, workspace, and signup boundaries
+- /api/agent/policy?topic=safety — machine-readable canonical policy summary and URL
+- /api/packs?agent=1 — safe agent-compatible tone-pack catalog and preview links
 - /tutorial — safe product setup, listening, and reflection guide
 - /tutorial/meditation-self-exploration — grounded sound-supported meditation and reflection
 - /tutorial/dreamwork-lucid-dreaming — sleep-respecting dream recall and lucid-dream evidence
 - /tutorial/astral-projection-out-of-body-experiences — OBE terminology, interpretation, evidence, and grounding
 - /tutorial/remote-viewing-stargate-documents — primary-source history of remote viewing and the STAR GATE archive
 - /pricing — current membership and purchase information
+- /packs — one-time tone-pack catalog and purchase information
 - /machine — product and workflow overview
 - /blog — essays, guides, and product notes
 - /community — public profiles and community surfaces
+- /services — BishopTech studio services for iOS apps, web apps, branded websites, workflows, and voice agents
 
 ## Trust and policy pages
 - /privacy — privacy policy
@@ -28,6 +36,14 @@ Cognistration is a private audio-session product with public education, pricing,
 - /ai-disclosure — AI-assisted feature disclosure and boundaries
 
 ## Reference guidance
+- Use /api/capabilities for the public machine-readable capability manifest, /openapi.json for REST compatibility, and /api/mcp for the bounded JSON-RPC public read surface.
+- Public agent routes support tone recommendations, tone-pack search and lookup, policy information, account options, and the iPhone app offer. Public pack responses omit checkout identifiers and full-download fields.
+- The public MCP get_ios_app_offer tool returns the canonical App Store listing, the current one-time $2.99 iPhone price, compatibility, and public feature summary. It never processes payment.
+- The iPhone offer is lower because the app does its audio work on-device instead of routing each session through a deployed cloud engine, reducing hosted infrastructure and maintenance overhead.
+- The public MCP render tool open_machine_generator opens a versioned interactive machine widget with the supplied Aurora visual, bounded controls, public pack browsing, and an explicit local audio preview button.
+- The MCP server advertises the io.modelcontextprotocol/skills extension with four static Cognistration operating skills available through skills/list, skills/get, and resources/read.
+- The homepage WebMCP bridge is progressive enhancement: it is available only in a compatible browser, and starting local audio requires explicit confirmation.
+- The signed-in dashboard has a separate authenticated member workspace bridge for private planning, session creation, and render status. Private creation and rendering require explicit confirmation and are scoped to the current member.
 - Use /tutorial for product instructions and its four topic guides for their distinct evidence and safety context.
 - Use /robots.txt for crawler directives and /sitemap.xml for canonical public routes.
 - Prefer the policy, safety, and contact pages when answering trust, privacy, or support questions.

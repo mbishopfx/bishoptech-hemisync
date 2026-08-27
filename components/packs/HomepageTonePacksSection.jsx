@@ -1,28 +1,28 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Pause, Play, X } from '@phosphor-icons/react';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
+import { ScrollRevealHeading } from '@/components/marketing/ScrollRevealHeading';
+
+const COVER_STYLES = [
+  'from-[#294f49] via-[#6f9c87] to-[#d3b37c]',
+  'from-[#3c475e] via-[#7d91a9] to-[#d4c8a8]',
+  'from-[#5a493f] via-[#b68d68] to-[#e3d3ae]',
+  'from-[#304d57] via-[#57928d] to-[#c6d7c5]',
+  'from-[#4d3e58] via-[#9a7fb2] to-[#d3c1a2]'
+];
 
 function trackUrl(track) {
-  return (
-    track?.preview_url ||
-    track?.previewUrl ||
-    track?.download_url ||
-    track?.downloadUrl ||
-    track?.webm_url ||
-    track?.webmUrl ||
-    track?.mp3_url ||
-    track?.mp3Url
-  );
+  return track?.preview_url || track?.previewUrl || track?.download_url || track?.downloadUrl || track?.webm_url || track?.webmUrl || track?.mp3_url || track?.mp3Url || null;
 }
 
 export function HomepageTonePacksSection() {
   const [packs, setPacks] = useState(TONE_PACKS);
-  const [activePreview, setActivePreview] = useState(null); // { packSlug, trackUrl }
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [checkoutPack, setCheckoutPack] = useState(null); // pack being purchased in modal
+  const [activePreview, setActivePreview] = useState(null);
+  const [checkoutPack, setCheckoutPack] = useState(null);
   const [email, setEmail] = useState('');
   const [purchasing, setPurchasing] = useState(false);
   const [error, setError] = useState('');
@@ -31,64 +31,48 @@ export function HomepageTonePacksSection() {
   useEffect(() => {
     let cancelled = false;
     fetch('/api/packs')
-      .then(async (res) => {
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled && data.ok && data.packs?.length) {
-          setPacks(data.packs);
-        }
+      .then(async (response) => {
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!cancelled && data.ok && data.packs?.length) setPacks(data.packs);
       })
       .catch(() => {});
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   const handlePreview = (pack) => {
-    const sampleTrack = pack.tracks?.[0];
-    const url = trackUrl(sampleTrack) || 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260715_082433_69699cf8-444b-4484-93cc-053e57896dfd.mp4';
-
-    if (activePreview?.packSlug === pack.slug && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
+    const url = trackUrl(pack.tracks?.[0]);
+    if (!url) {
+      setError(`${pack.name} does not have a preview available yet.`);
       return;
     }
 
-    if (audioRef.current) {
+    if (activePreview?.packSlug === pack.slug && audioRef.current && !audioRef.current.paused) {
       audioRef.current.pause();
-      audioRef.current.src = url;
-      audioRef.current.load();
-      audioRef.current
-        .play()
-        .then(() => {
-          setActivePreview({ packSlug: pack.slug, url });
-          setIsPlaying(true);
-        })
-        .catch(() => {
-          setIsPlaying(false);
-        });
+      return;
     }
+
+    if (!audioRef.current) return;
+    audioRef.current.pause();
+    audioRef.current.src = url;
+    audioRef.current.load();
+    audioRef.current.play().then(() => {
+      setError('');
+      setActivePreview({ packSlug: pack.slug });
+    }).catch(() => setError('This preview could not be played in the current browser.'));
   };
 
-  const handleOpenCheckout = (pack) => {
-    setCheckoutPack(pack);
-    setError('');
-  };
-
-  const handleStartPurchase = async (e) => {
-    e.preventDefault();
+  const handleStartPurchase = async (event) => {
+    event.preventDefault();
     if (!checkoutPack) return;
-
     const normalizedEmail = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      setError('Please enter a valid email address for delivery.');
+      setError('Enter a valid email address for delivery.');
       return;
     }
 
     setPurchasing(true);
     setError('');
-
     try {
       const priceId = checkoutPack.priceId || getTonePackPriceId(checkoutPack) || 'price_1TnAxaDJtpuPVfuFmN7TO2PS';
       await redirectToStripeCheckout({
@@ -98,192 +82,59 @@ export function HomepageTonePacksSection() {
         email: normalizedEmail,
         fallbackPath: '/packs'
       });
-    } catch (err) {
-      setError('Checkout failed to initialize. Please try again.');
+    } catch {
+      setError('Checkout could not be opened. Please try again.');
       setPurchasing(false);
     }
   };
 
   return (
-    <section id="tone-packs" className="relative w-full bg-black text-white pt-24 pb-32 px-6 overflow-hidden">
-      {/* Background ambient dark glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-      <div className="absolute top-1/4 left-10 w-96 h-96 bg-cyan-500/5 blur-[140px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-500/5 blur-[140px] rounded-full pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto space-y-16 relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-300 text-[10px] font-mono uppercase tracking-[0.25em]">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            Curated Neuromodulation
+    <section id="tone-packs" aria-labelledby="tone-packs-title" className="relative overflow-hidden bg-[#eef1ee] py-24 text-[#1d302c] sm:py-32">
+      <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <ScrollRevealHeading id="tone-packs-title" className="text-4xl font-medium leading-[1.04] tracking-[-0.055em] sm:text-6xl">A library built around the way you want to feel.</ScrollRevealHeading>
+            <p className="mt-6 max-w-xl text-base leading-7 text-[#52635f] sm:text-lg">Explore finished listening sessions for focus, rest, and open-ended thinking. Pick one, press play, and keep the ones that become part of your rhythm.</p>
           </div>
-          <h2 className="text-4xl md:text-6xl font-light tracking-tight text-white leading-tight">
-            Select Your <span className="text-white/40 italic">Tone Pack.</span>
-          </h2>
-          <p className="text-white/50 text-base md:text-lg font-light max-w-xl mx-auto leading-relaxed">
-            Downloadable 50-minute binaural frequency sessions. Pay once ($5.99), keep forever, no account required.
-          </p>
+          <a href="/packs" className="shrink-0 text-sm font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-8 transition hover:text-[#1d302c]">Browse the full library</a>
         </div>
 
-        {/* Tone Packs Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {packs.map((pack) => {
-            const price = pack.price || '$5.99';
-            const isCurrentlyPlaying = activePreview?.packSlug === pack.slug && isPlaying;
-
-            return (
-              <motion.div
-                key={pack.slug}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="liquid-glass rounded-3xl p-7 border border-white/10 bg-zinc-950/60 backdrop-blur-2xl flex flex-col justify-between gap-6 hover:border-cyan-500/30 transition-all duration-300 group shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
-              >
-                <div className="space-y-4">
-                  {/* Eyebrow & Price */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-cyan-400/90 font-medium">
-                      {pack.eyebrow || 'Frequency Pack'}
-                    </span>
-                    <span className="text-xl font-light text-white tracking-tight">{price}</span>
-                  </div>
-
-                  {/* Title & Description */}
-                  <div>
-                    <h3 className="text-2xl font-medium text-white group-hover:text-cyan-200 transition-colors">
-                      {pack.name}
-                    </h3>
-                    <p className="text-white/60 text-sm font-light mt-2 leading-relaxed">
-                      {pack.summary || pack.description}
-                    </p>
-                  </div>
-
-                  {/* Best For Tags */}
-                  {pack.bestFor && pack.bestFor.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {pack.bestFor.map((item) => (
-                        <span
-                          key={item}
-                          className="text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 rounded-full px-3 py-1 capitalize"
-                        >
-                          {item}
-                        </span>
-                      ))}
+        <div className="mt-14 -mx-5 overflow-x-auto px-5 pb-6 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12" role="list" aria-label="Tone packs">
+          <div className="flex w-max gap-5">
+            {packs.map((pack, index) => {
+              const isPlaying = activePreview?.packSlug === pack.slug && audioRef.current && !audioRef.current.paused;
+              const trackCount = pack.trackCount || pack.tracks?.length || 0;
+              return (
+                <motion.article key={pack.slug} role="listitem" whileHover={{ y: -5 }} transition={{ duration: 0.2 }} className="flex w-[min(82vw,360px)] flex-col rounded-[1.75rem] border border-[#c7d2cb] bg-white/70 p-3 shadow-[0_14px_36px_rgba(45,65,59,0.07)] sm:w-[360px]">
+                  <div className={`relative aspect-square overflow-hidden rounded-[1.25rem] bg-gradient-to-br ${COVER_STYLES[index % COVER_STYLES.length]} p-6`}>
+                    <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 22% 22%, rgba(255,255,255,.85) 0 1px, transparent 1.5px), radial-gradient(circle at 75% 66%, rgba(255,255,255,.55) 0 1px, transparent 1.5px)', backgroundSize: '23px 23px, 31px 31px' }} />
+                    <div className="relative flex h-full flex-col justify-between text-white">
+                      <div className="flex items-start justify-between text-xs font-medium uppercase tracking-[0.16em] text-white/75"><span>cognistration</span><span>{String(index + 1).padStart(2, '0')}</span></div>
+                      <div><p className="max-w-[12ch] text-4xl font-medium leading-[0.95] tracking-[-0.06em]">{pack.name}</p><p className="mt-3 text-xs text-white/70">A finished session for your next chapter.</p></div>
                     </div>
-                  )}
-                </div>
-
-                {/* Card Action Controls */}
-                <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Preview Button */}
-                    <button
-                      type="button"
-                      onClick={() => handlePreview(pack)}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/80 text-[10px] font-mono uppercase tracking-widest py-3 transition-all"
-                    >
-                      <span className="material-symbols-outlined text-sm text-cyan-400">
-                        {isCurrentlyPlaying ? 'pause' : 'play_arrow'}
-                      </span>
-                      {isCurrentlyPlaying ? 'Playing' : 'Preview'}
-                    </button>
-
-                    {/* Quick Action CTA Button */}
-                    <button
-                      type="button"
-                      onClick={() => handleOpenCheckout(pack)}
-                      className="flex items-center justify-center gap-2 rounded-2xl bg-cyan-400 text-black font-semibold text-[10px] font-mono uppercase tracking-widest py-3 hover:bg-white transition-all shadow-[0_0_20px_rgba(6,182,212,0.2)]"
-                    >
-                      Buy Pack
-                    </button>
                   </div>
-
-                  <p className="text-center text-[9px] font-mono text-white/30 uppercase tracking-widest">
-                    About 50 min • MP3/WebM Audio
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
+                  <div className="flex flex-1 flex-col p-4 sm:p-5">
+                    <div className="flex items-start justify-between gap-4"><div><h3 className="text-xl font-medium tracking-[-0.03em]">{pack.name}</h3><p className="mt-2 line-clamp-2 text-sm leading-6 text-[#66746f]">{pack.summary || pack.description || 'A considered listening session from the Cognistration library.'}</p></div><span className="shrink-0 text-lg font-medium">{pack.price || '$5.99'}</span></div>
+                    <div className="mt-auto pt-6"><div className="flex items-center justify-between border-t border-[#dbe2dd] pt-4 text-xs text-[#788681]"><span>{trackCount || 'Several'} sessions</span><span>One-time purchase</span></div><div className="mt-4 flex gap-2"><button type="button" onClick={() => handlePreview(pack)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[#bfcfc5] px-4 py-3 text-sm font-medium text-[#315e55] transition hover:border-[#6b9587] hover:bg-[#f0f5f1]">{isPlaying ? <Pause className="size-4" weight="fill" aria-hidden="true" /> : <Play className="size-4" weight="fill" aria-hidden="true" />}{isPlaying ? 'Pause' : 'Preview'}</button><button type="button" onClick={() => { setCheckoutPack(pack); setError(''); }} className="flex-1 rounded-full bg-[#1d302c] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#315e55]">Get the pack</button></div></div>
+                  </div>
+                </motion.article>
+              );
+            })}
+          </div>
         </div>
+        <div className="mt-2 flex items-center justify-between"><p className="text-xs text-[#71807b]">Drag sideways to explore the collection.</p>{error && !checkoutPack && <p role="status" className="text-xs text-[#a55e48]">{error}</p>}</div>
       </div>
 
-      {/* Global Preview Audio Player */}
-      <audio
-        ref={audioRef}
-        preload="none"
-        onEnded={() => setIsPlaying(false)}
-        onPause={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
-      />
+      <audio ref={audioRef} preload="none" onEnded={() => setActivePreview(null)} onPause={() => setActivePreview(null)} />
 
-      {/* Quick Purchase Email Modal Overlay */}
       <AnimatePresence>
         {checkoutPack && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="liquid-glass w-full max-w-md rounded-3xl border border-cyan-500/30 bg-zinc-950 p-8 text-white space-y-6 shadow-2xl relative"
-            >
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => setCheckoutPack(null)}
-                className="absolute top-5 right-5 text-white/40 hover:text-white transition-colors"
-                aria-label="Close"
-              >
-                <svg className="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400">
-                  Instant Download Checkout
-                </span>
-                <h3 className="text-2xl font-medium mt-1 text-white">{checkoutPack.name}</h3>
-                <p className="text-white/50 text-xs mt-1">
-                  {checkoutPack.price || '$5.99'} • One-time payment
-                </p>
-              </div>
-
-              <form onSubmit={handleStartPurchase} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="checkout-email" className="text-xs font-mono text-white/60 uppercase tracking-wider block">
-                    Your Delivery Email
-                  </label>
-                  <input
-                    id="checkout-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full rounded-2xl bg-white/5 border border-white/15 px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 transition-colors placeholder:text-white/30"
-                  />
-                  <p className="text-[10px] text-white/40">
-                    Your audio download link will be emailed immediately after Stripe checkout.
-                  </p>
-                </div>
-
-                {error && <p className="text-xs text-rose-400">{error}</p>}
-
-                <button
-                  type="submit"
-                  disabled={purchasing}
-                  className="w-full rounded-2xl bg-cyan-400 text-black font-semibold text-xs font-mono uppercase tracking-widest py-4 hover:bg-white transition-all shadow-[0_0_25px_rgba(6,182,212,0.3)] disabled:opacity-50"
-                >
-                  {purchasing ? 'Opening Checkout...' : `Proceed to Pay ${checkoutPack.price || '$5.99'}`}
-                </button>
-              </form>
-
-              <div className="text-center pt-2">
-                <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest">
-                  🔒 Encrypted Stripe Checkout • No Account Required
-                </span>
-              </div>
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#10201c]/75 p-5 backdrop-blur-md" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setCheckoutPack(null); }}>
+            <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} role="dialog" aria-modal="true" aria-labelledby="pack-checkout-title" className="relative w-full max-w-md rounded-[2rem] bg-[#1d302c] p-7 text-white shadow-2xl sm:p-9">
+              <button type="button" onClick={() => setCheckoutPack(null)} className="absolute right-5 top-5 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white" aria-label="Close checkout"><X className="size-5" aria-hidden="true" /></button>
+              <h3 id="pack-checkout-title" className="text-2xl font-medium">{checkoutPack.name}</h3>
+              <p className="mt-2 text-sm text-white/60">{checkoutPack.price || '$5.99'} · one-time purchase</p>
+              <form onSubmit={handleStartPurchase} className="mt-7 space-y-4"><div><label htmlFor="checkout-email" className="text-sm text-white/70">Delivery email</label><input id="checkout-email" name="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#b6ddcc]" /></div>{error && <p role="alert" className="text-sm text-[#e8aa91]">{error}</p>}<button type="submit" disabled={purchasing} className="w-full rounded-full bg-[#d7eadf] py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white disabled:opacity-50">{purchasing ? 'Opening checkout…' : `Continue for ${checkoutPack.price || '$5.99'}`}</button></form><p className="mt-5 text-xs leading-5 text-white/40">Stripe handles payment and sends the download link after purchase.</p>
             </motion.div>
           </div>
         )}

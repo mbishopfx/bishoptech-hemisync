@@ -66,7 +66,7 @@ export default function ContactPage() {
       </Section>
 
       <Section title="Business identity">
-        <p>Cognistration is the public product name used across the site. The contact addresses above are the current official paths published on the site.</p>
+        <p>Cognistration is a BishopTech product and the public product name used across the site. The contact addresses above are the current official paths published on the site.</p>
       </Section>
     </LegalPageShell>
   );

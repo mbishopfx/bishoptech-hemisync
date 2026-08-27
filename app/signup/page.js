@@ -3,11 +3,11 @@ import { SignupClient } from './SignupClient';
 
 export const metadata = {
   title: { absolute: 'Sign Up — Cognistration' },
-  description: 'Create an account for the Cognistration portal.',
+  description: 'Create an account for your private Cognistration listening workspace.',
   alternates: { canonical: '/signup' },
   openGraph: {
     title: 'Sign Up — Cognistration',
-    description: 'Create an account for the Cognistration portal.',
+    description: 'Create an account for your private Cognistration listening workspace.',
     siteName: 'Cognistration',
     type: 'website',
     url: '/signup',
@@ -16,7 +16,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Sign Up — Cognistration',
-    description: 'Create an account for the Cognistration portal.',
+    description: 'Create an account for your private Cognistration listening workspace.',
     images: ['/images/og-preview.png'],
   },
   robots: {
@@ -27,7 +27,7 @@ export const metadata = {
 
 export default function SignupPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-[100dvh] bg-[#eef1ee]" />}>
       <SignupClient />
     </Suspense>
   );

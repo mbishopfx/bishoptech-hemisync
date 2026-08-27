@@ -55,21 +55,23 @@ export default function PacksSuccessPage() {
   }, []);
 
   return (
-    <main className="mx-auto flex min-h-[75vh] max-w-3xl items-center px-6 py-28 md:px-10">
-      <section className="w-full rounded-[2.5rem] border border-cyan-300/15 bg-zinc-950/70 p-8 text-center md:p-14">
-        <CheckCircle2 className="mx-auto size-12 text-emerald-300" />
-        <h1 className="mt-4 text-4xl font-light tracking-tight text-white md:text-6xl">Your audio is ready.</h1>
-        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/60">{status}</p>
-        {status.includes('started') && <LoaderCircle className="mx-auto mt-7 size-5 animate-spin text-cyan-300" />}
+    <main className="min-h-[100dvh] bg-[#eef1ee] text-[#1d302c]">
+      <div className="mx-auto flex min-h-[75vh] max-w-3xl items-center px-6 py-28 md:px-10">
+        <section className="w-full rounded-[2.5rem] border border-[#cbd6cf] bg-white/80 p-8 text-center shadow-[0_30px_80px_-58px_rgba(45,65,59,0.42)] md:p-14">
+        <CheckCircle2 className="mx-auto size-12 text-[#548477]" />
+        <h1 className="mt-4 text-4xl font-medium tracking-[-0.04em] text-[#1d302c] md:text-6xl">Your audio is ready.</h1>
+        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#52635f]">{status}</p>
+        {status.includes('started') && <LoaderCircle className="mx-auto mt-7 size-5 animate-spin text-[#548477]" />}
         {downloadUrl && (
-          <a href={downloadUrl} download className="mt-8 inline-flex items-center gap-2 rounded-full bg-cyan-300 px-6 py-4 text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-950 hover:bg-cyan-200">
+          <a href={downloadUrl} download className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#1d302c] px-6 py-4 text-[10px] font-medium uppercase tracking-[0.2em] text-white hover:bg-[#315e55]">
             <Download className="size-4" /> Download {packName}
           </a>
         )}
-        <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left text-xs leading-5 text-white/45"><Mail className="mt-0.5 size-4 shrink-0 text-cyan-300" />Your receipt and backup delivery link are sent to the email you entered at checkout. No Cognistration account is required.</div>
-        {error && <p className="mt-6 rounded-2xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm text-amber-100">{error}</p>}
-        <Link href="/packs" className="mt-8 inline-block text-xs text-white/45 underline decoration-white/20 underline-offset-4 hover:text-white">Return to packs</Link>
-      </section>
+        <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl border border-[#dbe2dd] bg-[#f7f9f6] p-4 text-left text-xs leading-5 text-[#71807b]"><Mail className="mt-0.5 size-4 shrink-0 text-[#548477]" />Your receipt and backup delivery link are sent to the email you entered at checkout. No Cognistration account is required.</div>
+        {error && <p className="mt-6 rounded-2xl border border-[#d6a58f] bg-[#fff6f1] px-4 py-3 text-sm text-[#8f513d]">{error}</p>}
+        <Link href="/packs" className="mt-8 inline-block text-xs text-[#71807b] underline decoration-[#b7c9bf] underline-offset-4 hover:text-[#1d302c]">Return to packs</Link>
+        </section>
+      </div>
     </main>
   );
 }

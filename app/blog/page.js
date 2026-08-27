@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, ShieldCheck } from 'lucide-react';
+import { ArrowRight, BookOpenText } from '@phosphor-icons/react/dist/ssr';
 import { RecentPostsCarousel } from '@/components/blog/recent-posts-carousel';
-import { blogPosts, getRecentBlogPosts } from '@/lib/blog/posts';
+import { getRecentBlogPosts } from '@/lib/blog/posts';
 import { buildAbsoluteUrl } from '@/lib/seo';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
@@ -45,24 +45,24 @@ const blogJsonLd = {
 
 function BlogCard({ post }) {
   return (
-    <article className="rounded-3xl border border-white/5 bg-zinc-900/40 p-6 backdrop-blur-3xl transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.04]">
-      <div className="flex items-center justify-between gap-4 text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
-        <span className="text-cyan-400/80">{post.category}</span>
+    <article className="group flex h-full flex-col rounded-[1.75rem] border border-[#cbd6cf] bg-white/70 p-6 shadow-[0_16px_42px_rgba(45,65,59,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#9db9aa] hover:bg-white">
+      <div className="flex items-center justify-between gap-4 text-xs text-[#779187]">
+        <span className="font-medium">{post.category}</span>
         <span>{post.readTime}</span>
       </div>
-      <h2 className="mt-5 text-2xl font-light tracking-tight text-white leading-tight">
+      <h2 className="mt-5 text-2xl font-medium leading-tight tracking-[-0.04em] text-[#1d302c]">
         {post.title}
       </h2>
-      <p className="mt-4 text-sm leading-relaxed text-white/50">{post.excerpt}</p>
-      <div className="mt-6 flex items-center justify-between gap-3 border-t border-white/5 pt-4">
-        <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-white/20">
+      <p className="mt-4 flex-1 text-sm leading-7 text-[#60716b]">{post.excerpt}</p>
+      <div className="mt-7 flex items-center justify-between gap-3 border-t border-[#dbe2dd] pt-4">
+        <span className="text-xs text-[#87968f]">
           {new Date(post.publishedAt).toLocaleDateString()}
         </span>
         <Link
-          className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-cyan-200 transition-all hover:bg-cyan-500/20 hover:text-white"
+          className="inline-flex items-center gap-2 text-sm font-medium text-[#315e55] transition group-hover:text-[#1d302c]"
           href={post.path}
         >
-          Read post <ArrowRight className="size-3" />
+          Read post <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" weight="bold" />
         </Link>
       </div>
     </article>
@@ -74,80 +74,55 @@ export default function BlogArchivePage() {
   const featuredPosts = getRecentBlogPosts(12);
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+    <div className="blog-light-theme min-h-[100dvh] overflow-x-hidden bg-[#eef1ee] text-[#1d302c] selection:bg-[#b6ddcc]/60">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
       />
       <PublicHeader />
 
-      {/* Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
-        <div className="absolute inset-0 cyber-grid opacity-10" />
-      </div>
-
-      <main className="pt-28 pb-12 px-4 md:pt-40 md:pb-20 md:px-6 relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10">
-        <section className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-5 md:p-12 backdrop-blur-3xl">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl space-y-5">
-              <h1 className="text-4xl font-light tracking-tighter text-white md:text-6xl">
-                Essays, guides, and product notes with a calmer voice.
+      <main className="relative mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
+        <section className="border-b border-[#cbd6cf] pb-16 sm:pb-20">
+          <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-24">
+            <div className="max-w-4xl">
+              <h1 className="max-w-4xl text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-7xl">
+                Ideas for making attention feel more deliberate.
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-white/55 md:text-base">
-                This archive collects the site&apos;s long-form writing on consciousness mechanics, state changes, and the product thinking behind Cognistration. Each post is written to be direct, evidence-aware, and easy to cite.
+              <p className="mt-7 max-w-2xl text-base leading-8 text-[#60716b] sm:text-lg">
+                Clear writing on consciousness mechanics, listening practice, and the choices behind Cognistration. Read at your own pace, then take one useful idea back into the day.
+              </p>
+              <div className="mt-9 flex flex-wrap gap-4">
+                <Link href="/tutorial" className="inline-flex items-center gap-2 rounded-full bg-[#1d302c] px-5 py-3.5 text-sm font-medium text-white transition hover:bg-[#315e55] active:translate-y-px">
+                  Start with the tutorial <ArrowRight className="size-4" weight="bold" />
+                </Link>
+                <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-8 transition hover:text-[#1d302c]">
+                  Explore Cognistration
+                </Link>
+              </div>
+            </div>
+
+            <div className="border-l border-[#cbd6cf] pl-7 lg:pl-10">
+              <BookOpenText className="size-9 text-[#548477]" weight="duotone" aria-hidden="true" />
+              <p className="mt-7 max-w-sm text-lg leading-8 text-[#4e625b]">
+                The archive moves between practical routines and the research questions that make those routines worth examining.
+              </p>
+              <p className="mt-5 max-w-sm text-sm leading-7 text-[#87968f]">
+                Evidence-aware does not mean distant. It means being precise about what a session can support and what it cannot prove.
               </p>
             </div>
-
-            <div className="grid gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-white/35">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
-                <BookOpen className="size-3.5 text-cyan-300" />
-                <span>{blogPosts.length} published posts</span>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
-                <ShieldCheck className="size-3.5 text-emerald-300" />
-                <span>Policy and safety links stay visible</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              Back Home
-            </Link>
-            <Link
-              href="/pricing"
-              className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-200 transition-colors hover:bg-cyan-500/15 hover:text-cyan-100"
-            >
-              View Pricing
-            </Link>
-            <Link
-              href="/tutorial"
-              className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-[10px] font-mono uppercase tracking-[0.3em] text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              How It Works
-            </Link>
           </div>
         </section>
 
-        <div className="hidden md:block">
-          <RecentPostsCarousel posts={recentPosts} />
-        </div>
+        <RecentPostsCarousel posts={recentPosts} />
 
-        <section className="space-y-6">
-          <div className="flex items-end justify-between gap-4">
+        <section className="space-y-8">
+          <div className="flex flex-col gap-4 border-b border-[#cbd6cf] pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Archive</p>
-              <h2 className="mt-2 text-3xl font-light tracking-tight text-white md:text-4xl">
-                All posts, newest first.
-              </h2>
+              <p className="text-sm font-medium text-[#315e55]">The archive</p>
+              <h2 className="mt-2 text-4xl font-medium leading-tight tracking-[-0.055em] text-[#1d302c] sm:text-5xl">All posts, newest first.</h2>
             </div>
-            <p className="hidden max-w-md text-right text-sm leading-6 text-white/40 md:block">
-              Internal links from these posts should land on working archive and article pages.
+            <p className="max-w-md text-sm leading-7 text-[#7a8983] sm:text-right">
+              Practical guides, product thinking, and long-form notes about how attention, sensation, and context shape a moment.
             </p>
           </div>
 
@@ -155,6 +130,18 @@ export default function BlogArchivePage() {
             {featuredPosts.map((post) => (
               <BlogCard key={post.slug} post={post} />
             ))}
+          </div>
+        </section>
+
+        <section className="border-t border-[#cbd6cf] pt-16">
+          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <h2 className="max-w-2xl text-3xl font-medium leading-tight tracking-[-0.045em] sm:text-4xl">Read a little. Listen a little. Keep what helps.</h2>
+              <p className="mt-4 max-w-xl text-base leading-7 text-[#60716b]">When you are ready to move from an idea into a session, the public tone library is open to explore.</p>
+            </div>
+            <Link href="/packs" className="inline-flex items-center gap-2 text-sm font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-8 transition hover:text-[#1d302c]">
+              Browse the tone library <ArrowRight className="size-4" weight="bold" />
+            </Link>
           </div>
         </section>
       </main>
