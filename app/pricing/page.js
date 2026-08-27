@@ -10,7 +10,7 @@ import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
 import { buildAbsoluteUrl } from '@/lib/seo';
-import { LIFETIME_PLAN } from '@/lib/billing/plans';
+import { LIFETIME_PLAN, WORKSHOP_PLAN } from '@/lib/billing/plans';
 
 const lifetimeOffer = {
   id: LIFETIME_PLAN.id,
@@ -49,6 +49,9 @@ export default function PricingPage() {
   const [playingToneId, setPlayingToneId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [workshopEmail, setWorkshopEmail] = useState('');
+  const [workshopCheckoutLoading, setWorkshopCheckoutLoading] = useState(false);
+  const [workshopCheckoutError, setWorkshopCheckoutError] = useState('');
   const audioRef = useRef(null);
 
   const tonePack = TONE_PACKS[0];
@@ -131,6 +134,29 @@ export default function PricingPage() {
     }
   };
 
+  const handleWorkshopCheckout = async (event) => {
+    event.preventDefault();
+    setWorkshopCheckoutError('');
+    setWorkshopCheckoutLoading(true);
+    try {
+      const response = await fetch('/api/agent/commerce/workshop-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: workshopEmail,
+          confirmed: true,
+          idempotencyKey: `workshop-${window.crypto?.randomUUID?.() || Date.now()}`
+        })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.checkoutUrl) throw new Error(result.error || 'Workshop checkout is temporarily unavailable.');
+      window.location.href = result.checkoutUrl;
+    } catch (error) {
+      setWorkshopCheckoutError(error?.message || 'Workshop checkout is temporarily unavailable.');
+      setWorkshopCheckoutLoading(false);
+    }
+  };
+
   const pricingJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -169,6 +195,25 @@ export default function PricingPage() {
               {planFeatures.map((feature) => <li key={feature} className="flex items-center gap-3 text-sm text-[#4e625b]"><Check className="size-4 shrink-0 text-[#548477]" weight="bold" aria-hidden="true" />{feature}</li>)}
             </ul>
           </motion.aside>
+        </section>
+
+        <section id="machine-workshop" className="mt-16 grid gap-8 rounded-[2rem] bg-[#dfe9e2] p-7 sm:p-10 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:p-12">
+          <div className="max-w-xl">
+            <p className="text-sm font-medium text-[#315e55]">{WORKSHOP_PLAN.priceLabel} one time</p>
+            <h2 className="mt-4 text-3xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-4xl">A full hour in the machine, whenever you need a deeper session.</h2>
+            <p className="mt-5 text-base leading-7 text-[#60716b]">The 24-hour workshop pass unlocks sessions up to 60 minutes, with the carrier, rhythm, state, and volume controls open for your own listening practice.</p>
+          </div>
+          <form onSubmit={handleWorkshopCheckout} className="rounded-[1.5rem] border border-[#c1d2c7] bg-white/80 p-5 shadow-[0_16px_40px_rgba(45,65,59,0.06)] sm:p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div><h3 className="text-xl font-medium tracking-[-0.04em]">Machine workshop</h3><p className="mt-1 text-sm text-[#71817a]">24-hour access · up to 60 minutes per session</p></div>
+              <span className="text-3xl font-medium tracking-[-0.06em]">{WORKSHOP_PLAN.priceLabel}</span>
+            </div>
+            <label htmlFor="workshop-email" className="mt-6 block text-xs font-medium uppercase tracking-[0.14em] text-[#60716b]">Delivery email</label>
+            <input id="workshop-email" type="email" value={workshopEmail} onChange={(event) => setWorkshopEmail(event.target.value)} required maxLength={254} placeholder="you@example.com" className="mt-2 min-h-12 w-full rounded-xl border border-[#cbd6cf] bg-white px-4 text-sm text-[#1d302c] outline-none transition placeholder:text-[#a0ada6] focus:border-[#6f9c87] focus:ring-2 focus:ring-[#b6ddcc]/60" />
+            {workshopCheckoutError && <p className="mt-3 text-sm text-[#9a5f45]" role="alert">{workshopCheckoutError}</p>}
+            <button type="submit" disabled={workshopCheckoutLoading} className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#1d302c] px-5 py-3.5 text-sm font-medium text-white transition hover:bg-[#315e55] active:translate-y-px disabled:opacity-60">{workshopCheckoutLoading ? 'Opening checkout…' : 'Unlock the workshop'} <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></button>
+            <p className="mt-3 text-center text-xs text-[#7a8983]">Secure payment and access delivery through Stripe.</p>
+          </form>
         </section>
 
         <section id="listen" className="mt-24 border-t border-[#cbd6cf] pt-20 sm:mt-32 sm:pt-28">

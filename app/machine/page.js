@@ -6,7 +6,7 @@ import { ArrowRight, Check, Headphones, SlidersHorizontal } from '@phosphor-icon
 import { AgenticAuthModal } from '@/components/auth/AgenticAuthModal';
 import { LiquidHeader } from '@/components/layout/LiquidHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
-import { ToneMachineDemo } from '@/components/machine/ToneMachineDemo';
+import { WorkshopMachineExperience } from '@/components/machine/WorkshopMachineExperience';
 import { EntrainmentIllustration } from '@/components/visuals/EntrainmentIllustration';
 import { OrchestratorMachineIllustration } from '@/components/visuals/OrchestratorMachineIllustration';
 
@@ -54,7 +54,7 @@ export default function MachinePage() {
               <p className="mt-7 text-base leading-8 text-[#5f706b] sm:text-lg">Use the controls below to hear how a shared tone and a small rhythmic difference change the character of a session. Start gently, keep the volume comfortable, and notice what works for you.</p>
             </div>
             <div className="mt-12 rounded-[2rem] bg-[#202b28] p-3 shadow-[0_24px_80px_rgba(42,58,55,0.14)] sm:p-5 lg:p-7">
-              <ToneMachineDemo />
+              <WorkshopMachineExperience />
             </div>
           </div>
         </section>

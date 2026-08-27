@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, Lightning, Power, Pulse } from '@phosphor-icons/react';
 import { nativeWebMcpTool, WEBMCP_TOOL_DEFINITIONS, WEBMCP_CONTRACT_ID, WEBMCP_CONTRACT_VERSION } from '@/lib/agentic/webmcp-contract';
 
-const MAX_DURATION_SEC = 120;
+const DEFAULT_MAX_DURATION_SEC = 120;
 
 const STATE_OPTIONS = [
   { id: 'delta', label: 'Delta', hz: 3, range: '0.5 - 4 Hz · Deep rest' },
@@ -68,7 +68,7 @@ function browserCorrelationId() {
   return `browser-${Date.now()}`;
 }
 
-export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false }) {
+export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, workshopAccess = null }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [carrierFreq, setCarrierFreq] = useState(200);
   const [targetState, setTargetState] = useState('theta');
@@ -80,6 +80,8 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false }) 
   const [webmcpStatus, setWebmcpStatus] = useState('checking');
   const [agentActivity, setAgentActivity] = useState('');
   const [packPreview, setPackPreview] = useState(null);
+  const maxDurationSec = workshopAccess?.valid ? 60 * 60 : DEFAULT_MAX_DURATION_SEC;
+  const isWorkshopAccess = Boolean(workshopAccess?.valid);
 
   const audioCtxRef = useRef(null);
   const leftOscRef = useRef(null);
@@ -422,7 +424,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false }) 
     carrierHz: carrierFreq,
     beatHz: beatFreq,
     volume,
-    remainingPreviewSec: Math.max(0, MAX_DURATION_SEC - sessionTime)
+    remainingPreviewSec: Math.max(0, maxDurationSec - sessionTime)
   };
 
   toolHandlersRef.current = {
@@ -530,12 +532,12 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false }) 
   }, [isPlaying]);
 
   useEffect(() => {
-    if (sessionTime >= MAX_DURATION_SEC) {
+    if (sessionTime >= maxDurationSec) {
       stopAudio();
       setShowLimitModal(true);
       setSessionTime(0);
     }
-  }, [sessionTime, stopAudio]);
+  }, [maxDurationSec, sessionTime, stopAudio]);
 
   useEffect(() => {
     if (isPlaying && leftOscRef.current && rightOscRef.current && audioCtxRef.current) {
@@ -722,11 +724,11 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false }) 
               <span className={isPlaying || packPreview ? 'animate-pulse font-medium text-[#b6ddcc]' : 'text-white/35'}>{isPlaying || packPreview ? 'Playing' : 'Ready'}</span>
             </div>
             <div className="flex items-baseline justify-between">
-                  <span className="text-xl font-medium tracking-tight text-white">{formatTime(MAX_DURATION_SEC - sessionTime)}</span>
-                  <span className="text-xs text-white/30">/ 2 min preview</span>
+                  <span className="text-xl font-medium tracking-tight text-white">{formatTime(Math.max(0, maxDurationSec - sessionTime))}</span>
+                  <span className="text-xs text-white/30">/ {isWorkshopAccess ? '60 min workshop' : '2 min preview'}</span>
             </div>
             <div className="h-1 w-full overflow-hidden rounded-full bg-white/5">
-              <div className="h-full bg-[#b6ddcc] transition-all duration-1000" style={{ width: `${(sessionTime / MAX_DURATION_SEC) * 100}%` }} />
+              <div className="h-full bg-[#b6ddcc] transition-all duration-1000" style={{ width: `${(sessionTime / maxDurationSec) * 100}%` }} />
             </div>
             {packPreview && <p className="text-xs leading-5 text-[#b6ddcc]/75">Pack preview · {packPreview.name} · {packPreview.trackName}</p>}
           </div>
@@ -765,13 +767,17 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false }) 
                 <Lightning aria-hidden="true" className="size-6" weight="light" />
               </div>
               <div className="space-y-3 text-left">
-                <h3 className="text-center text-2xl font-light tracking-tight text-white">Preview complete</h3>
-                <p className="text-sm font-light leading-relaxed text-zinc-400">Your two-minute preview has finished. Create an account to keep exploring the full Cognistration platform.</p>
+                <h3 className="text-center text-2xl font-light tracking-tight text-white">{isWorkshopAccess ? 'Workshop session complete' : 'Preview complete'}</h3>
+                <p className="text-sm font-light leading-relaxed text-zinc-400">{isWorkshopAccess ? 'Your 60-minute workshop session has finished. You can start another session while your 24-hour access key is active.' : 'Your two-minute preview has finished. Create an account to keep exploring the full Cognistration platform.'}</p>
               </div>
               <div className="flex flex-col gap-3">
-                <Link href="/signup" className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d7eadf] px-4 py-3.5 text-center text-sm font-medium text-[#17332e] transition-colors hover:bg-white">
-                  Unlock the full platform <ArrowRight aria-hidden="true" className="size-4" weight="bold" />
-                </Link>
+                {isWorkshopAccess ? (
+                  <button type="button" onClick={() => setShowLimitModal(false)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d7eadf] px-4 py-3.5 text-center text-sm font-medium text-[#17332e] transition-colors hover:bg-white">Close session <ArrowRight aria-hidden="true" className="size-4" weight="bold" /></button>
+                ) : (
+                  <Link href="/signup" className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d7eadf] px-4 py-3.5 text-center text-sm font-medium text-[#17332e] transition-colors hover:bg-white">
+                    Unlock the full platform <ArrowRight aria-hidden="true" className="size-4" weight="bold" />
+                  </Link>
+                )}
                 <button type="button" onClick={() => setShowLimitModal(false)} className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-sm text-zinc-400 transition-all hover:bg-white/10 hover:text-white">Close preview</button>
               </div>
             </div>
