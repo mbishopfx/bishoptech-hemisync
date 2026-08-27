@@ -236,6 +236,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'create_tone_pack_checkout',
     'get_tone_pack_delivery',
     'create_workshop_access_checkout',
+    'get_workshop_access',
     'get_workshop_access_status',
     'revoke_workshop_access',
     'get_machine_payment_options',
@@ -298,12 +299,15 @@ test('UCP MCP transport keeps standard JSON-RPC dispatch alongside the legacy op
 test('commerce fulfillment fails closed after revocation and keeps sensitive provider errors private', async () => {
   const tonePacks = await readFile(new URL('../lib/commerce/tone-packs.mjs', import.meta.url), 'utf8');
   const workshopAccess = await readFile(new URL('../lib/commerce/workshop-access.mjs', import.meta.url), 'utf8');
+  const workshopAccessRoute = await readFile(new URL('../app/api/agent/commerce/workshop-access/route.js', import.meta.url), 'utf8');
   const machineGrants = await readFile(new URL('../lib/commerce/machine-session-grants.mjs', import.meta.url), 'utf8');
   const downloadRoute = await readFile(new URL('../app/api/packs/[packSlug]/download/route.js', import.meta.url), 'utf8');
   const webhookRoute = await readFile(new URL('../app/api/webhooks/stripe/route.js', import.meta.url), 'utf8');
   assert.match(tonePacks, /DELIVERY_REVOKED/);
   assert.match(workshopAccess, /WORKSHOP_ACCESS_NOT_ACTIVE/);
   assert.match(workshopAccess, /WORKSHOP_ACCESS_EXPIRED/);
+  assert.match(workshopAccessRoute, /WorkshopAccessSessionInputSchema/);
+  assert.match(workshopAccessRoute, /getWorkshopAccessForSession/);
   assert.match(machineGrants, /MACHINE_GRANT_NOT_ACTIVE/);
   assert.match(machineGrants, /MACHINE_GRANT_EXPIRED/);
   assert.match(downloadRoute, /safeCommerceError/);
@@ -336,6 +340,8 @@ test('OpenAPI fallback is derived from the same public read registry', () => {
   assert.ok(document.paths['/api/agent/account'].get);
   assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get);
   assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get.responses['200'].content['application/json'].schema.required.includes('webUrl'));
+  assert.ok(document.paths['/api/agent/commerce/workshop-access'].get);
+  assert.ok(document.paths['/api/agent/commerce/workshop-access'].get.responses['200'].content['application/json'].schema.required.includes('accessKey'));
   assert.ok(document.paths['/api/packs'].get.parameters.some((parameter) => parameter.name === 'agent'));
   assert.ok(document.paths['/api/machine-payments/tone'].post.requestBody.content['application/json'].schema.properties.carrierHz);
   assert.ok(document.components.schemas.UcpCheckout.properties.status.enum.includes('complete_in_progress'));

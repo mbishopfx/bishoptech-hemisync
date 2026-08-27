@@ -24,13 +24,14 @@ Cognistration is a public audio-session product. The homepage exposes a native W
 - create_tone_pack_checkout — after explicit confirmation, create a Stripe-hosted checkout for one published tone pack using the server-owned price and a stable idempotency key.
 - get_tone_pack_delivery — after payment, verify the Stripe Checkout Session and return the direct download URL, protected fallback, email fallback, and public tone-pack web URL; never infer payment from a client claim.
 - create_workshop_access_checkout — after explicit confirmation, create the $2.99 one-time checkout for 24-hour machine access and sessions up to 60 minutes.
+- get_workshop_access — after the user completes that hosted checkout, verify the paid Checkout Session and return the one-time 24-hour access key and machine launch URL; treat the key as a bearer secret.
 - get_workshop_access_status — validate a workshop bearer key without echoing the key; report only active, expired, revoked, or invalid status and its limits.
 - revoke_workshop_access — revoke a workshop key only after explicit confirmation.
 - get_machine_payment_options — report whether the provider-gated Stripe Machine Payments Protocol route is enabled and explain the browser fallback.
 - get_autonomous_payment_options — report AP2-compatible and official UCP AP2 mandate readiness, including provider/key gates; do not create autonomous mandates or claim official AP2 is enabled unless the returned status says enabled.
 - open_machine_generator — render the interactive tone machine in a compatible ChatGPT app host; optional intention, public tone ID, state, carrier, rhythm, and volume inputs seed the widget.
 
-For a purchase, first search the published catalog, state the server-returned price, ask for explicit confirmation and a delivery email, then use a stable idempotency key. Hosted checkout is the default. UCP discovery is available at https://cognistration.com/.well-known/ucp; its REST and MCP checkout operations recompute totals and fall back to hosted Stripe review when delegated payment access is unavailable.
+For a purchase, first search the published catalog, state the server-returned price, ask for explicit confirmation and a delivery email, then use a stable idempotency key. Hosted checkout is the default. After a paid workshop checkout, call get_workshop_access with the returned Checkout Session ID and do not repeat the bearer key beyond the user's request. UCP discovery is available at https://cognistration.com/.well-known/ucp; its REST and MCP checkout operations recompute totals and fall back to hosted Stripe review when delegated payment access is unavailable.
 
 The public MCP server also advertises the io.modelcontextprotocol/skills extension. Use skills/list, skills/get, and resources/read for the four reusable Cognistration operating skills. Skill content is guidance only and never grants authorization.
 

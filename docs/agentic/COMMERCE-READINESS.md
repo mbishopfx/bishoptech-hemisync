@@ -4,7 +4,7 @@
 
 - Public tone-pack checkout: `create_tone_pack_checkout` resolves a published slug to the server-owned Stripe price, requires explicit confirmation, and returns a Stripe-hosted checkout URL.
 - Paid delivery: `get_tone_pack_delivery` verifies the Stripe Checkout Session before returning three user-facing paths: a direct download URL, a protected fallback URL, and the public tone-pack web URL; delivery email remains the additional fallback.
-- Machine workshop access: the live Stripe product is a one-time `$2.99` pass. A paid session issues an encrypted, hashed, revocable key valid for 24 hours and limits each machine workshop session to 60 minutes.
+- Machine workshop access: the live Stripe product is a one-time `$2.99` pass. A paid session issues an encrypted, hashed, revocable key valid for 24 hours and limits each machine workshop session to 60 minutes. `get_workshop_access` and `/api/agent/commerce/workshop-access` verify the paid Checkout Session and resolve that key idempotently for an agent.
 - UCP discovery: `/.well-known/ucp` advertises REST and MCP transports, checkout/order capabilities, payment handlers, canonical policy links, and the provider-gated autonomous-payment extension.
 - UCP checkout lifecycle: create, get, update, complete, cancel, order lookup, server-derived totals, hosted-checkout escalation, idempotency keys, signed order webhooks, and refund/dispute state handling.
 - Machine Payments Protocol: `POST /api/machine-payments/session` uses `mppx` and Stripe shared-payment-token verification when enabled. It returns a 402 challenge until a compatible agent supplies a provider credential, then issues a durable one-hour grant bound to the verified receipt. `/machine` validates that grant before opening the extended session.

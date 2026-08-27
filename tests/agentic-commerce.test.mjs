@@ -18,7 +18,9 @@ import {
   createWorkshopAccessKey,
   decryptWorkshopAccessKey,
   encryptWorkshopAccessKey,
-  hashWorkshopAccessKey
+  getWorkshopAccessForSession,
+  hashWorkshopAccessKey,
+  WorkshopAccessSessionInputSchema
 } from '../lib/commerce/workshop-access.mjs';
 import { PUBLIC_TONE_PACK_CATALOG } from '../lib/agentic/pack-capability.js';
 import {
@@ -208,6 +210,70 @@ test('every published tone pack resolves to a server-priced hosted checkout', as
   });
 
   assert.equal(created.length, PUBLIC_TONE_PACK_CATALOG.length);
+});
+
+test('paid workshop checkout resolves to one idempotent 24-hour bearer grant', async () => {
+  let stored = null;
+  let paid = true;
+  const session = {
+    id: 'cs_workshop_unit',
+    url: 'https://checkout.stripe.com/c/pay/cs_workshop_unit',
+    payment_status: 'paid',
+    customer_details: { email: 'listener@example.com' },
+    payment_intent: 'pi_workshop_unit',
+    metadata: { productType: 'workshop-24h', priceId: 'price_workshop_unit' }
+  };
+  const stripe = {
+    checkout: {
+      sessions: {
+        create: async () => session,
+        retrieve: async () => ({ ...session, payment_status: paid ? 'paid' : 'unpaid' })
+      }
+    }
+  };
+  const supabase = {
+    from(table) {
+      assert.equal(table, 'workshop_access_keys');
+      const filters = {};
+      const builder = {
+        select() { return builder; },
+        eq(column, value) { filters[column] = value; return builder; },
+        maybeSingle: async () => ({
+          data: filters.stripe_session_id && stored?.stripe_session_id === filters.stripe_session_id ? stored : null,
+          error: null
+        }),
+        insert(record) {
+          stored = { id: 'workshop_grant_unit', ...record };
+          return builder;
+        },
+        single: async () => ({ data: stored, error: null })
+      };
+      return builder;
+    }
+  };
+
+  assert.doesNotThrow(() => WorkshopAccessSessionInputSchema.parse({ checkoutSessionId: session.id }));
+  const checkout = await createWorkshopCheckout({
+    input: { email: 'listener@example.com', confirmed: true, idempotencyKey: 'workshop-unit-1' },
+    origin: 'https://example.test',
+    supabase: null,
+    stripe
+  });
+  assert.equal(checkout.accessDelivery.verificationUrl, 'https://example.test/api/agent/commerce/workshop-access?checkout_session_id=cs_workshop_unit');
+
+  const first = await getWorkshopAccessForSession({ sessionId: checkout.checkoutSessionId, origin: 'https://example.test', supabase, stripe, secret: 'unit-secret', randomBytes: (size) => Buffer.alloc(size, 7) });
+  const second = await getWorkshopAccessForSession({ sessionId: checkout.checkoutSessionId, origin: 'https://example.test', supabase, stripe, secret: 'unit-secret', randomBytes: (size) => Buffer.alloc(size, 8) });
+  assert.equal(first.status, 'active');
+  assert.match(first.accessKey, /^cgws_/);
+  assert.equal(first.accessKey, second.accessKey);
+  assert.equal(first.accessUrl, `https://example.test/machine#workshop=${encodeURIComponent(first.accessKey)}`);
+  assert.equal(Date.parse(first.expiresAt) - Date.parse(first.startsAt), 24 * 60 * 60 * 1000);
+
+  paid = false;
+  await assert.rejects(
+    getWorkshopAccessForSession({ sessionId: checkout.checkoutSessionId, origin: 'https://example.test', supabase, stripe, secret: 'unit-secret' }),
+    (error) => error.code === 'PAYMENT_NOT_VERIFIED' && error.status === 403
+  );
 });
 
 test('workshop bearer keys can be encrypted at rest and hashed for lookup', () => {
