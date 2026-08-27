@@ -14,6 +14,9 @@ Build a short, composable route from the listener's words to a visible, reversib
 - “Test a relaxation tone pack” → search `search_public_tone_packs` with `relaxation`, inspect the returned pack and preview track, then ask for explicit confirmation before browser audio.
 - “I need a gamma tone with a 246 Hz carrier” → set `targetState: gamma` and `carrierHz: 246`; preserve or explicitly set the beat and volume instead of guessing hidden state.
 - “Adjust that tone to a smaller carrier” → read current state first, reduce the observed carrier by a modest bounded step, clamp to 100–400 Hz, and report the resulting absolute value.
+- “Compare a few directions for writing” → call `compare_tone_directions` with the short intention and present the ranked fit/tradeoff options before changing the machine.
+- “Build me a 20-minute session for journaling” → call `plan_listening_session`; present the arrive, practice, and close phases, then offer the visible machine as the next step. Planning does not start audio or save a record.
+- “Give me a cue before I begin” → call `get_session_cue`; return the short prompt and suggested starting direction without asking for diary content.
 
 ## Reliable sequences
 
@@ -39,6 +42,13 @@ Build a short, composable route from the listener's words to a visible, reversib
 2. Set only the fields needed. Accepted bounds are carrier 100–400 Hz, beat 0.5–40 Hz, and volume 0–100 percent.
 3. Keep target state in `delta`, `theta`, `alpha`, `beta`, or `gamma`.
 4. Treat a repeat of an absolute set as safe; do not repeat a relative adjustment after an uncertain response without reading state again.
+
+### Session orchestration
+
+1. Use comparison when the user is undecided, planning when they want a timed sequence, and a cue when they need a small first action.
+2. Keep session plans between 5 and 60 minutes and use only the published `rest`, `reflect`, `focus`, `momentum`, and `synthesis` modes.
+3. Treat every phase tone as a public catalog object. Do not synthesize an unlisted ID, frequency, or promised effect.
+4. A plan is not a render, a saved diary, or a treatment recommendation. If the user wants sound, return to the visible controls and request explicit preview confirmation.
 
 ## Safety language
 

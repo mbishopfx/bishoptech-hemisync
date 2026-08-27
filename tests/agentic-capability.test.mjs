@@ -23,6 +23,14 @@ import {
   publicIosAppOffer
 } from '../lib/agentic/ios-capability.js';
 import { getSkill, listSkills, readSkillResource } from '../lib/agentic/skill-capability.js';
+import {
+  SessionCueInputSchema,
+  SessionPlanInputSchema,
+  ToneComparisonInputSchema,
+  buildSessionPlan,
+  compareToneDirections,
+  getSessionCue
+} from '../lib/agentic/session-capability.js';
 import { MCP_TOOLS, MCP_RESOURCES, MCP_PROTOCOL_VERSION } from '../lib/agentic/mcp-contract.js';
 import {
   MACHINE_WIDGET_RESOURCE_MIME_TYPE,
@@ -75,6 +83,30 @@ test('golden intentions map to useful bounded listening directions', async () =>
   assert.ok(['delta', 'theta'].includes(rest.tone.state));
 
   assert.ok(searchPublicTones({ query: 'diary session', limit: 5 }).some((tone) => ['theta', 'alpha'].includes(tone.state)));
+});
+
+test('public session orchestration stays bounded, useful, and free of diary storage', async () => {
+  const comparison = await compareToneDirections({ intention: 'a scattered afternoon before writing', limit: 3 });
+  assert.equal(comparison.capabilityId, 'cognistration-session-orchestration');
+  assert.equal(comparison.options.length, 3);
+  assert.ok(comparison.options.every((option) => PUBLIC_TONE_CATALOG.some((tone) => tone.id === option.tone.id)));
+  assert.ok(comparison.options.every((option) => option.bestFor && option.tradeoff));
+
+  const plan = await buildSessionPlan({ intention: 'prepare a calm diary session', durationMin: 20 });
+  assert.equal(plan.durationMin, 20);
+  assert.deepEqual(plan.phases.map((phase) => phase.id), ['arrive', 'practice', 'close']);
+  assert.equal(plan.phases.reduce((total, phase) => total + phase.durationSec, 0), 1200);
+  assert.equal(plan.boundaries.audioStarted, false);
+  assert.equal(plan.boundaries.recordSaved, false);
+  assert.doesNotMatch(JSON.stringify(plan), /calm diary session/i);
+
+  const cue = getSessionCue({ mode: 'reflect' });
+  assert.equal(cue.mode, 'reflect');
+  assert.ok(cue.cue.prompt);
+  assert.equal(cue.note.includes('saved'), true);
+  assert.throws(() => SessionPlanInputSchema.parse({ intention: 'valid', durationMin: 4 }));
+  assert.throws(() => ToneComparisonInputSchema.parse({ intention: 'valid', limit: 5 }));
+  assert.doesNotThrow(() => SessionCueInputSchema.parse({}));
 });
 
 test('machine generator render state stays bounded and seeds direct user controls', async () => {
@@ -234,6 +266,9 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'search_public_tones',
     'get_public_tone',
     'recommend_tone',
+    'compare_tone_directions',
+    'plan_listening_session',
+    'get_session_cue',
     'search_public_tone_packs',
     'get_public_tone_pack',
     'get_policy_info',
@@ -252,6 +287,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   const iosAppTool = MCP_TOOLS.find((tool) => tool.name === 'get_ios_app_offer');
   assert.equal(iosAppTool.annotations.readOnlyHint, true);
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://ios-app'));
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://session-guides'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === MACHINE_WIDGET_RESOURCE_URI && resource.mimeType === MACHINE_WIDGET_RESOURCE_MIME_TYPE));
   const machineTool = MCP_TOOLS.find((tool) => tool.name === 'open_machine_generator');
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
@@ -271,6 +307,8 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_begin_preview' && tool.consent === 'explicit_confirmation_required'));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_preview_tone_pack' && tool.consent === 'explicit_confirmation_required'));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_search_tone_packs' && tool.annotations.readOnlyHint));
+  assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_nudge_carrier' && tool.sideEffect === 'updates_visible_controls'));
+  assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_plan_listening_session' && tool.annotations.readOnlyHint));
   assert.ok(MEMBER_WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_member_generate_tone' && tool.consent === 'explicit_confirmation_required'));
 });
 
@@ -371,7 +409,7 @@ test('UCP order responses expose a permalink and a durable digital fulfillment f
   assert.match(commerce, /email_fallback: true/);
 });
 
-test('OpenAPI fallback is derived from the same public read registry', () => {
+test('OpenAPI fallback is derived from the same public registry', () => {
   const document = publicOpenApiDocument('https://example.test');
   assert.equal(document.openapi, '3.1.0');
   assert.equal(document.servers[0].url, 'https://example.test');
@@ -380,6 +418,9 @@ test('OpenAPI fallback is derived from the same public read registry', () => {
   assert.equal(document.paths['/api/agent'].post.responses['200'].content['application/json'].schema.$ref, '#/components/schemas/ToneRecommendation');
   assert.ok(document.paths['/api/agent/policy'].get);
   assert.ok(document.paths['/api/agent/account'].get);
+  assert.ok(document.paths['/api/agent/tone-compare'].post);
+  assert.ok(document.paths['/api/agent/session-plan'].post);
+  assert.ok(document.paths['/api/agent/session-cue'].post);
   assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get);
   assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get.responses['200'].content['application/json'].schema.required.includes('webUrl'));
   assert.ok(document.paths['/api/agent/commerce/workshop-access'].get);

@@ -1,0 +1,46 @@
+import { NextResponse } from 'next/server';
+import { compareToneDirections, ToneComparisonInputSchema } from '@/lib/agentic/session-capability';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+const MAX_BODY_LENGTH = 16 * 1024;
+
+async function parseBody(request) {
+  const raw = await request.text();
+  if (raw.length > MAX_BODY_LENGTH) {
+    const error = new Error('The request is larger than the public comparison limit.');
+    error.status = 413;
+    throw error;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    const error = new Error('The request must be valid JSON.');
+    error.status = 400;
+    throw error;
+  }
+}
+function errorResponse(error) {
+  const isInputError = error?.name === 'ZodError' || error?.status === 400 || error?.status === 413;
+  return NextResponse.json({
+    ok: false,
+    code: isInputError ? 'INVALID_INPUT' : 'TONE_COMPARISON_UNAVAILABLE',
+    error: isInputError ? 'Provide an intention and a comparison limit from 2 to 4.' : 'The tone comparison could not complete that request. Try again.',
+    retryable: !isInputError
+  }, {
+    status: isInputError ? error?.status || 400 : 503,
+    headers: { 'cache-control': 'no-store' }
+  });
+}
+
+export async function POST(request) {
+  try {
+    const input = ToneComparisonInputSchema.parse(await parseBody(request));
+    const comparison = await compareToneDirections(input);
+    return NextResponse.json({ ok: true, comparison }, { headers: { 'cache-control': 'no-store' } });
+  } catch (error) {
+    return errorResponse(error);
+  }
+}

@@ -37,6 +37,7 @@ import {
 import { PolicyInputSchema, getPolicyInfo, policyCatalogSummary } from '@/lib/agentic/policy-capability';
 import { AccountOptionsInputSchema, publicAccountOptions } from '@/lib/agentic/account-capability';
 import { getSkill, listSkills, readSkillResource, skillCatalogSummary } from '@/lib/agentic/skill-capability';
+import { buildSessionPlan, compareToneDirections, getSessionCue, sessionGuideCatalog } from '@/lib/agentic/session-capability';
 import { createTonePackCheckout, getTonePackDelivery } from '@/lib/commerce/agent-checkout.mjs';
 import { autonomousPaymentOptions } from '@/lib/commerce/ap2.mjs';
 import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
@@ -296,6 +297,10 @@ async function readResource(uri) {
     return { uri, mimeType: 'application/json', text: JSON.stringify(publicIosAppOffer()) };
   }
 
+  if (uri === 'cognistration://session-guides') {
+    return { uri, mimeType: 'application/json', text: JSON.stringify(sessionGuideCatalog()) };
+  }
+
   if (uri === 'cognistration://skills') {
     return { uri, mimeType: 'application/json', text: JSON.stringify(skillCatalogSummary()) };
   }
@@ -353,6 +358,18 @@ async function callTool(name, args, request) {
       tone: result.tone,
       rationale: result.response
     });
+  }
+
+  if (name === 'compare_tone_directions') {
+    return toolSuccess(await compareToneDirections(args || {}));
+  }
+
+  if (name === 'plan_listening_session') {
+    return toolSuccess(await buildSessionPlan(args || {}));
+  }
+
+  if (name === 'get_session_cue') {
+    return toolSuccess(getSessionCue(args || {}));
   }
 
   if (name === 'search_public_tone_packs') {

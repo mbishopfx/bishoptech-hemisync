@@ -2,6 +2,20 @@
 
 Public BishopTech product site for Cognistration, built with Next.js and deployed with a Vercel frontend plus a Railway render backend.
 
+## WebMCP Challenge build
+
+Cognistration is a human-first audio-session platform with progressive WebMCP and MCP Apps layers. A compatible browser can read the visible session machine, while a connected ChatGPT app can render an interactive tone machine with the Aurora visual, choose a bounded public tone, adjust the same controls a person sees, and request a preview that still requires explicit confirmation. The regular human interface remains complete without either agent bridge.
+
+- Live app: https://cognistration.com
+- Challenge brief: `docs/challenge/WEBMCP-SUBMISSION.md`
+- Demo script: `docs/challenge/DEMO-SCRIPT.md`
+- Human-facing ChatGPT connection address: https://cognistration.com/connect
+- REST/OpenAPI compatibility document: https://cognistration.com/openapi.json
+- ChatGPT machine render tool: `open_machine_generator` via https://cognistration.com/connect
+- Public MCP tools: 21 bounded catalog, guidance, hosted-commerce, and machine capabilities
+- Homepage WebMCP tools: 13 progressive browser tools, including relative carrier adjustment and session guidance
+- iPhone app offer tool: `get_ios_app_offer` returns the public App Store listing, current $2.99 one-time price, and the on-device explanation for the lower cost
+
 ## Operating loops
 
 - `loops/state.md` is the resumable operating memory.
@@ -116,6 +130,7 @@ YouTube analytics (last 7 completed days): views 256 | minutes 95.0 | avg_view_s
 - `POST /api/audio/journey`
 - `POST /api/audio/overlay`
 - `GET /api/health`
+- `POST /api/mcp` — public MCP JSON-RPC tools and MCP Apps resource
 
 ## Notes
 

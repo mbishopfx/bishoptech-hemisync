@@ -300,6 +300,115 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     ...extra
   }), []);
 
+  const fetchAgentCapability = useCallback(async (path, body) => {
+    const response = await fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || 'The public session capability is unavailable.');
+      error.code = data.code || 'CAPABILITY_UNAVAILABLE';
+      error.retryable = Boolean(data.retryable || response.status >= 500);
+      throw error;
+    }
+    return data;
+  }, []);
+
+  const compareToneDirectionsForAgent = useCallback(async (input = {}) => {
+    const intention = typeof input.intention === 'string' ? input.intention.trim() : '';
+    const limit = input.limit === undefined ? 3 : Number(input.limit);
+    if (!intention || intention.length > 240 || !Number.isInteger(limit) || limit < 2 || limit > 4) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_TONE_COMPARISON', safeMessage: 'Provide a short intention and a comparison limit from 2 to 4.', retryable: false }
+      });
+    }
+
+    try {
+      const data = await fetchAgentCapability('/api/agent/tone-compare', { intention, limit });
+      return agentResult('completed', { comparison: data.comparison });
+    } catch (error) {
+      return agentResult('failed', {
+        error: { code: error.code || 'TONE_COMPARISON_UNAVAILABLE', safeMessage: 'The tone comparison could not be reached. Try the visible controls instead.', retryable: Boolean(error.retryable) }
+      });
+    }
+  }, [agentResult, fetchAgentCapability]);
+
+  const planListeningSessionForAgent = useCallback(async (input = {}) => {
+    const intention = typeof input.intention === 'string' ? input.intention.trim() : '';
+    const durationMin = input.durationMin === undefined ? 20 : Number(input.durationMin);
+    const allowedModes = new Set(['rest', 'reflect', 'focus', 'momentum', 'synthesis']);
+    const allowedStates = new Set(STATE_OPTIONS.map((option) => option.id));
+    if (!intention || intention.length > 240 || !Number.isInteger(durationMin) || durationMin < 5 || durationMin > 60 || (input.mode !== undefined && !allowedModes.has(input.mode)) || (input.targetState !== undefined && !allowedStates.has(input.targetState))) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_SESSION_PLAN', safeMessage: 'Provide a short intention, a duration from 5 to 60 minutes, and published mode or state values.', retryable: false }
+      });
+    }
+
+    try {
+      const data = await fetchAgentCapability('/api/agent/session-plan', {
+        intention,
+        durationMin,
+        ...(input.mode ? { mode: input.mode } : {}),
+        ...(input.targetState ? { targetState: input.targetState } : {})
+      });
+      return agentResult('completed', { plan: data.plan });
+    } catch (error) {
+      return agentResult('failed', {
+        error: { code: error.code || 'SESSION_PLAN_UNAVAILABLE', safeMessage: 'The session plan could not be reached. The visible machine is still ready to tune.', retryable: Boolean(error.retryable) }
+      });
+    }
+  }, [agentResult, fetchAgentCapability]);
+
+  const getSessionCueForAgent = useCallback(async (input = {}) => {
+    const intention = typeof input.intention === 'string' ? input.intention.trim() : '';
+    const allowedModes = new Set(['rest', 'reflect', 'focus', 'momentum', 'synthesis']);
+    if (intention.length > 240 || (input.mode !== undefined && !allowedModes.has(input.mode))) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_SESSION_CUE', safeMessage: 'Use a short intention or one of the published session modes.', retryable: false }
+      });
+    }
+
+    try {
+      const data = await fetchAgentCapability('/api/agent/session-cue', {
+        ...(intention ? { intention } : {}),
+        ...(input.mode ? { mode: input.mode } : {})
+      });
+      return agentResult('completed', { cue: data.cue });
+    } catch (error) {
+      return agentResult('failed', {
+        error: { code: error.code || 'SESSION_CUE_UNAVAILABLE', safeMessage: 'The session cue could not be reached. Try a visible machine direction instead.', retryable: Boolean(error.retryable) }
+      });
+    }
+  }, [agentResult, fetchAgentCapability]);
+
+  const nudgeCarrierForAgent = useCallback((input = {}) => {
+    const direction = input.direction;
+    const stepHz = input.stepHz === undefined ? 24 : Number(input.stepHz);
+    if (!['smaller', 'larger'].includes(direction) || !Number.isFinite(stepHz) || stepHz < 1 || stepHz > 50) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_CARRIER_NUDGE', safeMessage: 'Choose smaller or larger and use a step from 1 to 50 Hz.', retryable: false }
+      });
+    }
+
+    const previousCarrierHz = Number(sessionStateRef.current?.carrierHz ?? carrierFreq);
+    const requestedCarrierHz = direction === 'smaller' ? previousCarrierHz - stepHz : previousCarrierHz + stepHz;
+    const nextCarrierHz = Math.round(clamp(requestedCarrierHz, 100, 400));
+    const controls = applyToneSettings({ carrierHz: nextCarrierHz });
+    setAgentActivity(`Carrier moved ${direction} to ${controls.carrierHz} Hz.`);
+    return agentResult('completed', {
+      adjustment: {
+        direction,
+        requestedStepHz: stepHz,
+        previousCarrierHz,
+        carrierHz: controls.carrierHz,
+        clamped: requestedCarrierHz < 100 || requestedCarrierHz > 400
+      },
+      controls
+    });
+  }, [agentResult, applyToneSettings, carrierFreq]);
+
   const searchTonePacksForAgent = useCallback(async (input = {}) => {
     const query = typeof input.query === 'string' ? input.query.trim() : '';
     const state = input.state;
@@ -451,7 +560,11 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       setAgentActivity(`Session controls set to ${controls.targetState}, ${controls.carrierHz} Hz carrier, and ${controls.beatHz} Hz beat.`);
       return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'completed', controls };
     },
+    cognistration_nudge_carrier: nudgeCarrierForAgent,
     cognistration_generate_tone: generateToneForAgent,
+    cognistration_compare_tone_directions: compareToneDirectionsForAgent,
+    cognistration_plan_listening_session: planListeningSessionForAgent,
+    cognistration_get_session_cue: getSessionCueForAgent,
     cognistration_search_tone_packs: searchTonePacksForAgent,
     cognistration_preview_tone_pack: previewTonePackForAgent,
     cognistration_get_policy_info: getPolicyInfoForAgent,

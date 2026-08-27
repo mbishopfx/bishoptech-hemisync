@@ -23,12 +23,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Local env files. Keep only the redacted template under version control.
+/.env*
+!/.env.example
 
 # Vercel
 .vercel
@@ -41,4 +38,8 @@ next-env.d.ts
 
 # Local credentials
 *secret*.json
+*credential*.json
+*credentials*.json
+*oauth*.json
+*service-account*.json
 bishoptech-*.json
