@@ -3,7 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Pause, Play } from '@phosphor-icons/react';
 
-const CARD_TINTS = ['#729b87', '#8693ab', '#b88a6c', '#a69b6b', '#b88691', '#779783', '#6e99aa', '#a785a1', '#98a76e', '#c49a6b'];
+const COVER_STYLES = [
+  'from-[#294f49] via-[#6f9c87] to-[#d3b37c]',
+  'from-[#3c475e] via-[#7d91a9] to-[#d4c8a8]',
+  'from-[#5a493f] via-[#b68d68] to-[#e3d3ae]',
+  'from-[#304d57] via-[#57928d] to-[#c6d7c5]',
+  'from-[#4d3e58] via-[#9a7fb2] to-[#d3c1a2]'
+];
 
 function trackId(track) {
   return track?.track_id || track?.trackId || track?.id;
@@ -120,11 +126,11 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
         aria-label="Tone pack catalog"
       >
         {packs.map((pack, index) => {
-          const tint = CARD_TINTS[index % CARD_TINTS.length];
           const previewTrack = pack.tracks?.[0];
           const previewKey = previewTrack ? `${pack.slug}-${trackId(previewTrack)}` : null;
           const isPlaying = previewKey && activeTrackKey === previewKey;
           const isSelected = selectedSlug === pack.slug;
+          const trackCount = pack.trackCount || pack.tracks?.length || 0;
 
           return (
             <article
@@ -132,61 +138,64 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
               ref={(element) => {
                 cardRefs.current[index] = element;
               }}
-              className="relative min-h-[28rem] w-[calc(100vw-2.5rem)] shrink-0 snap-center overflow-hidden rounded-[1.75rem] border p-6 shadow-[0_28px_70px_-48px_rgba(45,65,59,0.26)] sm:min-h-[25rem] sm:w-[min(76vw,42rem)] sm:p-8 lg:w-[min(58vw,42rem)]"
-              style={{
-                background: `linear-gradient(132deg, ${tint}42 0%, rgba(248,250,247,0.94) 48%, rgba(227,235,229,0.98) 100%)`,
-                borderColor: isSelected ? `${tint}d0` : `${tint}7d`,
-                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.75), inset 24px 0 56px ${tint}18, 0 28px 70px -48px rgba(45,65,59,0.26)`
-              }}
+              className={`relative flex min-h-[35rem] w-[min(82vw,360px)] shrink-0 snap-center flex-col rounded-[1.75rem] border bg-white/70 p-3 shadow-[0_14px_36px_rgba(45,65,59,0.07)] transition-[border-color,box-shadow,transform] duration-300 sm:w-[360px] ${isSelected ? 'border-[#6b9587] shadow-[0_18px_48px_rgba(45,65,59,0.14)]' : 'border-[#c7d2cb]'}`}
             >
-              <div className="pointer-events-none absolute -left-16 -top-28 size-72 rounded-full blur-3xl" style={{ backgroundColor: `${tint}40` }} />
-              <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent" />
+              <div className={`relative aspect-square overflow-hidden rounded-[1.25rem] bg-gradient-to-br ${COVER_STYLES[index % COVER_STYLES.length]} p-6`}>
+                <div
+                  className="absolute inset-0 opacity-30"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle at 22% 22%, rgba(255,255,255,.85) 0 1px, transparent 1.5px), radial-gradient(circle at 75% 66%, rgba(255,255,255,.55) 0 1px, transparent 1.5px)',
+                    backgroundSize: '23px 23px, 31px 31px'
+                  }}
+                />
+                <div className="relative flex h-full flex-col justify-between text-white">
+                  <div className="flex items-start justify-between text-xs font-medium uppercase tracking-[0.16em] text-white/75">
+                    <span>cognistration</span>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                  </div>
+                  <div>
+                    <p className="max-w-[12ch] text-4xl font-medium leading-[0.95] tracking-[-0.06em]">{pack.name}</p>
+                    <p className="mt-3 text-xs text-white/70">A finished session for your next chapter.</p>
+                  </div>
+                </div>
+              </div>
 
-              <div className="relative flex h-full min-h-[25rem] flex-col sm:min-h-[21rem]">
-                <div className="flex items-start justify-between gap-5">
-                  <span className="text-[10px] tabular-nums tracking-[0.24em] text-[#6f8179]">{String(index + 1).padStart(2, '0')}</span>
-                  <span className="max-w-[55%] rounded-full border border-[#c2d0c7] bg-white/60 px-3 py-1.5 text-right text-[8px] uppercase tracking-[0.18em] text-[#60736a]">{pack.eyebrow}</span>
+              <div className="flex flex-1 flex-col p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-xl font-medium tracking-[-0.03em] text-[#1d302c]">{pack.name}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#66746f]">{pack.summary || pack.description || 'A considered listening session from the Cognistration library.'}</p>
+                  </div>
+                  <span className="shrink-0 text-lg font-medium text-[#1d302c]">{pack.price || '$5.99'}</span>
                 </div>
 
-                <div className="mt-9 max-w-xl">
-                  <h3 className="text-3xl font-medium tracking-[-0.04em] text-[#1d302c] sm:text-4xl">{pack.name}</h3>
-                  <p className="mt-4 line-clamp-4 max-w-lg text-sm font-light leading-6 text-[#52635f] sm:line-clamp-3">{pack.summary}</p>
-                </div>
+                <div className="mt-auto pt-6">
+                  <div className="flex items-center justify-between border-t border-[#dbe2dd] pt-4 text-xs text-[#788681]">
+                    <span>{trackCount || 'Several'} sessions</span>
+                    <span>One-time purchase</span>
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      type="button"
+                      disabled={!previewTrack || !trackUrl(previewTrack)}
+                      data-track-key={previewKey || undefined}
+                      onClick={() => onPreview(pack, previewTrack)}
+                      className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full border border-[#bfcfc5] px-4 py-3 text-sm font-medium text-[#315e55] transition hover:border-[#6b9587] hover:bg-[#f0f5f1] disabled:cursor-not-allowed disabled:opacity-50"
+                      aria-label={`${isPlaying ? 'Stop' : 'Play'} 30-second preview of ${pack.name}`}
+                    >
+                      {isPlaying ? <Pause className="size-4" weight="fill" aria-hidden="true" /> : <Play className="size-4" weight="fill" aria-hidden="true" />}
+                      <span>{isPlaying ? 'Pause' : 'Preview'}</span>
+                    </button>
 
-                <div className="mt-auto flex flex-col gap-4 border-t border-[#ccd8d0] pt-5 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="button"
-                    disabled={!previewTrack || !trackUrl(previewTrack)}
-                    data-track-key={previewKey || undefined}
-                    onClick={() => onPreview(pack, previewTrack)}
-                    className="inline-flex min-w-0 items-center gap-3 text-left disabled:cursor-not-allowed disabled:opacity-50"
-                    aria-label={`${isPlaying ? 'Stop' : 'Play'} 30-second preview of ${pack.name}`}
-                  >
-                    <span className="grid size-10 shrink-0 place-items-center rounded-full border border-[#b5c8be] bg-white/60 text-[#315e55] transition hover:bg-[#1d302c] hover:text-white active:scale-[0.98]">
-                      {isPlaying ? <Pause weight="fill" className="size-3.5" /> : <Play weight="fill" className="ml-0.5 size-3.5" />}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block max-w-48 truncate text-xs text-[#445a53]">{previewTrack ? trackName(previewTrack) : 'Preview publishing soon'}</span>
-                      <span className="mt-1 flex items-center gap-2 text-[8px] uppercase tracking-[0.2em] text-[#71807b]">
-                        {isPlaying ? formatPreviewTime(previewTime) : 'Play 30 sec'}
-                        {isPlaying && (
-                          <span className="flex h-3 items-center gap-0.5" aria-hidden="true">
-                            {Array.from({ length: 6 }).map((_, barIndex) => (
-                              <span key={barIndex} className="catalog-wave-bar h-full w-px bg-[#548477]" />
-                            ))}
-                          </span>
-                        )}
-                      </span>
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => onSelect(pack.slug)}
-                    className="inline-flex items-center justify-between gap-5 rounded-full border border-[#adc4b7] bg-white/60 px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[#315e55] transition hover:bg-[#1d302c] hover:text-white active:scale-[0.98] sm:justify-center"
-                  >
-                    Choose this pack <ArrowRight className="size-3.5" />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => onSelect(pack.slug)}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#1d302c] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#315e55] active:scale-[0.98]"
+                    >
+                      <span>Get the pack</span>
+                      <ArrowRight className="size-3.5" aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </article>
