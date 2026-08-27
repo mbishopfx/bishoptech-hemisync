@@ -12,7 +12,7 @@
 
 ## What must happen before accepting live agent payments
 
-1. Apply `supabase/migrations/202608260001_agentic_commerce.sql` to the linked production project and verify the five commerce tables exist with RLS enabled.
+1. Apply `supabase/migrations/202608260001_agentic_commerce.sql` to the linked production project and verify the six commerce tables exist with RLS enabled.
 2. Confirm the production Stripe webhook at `/api/webhooks/stripe` has a live signing secret and subscribes to `checkout.session.completed`, `charge.refunded`, `charge.dispute.created`, `charge.dispute.closed`, `shared_payment.granted_token.used`, and `shared_payment.granted_token.deactivated`.
 3. Obtain Stripe Machine Payments / Shared Payment Token access and the merchant network ID. Stripe access is not implied by having an ordinary Stripe account or a normal Checkout price.
 4. Add production-only environment values in Vercel without committing them:
