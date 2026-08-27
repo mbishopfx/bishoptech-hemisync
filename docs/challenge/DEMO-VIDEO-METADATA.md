@@ -26,6 +26,10 @@ account access, payment, and private workspace actions remain user-controlled.
 
 - Target runtime: 2 minutes 30 seconds or less.
 - Record the live `/try` route with system audio enabled.
+- Current local reference render: `output/challenge/cognistration-webmcp-try-cockpit-narrated.webm`
+  (55.928 seconds, 1440×900, VP8 video with Opus narration). The silent browser
+  capture is retained beside it as
+  `output/challenge/cognistration-webmcp-try-cockpit.webm`.
 - Do not submit a real payment during the recording; show the no-credential
   HTTP 402 challenge instead.
 - Upload the final render to a public YouTube URL before submitting to the
