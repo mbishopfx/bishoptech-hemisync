@@ -41,6 +41,35 @@ function rpcResult(id, result) {
   return NextResponse.json({ jsonrpc: '2.0', id, result }, { headers: headers() });
 }
 
+function wantsEventStream(request) {
+  return (request.headers.get('accept') || '')
+    .split(',')
+    .some((value) => value.trim().toLowerCase().startsWith('text/event-stream'));
+}
+
+async function streamIfRequested(request, response) {
+  if (!wantsEventStream(request) || response.status === 202) return response;
+
+  const body = await response.text();
+  if (!body) return response;
+
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.set('content-type', 'text/event-stream; charset=utf-8');
+  responseHeaders.set('cache-control', 'no-cache, no-store');
+  responseHeaders.set('connection', 'keep-alive');
+  responseHeaders.set('x-accel-buffering', 'no');
+  responseHeaders.delete('content-length');
+
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode(`event: message\ndata: ${body}\n\n`));
+      controller.close();
+    }
+  });
+
+  return new NextResponse(stream, { status: response.status, headers: responseHeaders });
+}
+
 function requestMeta(body, args) {
   return body?.params?.meta
     || body?.params?._meta
@@ -200,7 +229,7 @@ export async function GET() {
 export async function POST(request) {
   if (commerceRateLimited(request, { scope: 'ucp-mcp', limit: 60 })) {
     const limited = commerceError('RATE_LIMITED', 'UCP requests are temporarily rate limited. Retry shortly.', 429, true);
-    return rpcError(null, -32029, limited.message, 429, ucpErrorData(limited));
+    return streamIfRequested(request, rpcError(null, -32029, limited.message, 429, ucpErrorData(limited)));
   }
 
   let body;
@@ -210,22 +239,22 @@ export async function POST(request) {
     authorizeUcpRequest(request, rawBody);
   } catch (error) {
     const safe = ucpSecurityError(error);
-    return rpcError(null, -32602, safe.message, error?.status || 400, ucpErrorData(error));
+    return streamIfRequested(request, rpcError(null, -32602, safe.message, error?.status || 400, ucpErrorData(error)));
   }
 
   if (!body || body.jsonrpc !== '2.0' || typeof body.method !== 'string') {
     const invalid = commerceError('INVALID_JSONRPC', 'Invalid JSON-RPC request.', 400);
-    return rpcError(body?.id, -32600, invalid.message, 400, ucpErrorData(invalid));
+    return streamIfRequested(request, rpcError(body?.id, -32600, invalid.message, 400, ucpErrorData(invalid)));
   }
 
   if (body.method.startsWith('notifications/')) return emptyNotification();
 
   try {
-    return rpcResult(body.id, await dispatch(request, body));
+    return streamIfRequested(request, rpcResult(body.id, await dispatch(request, body)));
   } catch (error) {
     const safe = ucpSecurityError(error);
     const status = error?.status || (error?.name === 'ZodError' ? 400 : 200);
     const code = error?.code === 'METHOD_NOT_FOUND' ? -32601 : (error?.name === 'ZodError' || error?.status < 500 ? -32602 : -32603);
-    return rpcError(body.id, code, safe.message, status, ucpErrorData(error));
+    return streamIfRequested(request, rpcError(body.id, code, safe.message, status, ucpErrorData(error)));
   }
 }

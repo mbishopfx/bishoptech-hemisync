@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
+import { safeCommerceError } from '@/lib/commerce/commerce-utils.mjs';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -29,8 +30,23 @@ export async function GET(req, { params }) {
     const purchase = await fulfillTonePackPurchase({ stripeSession, supabase, fallbackDownloadUrl: protectedDeliveryUrl });
 
     if (!trackId) {
-      if (!purchase.downloadUrl) return NextResponse.json({ ...purchase, error: 'Pack bundle is still being prepared' }, { status: 202 });
-      return NextResponse.json({ ...purchase, url: purchase.downloadUrl, filename: `${packSlug}.zip` });
+      const response = {
+        ok: true,
+        status: purchase.status || 'active',
+        packSlug: purchase.packSlug,
+        packName: purchase.packName
+      };
+      if (!purchase.downloadUrl) {
+        return NextResponse.json({
+          ...response,
+          error: 'Pack bundle is still being prepared'
+        }, { status: 202 });
+      }
+      return NextResponse.json({
+        ...response,
+        url: purchase.downloadUrl,
+        filename: `${packSlug}.zip`
+      });
     }
 
     const { data: track, error: trackError } = await supabase
@@ -54,7 +70,8 @@ export async function GET(req, { params }) {
       trackName: track.track_name
     });
   } catch (error) {
-    console.error('Pack download failed:', error);
-    return NextResponse.json({ ok: false, error: error?.message || 'Failed to resolve download' }, { status: 500 });
+    const safe = safeCommerceError(error, 'The tone-pack download could not be resolved.');
+    console.error('Pack download failed:', { code: safe.code, status: error?.status || 500 });
+    return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, { status: error?.status || 500 });
   }
 }

@@ -290,6 +290,25 @@ test('UCP MCP transport keeps standard JSON-RPC dispatch alongside the legacy op
   assert.match(route, /body\.method\.startsWith\('notifications\/'\)/);
   assert.match(route, /assertToolArguments\(params\.name, args\)/);
   assert.match(route, /structuredContent/);
+  assert.match(route, /text\/event-stream/);
+  assert.match(route, /event: message/);
+});
+
+test('commerce fulfillment fails closed after revocation and keeps sensitive provider errors private', async () => {
+  const tonePacks = await readFile(new URL('../lib/commerce/tone-packs.mjs', import.meta.url), 'utf8');
+  const workshopAccess = await readFile(new URL('../lib/commerce/workshop-access.mjs', import.meta.url), 'utf8');
+  const machineGrants = await readFile(new URL('../lib/commerce/machine-session-grants.mjs', import.meta.url), 'utf8');
+  const downloadRoute = await readFile(new URL('../app/api/packs/[packSlug]/download/route.js', import.meta.url), 'utf8');
+  const webhookRoute = await readFile(new URL('../app/api/webhooks/stripe/route.js', import.meta.url), 'utf8');
+  assert.match(tonePacks, /DELIVERY_REVOKED/);
+  assert.match(workshopAccess, /WORKSHOP_ACCESS_NOT_ACTIVE/);
+  assert.match(workshopAccess, /WORKSHOP_ACCESS_EXPIRED/);
+  assert.match(machineGrants, /MACHINE_GRANT_NOT_ACTIVE/);
+  assert.match(machineGrants, /MACHINE_GRANT_EXPIRED/);
+  assert.match(downloadRoute, /safeCommerceError/);
+  assert.match(webhookRoute, /Webhook signature invalid\./);
+  assert.match(webhookRoute, /eventId: event\.id/);
+  assert.doesNotMatch(webhookRoute, /Webhook Error: \$\{error\.message\}/);
 });
 
 test('UCP order responses expose a permalink and a durable digital fulfillment fallback', async () => {

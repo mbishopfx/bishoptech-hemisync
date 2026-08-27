@@ -6,7 +6,7 @@ import { fulfillHostedUcpCheckout } from '@/lib/commerce/ucp.mjs';
 import { issueWorkshopAccessKey, revokeWorkshopAccessForPayment } from '@/lib/commerce/workshop-access.mjs';
 import { revokeMachineSessionGrantForPayment } from '@/lib/commerce/machine-session-grants.mjs';
 import { sendWorkshopAccessEmail } from '@/lib/email/workshop-access.mjs';
-import { hashValue, isMissingTableError } from '@/lib/commerce/commerce-utils.mjs';
+import { hashValue, isMissingTableError, safeCommerceError } from '@/lib/commerce/commerce-utils.mjs';
 import { notifyUcpOrderEvent } from '@/lib/commerce/order-events.mjs';
 import {
   checkoutGrantsAccess,
@@ -207,8 +207,9 @@ export async function POST(req) {
   try {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
   } catch (error) {
-    console.error(`Webhook Error: ${error.message}`);
-    return NextResponse.json({ error: `Webhook Error: ${error.message}` }, { status: 400 });
+    const safe = safeCommerceError(error, 'Webhook signature invalid.');
+    console.error('Stripe webhook signature verification failed:', { code: safe.code });
+    return NextResponse.json({ error: 'Webhook signature invalid.' }, { status: 400 });
   }
 
   const supabase = getSupabaseAdmin();
@@ -326,9 +327,15 @@ export async function POST(req) {
     }
     await finishWebhookEvent(supabase, event.id, 'processed');
   } catch (error) {
-    try { await finishWebhookEvent(supabase, event.id, 'failed', error?.message); } catch {}
-    console.error('Stripe webhook processing failed:', error);
-    return NextResponse.json({ error: error?.message || 'Webhook processing failed' }, { status: 500 });
+    const safe = safeCommerceError(error, 'Webhook processing failed.');
+    try { await finishWebhookEvent(supabase, event.id, 'failed', safe.code); } catch {}
+    console.error('Stripe webhook processing failed:', {
+      eventId: event.id,
+      eventType: event.type,
+      code: safe.code,
+      status: error?.status || 500
+    });
+    return NextResponse.json({ error: 'Webhook processing failed.', retryable: true }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });
