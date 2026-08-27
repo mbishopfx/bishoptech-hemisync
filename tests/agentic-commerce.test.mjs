@@ -237,6 +237,13 @@ test('paid tone-pack fulfillment binds the selected pack to its server price', (
     () => assertPaidTonePackSession({ stripeSession: session, expectedSlug: 'missing-pack' }),
     (error) => error.code === 'PAYMENT_MISMATCH' && error.status === 403
   );
+  assert.throws(
+    () => assertPaidTonePackSession({
+      stripeSession: { ...session, metadata: { ...session.metadata, planId: 'other-pack' } },
+      expectedSlug: pack.slug
+    }),
+    (error) => error.code === 'PAYMENT_MISMATCH' && error.status === 403
+  );
 });
 
 test('paid workshop checkout resolves to one idempotent 24-hour bearer grant', async () => {
