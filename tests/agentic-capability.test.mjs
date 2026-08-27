@@ -253,6 +253,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(MACHINE_PAYMENT_AMOUNT, '0.50');
   assert.equal(machinePaymentOptions('https://example.test').amountCents, 50);
   assert.equal(machinePaymentOptions('https://example.test').toneSession.scopePrefix, MACHINE_PAYMENT_TONE_SCOPE_PREFIX);
+  assert.ok(machinePaymentOptions('https://example.test').activation.requiredProductionConfiguration.includes('MACHINE_PAYMENT_GRANT_SECRET'));
   assert.equal(autonomousPaymentOptions('https://example.test').status, 'provider_access_required');
   const ucp = ucpProfile('https://example.test');
   assert.equal(ucp.ucp.version, '2026-01-23');
@@ -315,6 +316,7 @@ test('OpenAPI fallback is derived from the same public read registry', () => {
   assert.ok(document.paths['/api/agent/account'].get);
   assert.ok(document.paths['/api/packs'].get.parameters.some((parameter) => parameter.name === 'agent'));
   assert.ok(document.paths['/api/machine-payments/tone'].post.requestBody.content['application/json'].schema.properties.carrierHz);
+  assert.ok(document.components.schemas.UcpCheckout.properties.status.enum.includes('complete_in_progress'));
   assert.doesNotMatch(JSON.stringify(document), /service_role|OPENAI_API_KEY|STRIPE_SECRET|arbitrary SQL/i);
 });
 
