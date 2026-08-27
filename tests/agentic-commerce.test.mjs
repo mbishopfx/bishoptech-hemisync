@@ -20,6 +20,7 @@ import {
   encryptWorkshopAccessKey,
   hashWorkshopAccessKey
 } from '../lib/commerce/workshop-access.mjs';
+import { PUBLIC_TONE_PACK_CATALOG } from '../lib/agentic/pack-capability.js';
 import {
   createMachineSessionGrant,
   decryptMachineSessionGrant,
@@ -161,6 +162,48 @@ test('hosted payment tools refuse side effects without explicit confirmation', a
     createWorkshopCheckout({ input: { email: 'listener@example.com', confirmed: false, idempotencyKey: 'workshop-1234' } }),
     (error) => error.code === 'CONFIRMATION_REQUIRED'
   );
+});
+
+test('every published tone pack resolves to a server-priced hosted checkout', async () => {
+  const created = [];
+  const stripe = {
+    checkout: {
+      sessions: {
+        create: async (params, options) => {
+          created.push({ params, options });
+          const id = `cs_pack_${created.length}`;
+          return { id, url: `https://checkout.stripe.com/c/pay/${id}` };
+        }
+      }
+    }
+  };
+
+  await withEnv({
+    TONE_PACK_PRICE_ID: 'price_tone_pack_unit',
+    NEXT_PUBLIC_TONE_PACK_PRICE_ID: undefined,
+    NEXT_PUBLIC_TONE_PACK_FOUNDATIONS_PRICE_ID: undefined
+  }, async () => {
+    for (const [index, pack] of PUBLIC_TONE_PACK_CATALOG.entries()) {
+      const result = await createTonePackCheckout({
+        input: {
+          slug: pack.slug,
+          email: 'listener@example.com',
+          confirmed: true,
+          idempotencyKey: `pack-${index + 1}-unit`
+        },
+        origin: 'https://example.test',
+        supabase: null,
+        stripe
+      });
+      assert.equal(result.pack.slug, pack.slug);
+      assert.equal(result.delivery.webUrl, `https://example.test/packs#${pack.slug}`);
+      assert.equal(created[index].params.line_items[0].price, 'price_tone_pack_unit');
+      assert.equal(created[index].params.metadata.packSlug, pack.slug);
+      assert.equal(created[index].options.idempotencyKey, `cognistration-mcp-pack-${index + 1}-unit`);
+    }
+  });
+
+  assert.equal(created.length, PUBLIC_TONE_PACK_CATALOG.length);
 });
 
 test('workshop bearer keys can be encrypted at rest and hashed for lookup', () => {

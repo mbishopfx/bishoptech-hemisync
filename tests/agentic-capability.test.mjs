@@ -334,6 +334,8 @@ test('OpenAPI fallback is derived from the same public read registry', () => {
   assert.equal(document.paths['/api/agent'].post.responses['200'].content['application/json'].schema.$ref, '#/components/schemas/ToneRecommendation');
   assert.ok(document.paths['/api/agent/policy'].get);
   assert.ok(document.paths['/api/agent/account'].get);
+  assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get);
+  assert.ok(document.paths['/api/agent/commerce/tone-pack-delivery'].get.responses['200'].content['application/json'].schema.required.includes('webUrl'));
   assert.ok(document.paths['/api/packs'].get.parameters.some((parameter) => parameter.name === 'agent'));
   assert.ok(document.paths['/api/machine-payments/tone'].post.requestBody.content['application/json'].schema.properties.carrierHz);
   assert.ok(document.components.schemas.UcpCheckout.properties.status.enum.includes('complete_in_progress'));

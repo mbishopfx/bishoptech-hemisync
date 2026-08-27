@@ -22,7 +22,7 @@ Cognistration is a public audio-session product. The homepage exposes a native W
 - get_account_options — explain the free public preview and one-time private workspace access boundary.
 - get_ios_app_offer — return the canonical Cognistration iPhone App Store listing, current $2.99 one-time price, compatibility, public feature summary, and the on-device pricing context; do not process payment.
 - create_tone_pack_checkout — after explicit confirmation, create a Stripe-hosted checkout for one published tone pack using the server-owned price and a stable idempotency key.
-- get_tone_pack_delivery — after payment, verify the Stripe Checkout Session and return the protected delivery URL; never infer payment from a client claim.
+- get_tone_pack_delivery — after payment, verify the Stripe Checkout Session and return the direct download URL, protected fallback, email fallback, and public tone-pack web URL; never infer payment from a client claim.
 - create_workshop_access_checkout — after explicit confirmation, create the $2.99 one-time checkout for 24-hour machine access and sessions up to 60 minutes.
 - get_workshop_access_status — validate a workshop bearer key without echoing the key; report only active, expired, revoked, or invalid status and its limits.
 - revoke_workshop_access — revoke a workshop key only after explicit confirmation.
