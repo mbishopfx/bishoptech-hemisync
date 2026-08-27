@@ -4,55 +4,41 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
 
-function moneyToDollars(amount = 0, currency = 'usd') {
-  return {
-    amount,
-    currency,
-    display: `${(amount / 100).toFixed(2)} ${String(currency || 'usd').toUpperCase()}`
-  };
-}
-
 async function loadStripeHealth(stripeSecret) {
   if (!stripeSecret) {
     return { status: 'skipped', reason: 'missing_secret' };
   }
 
   const stripe = new Stripe(stripeSecret);
-  const since = Math.floor(Date.now() / 1000) - 86400;
+  // Prove the server credential is usable without returning balances,
+  // customer counts, payment-event counts, or other financial telemetry from
+  // a public endpoint.
+  await stripe.balance.retrieve();
+  return { status: 'ok' };
+}
 
-  const [balance, active, trialing, pastDue, canceled, completedEvents, failedEvents, deletedEvents] = await Promise.all([
-    stripe.balance.retrieve(),
-    stripe.subscriptions.list({ status: 'active', limit: 100 }),
-    stripe.subscriptions.list({ status: 'trialing', limit: 100 }),
-    stripe.subscriptions.list({ status: 'past_due', limit: 100 }),
-    stripe.subscriptions.list({ status: 'canceled', limit: 100 }),
-    stripe.events.list({ type: 'checkout.session.completed', created: { gte: since }, limit: 100 }),
-    stripe.events.list({ type: 'payment_intent.payment_failed', created: { gte: since }, limit: 100 }),
-    stripe.events.list({ type: 'customer.subscription.deleted', created: { gte: since }, limit: 100 }),
+async function checkCommerceTable(supabase, table, column = 'id') {
+  const { error } = await supabase.from(table).select(column, { head: true, count: 'exact' }).limit(1);
+  return !error;
+}
+
+async function loadCommerceHealth(supabase) {
+  const checks = await Promise.all([
+    checkCommerceTable(supabase, 'agent_checkout_requests'),
+    checkCommerceTable(supabase, 'workshop_access_keys'),
+    checkCommerceTable(supabase, 'commerce_checkouts', 'cancel_idempotency_key'),
+    checkCommerceTable(supabase, 'commerce_orders'),
+    checkCommerceTable(supabase, 'commerce_webhook_events', 'event_id'),
+    checkCommerceTable(supabase, 'ap2_mandates', 'mandate_id'),
+    checkCommerceTable(supabase, 'machine_session_grants')
   ]);
-
-  const available = balance.available || [];
-  const pending = balance.pending || [];
-  const availableTotal = available.reduce((sum, item) => sum + (item.amount || 0), 0);
-  const pendingTotal = pending.reduce((sum, item) => sum + (item.amount || 0), 0);
-
   return {
-    status: 'ok',
-    balance: {
-      available: moneyToDollars(availableTotal, available[0]?.currency),
-      pending: moneyToDollars(pendingTotal, pending[0]?.currency)
-    },
-    subscriptions: {
-      active: active.data.length,
-      trialing: trialing.data.length,
-      past_due: pastDue.data.length,
-      canceled: canceled.data.length
-    },
-    last_24h_events: {
-      checkout_session_completed: completedEvents.data.length,
-      payment_intent_failed: failedEvents.data.length,
-      customer_subscription_deleted: deletedEvents.data.length
-    }
+    status: checks.every(Boolean) ? 'ok' : 'degraded',
+    checkout_state: checks[0] && checks[2] ? 'ready' : 'not_ready',
+    workshop_access: checks[1] ? 'ready' : 'not_ready',
+    order_events: checks[3] && checks[4] ? 'ready' : 'not_ready',
+    autonomous_payment_audit: checks[5] ? 'ready' : 'not_ready',
+    machine_payment_grants: checks[6] ? 'ready' : 'not_ready'
   };
 }
 
@@ -65,9 +51,11 @@ export async function GET() {
     if (error) throw error;
 
     const stripeHealth = await loadStripeHealth(process.env.STRIPE_SECRET_KEY);
+    const commerceHealth = await loadCommerceHealth(supabase);
+    const overallStatus = stripeHealth.status === 'ok' && commerceHealth.status === 'ok' ? 'healthy' : 'degraded';
 
     return NextResponse.json({
-      status: 'healthy',
+      status: overallStatus,
       env: {
         has_supabase_url: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
         has_service_role: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -77,7 +65,8 @@ export async function GET() {
         site_url: process.env.NEXT_PUBLIC_SITE_URL || 'https://bishoptech.dev'
       },
       database: {
-        agentic_tones_count: count || 0
+        agentic_tones_count: count || 0,
+        commerce: commerceHealth
       },
       stripe: stripeHealth
     });

@@ -318,6 +318,16 @@ test('commerce fulfillment fails closed after revocation and keeps sensitive pro
   assert.doesNotMatch(webhookRoute, /Webhook Error: \$\{error\.message\}/);
 });
 
+test('public health checks do not expose Stripe financial telemetry', async () => {
+  const healthRoute = await readFile(new URL('../app/api/health/route.js', import.meta.url), 'utf8');
+  assert.match(healthRoute, /loadCommerceHealth/);
+  assert.match(healthRoute, /machine_payment_grants/);
+  assert.doesNotMatch(healthRoute, /subscriptions\.list/);
+  assert.doesNotMatch(healthRoute, /last_24h_events/);
+  assert.doesNotMatch(healthRoute, /availableTotal/);
+  assert.doesNotMatch(healthRoute, /pendingTotal/);
+});
+
 test('UCP order responses expose a permalink and a durable digital fulfillment fallback', async () => {
   const orderRoute = await readFile(new URL('../app/api/ucp/orders/[orderId]/route.js', import.meta.url), 'utf8');
   const fulfillmentRoute = await readFile(new URL('../app/api/ucp/orders/[orderId]/fulfillment/route.js', import.meta.url), 'utf8');
