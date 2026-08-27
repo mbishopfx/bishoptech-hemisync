@@ -38,6 +38,7 @@ import { PolicyInputSchema, getPolicyInfo, policyCatalogSummary } from '@/lib/ag
 import { AccountOptionsInputSchema, publicAccountOptions } from '@/lib/agentic/account-capability';
 import { getSkill, listSkills, readSkillResource, skillCatalogSummary } from '@/lib/agentic/skill-capability';
 import { buildSessionPlan, compareToneDirections, getSessionCue, sessionGuideCatalog } from '@/lib/agentic/session-capability';
+import { calibrateTone, clarifyIntention, intentGuidanceCatalog } from '@/lib/agentic/intent-capability';
 import { createTonePackCheckout, getTonePackDelivery } from '@/lib/commerce/agent-checkout.mjs';
 import { autonomousPaymentOptions } from '@/lib/commerce/ap2.mjs';
 import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
@@ -301,6 +302,10 @@ async function readResource(uri) {
     return { uri, mimeType: 'application/json', text: JSON.stringify(sessionGuideCatalog()) };
   }
 
+  if (uri === 'cognistration://interaction-patterns') {
+    return { uri, mimeType: 'application/json', text: JSON.stringify(intentGuidanceCatalog()) };
+  }
+
   if (uri === 'cognistration://skills') {
     return { uri, mimeType: 'application/json', text: JSON.stringify(skillCatalogSummary()) };
   }
@@ -358,6 +363,14 @@ async function callTool(name, args, request) {
       tone: result.tone,
       rationale: result.response
     });
+  }
+
+  if (name === 'clarify_intention') {
+    return toolSuccess(await clarifyIntention(args || {}));
+  }
+
+  if (name === 'calibrate_tone') {
+    return toolSuccess(calibrateTone(args || {}));
   }
 
   if (name === 'compare_tone_directions') {

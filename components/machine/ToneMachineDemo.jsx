@@ -316,6 +316,57 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     return data;
   }, []);
 
+  const clarifyIntentionForAgent = useCallback(async (input = {}) => {
+    const intention = typeof input.intention === 'string' ? input.intention.trim() : '';
+    if (!intention || intention.length > 240) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_INTENTION', safeMessage: 'Provide a short intention of 1 to 240 characters.', retryable: false }
+      });
+    }
+
+    try {
+      const data = await fetchAgentCapability('/api/agent/intent-guidance', { intention });
+      return agentResult('completed', { guidance: data.guidance });
+    } catch (error) {
+      return agentResult('failed', {
+        error: { code: error.code || 'INTENT_GUIDANCE_UNAVAILABLE', safeMessage: 'The direction helper could not be reached. Try one of the visible state controls.', retryable: Boolean(error.retryable) }
+      });
+    }
+  }, [agentResult, fetchAgentCapability]);
+
+  const calibrateToneForAgent = useCallback(async (input = {}) => {
+    const feedback = input.feedback;
+    const feedbackOptions = new Set(['too_intense', 'too_quiet', 'too_bright', 'too_slow', 'too_flat', 'just_right']);
+    const allowedStates = new Set(STATE_OPTIONS.map((option) => option.id));
+    const current = sessionStateRef.current || {};
+    const targetState = input.targetState ?? current.targetState ?? 'theta';
+    const carrierHz = Number(input.carrierHz ?? current.carrierHz ?? 200);
+    const beatHz = Number(input.beatHz ?? current.beatHz ?? 6);
+    const nextVolume = Number(input.volume ?? current.volume ?? 80);
+    if (!feedbackOptions.has(feedback) || !allowedStates.has(targetState) || !Number.isInteger(carrierHz) || carrierHz < 100 || carrierHz > 400 || !Number.isFinite(beatHz) || beatHz < 0.5 || beatHz > 40 || !Number.isInteger(nextVolume) || nextVolume < 0 || nextVolume > 100) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_TONE_CALIBRATION', safeMessage: 'Choose a published feedback option and keep the visible controls within their published bounds.', retryable: false }
+      });
+    }
+
+    try {
+      const data = await fetchAgentCapability('/api/agent/tone-calibrate', {
+        feedback,
+        targetState,
+        carrierHz,
+        beatHz,
+        volume: nextVolume
+      });
+      const controls = applyToneSettings(data.calibration?.controls || {});
+      setAgentActivity(data.calibration?.message || 'The visible controls were calibrated from your feedback.');
+      return agentResult('completed', { calibration: data.calibration, controls });
+    } catch (error) {
+      return agentResult('failed', {
+        error: { code: error.code || 'TONE_CALIBRATION_UNAVAILABLE', safeMessage: 'The tone could not be calibrated. Try the visible sliders instead.', retryable: Boolean(error.retryable) }
+      });
+    }
+  }, [agentResult, applyToneSettings, fetchAgentCapability]);
+
   const compareToneDirectionsForAgent = useCallback(async (input = {}) => {
     const intention = typeof input.intention === 'string' ? input.intention.trim() : '';
     const limit = input.limit === undefined ? 3 : Number(input.limit);
@@ -562,6 +613,8 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     },
     cognistration_nudge_carrier: nudgeCarrierForAgent,
     cognistration_generate_tone: generateToneForAgent,
+    cognistration_clarify_intention: clarifyIntentionForAgent,
+    cognistration_calibrate_tone: calibrateToneForAgent,
     cognistration_compare_tone_directions: compareToneDirectionsForAgent,
     cognistration_plan_listening_session: planListeningSessionForAgent,
     cognistration_get_session_cue: getSessionCueForAgent,

@@ -40,6 +40,11 @@ while the public recommendation tool updates its tone card.
 
 If time allows, press “Plan 20 minutes” and “Give me a cue” to show that the same machine can move from sound selection into a bounded practice plan.
 
+If time allows, press “Help me choose” with a broad request, then use “Too
+bright” or “Too intense” to show the feedback loop. The machine proposes a
+bounded visible adjustment and keeps audio off until the person chooses to
+start it again.
+
 ## 1:40–2:10 — The orchestrator advantage
 
 Scroll to the orchestrator section.
