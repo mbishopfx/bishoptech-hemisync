@@ -4,6 +4,7 @@ import test from 'node:test';
 import { autonomousPaymentEnabled, autonomousPaymentOptions, hashMandateCart, verifyAutonomousMandate } from '../lib/commerce/ap2.mjs';
 import { createWorkshopCheckout } from '../lib/commerce/workshop-checkout.mjs';
 import { createTonePackCheckout } from '../lib/commerce/agent-checkout.mjs';
+import { buildUcpOrderEvent, createUcpDetachedSignature, notifyUcpOrderEvent, verifyUcpDetachedSignature } from '../lib/commerce/order-events.mjs';
 import {
   createWorkshopAccessKey,
   decryptWorkshopAccessKey,
@@ -18,6 +19,7 @@ import {
 } from '../lib/commerce/machine-session-grants.mjs';
 import { constantTimeEqual, normalizeEmail, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
 import { assertUcpAgentProfile, idempotencyKeyFrom, authorizeUcpRequest, verifyRequestSignature } from '../lib/commerce/ucp-security.mjs';
+import { ucpProfile } from '../lib/commerce/ucp.mjs';
 
 function withEnv(values, callback) {
   const keys = Object.keys(values);
@@ -99,6 +101,99 @@ test('UCP agent identity can be supplied in metadata or the standard profile hea
     () => assertUcpAgentProfile({ meta: { 'ucp-agent': { profile } }, request: new Request('https://example.test', { headers: { 'UCP-Agent': 'profile="https://other.example/agent.json"' } }) }),
     (error) => error.code === 'UCP_AGENT_MISMATCH'
   );
+});
+
+test('UCP order events use full order payloads and verifiable detached signatures', async () => {
+  const { privateKey, publicKey } = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const privateJwk = { ...privateKey.export({ format: 'jwk' }), kid: 'order-signing-1' };
+  const publicJwk = { ...publicKey.export({ format: 'jwk' }), kid: 'order-signing-1' };
+  const event = buildUcpOrderEvent({
+    event: 'order.created',
+    origin: 'https://example.test',
+    now: new Date('2026-08-27T12:00:00.000Z'),
+    order: {
+      id: 'order_123',
+      checkout_id: 'checkout_123',
+      line_items: [{
+        id: 'line_deep-rest-pack',
+        item: { id: 'deep-rest-pack', title: 'Deep Rest', price: 299 },
+        quantity: 1,
+        totals: [{ type: 'total', amount: 299 }]
+      }],
+      totals: [{ type: 'total', amount: 299 }],
+      fulfillment: {
+        download_url: 'https://example.test/private-download',
+        protected_delivery_url: 'https://example.test/protected-download',
+        web_url: 'https://example.test/packs#deep-rest-pack'
+      },
+      updated_at: '2026-08-27T12:00:00.000Z'
+    }
+  });
+  assert.equal(event.ucp.version, '2026-01-23');
+  assert.equal(event.line_items[0].quantity.fulfilled, 1);
+  assert.equal(event.fulfillment.expectations[0].method_type, 'digital');
+  assert.ok(event.event_id.startsWith('evt_'));
+  assert.equal(event.fulfillment.download_url, undefined);
+  assert.equal(event.fulfillment.protected_delivery_url, undefined);
+
+  const body = JSON.stringify(event);
+  const detached = createUcpDetachedSignature({ body, privateJwk });
+  assert.match(detached, /^[A-Za-z0-9_-]+\.\.[A-Za-z0-9_-]+$/);
+  assert.equal(verifyUcpDetachedSignature({ body, provided: detached, publicJwk }), true);
+  assert.equal(verifyUcpDetachedSignature({ body: `${body}.tampered`, provided: detached, publicJwk }), false);
+
+  await withEnv({
+    UCP_ORDER_WEBHOOK_URL: 'https://platform.example/ucp/orders',
+    UCP_SIGNING_PRIVATE_JWK: JSON.stringify(privateJwk),
+    UCP_SIGNING_PUBLIC_JWK: JSON.stringify(publicJwk),
+    UCP_SIGNING_KEY_ID: undefined,
+    UCP_SIGNING_ALGORITHM: undefined
+  }, async () => {
+    let request;
+    const result = await notifyUcpOrderEvent({
+      event: 'order.created',
+      order: { id: 'order_123', checkout_id: 'checkout_123', line_items: [], totals: [], updated_at: '2026-08-27T12:00:00.000Z' },
+      fetchImpl: async (url, init) => {
+        request = { url, init };
+        return new Response(null, { status: 204 });
+      }
+    });
+    assert.equal(result.sent, true);
+    assert.equal(request.url, 'https://platform.example/ucp/orders');
+    const delivered = JSON.parse(request.init.body);
+    assert.equal(delivered.event_id, result.eventId);
+    assert.equal(delivered.checkout_id, 'checkout_123');
+    assert.ok(request.init.headers['Request-Signature']);
+    assert.equal(verifyUcpDetachedSignature({ body: request.init.body, provided: request.init.headers['Request-Signature'], publicJwk }), true);
+  });
+});
+
+test('UCP discovery never publishes private signing material and only advertises signed events when ready', async () => {
+  const { privateKey, publicKey } = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const privateJwk = { ...privateKey.export({ format: 'jwk' }), kid: 'profile-signing-1' };
+  const publicJwk = { ...publicKey.export({ format: 'jwk' }), kid: 'profile-signing-1' };
+  await withEnv({
+    UCP_ORDER_WEBHOOK_URL: 'https://platform.example/ucp/orders',
+    UCP_SIGNING_PRIVATE_JWK: JSON.stringify(privateJwk),
+    UCP_SIGNING_PUBLIC_JWK: JSON.stringify(privateJwk),
+    UCP_SIGNING_KEY_ID: undefined,
+    UCP_SIGNING_ALGORITHM: undefined
+  }, async () => {
+    const unsafe = ucpProfile('https://example.test');
+    assert.deepEqual(unsafe.signing_keys, []);
+    assert.equal(unsafe.ucp.capabilities['dev.ucp.shopping.order'][0].config, undefined);
+  });
+  await withEnv({
+    UCP_ORDER_WEBHOOK_URL: 'https://platform.example/ucp/orders',
+    UCP_SIGNING_PRIVATE_JWK: JSON.stringify(privateJwk),
+    UCP_SIGNING_PUBLIC_JWK: JSON.stringify(publicJwk),
+    UCP_SIGNING_KEY_ID: undefined,
+    UCP_SIGNING_ALGORITHM: undefined
+  }, async () => {
+    const ready = ucpProfile('https://example.test');
+    assert.deepEqual(ready.signing_keys, [publicJwk]);
+    assert.equal(ready.ucp.capabilities['dev.ucp.shopping.order'][0].config.webhook_url, 'https://platform.example/ucp/orders');
+  });
 });
 
 test('AP2 remains provider-gated and binds its future mandate to a cart hash', async () => {
