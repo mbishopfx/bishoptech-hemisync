@@ -312,6 +312,7 @@ test('commerce fulfillment fails closed after revocation and keeps sensitive pro
   const ucpCreateRoute = await readFile(new URL('../app/api/ucp/checkout-sessions/route.js', import.meta.url), 'utf8');
   const ucpCompleteRoute = await readFile(new URL('../app/api/ucp/checkout-sessions/[checkoutId]/complete/route.js', import.meta.url), 'utf8');
   const workshopRevokeRoute = await readFile(new URL('../app/api/workshop/access/revoke/route.js', import.meta.url), 'utf8');
+  const machineReconcileRoute = await readFile(new URL('../app/api/machine-payments/reconcile/route.js', import.meta.url), 'utf8');
   const webhookRoute = await readFile(new URL('../app/api/webhooks/stripe/route.js', import.meta.url), 'utf8');
   assert.match(tonePacks, /DELIVERY_REVOKED/);
   assert.match(tonePacks, /assertPaidTonePackSession/);
@@ -325,12 +326,21 @@ test('commerce fulfillment fails closed after revocation and keeps sensitive pro
   assert.match(machineGrants, /MACHINE_GRANT_EXPIRED/);
   assert.match(machineGrants, /MACHINE_PAYMENT_SCOPE_MISMATCH/);
   assert.match(machineGrants, /scopeMatches/);
+  assert.match(machineGrants, /issueMachineSessionGrantWithRetry/);
+  assert.match(machineGrants, /shouldRetryMachineGrant/);
   assert.match(downloadRoute, /safeCommerceError/);
   assert.match(downloadRoute, /cache-control.*no-store|no-store.*cache-control/);
   assert.match(mcpRoute, /MCP_COMMERCE_LIMITS/);
   assert.match(ucpCreateRoute, /requireAgentProfile: true/);
   assert.match(ucpCompleteRoute, /requireAgentProfile: true/);
   assert.match(workshopRevokeRoute, /CONFIRMATION_REQUIRED/);
+  assert.match(machineReconcileRoute, /MACHINE_PAYMENT_RECOVERY_TOKEN/);
+  assert.match(machineReconcileRoute, /paymentIntents\.retrieve/);
+  assert.match(machineReconcileRoute, /MACHINE_PAYMENT_PRICE_CENTS/);
+  assert.match(machineReconcileRoute, /mpp_intent/);
+  assert.match(machineReconcileRoute, /issueMachineSessionGrant/);
+  assert.match(machineReconcileRoute, /RECOVERY_UNAUTHORIZED/);
+  assert.match(machineReconcileRoute, /cache-control.*no-store|no-store.*cache-control/);
   assert.match(webhookRoute, /Webhook signature invalid\./);
   assert.match(webhookRoute, /eventId: event\.id/);
   assert.match(webhookRoute, /checkout\.session\.expired/);
@@ -388,6 +398,7 @@ test('machine payment routes use major-unit pricing and bind custom tone request
   assert.match(toneRoute, /MachineGeneratorInputSchema/);
   assert.match(toneRoute, /tonePaymentScope/);
   assert.match(toneRoute, /issueMachineSessionGrant/);
+  assert.match(toneRoute, /issueMachineSessionGrantWithRetry/);
   assert.match(handler, /amount: MACHINE_PAYMENT_AMOUNT/);
   assert.match(handler, /amountCents: String\(MACHINE_PAYMENT_PRICE_CENTS\)/);
 });

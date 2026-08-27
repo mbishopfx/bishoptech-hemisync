@@ -8,7 +8,7 @@ import {
   MACHINE_PAYMENT_SESSION_DURATION_SEC,
   MACHINE_PAYMENT_TONE_SCOPE_PREFIX
 } from '@/lib/commerce/machine-payments.mjs';
-import { issueMachineSessionGrant } from '@/lib/commerce/machine-session-grants.mjs';
+import { issueMachineSessionGrantWithRetry } from '@/lib/commerce/machine-session-grants.mjs';
 import {
   buildMachineGeneratorState,
   MachineGeneratorInputSchema
@@ -124,7 +124,7 @@ export async function POST(request) {
     if (result.status === 402) return result.challenge;
 
     const receipt = receiptRef.value;
-    const grant = await issueMachineSessionGrant({
+    const grant = await issueMachineSessionGrantWithRetry({
       receipt,
       scope: tonePaymentScope(input)
     });

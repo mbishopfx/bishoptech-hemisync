@@ -30,7 +30,8 @@ import {
   createMachineSessionGrant,
   decryptMachineSessionGrant,
   encryptMachineSessionGrant,
-  hashMachineSessionGrant
+  hashMachineSessionGrant,
+  issueMachineSessionGrantWithRetry
 } from '../lib/commerce/machine-session-grants.mjs';
 import { commerceError, constantTimeEqual, normalizeEmail, safeCommerceStatus, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
 import { assertUcpAgentProfile, idempotencyKeyFrom, authorizeUcpRequest, verifyRequestSignature } from '../lib/commerce/ucp-security.mjs';
@@ -342,6 +343,64 @@ test('machine payment grants are bound to a receipt and encrypted at rest', () =
   assert.equal(decryptMachineSessionGrant(ciphertext, 'unit-secret'), key);
   assert.notEqual(hashMachineSessionGrant(key, 'unit-secret'), hashMachineSessionGrant(key, 'other-secret'));
   assert.match(key, /^cgms_[A-Za-z0-9_-]+$/);
+});
+
+test('machine payment grant retry recovers transient storage failure without duplicating fulfillment', async () => {
+  let paymentLookupCount = 0;
+  let insertCount = 0;
+  let saved;
+  const randomBytes = (size) => Buffer.alloc(size, size === 32 ? 9 : 4);
+  const supabase = {
+    from() {
+      const query = {
+        select() { return this; },
+        eq() { return this; },
+        maybeSingle() {
+          paymentLookupCount += 1;
+          if (paymentLookupCount === 1) return Promise.resolve({ data: null, error: { code: 'PGRST000', message: 'temporary storage failure' } });
+          return Promise.resolve({ data: saved, error: null });
+        },
+        insert(record) {
+          insertCount += 1;
+          saved = {
+            id: 'grant_1',
+            access_key_hash: record.access_key_hash,
+            access_key_hint: record.access_key_hint,
+            access_key_ciphertext: record.access_key_ciphertext,
+            payment_reference: record.payment_reference,
+            scope: record.scope,
+            status: record.status,
+            starts_at: record.starts_at,
+            expires_at: record.expires_at
+          };
+          return {
+            select() { return this; },
+            single: async () => ({ data: saved, error: null })
+          };
+        }
+      };
+      return query;
+    }
+  };
+
+  const first = await issueMachineSessionGrantWithRetry({
+    receipt: { method: 'stripe', status: 'success', reference: 'pi_retry_1' },
+    supabase,
+    origin: 'https://example.test',
+    secret: 'unit-secret',
+    randomBytes
+  }, { maxAttempts: 2, retryDelaysMs: [0] });
+  const second = await issueMachineSessionGrantWithRetry({
+    receipt: { method: 'stripe', status: 'success', reference: 'pi_retry_1' },
+    supabase,
+    origin: 'https://example.test',
+    secret: 'unit-secret',
+    randomBytes
+  }, { maxAttempts: 2, retryDelaysMs: [0] });
+
+  assert.equal(first.accessKey, second.accessKey);
+  assert.equal(insertCount, 1);
+  assert.equal(paymentLookupCount, 3);
 });
 
 test('UCP request signatures are accepted only inside the replay window', async () => {

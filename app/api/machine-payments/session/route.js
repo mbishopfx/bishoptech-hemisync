@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { machinePaymentEnabled, MACHINE_PAYMENT_PRICE_CENTS, MACHINE_PAYMENT_SESSION_DURATION_SEC, MACHINE_PAYMENT_SESSION_SCOPE } from '@/lib/commerce/machine-payments.mjs';
 import { createMachinePaymentHandler } from '@/lib/commerce/machine-payment-handler.mjs';
-import { issueMachineSessionGrant } from '@/lib/commerce/machine-session-grants.mjs';
+import { issueMachineSessionGrantWithRetry } from '@/lib/commerce/machine-session-grants.mjs';
 import { safeCommerceError, safeCommerceStatus, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
@@ -57,7 +57,7 @@ export async function POST(request) {
     if (result.status === 402) return result.challenge;
 
     const receipt = receiptRef.value;
-    const grant = await issueMachineSessionGrant({ receipt });
+    const grant = await issueMachineSessionGrantWithRetry({ receipt });
     return result.withReceipt(Response.json({
       ok: true,
       status: 'paid',
