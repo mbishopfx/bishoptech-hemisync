@@ -1,5 +1,6 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
 import { PolicySection } from '@/components/legal/PolicySection';
+import { PolicyLink } from '@/components/legal/PolicyLink';
 
 export const metadata = {
   title: { absolute: 'Privacy Policy — Cognistration' },
@@ -37,13 +38,13 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection id="uses" title="How we use information">
-        <p>We use information to create and secure accounts, deliver and save sessions, provide previews and downloads, process purchases, support the product, improve matching and safety workflows, prevent abuse, understand performance, and respond to requests.</p>
-        <p>We use prompts and session information only as needed for the feature you request, including tone matching, session assistance, journaling support, or related product operations.</p>
+        <p>We use information to create and secure accounts, deliver and save sessions, provide previews and downloads, process purchases, support the product, operate matching and safety workflows, prevent abuse, understand performance, and respond to requests.</p>
+        <p>We use prompts and session information only as needed for the feature you request, including tone matching, session assistance, journaling support, security, and product maintenance. When a feature saves information to your account, it is used to provide that saved feature and the controls available to you.</p>
       </PolicySection>
 
       <PolicySection id="ai-processing" title="AI-assisted features">
-        <p>When you use an AI-assisted feature, the text and session context needed for that request may be sent to an AI processing provider. The public matcher selects from Cognistration’s available tone catalog; workspace assistance may help shape a session draft. Automated output can be wrong, so review it before use.</p>
-        <p>Do not enter information into an AI-assisted feature that you do not want processed to provide that feature. See the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/ai-disclosure">AI Disclosure</a> for more detail.</p>
+        <p>When you use an AI-assisted feature, the text and session context needed for that request may be sent to an AI processing provider. The public matcher selects from Cognistration’s available tone catalog; workspace assistance may help shape a session draft; journal tools may summarize and classify an entry. Automated output can be wrong, so review it before use.</p>
+        <p>Do not enter information into an AI-assisted feature that you do not want processed to provide that feature. See the <PolicyLink href="/ai-disclosure">AI Disclosure</PolicyLink> for more detail.</p>
       </PolicySection>
 
       <PolicySection id="providers" title="Service providers">
@@ -61,7 +62,7 @@ export default function PrivacyPage() {
 
       <PolicySection id="cookies-and-storage" title="Cookies and local storage">
         <p>Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback and preview state, usage limits, and product operation. A short-lived functional cookie can help enforce unauthenticated public-preview limits.</p>
-        <p>You can block or remove cookies and local storage through your browser settings. Some features, including sign-in, saved state, playback continuity, and preview-limit enforcement, may not work correctly afterward. The <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/cookies">Cookie Policy</a> has more detail.</p>
+        <p>You can block or remove cookies and local storage through your browser settings. Some features, including sign-in, saved state, playback continuity, and preview-limit enforcement, may not work correctly afterward. The <PolicyLink href="/cookies">Cookie Policy</PolicyLink> has more detail.</p>
       </PolicySection>
 
       <PolicySection id="sharing" title="When information is shared">
@@ -69,20 +70,20 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection id="choices" title="Your choices">
-        <p>You can update account information from your profile settings where available. You can ask about access, correction, or deletion of account data by emailing <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>. We may need enough information to identify the account and protect it from an unauthorized request.</p>
+        <p>You can update account information from your profile settings where available. You can ask about access, correction, or deletion of account data by emailing <PolicyLink href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</PolicyLink>. We may need enough information to identify the account and protect it from an unauthorized request.</p>
         <p>Some information may need to remain available for security, accounting, fraud prevention, dispute resolution, service integrity, or legal compliance. We do not state a fixed retention period here because it depends on the feature and the reason the information is kept.</p>
       </PolicySection>
 
       <PolicySection id="children" title="Children">
-        <p>Cognistration is not directed to children under 13. If you believe a child has provided personal information through the service, contact <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
+        <p>Cognistration is not directed to children under 13. If you believe a child has provided personal information through the service, contact <PolicyLink href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</PolicyLink>.</p>
       </PolicySection>
 
       <PolicySection id="health-context" title="Health and safety context">
-        <p>Cognistration is for entertainment and general wellness exploration. It is not medical advice, diagnosis, treatment, or emergency support. Review the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/health-warning">Health &amp; Safety guidance</a> before listening.</p>
+        <p>Cognistration is for entertainment and general wellness exploration. It is not medical advice, diagnosis, treatment, or emergency support. Review the <PolicyLink href="/health-warning">Health &amp; Safety guidance</PolicyLink> before listening.</p>
       </PolicySection>
 
       <PolicySection id="contact" title="Contact">
-        <p>Questions about this policy or a privacy request can be sent to <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
+        <p>Questions about this policy or a privacy request can be sent to <PolicyLink href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</PolicyLink>.</p>
       </PolicySection>
     </LegalPageShell>
   );

@@ -127,7 +127,8 @@ test('policy and account routes have source links and preserve user-controlled s
 test('public policy pages use the shared light shell and state their active route', async () => {
   const shell = await readFile(new URL('../components/legal/LegalPageShell.jsx', import.meta.url), 'utf8');
   assert.match(shell, /aria-current=\{link\.href === activeHref \? 'page' : undefined\}/);
-  assert.match(shell, /bg-\[#eef1ee\]/);
+  assert.match(shell, /policy-page/);
+  assert.match(shell, /lastUpdatedDate = '2026-08-27'/);
   assert.doesNotMatch(shell, /<p[^>]*>[^<]*<\/p>\s*<h1/);
 
   const pageSources = await Promise.all([
@@ -148,6 +149,11 @@ test('public policy pages use the shared light shell and state their active rout
   assert.match(privacy, /How we protect information/);
   assert.match(privacy, /HTTPS for the production site/);
   assert.match(pageSources[3], /provide, secure, and maintain the features you use/);
+  assert.match(pageSources[1], /Journal tools can also summarize and classify an entry/);
+  assert.match(pageSources[2], /<address className="not-italic">/);
+  assert.match(pageSources[3], /Limited public intention previews are free/);
+  assert.doesNotMatch(pageSources[3], /Paid workspace access, trials,/);
+  assert.match(pageSources[0], /policy-callout--safety/);
 });
 
 test('the iPhone app offer is public, bounded, and user-purchased', async () => {

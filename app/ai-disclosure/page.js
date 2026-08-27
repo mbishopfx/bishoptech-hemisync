@@ -1,5 +1,6 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
 import { PolicySection } from '@/components/legal/PolicySection';
+import { PolicyLink } from '@/components/legal/PolicyLink';
 
 export const metadata = {
   title: { absolute: 'AI Disclosure — Cognistration' },
@@ -30,11 +31,11 @@ export default function AIDisclosurePage() {
     >
       <PolicySection id="where-ai-appears" title="Where automated help appears">
         <p>On the public homepage, an intention such as “I need a clear mind” can be compared with Cognistration’s public tone library to suggest a starting point. If the model service is unavailable, the product can use a deterministic catalog match instead.</p>
-        <p>Inside the private workspace, an assistant can help shape a session specification from your instructions. The result is a draft for you to review and adjust, not an instruction you must follow.</p>
+        <p>Inside the private workspace, an assistant can help shape a session specification from your instructions. Journal tools can also summarize and classify an entry to help organize reflection. These are drafts and classifications for you to review, not conclusions about you or instructions you must follow.</p>
       </PolicySection>
 
       <PolicySection id="how-it-works" title="What the system receives">
-        <p>The feature receives the text needed for the request, such as an intention, prompt, or session conversation. It may also use the current session settings so that a suggested change fits the session you are editing. See the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/privacy">Privacy Policy</a> for the broader data-handling picture.</p>
+        <p>The feature receives the text needed for the request, such as an intention, prompt, journal entry, or session conversation. It may also use the current session settings so that a suggested change fits the session you are editing. See the <PolicyLink href="/privacy">Privacy Policy</PolicyLink> for the broader data-handling picture.</p>
       </PolicySection>
 
       <PolicySection id="limits" title="What AI does not do">
@@ -46,8 +47,12 @@ export default function AIDisclosurePage() {
         <p>Review each suggestion before using it. You can edit the tone, carrier, rhythm, duration, and other available controls, choose a different public tone, or stop listening. The product should support a deliberate choice, not pressure you into one.</p>
       </PolicySection>
 
+      <PolicySection id="availability" title="Models can change">
+        <p>Automated features may change as the product and its processing providers change. A temporary model or network problem may make a feature unavailable. The public intention matcher has a catalog fallback; private workspace and journal features may not produce the same result when automated processing is unavailable.</p>
+      </PolicySection>
+
       <PolicySection id="related-policies" title="Related guidance">
-        <p>Read the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/health-warning">Health &amp; Safety guidance</a> before listening and the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/terms">Terms</a> for the rules that apply when you use Cognistration.</p>
+        <p>Read the <PolicyLink href="/health-warning">Health &amp; Safety guidance</PolicyLink> before listening and the <PolicyLink href="/terms">Terms</PolicyLink> for the rules that apply when you use Cognistration.</p>
       </PolicySection>
     </LegalPageShell>
   );

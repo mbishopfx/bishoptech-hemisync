@@ -1,5 +1,6 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
 import { PolicySection } from '@/components/legal/PolicySection';
+import { PolicyLink } from '@/components/legal/PolicyLink';
 
 export const metadata = {
   title: { absolute: 'Terms and Conditions — Cognistration' },
@@ -38,7 +39,7 @@ export default function TermsPage() {
       </PolicySection>
 
       <PolicySection id="safety" title="Health and listening safety">
-        <p>Review the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/health-warning">Health &amp; Safety guidance</a> before listening. Do not use Cognistration while driving, operating machinery, or doing anything that requires full situational awareness. Stop if you feel unwell and seek appropriate help when needed.</p>
+        <p>Review the <PolicyLink href="/health-warning">Health &amp; Safety guidance</PolicyLink> before listening. Do not use Cognistration while driving, operating machinery, or doing anything that requires full situational awareness. Stop if you feel unwell and seek appropriate help when needed.</p>
       </PolicySection>
 
       <PolicySection id="accounts" title="Accounts and access">
@@ -47,8 +48,12 @@ export default function TermsPage() {
       </PolicySection>
 
       <PolicySection id="purchases" title="Purchases and payment">
-        <p>Paid workspace access, trials, tone packs, and one-time workshops may be offered. The price, duration, access, and any purchase-specific terms are shown before you confirm payment. Card details are handled by the payment processor’s hosted checkout rather than entered into Cognistration’s audio tools.</p>
-        <p>Refunds, cancellations, and other purchase rights are governed by applicable law and any terms shown with the specific offer. For a billing or delivery problem, <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/contact">contact support</a> with the purchase email and date. Do not email payment-card details.</p>
+        <p>Limited public intention previews are free. Paid workspace access, tone packs, and one-time workshops may also be offered. The price, duration, access, and any purchase-specific terms are shown before you confirm payment. Card details are handled by the payment processor’s hosted checkout rather than entered into Cognistration’s audio tools.</p>
+        <p>Refunds, cancellations, and other purchase rights are governed by applicable law and any terms shown with the specific offer. For a billing or delivery problem, <PolicyLink href="/contact">contact support</PolicyLink> with the purchase email and date. Do not email payment-card details.</p>
+      </PolicySection>
+
+      <PolicySection id="app-store" title="Separate app-store products">
+        <p>Cognistration may link to separately distributed apps, including an iPhone app. An App Store purchase, refund, or account is handled under the applicable Apple terms and the offer shown in the App Store, not through this website’s checkout.</p>
       </PolicySection>
 
       <PolicySection id="acceptable-use" title="Acceptable use">
@@ -74,7 +79,7 @@ export default function TermsPage() {
       </PolicySection>
 
       <PolicySection id="contact" title="Questions">
-        <p>Questions about these Terms can be sent to <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
+        <p>Questions about these Terms can be sent to <PolicyLink href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</PolicyLink>.</p>
       </PolicySection>
     </LegalPageShell>
   );

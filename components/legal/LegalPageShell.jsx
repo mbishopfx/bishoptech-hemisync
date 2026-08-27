@@ -11,51 +11,62 @@ const policyLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
-export function LegalPageShell({ title, summary, activeHref, lastUpdated = 'August 27, 2026', children }) {
+export function LegalPageShell({
+  title,
+  summary,
+  activeHref,
+  lastUpdated = 'August 27, 2026',
+  lastUpdatedDate = '2026-08-27',
+  children
+}) {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#eef1ee] font-sans text-[#1d302c] selection:bg-[#b6ddcc]/60">
+    <div className="policy-page min-h-[100dvh] overflow-x-hidden selection:bg-[#b6ddcc]/60">
       <a
         href="#main-content"
-        className="sr-only z-[70] rounded-full bg-[#1d302c] px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#548477]"
+        className="policy-skip-link sr-only z-[70] rounded-full px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
       >
         Skip to content
       </a>
       <PublicHeader theme="light" />
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[34rem] bg-[radial-gradient(circle_at_70%_0%,rgba(182,221,204,0.34),transparent_52%),linear-gradient(180deg,rgba(255,255,255,0.38),transparent)]" aria-hidden="true" />
+      <div className="policy-page__wash pointer-events-none absolute inset-x-0 top-0 z-0" aria-hidden="true" />
 
-      <main id="main-content" className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-40">
-        <section className="grid gap-10 border-b border-[#cbd6cf] pb-14 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.42fr)] lg:items-end lg:gap-24">
+      <main id="main-content" className="policy-page__main relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-24 sm:px-8 lg:px-12">
+        <section aria-labelledby="policy-page-title" className="policy-page__hero grid gap-10 pb-14 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.42fr)] lg:items-end lg:gap-24">
           <div className="max-w-4xl">
-            <h1 className="max-w-[16ch] text-5xl font-medium leading-[0.98] tracking-[-0.065em] text-[#1d302c] sm:text-7xl">
+            <h1 id="policy-page-title" className="policy-page__title max-w-[16ch] text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-7xl">
               {title}
             </h1>
-            <p className="mt-7 max-w-2xl text-base leading-8 text-[#60716b] sm:text-lg">
+            <p className="policy-page__summary mt-7 max-w-2xl text-base leading-8 sm:text-lg">
               {summary}
             </p>
           </div>
-          <div className="border-l border-[#cbd6cf] pl-5 text-sm leading-7 text-[#6c7d76] lg:pb-1">
-            <p className="font-medium text-[#315e55]">Last updated</p>
-            <p>{lastUpdated}</p>
+          <aside className="policy-page__meta border-l pl-5 text-sm leading-7 lg:pb-1" aria-label="Page information">
+            <dl>
+              <div>
+                <dt className="font-medium">Last updated</dt>
+                <dd><time dateTime={lastUpdatedDate}>{lastUpdated}</time></dd>
+              </div>
+            </dl>
             <p className="mt-4">
               Need help?{' '}
-              <Link href="/contact" className="font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]">
+              <Link href="/contact" className="policy-link font-medium">
                 Contact Cognistration
               </Link>
             </p>
-          </div>
+          </aside>
         </section>
 
-        <div className="mt-14 grid gap-14 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-20">
-          <nav aria-label="Policy and support pages" className="lg:sticky lg:top-28 lg:self-start">
-            <p className="text-sm font-medium text-[#315e55]">Cognistration pages</p>
-            <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm text-[#71817a] lg:block lg:space-y-3">
+        <div className="policy-page__layout mt-14 grid gap-14 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-20">
+          <nav aria-label="Policy and support pages" className="policy-page__nav lg:sticky lg:top-28 lg:self-start">
+            <p className="policy-page__nav-title text-sm font-medium">Cognistration pages</p>
+            <ul className="policy-page__nav-list mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm lg:block lg:space-y-3">
               {policyLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     aria-current={link.href === activeHref ? 'page' : undefined}
-                    className={`transition-colors hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477] ${link.href === activeHref ? 'font-medium text-[#315e55]' : ''}`}
+                    className={`policy-page__nav-link ${link.href === activeHref ? 'policy-page__nav-link--active font-medium' : ''}`}
                   >
                     {link.label}
                   </Link>
@@ -64,7 +75,7 @@ export function LegalPageShell({ title, summary, activeHref, lastUpdated = 'Augu
             </ul>
           </nav>
 
-          <div className="max-w-3xl space-y-12">
+          <div className="policy-page__content max-w-3xl space-y-12">
             {children}
           </div>
         </div>

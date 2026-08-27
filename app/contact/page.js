@@ -1,5 +1,6 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
 import { PolicySection } from '@/components/legal/PolicySection';
+import { PolicyLink } from '@/components/legal/PolicyLink';
 import { buildAbsoluteUrl } from '@/lib/seo';
 
 export const metadata = {
@@ -45,12 +46,14 @@ export default function ContactPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
       />
-      <div className="flex flex-col gap-5 border-b border-[#cbd6cf] pb-10 sm:flex-row sm:items-center sm:justify-between">
+      <div className="policy-contact">
         <div>
-          <p className="text-sm font-medium text-[#315e55]">Support email</p>
-          <a className="mt-2 inline-block break-words text-2xl font-medium tracking-[-0.04em] text-[#1d302c] underline decoration-[#9ebaae] underline-offset-8 transition hover:text-[#315e55] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477] sm:text-3xl" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>
+          <h2 className="policy-contact__label">Email support</h2>
+          <address className="not-italic">
+            <a className="policy-contact__email" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>
+          </address>
         </div>
-        <a href="mailto:matt@bishoptech.dev" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-[#1d302c] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#315e55] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]">Send an email</a>
+        <a href="mailto:matt@bishoptech.dev" className="policy-contact__action">Email support</a>
       </div>
 
       <PolicySection id="general-help" title="General help">
@@ -66,7 +69,7 @@ export default function ContactPage() {
       </PolicySection>
 
       <PolicySection id="safety" title="Health and safety">
-        <p>Product support cannot assess a medical condition or provide emergency help. Review the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/health-warning">Health &amp; Safety guidance</a> before listening. If you may be in immediate danger or need urgent care, contact local emergency services or a qualified professional.</p>
+        <p>Product support cannot assess a medical condition or provide emergency help. Review the <PolicyLink href="/health-warning">Health &amp; Safety guidance</PolicyLink> before listening. If you may be in immediate danger or need urgent care, contact local emergency services or a qualified professional.</p>
       </PolicySection>
 
       <PolicySection id="what-to-send" title="What to send">
