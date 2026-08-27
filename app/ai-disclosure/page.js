@@ -24,7 +24,7 @@ export const metadata = {
 export default function AIDisclosurePage() {
   return (
     <LegalPageShell
-      title="How suggestions are made"
+      title="Cognistration AI disclosure"
       summary="Some Cognistration features use automated models to turn an intention into a listening suggestion or help shape a private session. This page explains what that means, what it does not mean, and where your judgment stays in control."
     >
       <PolicySection id="where-ai-appears" title="Where automated help appears">

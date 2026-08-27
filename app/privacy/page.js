@@ -24,7 +24,7 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <LegalPageShell
-      title="Your information, plainly explained"
+      title="Cognistration privacy policy"
       summary="This policy describes the information Cognistration receives when you create an account, use a session, contact support, make a purchase, or use an AI-assisted feature."
     >
       <PolicySection id="information-you-provide" title="Information you provide">

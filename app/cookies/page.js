@@ -24,7 +24,7 @@ export const metadata = {
 export default function CookiesPage() {
   return (
     <LegalPageShell
-      title="How browser storage helps"
+      title="Cognistration cookie policy"
       summary="Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback, preview limits, and product operation."
     >
       <PolicySection id="what-we-use" title="What we use">

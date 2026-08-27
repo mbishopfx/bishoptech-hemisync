@@ -24,7 +24,7 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <LegalPageShell
-      title="The rules are simple"
+      title="Cognistration terms of use"
       summary="These Terms govern your use of Cognistration, including its audio sessions, tone library, private workspace, account features, and digital purchases."
     >
       <PolicySection id="agreement" title="Your agreement">

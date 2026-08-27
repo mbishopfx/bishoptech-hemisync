@@ -24,7 +24,7 @@ export const metadata = {
 export default function HealthWarningPage() {
   return (
     <LegalPageShell
-      title="Listen with care"
+      title="Cognistration health & safety"
       summary="Cognistration audio sessions are for entertainment and general wellness exploration. Read this guidance before listening, especially if sound, relaxation, or changes in alertness may affect you."
     >
       <div className="border-l-4 border-[#b86f4d] bg-[#f7ebe5] px-5 py-5 text-[15px] leading-8 text-[#674d42] sm:px-6">

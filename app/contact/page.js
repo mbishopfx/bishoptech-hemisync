@@ -37,7 +37,7 @@ const contactJsonLd = {
 export default function ContactPage() {
   return (
     <LegalPageShell
-      title="We’re here to help"
+      title="Cognistration support"
       summary="Use one direct support path for account questions, billing, privacy requests, and product feedback."
     >
       <script
