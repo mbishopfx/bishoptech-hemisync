@@ -25,11 +25,12 @@ export async function GET(req, { params }) {
 
     const supabase = getSupabaseAdmin();
     if (!supabase) return NextResponse.json({ error: 'Supabase admin unavailable' }, { status: 503 });
-    const purchase = await fulfillTonePackPurchase({ stripeSession, supabase });
+    const protectedDeliveryUrl = `${new URL(req.url).origin}/api/packs/${encodeURIComponent(packSlug)}/download?session_id=${encodeURIComponent(sessionId)}`;
+    const purchase = await fulfillTonePackPurchase({ stripeSession, supabase, fallbackDownloadUrl: protectedDeliveryUrl });
 
     if (!trackId) {
-      if (!purchase.bundleUrl) return NextResponse.json({ ...purchase, error: 'Pack bundle is still being prepared' }, { status: 202 });
-      return NextResponse.json({ ...purchase, url: purchase.bundleUrl, filename: `${packSlug}.zip` });
+      if (!purchase.downloadUrl) return NextResponse.json({ ...purchase, error: 'Pack bundle is still being prepared' }, { status: 202 });
+      return NextResponse.json({ ...purchase, url: purchase.downloadUrl, filename: `${packSlug}.zip` });
     }
 
     const { data: track, error: trackError } = await supabase

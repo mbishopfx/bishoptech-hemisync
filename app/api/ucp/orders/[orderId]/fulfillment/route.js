@@ -56,6 +56,7 @@ export async function GET(request, { params }) {
   try {
     authorizeUcpRequest(request);
     const order = await readOrder(params.orderId);
+    const packSlug = order.line_items?.[0]?.item?.id;
     if (!['paid', 'fulfilled'].includes(order.status)) {
       throw commerceError('FULFILLMENT_NOT_READY', 'This order is not ready for digital delivery yet.', 409, true);
     }
@@ -65,6 +66,8 @@ export async function GET(request, { params }) {
         ucp: { version: UCP_VERSION },
         order_id: order.id,
         status: 'pending',
+        web_url: order.fulfillment?.web_url || null,
+        email_fallback: true,
         retryable: true
       }, { status: 202, headers: { 'cache-control': 'no-store' } });
     }
@@ -72,7 +75,9 @@ export async function GET(request, { params }) {
       ucp: { version: UCP_VERSION },
       order_id: order.id,
       status: 'fulfilled',
-      download_url: downloadUrl
+      download_url: downloadUrl,
+      web_url: order.fulfillment?.web_url || (packSlug ? `${siteOrigin()}/packs#${encodeURIComponent(packSlug)}` : null),
+      email_fallback: true
     }, { headers: { 'cache-control': 'no-store' } });
   } catch (error) {
     const safe = ucpSecurityError(error);

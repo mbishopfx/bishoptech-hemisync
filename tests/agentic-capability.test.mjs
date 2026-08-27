@@ -294,8 +294,11 @@ test('UCP order responses expose a permalink and a durable digital fulfillment f
   const commerce = await readFile(new URL('../lib/commerce/ucp.mjs', import.meta.url), 'utf8');
   assert.match(orderRoute, /permalink_url/);
   assert.match(fulfillmentRoute, /download_url/);
+  assert.match(fulfillmentRoute, /web_url/);
+  assert.match(fulfillmentRoute, /email_fallback/);
   assert.match(fulfillmentRoute, /FULFILLMENT_NOT_READY/);
   assert.match(commerce, /ucpOrderFulfillmentUrl/);
+  assert.match(commerce, /email_fallback: true/);
 });
 
 test('OpenAPI fallback is derived from the same public read registry', () => {
