@@ -2,33 +2,70 @@ import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 
-export function LegalPageShell({ title, summary, children }) {
+const policyLinks = [
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
+  { href: '/cookies', label: 'Cookies' },
+  { href: '/ai-disclosure', label: 'AI Disclosure' },
+  { href: '/health-warning', label: 'Health & Safety' },
+  { href: '/contact', label: 'Contact' },
+];
+
+export function LegalPageShell({ title, summary, lastUpdated = 'August 27, 2026', children }) {
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30 overflow-x-hidden">
-      <PublicHeader theme="dark" />
+    <div className="min-h-screen overflow-x-hidden bg-[#eef1ee] font-sans text-[#1d302c] selection:bg-[#b6ddcc]/60">
+      <a
+        href="#main-content"
+        className="sr-only z-[70] rounded-full bg-[#1d302c] px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#548477]"
+      >
+        Skip to content
+      </a>
+      <PublicHeader theme="light" />
 
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-cyan-500/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
-        <div className="absolute inset-0 cyber-grid opacity-10" />
-      </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[34rem] bg-[radial-gradient(circle_at_70%_0%,rgba(182,221,204,0.34),transparent_52%),linear-gradient(180deg,rgba(255,255,255,0.38),transparent)]" aria-hidden="true" />
 
-      <main className="pt-40 pb-24 px-6 relative z-10 max-w-4xl mx-auto">
-        <div className="mb-10 space-y-4">
-          <h1 className="text-4xl md:text-6xl font-light tracking-tighter text-white">{title}</h1>
-          <p className="max-w-3xl text-sm md:text-base leading-7 text-white/55">{summary}</p>
-          <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.25em] text-white/35">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
-            <Link href="/ai-disclosure" className="hover:text-white transition-colors">AI Disclosure</Link>
-            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-            <Link href="/health-warning" className="hover:text-white transition-colors">Health Warning</Link>
+      <main id="main-content" className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-40">
+        <section className="grid gap-10 border-b border-[#cbd6cf] pb-14 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.42fr)] lg:items-end lg:gap-24">
+          <div className="max-w-4xl">
+            <h1 className="max-w-[16ch] text-5xl font-medium leading-[0.98] tracking-[-0.065em] text-[#1d302c] sm:text-7xl">
+              {title}
+            </h1>
+            <p className="mt-7 max-w-2xl text-base leading-8 text-[#60716b] sm:text-lg">
+              {summary}
+            </p>
           </div>
-        </div>
+          <div className="border-l border-[#cbd6cf] pl-5 text-sm leading-7 text-[#6c7d76] lg:pb-1">
+            <p className="font-medium text-[#315e55]">Last updated</p>
+            <p>{lastUpdated}</p>
+            <p className="mt-4">
+              Need help?{' '}
+              <Link href="/contact" className="font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]">
+                Contact Cognistration
+              </Link>
+            </p>
+          </div>
+        </section>
 
-        <div className="rounded-[2rem] border border-white/10 bg-zinc-900/40 backdrop-blur-xl p-8 md:p-10 space-y-8">
-          {children}
+        <div className="mt-14 grid gap-14 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-20">
+          <nav aria-label="Policy and support pages" className="lg:sticky lg:top-28 lg:self-start">
+            <p className="text-sm font-medium text-[#315e55]">Cognistration pages</p>
+            <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm text-[#71817a] lg:block lg:space-y-3">
+              {policyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="transition-colors hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="max-w-3xl space-y-12">
+            {children}
+          </div>
         </div>
       </main>
       <PublicTrustFooter />

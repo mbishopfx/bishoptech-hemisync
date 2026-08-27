@@ -1,12 +1,13 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
+import { PolicySection } from '@/components/legal/PolicySection';
 
 export const metadata = {
   title: { absolute: 'Terms and Conditions — Cognistration' },
-  description: 'Terms and Conditions for Cognistration on bishoptech.dev.',
+  description: 'Terms for using Cognistration audio sessions, tools, accounts, and digital purchases.',
   alternates: { canonical: '/terms' },
   openGraph: {
     title: 'Terms and Conditions — Cognistration',
-    description: 'Terms and Conditions for Cognistration on bishoptech.dev.',
+    description: 'Terms for using Cognistration audio sessions, tools, accounts, and digital purchases.',
     siteName: 'Cognistration',
     type: 'website',
     url: '/terms',
@@ -15,72 +16,65 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Terms and Conditions — Cognistration',
-    description: 'Terms and Conditions for Cognistration on bishoptech.dev.',
+    description: 'Terms for using Cognistration audio sessions, tools, accounts, and digital purchases.',
     images: ['/images/og-preview.png'],
   },
 };
 
-function Section({ title, children }) {
-  return (
-    <section className="space-y-3">
-      <h2 className="text-xl font-medium tracking-tight text-white">{title}</h2>
-      <div className="space-y-3 text-sm leading-7 text-white/60">{children}</div>
-    </section>
-  );
-}
-
 export default function TermsPage() {
   return (
     <LegalPageShell
-      eyebrow="Terms and Conditions"
-      title="Cognistration Terms and Conditions"
-      summary="Effective June 12, 2026. These terms govern access to and use of bishoptech.dev and any related Cognistration services."
+      title="The rules are simple"
+      summary="These Terms govern your use of Cognistration, including its audio sessions, tone library, private workspace, account features, and digital purchases."
     >
-      <Section title="Acceptance of terms">
-        <p>By accessing or using Cognistration, you agree to these Terms and Conditions. If you do not agree, do not use the service.</p>
-      </Section>
+      <PolicySection id="agreement" title="Your agreement">
+        <p>By accessing or using Cognistration, you agree to these Terms. If you do not agree, do not use the service. If you use Cognistration for an organization or another person, you confirm that you have authority to accept these Terms on their behalf.</p>
+      </PolicySection>
 
-      <Section title="Nature of the service">
-        <p>Cognistration provides entertainment and general wellness audio experiences, AI-assisted matching, saved libraries, community features, and related digital tools.</p>
-        <p>Cognistration is not medical advice, mental health treatment, emergency support, or a substitute for a licensed professional.</p>
-      </Section>
+      <PolicySection id="service" title="What Cognistration provides">
+        <p>Cognistration provides adjustable audio sessions, a public tone library, a private workspace, saved projects, digital downloads, and automated assistance for matching or shaping sessions. Features can vary by account, offer, device, and availability.</p>
+        <p>The service is for entertainment and general wellness exploration. It is not medical advice, diagnosis, treatment, therapy, emergency support, or a substitute for a qualified professional.</p>
+      </PolicySection>
 
-      <Section title="Health warning">
-        <p>Do not use Cognistration while driving, operating machinery, or doing anything that requires full situational awareness.</p>
-        <p>Do not use without physician approval if you have epilepsy, a seizure disorder, auditory hypersensitivity, a neurological condition, or another medical condition that could be affected by repetitive sound or altered alertness.</p>
-        <p>Stop immediately if you experience discomfort, dizziness, disorientation, headache, anxiety, or any other adverse reaction.</p>
-      </Section>
+      <PolicySection id="safety" title="Health and listening safety">
+        <p>Review the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/health-warning">Health &amp; Safety guidance</a> before listening. Do not use Cognistration while driving, operating machinery, or doing anything that requires full situational awareness. Stop if you feel unwell and seek appropriate help when needed.</p>
+      </PolicySection>
 
-      <Section title="Accounts and subscriptions">
-        <p>You are responsible for maintaining the confidentiality of your account credentials and for activity that occurs under your account.</p>
-        <p>Paid subscriptions, trials, and one-time purchases may be offered through Stripe or another payment processor. Fees are non-refundable except where required by law or expressly stated by Cognistration.</p>
-      </Section>
+      <PolicySection id="accounts" title="Accounts and access">
+        <p>Provide accurate account information, keep your sign-in details secure, and tell us if you believe someone has accessed your account without permission. You are responsible for activity under your account unless applicable law says otherwise.</p>
+        <p>Cognistration is not directed to children under 13. If you are under the age of majority where you live, use the service only with the involvement and permission of a parent or legal guardian.</p>
+      </PolicySection>
 
-      <Section title="Acceptable use">
-        <p>You may not misuse the service, interfere with infrastructure, attempt unauthorized access, scrape protected data, infringe intellectual property rights, or use the service to create harmful, unlawful, or abusive content.</p>
-      </Section>
+      <PolicySection id="purchases" title="Purchases and payment">
+        <p>Paid workspace access, trials, tone packs, and one-time workshops may be offered. The price, duration, access, and any purchase-specific terms are shown before you confirm payment. Card details are handled by the payment processor’s hosted checkout rather than entered into Cognistration’s audio tools.</p>
+        <p>Refunds, cancellations, and other purchase rights are governed by applicable law and any terms shown with the specific offer. For a billing or delivery problem, <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/contact">contact support</a> with the purchase email and date. Do not email payment-card details.</p>
+      </PolicySection>
 
-      <Section title="User content">
-        <p>You retain ownership of content you submit, but you grant Cognistration a limited license to host, process, store, reproduce, and display that content as needed to operate the service.</p>
-        <p>You are responsible for ensuring that your submitted content does not violate law or third-party rights.</p>
-      </Section>
+      <PolicySection id="acceptable-use" title="Acceptable use">
+        <p>Do not use Cognistration to break the law, harm another person, infringe rights, distribute abusive or unlawful material, probe or disrupt the service, bypass access controls, scrape protected data, or impersonate another person.</p>
+      </PolicySection>
 
-      <Section title="Availability and changes">
-        <p>Cognistration may modify, suspend, or discontinue features at any time. We do not guarantee uninterrupted availability or that every generated result will meet a particular expectation.</p>
-      </Section>
+      <PolicySection id="content" title="Your content and generated results">
+        <p>You keep ownership of content you submit. You give Cognistration the limited permission needed to host, process, store, reproduce, and display that content to provide, secure, and improve the features you use. If you choose to publish content through a public or community feature, it may be visible to others as described at the time you publish it.</p>
+        <p>You are responsible for having the rights to submit content and for reviewing generated suggestions before you use or share them. Automated output may be inaccurate, incomplete, or not unique.</p>
+      </PolicySection>
 
-      <Section title="Disclaimers and limitation of liability">
-        <p>The service is provided on an “as is” and “as available” basis to the fullest extent permitted by law.</p>
-        <p>To the fullest extent permitted by law, Cognistration disclaims warranties of merchantability, fitness for a particular purpose, non-infringement, and uninterrupted operation, and will not be liable for indirect, incidental, special, consequential, or punitive damages arising from use of the service.</p>
-      </Section>
+      <PolicySection id="changes" title="Availability and changes">
+        <p>We may update, suspend, or discontinue a feature, and we may update these Terms when the service changes. We do not promise uninterrupted availability or that every session, suggestion, download, or result will meet a particular expectation.</p>
+      </PolicySection>
 
-      <Section title="Termination">
-        <p>Cognistration may suspend or terminate access if you violate these terms, create risk for the platform, or use the service in a way that is unlawful or harmful.</p>
-      </Section>
+      <PolicySection id="disclaimers" title="Disclaimers and liability">
+        <p>To the fullest extent permitted by law, Cognistration is provided on an “as is” and “as available” basis without guarantees that the service will be uninterrupted, error-free, or fit for a particular purpose.</p>
+        <p>To the fullest extent permitted by law, Cognistration will not be liable for indirect, incidental, special, consequential, or punitive damages arising from use of the service. Nothing in these Terms limits rights or remedies that cannot legally be limited.</p>
+      </PolicySection>
 
-      <Section title="Contact">
-        <p>Questions about these terms can be sent to <a className="text-cyan-300 hover:text-cyan-200" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
-      </Section>
+      <PolicySection id="termination" title="Suspension and termination">
+        <p>We may suspend or end access when reasonably necessary to protect users, the service, or others, or when you violate these Terms. You may stop using Cognistration at any time. Provisions that should continue by their nature, including ownership, disclaimers, and limitations, will continue to apply.</p>
+      </PolicySection>
+
+      <PolicySection id="contact" title="Questions">
+        <p>Questions about these Terms can be sent to <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="mailto:matt@bishoptech.dev">matt@bishoptech.dev</a>.</p>
+      </PolicySection>
     </LegalPageShell>
   );
 }

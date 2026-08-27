@@ -1,12 +1,13 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
+import { PolicySection } from '@/components/legal/PolicySection';
 
 export const metadata = {
   title: { absolute: 'Cookie Policy — Cognistration' },
-  description: 'Cookie Policy for Cognistration on bishoptech.dev.',
+  description: 'How Cognistration uses cookies and browser storage to operate the site.',
   alternates: { canonical: '/cookies' },
   openGraph: {
     title: 'Cookie Policy — Cognistration',
-    description: 'Cookie Policy for Cognistration on bishoptech.dev.',
+    description: 'How Cognistration uses cookies and browser storage to operate the site.',
     siteName: 'Cognistration',
     type: 'website',
     url: '/cookies',
@@ -15,44 +16,33 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Cookie Policy — Cognistration',
-    description: 'Cookie Policy for Cognistration on bishoptech.dev.',
+    description: 'How Cognistration uses cookies and browser storage to operate the site.',
     images: ['/images/og-preview.png'],
   },
 };
 
-function Section({ title, children }) {
-  return (
-    <section className="space-y-3">
-      <h2 className="text-xl font-medium tracking-tight text-white">{title}</h2>
-      <div className="space-y-3 text-sm leading-7 text-white/60">{children}</div>
-    </section>
-  );
-}
-
 export default function CookiesPage() {
   return (
     <LegalPageShell
-      eyebrow="Cookie Policy"
-      title="Cognistration Cookie Policy"
-      summary="Effective June 13, 2026. This page explains the cookies and similar storage tools used on bishoptech.dev."
+      title="How browser storage helps"
+      summary="Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback, preview limits, and product operation."
     >
-      <Section title="What we use">
-        <p>We use cookies, local storage, and similar technologies to keep users signed in, remember playback state, preserve preferences, measure product performance, and understand how the site is used.</p>
-        <p>For unauthenticated visitors, Cognistration also uses a short-lived usage counter cookie to enforce public preview limits. That cookie is functional, not advertising-based.</p>
-      </Section>
+      <PolicySection id="what-we-use" title="What we use">
+        <p>We use cookies, local storage, and similar browser technologies to keep sign-in stable, remember preferences, preserve playback and preview state, enforce public-preview limits, and understand product performance.</p>
+        <p>For unauthenticated visitors, a short-lived functional cookie can help count public preview generations. It is used for product operation, not as an advertising profile.</p>
+      </PolicySection>
 
-      <Section title="Why we use them">
-        <p>These tools help the site function properly, keep sessions stable, reduce repeated sign-ins, and make the experience smoother across pages and visits.</p>
-        <p>We do not use these storage tools to run ad targeting or third-party profiling on this site.</p>
-      </Section>
+      <PolicySection id="why" title="Why they matter">
+        <p>These tools help pages and sessions work consistently across visits. Some are essential to a feature; others help us understand whether the product is working as intended.</p>
+      </PolicySection>
 
-      <Section title="Your choices">
-        <p>You can remove or block cookies through your browser settings. If you do, some parts of the site may not work as expected, including sign-in, saved state, playback continuity, and trial-limit enforcement.</p>
-      </Section>
+      <PolicySection id="choices" title="Your choices">
+        <p>You can remove or block cookies and local storage through your browser settings. Sign-in, saved state, playback continuity, and public-preview limits may not work as expected after you do so.</p>
+      </PolicySection>
 
-      <Section title="Related information">
-        <p>For more detail about how we handle personal information, please review the <a className="text-cyan-300 hover:text-cyan-200" href="/privacy">Privacy Policy</a>.</p>
-      </Section>
+      <PolicySection id="related" title="Related information">
+        <p>For more detail about personal information, review the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/privacy">Privacy Policy</a>.</p>
+      </PolicySection>
     </LegalPageShell>
   );
 }
