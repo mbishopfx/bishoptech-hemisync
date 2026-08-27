@@ -112,6 +112,9 @@ test('tone-pack catalog returns playable public previews without private commerc
 test('policy and account routes have source links and preserve user-controlled signup', () => {
   assert.deepEqual(POLICY_TOPICS, ['safety', 'terms', 'privacy', 'cookies', 'ai', 'pricing', 'account']);
   assert.equal(getPolicyInfo({ topic: 'safety' }, 'https://example.test').url, 'https://example.test/health-warning');
+  for (const topic of ['safety', 'terms', 'privacy', 'cookies', 'ai']) {
+    assert.equal(getPolicyInfo({ topic }, 'https://example.test').effectiveDate, '2026-08-27');
+  }
   assert.throws(() => PolicyInputSchema.parse({ topic: 'medical' }));
   const options = publicAccountOptions('https://example.test');
   assert.equal(options.publicPreview.price, 'Free');
