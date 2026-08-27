@@ -289,6 +289,7 @@ test('UCP MCP transport keeps standard JSON-RPC dispatch alongside the legacy op
   assert.match(route, /body\.method === 'tools\/list'/);
   assert.match(route, /body\.method\.startsWith\('notifications\/'\)/);
   assert.match(route, /assertToolArguments\(params\.name, args\)/);
+  assert.match(route, /assertUcpAgentProfile\(\{ meta: requestMeta\(body, \{\}\), request \}\)/);
   assert.match(route, /structuredContent/);
   assert.match(route, /text\/event-stream/);
   assert.match(route, /event: message/);

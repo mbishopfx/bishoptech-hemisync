@@ -222,7 +222,7 @@ export async function GET() {
     protocolVersion: UCP_MCP_PROTOCOL_VERSION,
     tools: UCP_MCP_TOOLS.map((tool) => tool.name),
     operations: [...LEGACY_OPERATIONS],
-    metadata: 'Include meta.ucp-agent.profile and Idempotency-Key for create, complete, and cancel.'
+    metadata: 'Include meta.ucp-agent.profile on every UCP request and Idempotency-Key for create, complete, and cancel.'
   }, { headers: headers() });
 }
 
@@ -247,9 +247,13 @@ export async function POST(request) {
     return streamIfRequested(request, rpcError(body?.id, -32600, invalid.message, 400, ucpErrorData(invalid)));
   }
 
-  if (body.method.startsWith('notifications/')) return emptyNotification();
-
   try {
+    // UCP requires the calling agent profile on every request, including
+    // lifecycle notifications. Keep the check at the transport boundary so
+    // initialize/discovery calls cannot bypass the negotiated identity.
+    assertUcpAgentProfile({ meta: requestMeta(body, {}), request });
+    if (body.method.startsWith('notifications/')) return emptyNotification();
+
     return streamIfRequested(request, rpcResult(body.id, await dispatch(request, body)));
   } catch (error) {
     const safe = ucpSecurityError(error);
