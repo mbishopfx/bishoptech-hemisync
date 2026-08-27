@@ -313,6 +313,8 @@ test('commerce fulfillment fails closed after revocation and keeps sensitive pro
   assert.match(downloadRoute, /safeCommerceError/);
   assert.match(webhookRoute, /Webhook signature invalid\./);
   assert.match(webhookRoute, /eventId: event\.id/);
+  assert.match(webhookRoute, /checkout\.session\.expired/);
+  assert.match(webhookRoute, /status: 'expired'/);
   assert.doesNotMatch(webhookRoute, /Webhook Error: \$\{error\.message\}/);
 });
 

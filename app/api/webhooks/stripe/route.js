@@ -110,6 +110,25 @@ async function markAgentCheckout(supabase, stripeSessionId, status) {
   if (error && !isMissingTableError(error)) throw error;
 }
 
+async function expireUcpCheckout(supabase, stripeSessionId) {
+  if (!stripeSessionId) return;
+  const { data: checkout, error: readError } = await supabase
+    .from('commerce_checkouts')
+    .select('id,status')
+    .eq('stripe_checkout_session_id', stripeSessionId)
+    .maybeSingle();
+  if (readError) {
+    if (isMissingTableError(readError)) return;
+    throw readError;
+  }
+  if (!checkout || ['completed', 'canceled', 'expired'].includes(checkout.status)) return;
+  const { error } = await supabase
+    .from('commerce_checkouts')
+    .update({ status: 'expired', updated_at: new Date().toISOString() })
+    .eq('id', checkout.id);
+  if (error && !isMissingTableError(error)) throw error;
+}
+
 async function readOrderByPaymentIntent(supabase, paymentIntentId) {
   if (!paymentIntentId) return null;
   const { data, error } = await supabase
@@ -287,6 +306,12 @@ export async function POST(req) {
             }
           }
         }
+        break;
+      }
+      case 'checkout.session.expired': {
+        const session = event.data.object;
+        await markAgentCheckout(supabase, session.id, 'failed');
+        await expireUcpCheckout(supabase, session.id);
         break;
       }
       case 'customer.subscription.created':
