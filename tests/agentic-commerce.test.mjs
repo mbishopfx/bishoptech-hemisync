@@ -27,7 +27,7 @@ import {
   encryptMachineSessionGrant,
   hashMachineSessionGrant
 } from '../lib/commerce/machine-session-grants.mjs';
-import { constantTimeEqual, normalizeEmail, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
+import { commerceError, constantTimeEqual, normalizeEmail, safeCommerceStatus, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
 import { assertUcpAgentProfile, idempotencyKeyFrom, authorizeUcpRequest, verifyRequestSignature } from '../lib/commerce/ucp-security.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 
@@ -144,11 +144,15 @@ function buildOfficialPaymentMandate({ checkoutHash, agentPrivateJwk, agentPubli
   return `${root}~~${delegated}`;
 }
 
-test('commerce inputs normalize safely and require stable retry keys', () => {
+test('commerce inputs normalize safely and require stable retry keys', async () => {
   assert.equal(normalizeEmail('  Listener@Example.com '), 'listener@example.com');
   assert.equal(validateIdempotencyKey('checkout-1234'), 'checkout-1234');
   assert.throws(() => normalizeEmail('not-an-email'), (error) => error.code === 'INVALID_EMAIL');
   assert.throws(() => validateIdempotencyKey('short'), (error) => error.code === 'INVALID_IDEMPOTENCY_KEY');
+  const zodError = await createTonePackCheckout({ input: {} }).catch((error) => error);
+  assert.equal(safeCommerceStatus(zodError), 400);
+  assert.equal(safeCommerceStatus(commerceError('CONFLICT', 'Conflict', 409)), 409);
+  assert.equal(safeCommerceStatus(new Error('unexpected')), 500);
   assert.equal(constantTimeEqual('same', 'same'), true);
   assert.equal(constantTimeEqual('same', 'different'), false);
 });

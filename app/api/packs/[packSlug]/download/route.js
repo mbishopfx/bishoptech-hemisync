@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
-import { safeCommerceError } from '@/lib/commerce/commerce-utils.mjs';
+import { safeCommerceError, safeCommerceStatus } from '@/lib/commerce/commerce-utils.mjs';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -71,7 +71,7 @@ export async function GET(req, { params }) {
     });
   } catch (error) {
     const safe = safeCommerceError(error, 'The tone-pack download could not be resolved.');
-    console.error('Pack download failed:', { code: safe.code, status: error?.status || 500 });
-    return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, { status: error?.status || 500 });
+    console.error('Pack download failed:', { code: safe.code, status: safeCommerceStatus(error) });
+    return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, { status: safeCommerceStatus(error) });
   }
 }

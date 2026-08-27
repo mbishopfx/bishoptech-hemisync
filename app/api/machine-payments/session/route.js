@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { machinePaymentEnabled, MACHINE_PAYMENT_PRICE_CENTS, MACHINE_PAYMENT_SESSION_DURATION_SEC, MACHINE_PAYMENT_SESSION_SCOPE } from '@/lib/commerce/machine-payments.mjs';
 import { createMachinePaymentHandler } from '@/lib/commerce/machine-payment-handler.mjs';
 import { issueMachineSessionGrant } from '@/lib/commerce/machine-session-grants.mjs';
-import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
+import { safeCommerceError, safeCommerceStatus, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
 export const dynamic = 'force-dynamic';
@@ -85,7 +85,7 @@ export async function POST(request) {
   } catch (error) {
     const safe = safeCommerceError(error, 'Machine payment verification is temporarily unavailable.');
     return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, {
-      status: error?.status || 402,
+      status: safeCommerceStatus(error, 402),
       headers: { 'cache-control': 'no-store' }
     });
   }

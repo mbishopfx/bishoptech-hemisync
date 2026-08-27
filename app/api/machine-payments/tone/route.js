@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hashValue, safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
+import { hashValue, safeCommerceError, safeCommerceStatus, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 import { createMachinePaymentHandler } from '@/lib/commerce/machine-payment-handler.mjs';
 import {
@@ -155,7 +155,7 @@ export async function POST(request) {
   } catch (error) {
     const safe = safeCommerceError(error, 'Machine tone payment verification is temporarily unavailable.');
     return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, {
-      status: error?.status || 402,
+      status: safeCommerceStatus(error, 402),
       headers: { 'cache-control': 'no-store' }
     });
   }

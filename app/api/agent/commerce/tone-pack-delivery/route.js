@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getTonePackDelivery } from '@/lib/commerce/agent-checkout.mjs';
-import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
+import { safeCommerceError, safeCommerceStatus, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -19,7 +19,7 @@ export async function GET(req) {
   } catch (error) {
     const safe = safeCommerceError(error, 'Tone-pack delivery is temporarily unavailable.');
     return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, {
-      status: error?.status || 500,
+      status: safeCommerceStatus(error),
       headers: { 'cache-control': 'no-store' }
     });
   }

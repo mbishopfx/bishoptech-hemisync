@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { validateWorkshopAccessKey } from '@/lib/commerce/workshop-access.mjs';
-import { safeCommerceError } from '@/lib/commerce/commerce-utils.mjs';
+import { safeCommerceError, safeCommerceStatus } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
 export const dynamic = 'force-dynamic';
@@ -19,7 +19,7 @@ export async function POST(req) {
   } catch (error) {
     const safe = safeCommerceError(error, 'Workshop access validation is temporarily unavailable.');
     return NextResponse.json({ ok: false, error: safe.message, code: safe.code, retryable: safe.retryable }, {
-      status: error?.status || 500,
+      status: safeCommerceStatus(error),
       headers: { 'cache-control': 'no-store' }
     });
   }
