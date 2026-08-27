@@ -1,15 +1,12 @@
-import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
-import { Mppx, stripe } from 'mppx/server';
-import { machinePaymentEnabled, MACHINE_PAYMENT_PRICE_CENTS, MACHINE_PAYMENT_SESSION_DURATION_SEC } from '@/lib/commerce/machine-payments.mjs';
+import { machinePaymentEnabled, MACHINE_PAYMENT_PRICE_CENTS, MACHINE_PAYMENT_SESSION_DURATION_SEC, MACHINE_PAYMENT_SESSION_SCOPE } from '@/lib/commerce/machine-payments.mjs';
+import { createMachinePaymentHandler } from '@/lib/commerce/machine-payment-handler.mjs';
 import { issueMachineSessionGrant } from '@/lib/commerce/machine-session-grants.mjs';
 import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-
-const PAYMENT_SCOPE = 'cognistration-machine-session-v1';
 
 function unavailable() {
   return NextResponse.json({
@@ -21,33 +18,11 @@ function unavailable() {
 }
 
 function createPaymentHandler(receiptRef) {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-  const stripeClient = new Stripe(secretKey);
-  const machinePayments = stripe.create({
-    client: stripeClient,
-    networkId: process.env.STRIPE_NETWORK_ID,
-    livemode: !secretKey.includes('_test_')
-  });
-  const charge = machinePayments.spt.charge({
-    paymentMethodTypes: ['card', 'link'],
+  return createMachinePaymentHandler({
+    receiptRef,
+    scope: MACHINE_PAYMENT_SESSION_SCOPE,
     description: 'Cognistration one-session machine access',
-    metadata: {
-      productType: 'machine-session',
-      product: 'cognistration',
-      amountCents: String(MACHINE_PAYMENT_PRICE_CENTS)
-    },
-    onPaymentSuccess: ({ receipt }) => {
-      receiptRef.value = receipt;
-    }
-  });
-  const mppx = Mppx.create({
-    methods: [charge],
-    secretKey: process.env.MPP_SECRET_KEY,
-    realm: new URL(siteOrigin()).hostname
-  });
-  return mppx.stripe.charge({
-    amount: String(MACHINE_PAYMENT_PRICE_CENTS),
-    scope: PAYMENT_SCOPE
+    productType: 'machine-session'
   });
 }
 
@@ -95,7 +70,7 @@ export async function POST(request) {
         durationSec: MACHINE_PAYMENT_SESSION_DURATION_SEC,
         startsAt: grant.startsAt,
         expiresAt: grant.expiresAt,
-        scope: PAYMENT_SCOPE,
+        scope: MACHINE_PAYMENT_SESSION_SCOPE,
         endpoint: `${siteOrigin()}/machine`,
         controls: ['state', 'carrierHz', 'beatHz', 'volume'],
         audioStartsOnlyAfterExplicitUserAction: true

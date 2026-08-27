@@ -35,7 +35,7 @@ import { MEMBER_WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.j
 import { MemberPlanInputSchema, buildMemberSessionPlan, journeyPresetForState } from '../lib/agentic/member-capability.js';
 import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
-import { machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
+import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
 
@@ -250,6 +250,9 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineTool.annotations.readOnlyHint, true);
   assert.equal(machinePaymentOptions('https://example.test').status, 'provider_access_required');
+  assert.equal(MACHINE_PAYMENT_AMOUNT, '0.50');
+  assert.equal(machinePaymentOptions('https://example.test').amountCents, 50);
+  assert.equal(machinePaymentOptions('https://example.test').toneSession.scopePrefix, MACHINE_PAYMENT_TONE_SCOPE_PREFIX);
   assert.equal(autonomousPaymentOptions('https://example.test').status, 'provider_access_required');
   const ucp = ucpProfile('https://example.test');
   assert.equal(ucp.ucp.version, '2026-01-23');
@@ -311,7 +314,20 @@ test('OpenAPI fallback is derived from the same public read registry', () => {
   assert.ok(document.paths['/api/agent/policy'].get);
   assert.ok(document.paths['/api/agent/account'].get);
   assert.ok(document.paths['/api/packs'].get.parameters.some((parameter) => parameter.name === 'agent'));
+  assert.ok(document.paths['/api/machine-payments/tone'].post.requestBody.content['application/json'].schema.properties.carrierHz);
   assert.doesNotMatch(JSON.stringify(document), /service_role|OPENAI_API_KEY|STRIPE_SECRET|arbitrary SQL/i);
+});
+
+test('machine payment routes use major-unit pricing and bind custom tone requests', async () => {
+  const sessionRoute = await readFile(new URL('../app/api/machine-payments/session/route.js', import.meta.url), 'utf8');
+  const toneRoute = await readFile(new URL('../app/api/machine-payments/tone/route.js', import.meta.url), 'utf8');
+  const handler = await readFile(new URL('../lib/commerce/machine-payment-handler.mjs', import.meta.url), 'utf8');
+  assert.match(sessionRoute, /MACHINE_PAYMENT_SESSION_SCOPE/);
+  assert.match(toneRoute, /MachineGeneratorInputSchema/);
+  assert.match(toneRoute, /tonePaymentScope/);
+  assert.match(toneRoute, /issueMachineSessionGrant/);
+  assert.match(handler, /amount: MACHINE_PAYMENT_AMOUNT/);
+  assert.match(handler, /amountCents: String\(MACHINE_PAYMENT_PRICE_CENTS\)/);
 });
 
 test('member planning maps bounded inputs to private Studio journeys without echoing the intention', async () => {
