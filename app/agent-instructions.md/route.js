@@ -27,7 +27,7 @@ Cognistration is a public audio-session product. The homepage exposes a native W
 - get_workshop_access_status — validate a workshop bearer key without echoing the key; report only active, expired, revoked, or invalid status and its limits.
 - revoke_workshop_access — revoke a workshop key only after explicit confirmation.
 - get_machine_payment_options — report whether the provider-gated Stripe Machine Payments Protocol route is enabled and explain the browser fallback.
-- get_autonomous_payment_options — report AP2-style mandate readiness and safeguards; do not create autonomous mandates.
+- get_autonomous_payment_options — report AP2-compatible and official UCP AP2 mandate readiness, including provider/key gates; do not create autonomous mandates or claim official AP2 is enabled unless the returned status says enabled.
 - open_machine_generator — render the interactive tone machine in a compatible ChatGPT app host; optional intention, public tone ID, state, carrier, rhythm, and volume inputs seed the widget.
 
 For a purchase, first search the published catalog, state the server-returned price, ask for explicit confirmation and a delivery email, then use a stable idempotency key. Hosted checkout is the default. UCP discovery is available at https://cognistration.com/.well-known/ucp; its REST and MCP checkout operations recompute totals and fall back to hosted Stripe review when delegated payment access is unavailable.

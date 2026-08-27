@@ -6,6 +6,15 @@ import { createWorkshopCheckout } from '../lib/commerce/workshop-checkout.mjs';
 import { createTonePackCheckout } from '../lib/commerce/agent-checkout.mjs';
 import { buildUcpOrderEvent, createUcpDetachedSignature, notifyUcpOrderEvent, verifyUcpDetachedSignature } from '../lib/commerce/order-events.mjs';
 import {
+  createMerchantAuthorization,
+  createOfficialAp2CheckoutReceipt,
+  createOfficialAp2PaymentReceipt,
+  officialAp2CapabilityEnabled,
+  officialAp2Readiness,
+  verifyOfficialAp2CheckoutMandate,
+  verifyOfficialAp2PaymentMandate
+} from '../lib/commerce/ap2-official.mjs';
+import {
   createWorkshopAccessKey,
   decryptWorkshopAccessKey,
   encryptWorkshopAccessKey,
@@ -34,6 +43,104 @@ function withEnv(values, callback) {
       else process.env[key] = value;
     }
   });
+}
+
+function encode(value) {
+  return Buffer.from(value).toString('base64url');
+}
+
+function signCompactJws({ header, payload, privateJwk }) {
+  const encodedHeader = encode(JSON.stringify(header));
+  const encodedPayload = encode(JSON.stringify(payload));
+  const signature = crypto.sign('sha256', Buffer.from(`${encodedHeader}.${encodedPayload}`), {
+    key: crypto.createPrivateKey({ key: privateJwk, format: 'jwk' }),
+    dsaEncoding: 'ieee-p1363'
+  });
+  return `${encodedHeader}.${encodedPayload}.${signature.toString('base64url')}`;
+}
+
+function disclosure(value, salt) {
+  const encoded = encode(JSON.stringify([salt, value]));
+  return {
+    encoded,
+    digest: crypto.createHash('sha256').update(encoded, 'ascii').digest('base64url')
+  };
+}
+
+function buildOfficialCheckoutMandate({ checkout, agentPrivateJwk, agentPublicJwk, merchantPrivateJwk, checkoutConstraints = [] }) {
+  const merchantAuthorization = createMerchantAuthorization({ checkout, privateJwk: merchantPrivateJwk });
+  const signedCheckout = { ...checkout, ap2: { merchant_authorization: merchantAuthorization } };
+  const checkoutJwt = signCompactJws({
+    header: { alg: 'ES256', typ: 'JWT', kid: merchantPrivateJwk.kid },
+    payload: signedCheckout,
+    privateJwk: merchantPrivateJwk
+  });
+  const checkoutHash = crypto.createHash('sha256').update(checkoutJwt, 'ascii').digest('base64url');
+  const closed = disclosure({
+    vct: 'mandate.checkout.1',
+    checkout_hash: checkoutHash,
+    checkout_jwt: checkoutJwt
+  }, 'closed-checkout-salt');
+  const open = disclosure({
+    vct: 'mandate.checkout.open.1',
+    constraints: checkoutConstraints,
+    cnf: { jwk: agentPublicJwk }
+  }, 'open-checkout-salt');
+  const root = signCompactJws({
+    header: { alg: 'ES256', typ: 'example+sd-jwt', kid: agentPrivateJwk.kid },
+    payload: { delegate_payload: [{ '...': open.digest }], _sd_alg: 'sha-256' },
+    privateJwk: agentPrivateJwk
+  }) + `~${open.encoded}~`;
+  const delegated = signCompactJws({
+    header: { alg: 'ES256', typ: 'kb+sd-jwt' },
+    payload: {
+      delegate_payload: [{ '...': closed.digest }],
+      iat: Math.floor(new Date('2026-08-27T12:00:00.000Z').getTime() / 1000),
+      aud: 'merchant',
+      nonce: 'checkout-nonce',
+      sd_hash: crypto.createHash('sha256').update(root, 'ascii').digest('base64url'),
+      _sd_alg: 'sha-256'
+    },
+    privateJwk: agentPrivateJwk
+  }) + `~${closed.encoded}~`;
+  return {
+    token: `${root}~~${delegated}`,
+    checkoutHash,
+    openMandateHash: crypto.createHash('sha256').update(root, 'ascii').digest('base64url')
+  };
+}
+
+function buildOfficialPaymentMandate({ checkoutHash, agentPrivateJwk, agentPublicJwk, paymentConstraints = [] }) {
+  const closed = disclosure({
+    vct: 'mandate.payment.1',
+    transaction_id: checkoutHash,
+    payee: { name: 'Cognistration', website: 'https://cognistration.com' },
+    payment_amount: { amount: 299, currency: 'USD' },
+    payment_instrument: { type: 'card', id: 'payment-token-reference' }
+  }, 'closed-payment-salt');
+  const open = disclosure({
+    vct: 'mandate.payment.open.1',
+    constraints: paymentConstraints,
+    cnf: { jwk: agentPublicJwk }
+  }, 'open-payment-salt');
+  const root = signCompactJws({
+    header: { alg: 'ES256', typ: 'example+sd-jwt', kid: agentPrivateJwk.kid },
+    payload: { delegate_payload: [{ '...': open.digest }], _sd_alg: 'sha-256' },
+    privateJwk: agentPrivateJwk
+  }) + `~${open.encoded}~`;
+  const delegated = signCompactJws({
+    header: { alg: 'ES256', typ: 'kb+sd-jwt' },
+    payload: {
+      delegate_payload: [{ '...': closed.digest }],
+      iat: Math.floor(new Date('2026-08-27T12:00:00.000Z').getTime() / 1000),
+      aud: 'merchant',
+      nonce: 'payment-nonce',
+      sd_hash: crypto.createHash('sha256').update(root, 'ascii').digest('base64url'),
+      _sd_alg: 'sha-256'
+    },
+    privateJwk: agentPrivateJwk
+  }) + `~${closed.encoded}~`;
+  return `${root}~~${delegated}`;
 }
 
 test('commerce inputs normalize safely and require stable retry keys', () => {
@@ -203,4 +310,105 @@ test('AP2 remains provider-gated and binds its future mandate to a cart hash', a
     assert.throws(() => verifyAutonomousMandate({ mandate: {}, cart: [], amount: 50, currency: 'usd' }), (error) => error.code === 'AP2_PROVIDER_ACCESS_REQUIRED');
   });
   assert.match(hashMandateCart([{ id: 'line_deep-rest-pack', quantity: 1 }]), /^[a-f0-9]{64}$/);
+});
+
+test('official AP2 verifies SD-JWT checkout mandates and merchant authorization', async () => {
+  const agent = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const merchant = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const agentPrivateJwk = { ...agent.privateKey.export({ format: 'jwk' }), kid: 'agent-test-1' };
+  const agentPublicJwk = { ...agent.publicKey.export({ format: 'jwk' }), kid: 'agent-test-1' };
+  const merchantPrivateJwk = { ...merchant.privateKey.export({ format: 'jwk' }), kid: 'merchant-test-1' };
+  const merchantPublicJwk = { ...merchant.publicKey.export({ format: 'jwk' }), kid: 'merchant-test-1' };
+  const checkout = {
+    id: 'checkout_ap2_test',
+    status: 'ready_for_complete',
+    currency: 'USD',
+    line_items: [{
+      id: 'line_deep-rest-pack',
+      item: { id: 'deep-rest-pack', title: 'Deep Rest', price: 299 },
+      quantity: 1,
+      totals: [{ type: 'total', amount: 299 }]
+    }],
+    totals: [{ type: 'total', amount: 299 }],
+    expires_at: '2099-01-01T00:00:00.000Z'
+  };
+
+  await withEnv({
+    AP2_OFFICIAL_ENABLED: 'true',
+    AP2_ENABLED: 'true',
+    UCP_SHARED_PAYMENT_TOKEN_ENABLED: 'true',
+    STRIPE_SECRET_KEY: 'sk_test_ap2_unit',
+    STRIPE_NETWORK_ID: 'network_ap2_unit',
+    UCP_SIGNING_PRIVATE_JWK: JSON.stringify(merchantPrivateJwk),
+    UCP_SIGNING_PUBLIC_JWK: JSON.stringify(merchantPublicJwk),
+    AP2_AGENT_PUBLIC_JWK: JSON.stringify(agentPublicJwk),
+    AP2_PAYMENT_PUBLIC_JWK: JSON.stringify(agentPublicJwk),
+    AP2_PAYMENT_RECEIPT_PRIVATE_JWK: JSON.stringify(merchantPrivateJwk),
+    AP2_PAYMENT_RECEIPT_PUBLIC_JWK: JSON.stringify(merchantPublicJwk),
+    AP2_EXPECTED_AUDIENCE: undefined,
+    AP2_EXPECTED_NONCE: undefined
+  }, async () => {
+    assert.equal(officialAp2CapabilityEnabled(), true);
+    assert.equal(officialAp2Readiness('https://example.test').status, 'enabled');
+    assert.ok(ucpProfile('https://example.test').ucp.capabilities['dev.ucp.shopping.ap2_mandate']);
+    const checkoutMandate = buildOfficialCheckoutMandate({
+      checkout,
+      agentPrivateJwk,
+      agentPublicJwk,
+      merchantPrivateJwk,
+      checkoutConstraints: [
+        { type: 'checkout.allowed_merchants', allowed: [{ website: 'https://cognistration.com' }] },
+        {
+          type: 'checkout.line_items',
+          items: [{ id: 'line_deep-rest-pack', acceptable_items: [{ id: 'deep-rest-pack' }], quantity: 1 }]
+        }
+      ]
+    });
+    const verified = verifyOfficialAp2CheckoutMandate({ token: checkoutMandate.token, checkout, now: new Date('2026-08-27T12:00:00.000Z') });
+    assert.equal(verified.official, true);
+    assert.equal(verified.currency, 'usd');
+    assert.equal(verified.amountMax, 299);
+    assert.equal(verified.agentKeyId, 'agent-test-1');
+
+    const paymentMandate = buildOfficialPaymentMandate({
+      checkoutHash: checkoutMandate.checkoutHash,
+      agentPrivateJwk,
+      agentPublicJwk,
+      paymentConstraints: [
+        { type: 'payment.amount_range', currency: 'USD', min: 299, max: 299 },
+        { type: 'payment.allowed_payees', allowed: [{ website: 'https://cognistration.com' }] },
+        { type: 'payment.allowed_payment_instruments', allowed: [{ id: 'payment-token-reference', type: 'card' }] },
+        { type: 'payment.reference', conditional_transaction_id: checkoutMandate.openMandateHash }
+      ]
+    });
+    const payment = verifyOfficialAp2PaymentMandate({
+      token: paymentMandate,
+      checkout,
+      checkoutMandate: verified,
+      now: new Date('2026-08-27T12:00:00.000Z')
+    });
+    assert.equal(payment.paymentMandateId.startsWith('payment_'), true);
+
+    const checkoutReceipt = createOfficialAp2CheckoutReceipt({
+      token: checkoutMandate.token,
+      orderId: 'order_ap2_test',
+      now: new Date('2026-08-27T12:00:00.000Z')
+    });
+    const paymentReceipt = createOfficialAp2PaymentReceipt({
+      token: paymentMandate,
+      paymentId: 'pi_ap2_test',
+      pspConfirmationId: 'pi_ap2_test',
+      now: new Date('2026-08-27T12:00:00.000Z')
+    });
+    assert.equal(JSON.parse(Buffer.from(checkoutReceipt.split('.')[1], 'base64url')).reference, verified.mandateReference);
+    assert.equal(JSON.parse(Buffer.from(paymentReceipt.split('.')[1], 'base64url')).reference, payment.mandateReference);
+    assert.equal(JSON.parse(Buffer.from(checkoutReceipt.split('.')[1], 'base64url')).order_id, 'order_ap2_test');
+    assert.equal(JSON.parse(Buffer.from(paymentReceipt.split('.')[1], 'base64url')).payment_id, 'pi_ap2_test');
+
+    const changedCheckout = { ...checkout, totals: [{ type: 'total', amount: 399 }] };
+    assert.throws(
+      () => verifyOfficialAp2CheckoutMandate({ token: checkoutMandate.token, checkout: changedCheckout }),
+      (error) => error.code === 'AP2_MANDATE_SCOPE_MISMATCH'
+    );
+  });
 });
