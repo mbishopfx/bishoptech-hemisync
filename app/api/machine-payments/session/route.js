@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 import { Mppx, stripe } from 'mppx/server';
-import { machinePaymentEnabled, MACHINE_PAYMENT_PRICE_CENTS } from '@/lib/commerce/machine-payments.mjs';
+import { machinePaymentEnabled, MACHINE_PAYMENT_PRICE_CENTS, MACHINE_PAYMENT_SESSION_DURATION_SEC } from '@/lib/commerce/machine-payments.mjs';
+import { issueMachineSessionGrant } from '@/lib/commerce/machine-session-grants.mjs';
 import { safeCommerceError, siteOrigin } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
@@ -81,12 +82,19 @@ export async function POST(request) {
     if (result.status === 402) return result.challenge;
 
     const receipt = receiptRef.value;
+    const grant = await issueMachineSessionGrant({ receipt });
     return result.withReceipt(Response.json({
       ok: true,
       status: 'paid',
       resource: {
         type: 'cognistration_machine_session',
-        durationSec: 60 * 60,
+        accessType: grant.accessType,
+        accessKey: grant.accessKey,
+        accessKeyHint: grant.accessKeyHint,
+        launchUrl: grant.accessUrl,
+        durationSec: MACHINE_PAYMENT_SESSION_DURATION_SEC,
+        startsAt: grant.startsAt,
+        expiresAt: grant.expiresAt,
         scope: PAYMENT_SCOPE,
         endpoint: `${siteOrigin()}/machine`,
         controls: ['state', 'carrierHz', 'beatHz', 'volume'],

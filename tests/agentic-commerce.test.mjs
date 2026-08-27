@@ -10,6 +10,12 @@ import {
   encryptWorkshopAccessKey,
   hashWorkshopAccessKey
 } from '../lib/commerce/workshop-access.mjs';
+import {
+  createMachineSessionGrant,
+  decryptMachineSessionGrant,
+  encryptMachineSessionGrant,
+  hashMachineSessionGrant
+} from '../lib/commerce/machine-session-grants.mjs';
 import { constantTimeEqual, normalizeEmail, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
 import { idempotencyKeyFrom, authorizeUcpRequest } from '../lib/commerce/ucp-security.mjs';
 
@@ -54,6 +60,14 @@ test('workshop bearer keys can be encrypted at rest and hashed for lookup', () =
   assert.equal(decryptWorkshopAccessKey(ciphertext, 'unit-secret'), key);
   assert.notEqual(hashWorkshopAccessKey(key, 'unit-secret'), hashWorkshopAccessKey(key, 'other-secret'));
   assert.notEqual(ciphertext, key);
+});
+
+test('machine payment grants are bound to a receipt and encrypted at rest', () => {
+  const key = createMachineSessionGrant(() => Buffer.alloc(32, 9));
+  const ciphertext = encryptMachineSessionGrant(key, 'unit-secret', () => Buffer.alloc(12, 4));
+  assert.equal(decryptMachineSessionGrant(ciphertext, 'unit-secret'), key);
+  assert.notEqual(hashMachineSessionGrant(key, 'unit-secret'), hashMachineSessionGrant(key, 'other-secret'));
+  assert.match(key, /^cgms_[A-Za-z0-9_-]+$/);
 });
 
 test('UCP request signatures are accepted only inside the replay window', async () => {

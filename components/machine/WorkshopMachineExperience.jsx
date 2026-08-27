@@ -5,14 +5,17 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle, Clock, WarningCircle } from '@phosphor-icons/react';
 import { ToneMachineDemo } from './ToneMachineDemo';
 
-function readWorkshopCredential() {
-  if (typeof window === 'undefined') return { accessKey: null, sessionId: null };
+function readMachineCredential() {
+  if (typeof window === 'undefined') return { accessKey: null, sessionId: null, accessType: null };
   const url = new URL(window.location.href);
   const sessionId = url.searchParams.get('workshop_session_id');
   const hash = window.location.hash.replace(/^#/, '');
   const hashParams = new URLSearchParams(hash);
-  const accessKey = hashParams.get('workshop') || url.searchParams.get('access_key');
-  return { accessKey, sessionId };
+  const machineAccessKey = hashParams.get('machine') || url.searchParams.get('machine_access_key');
+  const workshopAccessKey = hashParams.get('workshop') || url.searchParams.get('access_key');
+  return machineAccessKey
+    ? { accessKey: machineAccessKey, sessionId: null, accessType: 'machine_payment' }
+    : { accessKey: workshopAccessKey, sessionId, accessType: workshopAccessKey ? 'workshop' : null };
 }
 
 function clearWorkshopCredentialFromAddress() {
@@ -20,6 +23,7 @@ function clearWorkshopCredentialFromAddress() {
   const url = new URL(window.location.href);
   url.searchParams.delete('workshop_session_id');
   url.searchParams.delete('access_key');
+  url.searchParams.delete('machine_access_key');
   url.hash = '';
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
 }
@@ -35,6 +39,17 @@ async function validate(accessKey) {
   return data;
 }
 
+async function validateMachineAccess(accessKey) {
+  const response = await fetch('/api/machine/access/validate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ accessKey })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'That machine access grant is not active.');
+  return data;
+}
+
 export function WorkshopMachineExperience() {
   const [access, setAccess] = useState(null);
   const [status, setStatus] = useState('idle');
@@ -43,7 +58,7 @@ export function WorkshopMachineExperience() {
   useEffect(() => {
     let cancelled = false;
     const run = async () => {
-      const { accessKey: initialAccessKey, sessionId } = readWorkshopCredential();
+      const { accessKey: initialAccessKey, sessionId, accessType } = readMachineCredential();
       if (!initialAccessKey && !sessionId) return;
       setStatus('checking');
 
@@ -56,11 +71,13 @@ export function WorkshopMachineExperience() {
           accessKey = data.accessKey;
         }
 
-        const validated = await validate(accessKey);
+        const validated = accessType === 'machine_payment'
+          ? await validateMachineAccess(accessKey)
+          : await validate(accessKey);
         if (cancelled) return;
         setAccess(validated);
         setStatus('active');
-        setMessage('Your 24-hour workshop access is active.');
+        setMessage(accessType === 'machine_payment' ? 'Your paid machine session is active.' : 'Your 24-hour workshop access is active.');
         clearWorkshopCredentialFromAddress();
       } catch (error) {
         if (cancelled) return;

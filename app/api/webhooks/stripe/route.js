@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
 import { issueWorkshopAccessKey, revokeWorkshopAccessForPayment } from '@/lib/commerce/workshop-access.mjs';
+import { revokeMachineSessionGrantForPayment } from '@/lib/commerce/machine-session-grants.mjs';
 import { sendWorkshopAccessEmail } from '@/lib/email/workshop-access.mjs';
 import { hashValue, isMissingTableError } from '@/lib/commerce/commerce-utils.mjs';
 import {
@@ -135,6 +136,11 @@ async function markPaymentState(supabase, paymentIntentId, state) {
   if (state === 'refunded' || state === 'disputed') {
     await revokeWorkshopAccessForPayment({
       paymentIntentId,
+      supabase,
+      reason: state === 'refunded' ? 'payment_refunded' : 'payment_disputed'
+    });
+    await revokeMachineSessionGrantForPayment({
+      paymentReference: paymentIntentId,
       supabase,
       reason: state === 'refunded' ? 'payment_refunded' : 'payment_disputed'
     });
