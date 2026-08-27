@@ -14,7 +14,7 @@ export async function POST(request, { params }) {
   try {
     const rawBody = await request.text();
     const body = parseJsonBody(rawBody);
-    authorizeUcpRequest(request, rawBody);
+    authorizeUcpRequest(request, rawBody, { requireAgentProfile: true, meta: body?.meta || body?._meta || {} });
     const rawKey = idempotencyKeyFrom(request, body);
     if (!rawKey) throw commerceError('IDEMPOTENCY_REQUIRED', 'Idempotency-Key is required for checkout cancellation.', 400);
     const result = await cancelUcpCheckout({

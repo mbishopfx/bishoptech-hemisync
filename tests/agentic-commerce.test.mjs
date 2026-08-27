@@ -4,6 +4,8 @@ import test from 'node:test';
 import { autonomousPaymentEnabled, autonomousPaymentOptions, hashMandateCart, verifyAutonomousMandate } from '../lib/commerce/ap2.mjs';
 import { createWorkshopCheckout } from '../lib/commerce/workshop-checkout.mjs';
 import { createTonePackCheckout } from '../lib/commerce/agent-checkout.mjs';
+import { getTonePackPriceId } from '../lib/audio/tone-packs.db.mjs';
+import { WORKSHOP_PRICE_ID } from '../lib/billing/plans.js';
 import { buildUcpOrderEvent, createUcpDetachedSignature, notifyUcpOrderEvent, verifyUcpDetachedSignature } from '../lib/commerce/order-events.mjs';
 import {
   createMerchantAuthorization,
@@ -22,6 +24,7 @@ import {
   hashWorkshopAccessKey,
   WorkshopAccessSessionInputSchema
 } from '../lib/commerce/workshop-access.mjs';
+import { assertPaidTonePackSession } from '../lib/commerce/tone-packs.mjs';
 import { PUBLIC_TONE_PACK_CATALOG } from '../lib/agentic/pack-capability.js';
 import {
   createMachineSessionGrant,
@@ -31,7 +34,7 @@ import {
 } from '../lib/commerce/machine-session-grants.mjs';
 import { commerceError, constantTimeEqual, normalizeEmail, safeCommerceStatus, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
 import { assertUcpAgentProfile, idempotencyKeyFrom, authorizeUcpRequest, verifyRequestSignature } from '../lib/commerce/ucp-security.mjs';
-import { ucpProfile } from '../lib/commerce/ucp.mjs';
+import { publicUcpPayment, ucpProfile } from '../lib/commerce/ucp.mjs';
 
 function withEnv(values, callback) {
   const keys = Object.keys(values);
@@ -212,6 +215,30 @@ test('every published tone pack resolves to a server-priced hosted checkout', as
   assert.equal(created.length, PUBLIC_TONE_PACK_CATALOG.length);
 });
 
+test('paid tone-pack fulfillment binds the selected pack to its server price', () => {
+  const pack = PUBLIC_TONE_PACK_CATALOG[0];
+  const priceId = getTonePackPriceId(pack);
+  const session = {
+    id: 'cs_pack_verification_unit',
+    payment_status: 'paid',
+    metadata: { packSlug: pack.slug, priceId },
+    line_items: { data: [{ price: { id: priceId } }] }
+  };
+
+  assert.equal(assertPaidTonePackSession({ stripeSession: session, expectedSlug: pack.slug }).slug, pack.slug);
+  assert.throws(
+    () => assertPaidTonePackSession({
+      stripeSession: { ...session, metadata: { ...session.metadata, priceId: 'price_wrong' } },
+      expectedSlug: pack.slug
+    }),
+    (error) => error.code === 'PAYMENT_MISMATCH' && error.status === 403
+  );
+  assert.throws(
+    () => assertPaidTonePackSession({ stripeSession: session, expectedSlug: 'missing-pack' }),
+    (error) => error.code === 'PAYMENT_MISMATCH' && error.status === 403
+  );
+});
+
 test('paid workshop checkout resolves to one idempotent 24-hour bearer grant', async () => {
   let stored = null;
   let paid = true;
@@ -221,7 +248,7 @@ test('paid workshop checkout resolves to one idempotent 24-hour bearer grant', a
     payment_status: 'paid',
     customer_details: { email: 'listener@example.com' },
     payment_intent: 'pi_workshop_unit',
-    metadata: { productType: 'workshop-24h', priceId: 'price_workshop_unit' }
+    metadata: { productType: 'workshop-24h', priceId: WORKSHOP_PRICE_ID }
   };
   const stripe = {
     checkout: {
@@ -274,6 +301,24 @@ test('paid workshop checkout resolves to one idempotent 24-hour bearer grant', a
     getWorkshopAccessForSession({ sessionId: checkout.checkoutSessionId, origin: 'https://example.test', supabase, stripe, secret: 'unit-secret' }),
     (error) => error.code === 'PAYMENT_NOT_VERIFIED' && error.status === 403
   );
+});
+
+test('UCP payment resources expose handler descriptors without payment credentials', () => {
+  const payment = publicUcpPayment({
+    instruments: [{ type: 'card', handler_id: 'cognistration_hosted_checkout', provider: 'stripe', credential: 'secret-token', token: 'card-token', id: 'pm_secret' }],
+    handler_id: 'cognistration_hosted_checkout',
+    provider: 'stripe',
+    payment_intent_id: 'pi_private',
+    order: { id: 'order_public', permalink_url: 'https://cognistration.com/orders/order_public' }
+  });
+
+  assert.deepEqual(payment.instruments, [{ type: 'card', handler_id: 'cognistration_hosted_checkout', provider: 'stripe' }]);
+  assert.equal(payment.handler_id, 'cognistration_hosted_checkout');
+  assert.equal(payment.provider, 'stripe');
+  assert.equal(payment.payment_intent_id, undefined);
+  assert.equal(payment.instruments[0].credential, undefined);
+  assert.equal(payment.instruments[0].token, undefined);
+  assert.deepEqual(payment.order, { id: 'order_public', permalink_url: 'https://cognistration.com/orders/order_public' });
 });
 
 test('workshop bearer keys can be encrypted at rest and hashed for lookup', () => {

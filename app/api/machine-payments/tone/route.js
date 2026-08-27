@@ -126,7 +126,7 @@ export async function POST(request) {
     const receipt = receiptRef.value;
     const grant = await issueMachineSessionGrant({
       receipt,
-      scope: MACHINE_PAYMENT_TONE_SCOPE_PREFIX
+      scope: tonePaymentScope(input)
     });
 
     return result.withReceipt(NextResponse.json({
@@ -141,7 +141,7 @@ export async function POST(request) {
         durationSec: MACHINE_PAYMENT_SESSION_DURATION_SEC,
         startsAt: grant.startsAt,
         expiresAt: grant.expiresAt,
-        scope: MACHINE_PAYMENT_TONE_SCOPE_PREFIX,
+        scope: grant.scope || MACHINE_PAYMENT_TONE_SCOPE_PREFIX,
         endpoint: `${siteOrigin()}/machine`,
         controls: machine.controls,
         tone: machine.tone,

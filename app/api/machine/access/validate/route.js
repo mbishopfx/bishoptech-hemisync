@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { validateMachineSessionGrant } from '@/lib/commerce/machine-session-grants.mjs';
+import { MACHINE_PAYMENT_SESSION_SCOPE, MACHINE_PAYMENT_TONE_SCOPE_PREFIX } from '@/lib/commerce/machine-payments.mjs';
 import { safeCommerceError, safeCommerceStatus } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
@@ -12,7 +13,10 @@ export async function POST(req) {
   }
 
   try {
-    const result = await validateMachineSessionGrant({ input: await req.json() });
+    const result = await validateMachineSessionGrant({
+      input: await req.json(),
+      expectedScope: [MACHINE_PAYMENT_SESSION_SCOPE, `${MACHINE_PAYMENT_TONE_SCOPE_PREFIX}:*`]
+    });
     return NextResponse.json({ ok: true, ...result }, {
       status: result.valid ? 200 : 403,
       headers: { 'cache-control': 'no-store' }

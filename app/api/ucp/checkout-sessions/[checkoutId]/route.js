@@ -25,7 +25,7 @@ export async function PUT(request, { params }) {
   try {
     const rawBody = await request.text();
     const body = parseJsonBody(rawBody);
-    authorizeUcpRequest(request, rawBody);
+    authorizeUcpRequest(request, rawBody, { requireAgentProfile: true, meta: body?.meta || body?._meta || {} });
     const idempotencyKey = idempotencyKeyFrom(request, body);
     if (idempotencyKey) validateIdempotencyKey(idempotencyKey);
     return NextResponse.json(await updateUcpCheckout({ id: params.checkoutId, body, origin: siteOrigin() }), { headers: { 'cache-control': 'no-store' } });

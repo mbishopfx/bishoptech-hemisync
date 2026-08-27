@@ -70,7 +70,7 @@ export async function POST(request) {
         durationSec: MACHINE_PAYMENT_SESSION_DURATION_SEC,
         startsAt: grant.startsAt,
         expiresAt: grant.expiresAt,
-        scope: MACHINE_PAYMENT_SESSION_SCOPE,
+        scope: grant.scope || MACHINE_PAYMENT_SESSION_SCOPE,
         endpoint: `${siteOrigin()}/machine`,
         controls: ['state', 'carrierHz', 'beatHz', 'volume'],
         audioStartsOnlyAfterExplicitUserAction: true

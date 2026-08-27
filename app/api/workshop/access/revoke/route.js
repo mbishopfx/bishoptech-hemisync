@@ -12,6 +12,12 @@ export async function POST(req) {
   }
   try {
     const body = await req.json();
+    if (body?.confirmed !== true) {
+      return NextResponse.json({ ok: false, error: 'Explicit confirmation is required before workshop access is revoked.', code: 'CONFIRMATION_REQUIRED', retryable: false }, {
+        status: 400,
+        headers: { 'cache-control': 'no-store' }
+      });
+    }
     const result = await revokeWorkshopAccess({ input: { accessKey: body?.accessKey }, reason: body?.reason });
     return NextResponse.json({ ok: true, ...result }, { headers: { 'cache-control': 'no-store' } });
   } catch (error) {
