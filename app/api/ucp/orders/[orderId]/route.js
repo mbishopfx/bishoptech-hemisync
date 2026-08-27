@@ -31,6 +31,7 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       ucp: { version: UCP_VERSION },
       id: order.id,
+      permalink_url: `${siteOrigin()}/api/ucp/orders/${encodeURIComponent(order.id)}`,
       checkout_id: order.checkout_id,
       status: order.status,
       currency: String(order.currency || 'usd').toUpperCase(),

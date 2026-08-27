@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
+import { fulfillHostedUcpCheckout } from '@/lib/commerce/ucp.mjs';
 import { issueWorkshopAccessKey, revokeWorkshopAccessForPayment } from '@/lib/commerce/workshop-access.mjs';
 import { revokeMachineSessionGrantForPayment } from '@/lib/commerce/machine-session-grants.mjs';
 import { sendWorkshopAccessEmail } from '@/lib/email/workshop-access.mjs';
 import { hashValue, isMissingTableError } from '@/lib/commerce/commerce-utils.mjs';
+import { notifyUcpOrderEvent } from '@/lib/commerce/order-events.mjs';
 import {
   checkoutGrantsAccess,
   lifetimeCheckoutGrantsAccess,
@@ -119,11 +121,30 @@ async function readOrderByPaymentIntent(supabase, paymentIntentId) {
   return data;
 }
 
+async function readCheckoutForOrder(supabase, checkoutId) {
+  if (!checkoutId) return null;
+  const { data, error } = await supabase
+    .from('commerce_checkouts')
+    .select('id,status')
+    .eq('id', checkoutId)
+    .maybeSingle();
+  if (error || !data) return null;
+  return data;
+}
+
 async function markPaymentState(supabase, paymentIntentId, state) {
   if (!paymentIntentId) return;
   const order = await readOrderByPaymentIntent(supabase, paymentIntentId);
+  let updatedOrder = order;
   if (order) {
-    await supabase.from('commerce_orders').update({ status: state, updated_at: new Date().toISOString() }).eq('id', order.id);
+    const { data, error } = await supabase
+      .from('commerce_orders')
+      .update({ status: state, updated_at: new Date().toISOString() })
+      .eq('id', order.id)
+      .select('*')
+      .single();
+    if (error) throw error;
+    updatedOrder = data;
   }
 
   const purchaseUpdate = { status: state, updated_at: new Date().toISOString() };
@@ -144,6 +165,19 @@ async function markPaymentState(supabase, paymentIntentId, state) {
       supabase,
       reason: state === 'refunded' ? 'payment_refunded' : 'payment_disputed'
     });
+  }
+
+  if (updatedOrder) {
+    try {
+      await notifyUcpOrderEvent({
+        event: 'order.updated',
+        order: updatedOrder,
+        checkout: await readCheckoutForOrder(supabase, updatedOrder.checkout_id)
+      });
+    } catch {
+      // Order state and entitlement revocation are durable locally. A
+      // downstream UCP notification can be retried from the provider event.
+    }
   }
 }
 
@@ -190,7 +224,8 @@ export async function POST(req) {
         const planId = session.metadata?.planId;
 
         if (session.metadata?.productType === 'tone-pack' || session.metadata?.packSlug) {
-          await fulfillTonePackPurchase({ stripeSession: session, supabase });
+          const reconciled = await fulfillHostedUcpCheckout({ stripeSession: session, supabase });
+          if (!reconciled) await fulfillTonePackPurchase({ stripeSession: session, supabase });
           await markAgentCheckout(supabase, session.id, 'paid');
           break;
         }

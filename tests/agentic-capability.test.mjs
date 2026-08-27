@@ -37,6 +37,7 @@ import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
 import { machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
+import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
 
 test('the public tone catalog is bounded and contains only stable public fields', () => {
   assert.ok(PUBLIC_TONE_CATALOG.length >= 10);
@@ -257,6 +258,41 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_preview_tone_pack' && tool.consent === 'explicit_confirmation_required'));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_search_tone_packs' && tool.annotations.readOnlyHint));
   assert.ok(MEMBER_WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_member_generate_tone' && tool.consent === 'explicit_confirmation_required'));
+});
+
+test('UCP MCP binding exposes the five standard checkout tools with retry-safe completion inputs', () => {
+  assert.deepEqual(UCP_MCP_TOOLS.map((tool) => tool.name), [
+    'create_checkout',
+    'get_checkout',
+    'update_checkout',
+    'complete_checkout',
+    'cancel_checkout'
+  ]);
+  const complete = UCP_MCP_TOOLS.find((tool) => tool.name === 'complete_checkout');
+  assert.deepEqual(complete.inputSchema.properties.meta.required, ['ucp-agent', 'idempotency-key']);
+  assert.deepEqual(complete.inputSchema.properties.checkout.required, ['payment']);
+  assert.equal(complete.inputSchema.properties.checkout.properties.line_items, undefined);
+  const cancel = UCP_MCP_TOOLS.find((tool) => tool.name === 'cancel_checkout');
+  assert.deepEqual(cancel.inputSchema.properties.meta.required, ['ucp-agent', 'idempotency-key']);
+});
+
+test('UCP MCP transport keeps standard JSON-RPC dispatch alongside the legacy operation adapter', async () => {
+  const route = await readFile(new URL('../app/api/ucp/mcp/route.js', import.meta.url), 'utf8');
+  assert.match(route, /body\.method === 'tools\/call'/);
+  assert.match(route, /body\.method === 'tools\/list'/);
+  assert.match(route, /body\.method\.startsWith\('notifications\/'\)/);
+  assert.match(route, /assertToolArguments\(params\.name, args\)/);
+  assert.match(route, /structuredContent/);
+});
+
+test('UCP order responses expose a permalink and a durable digital fulfillment fallback', async () => {
+  const orderRoute = await readFile(new URL('../app/api/ucp/orders/[orderId]/route.js', import.meta.url), 'utf8');
+  const fulfillmentRoute = await readFile(new URL('../app/api/ucp/orders/[orderId]/fulfillment/route.js', import.meta.url), 'utf8');
+  const commerce = await readFile(new URL('../lib/commerce/ucp.mjs', import.meta.url), 'utf8');
+  assert.match(orderRoute, /permalink_url/);
+  assert.match(fulfillmentRoute, /download_url/);
+  assert.match(fulfillmentRoute, /FULFILLMENT_NOT_READY/);
+  assert.match(commerce, /ucpOrderFulfillmentUrl/);
 });
 
 test('OpenAPI fallback is derived from the same public read registry', () => {

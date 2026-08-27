@@ -17,7 +17,7 @@ import {
   hashMachineSessionGrant
 } from '../lib/commerce/machine-session-grants.mjs';
 import { constantTimeEqual, normalizeEmail, validateIdempotencyKey } from '../lib/commerce/commerce-utils.mjs';
-import { idempotencyKeyFrom, authorizeUcpRequest } from '../lib/commerce/ucp-security.mjs';
+import { assertUcpAgentProfile, idempotencyKeyFrom, authorizeUcpRequest, verifyRequestSignature } from '../lib/commerce/ucp-security.mjs';
 
 function withEnv(values, callback) {
   const keys = Object.keys(values);
@@ -81,12 +81,24 @@ test('UCP request signatures are accepted only inside the replay window', async 
     });
     assert.deepEqual(authorizeUcpRequest(request, rawBody), { authorized: true, tokenRequired: false, signatureRequired: true });
   });
+  assert.equal(verifyRequestSignature({ rawBody: '', timestamp, provided: crypto.createHmac('sha256', 'ucp-unit-secret').update(`${timestamp}.`).digest('base64'), secret: 'ucp-unit-secret' }), true);
 });
 
 test('UCP idempotency metadata is discoverable without exposing credentials', () => {
   const request = new Request('https://example.test', { headers: { 'Idempotency-Key': 'header-1234' } });
   assert.equal(idempotencyKeyFrom(request, {}), 'header-1234');
   assert.equal(idempotencyKeyFrom(new Request('https://example.test'), { meta: { 'idempotency-key': 'meta-1234' } }), 'meta-1234');
+  assert.equal(idempotencyKeyFrom(new Request('https://example.test'), { arguments: { meta: { 'idempotency-key': 'nested-1234' } } }), 'nested-1234');
+});
+
+test('UCP agent identity can be supplied in metadata or the standard profile header', () => {
+  const profile = 'https://platform.example/profiles/shopping-agent.json';
+  assert.deepEqual(assertUcpAgentProfile({ meta: { 'ucp-agent': { profile } }, request: new Request('https://example.test') }), { profile });
+  assert.deepEqual(assertUcpAgentProfile({ request: new Request('https://example.test', { headers: { 'UCP-Agent': `profile="${profile}"` } }) }), { profile });
+  assert.throws(
+    () => assertUcpAgentProfile({ meta: { 'ucp-agent': { profile } }, request: new Request('https://example.test', { headers: { 'UCP-Agent': 'profile="https://other.example/agent.json"' } }) }),
+    (error) => error.code === 'UCP_AGENT_MISMATCH'
+  );
 });
 
 test('AP2 remains provider-gated and binds its future mandate to a cart hash', async () => {
