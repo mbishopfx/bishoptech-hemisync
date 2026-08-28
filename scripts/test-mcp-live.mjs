@@ -73,6 +73,13 @@ async function main() {
   const interaction = JSON.parse(interactionText);
   assert(interaction.safetyRouting?.route === '/health-warning', 'safety routing resource is missing');
 
+  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v1.html' }, 'ui://cognistration/machine-generator/v1.html');
+  const machineWidget = machineWidgetResult.contents?.[0];
+  assert(machineWidget?.mimeType === 'text/html;profile=mcp-app', 'machine widget MIME type is unexpected');
+  assert(/class="frequency-stage"/.test(machineWidget.text || ''), 'machine widget frequency-wave stage is missing');
+  assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
+  assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
+
   const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
   const accountWidget = accountWidgetResult.contents?.[0];
   assert(accountWidget?.mimeType === 'text/html;profile=mcp-app', 'account widget MIME type is unexpected');
@@ -130,6 +137,7 @@ async function main() {
     skills: skills.map((skill) => skill.frontmatter.name),
     fetchedSkill: skillResult.skill.frontmatter.name,
     safetyRoute: interaction.safetyRouting.route,
+    machineWidget: 'frequency-wave',
     clarificationChoices: clarifyResult.choices.length,
     recipeVersion: recipeResult.recipe.recipeVersion,
     inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri },

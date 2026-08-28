@@ -135,6 +135,10 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /visuals\/aurora-current\.html\?obs=1/);
   assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/tool-result/);
   assert.match(MACHINE_WIDGET_HTML, /window\.openai\.callTool/);
+  assert.match(MACHINE_WIDGET_HTML, /class="frequency-stage"/);
+  assert.match(MACHINE_WIDGET_HTML, /getEntrainmentPath/);
+  assert.match(MACHINE_WIDGET_HTML, /id="beat-wave-path"/);
+  assert.doesNotMatch(MACHINE_WIDGET_HTML, /repeating-linear-gradient/);
 });
 
 test('tone-pack catalog returns playable public previews without private commerce fields', () => {
