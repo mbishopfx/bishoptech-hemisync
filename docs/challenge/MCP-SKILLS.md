@@ -177,3 +177,27 @@ payment client should:
 The first request is safe to record without a charge; a successful paid retry
 is an optional, real financial action and should be performed only when the
 user intends to approve the $0.50 purchase.
+
+### Optional Stripe Link MPP client
+
+If your payment provider account supports Stripe Machine Payments, the Link
+CLI can perform the authorized retry without exposing a payment credential to
+the MCP server:
+
+```bash
+npm install -g @stripe/link-cli
+link-cli auth status
+# If needed, authenticate interactively:
+link-cli auth login
+
+link-cli mpp pay https://cognistration.com/api/machine-payments/tone \
+  --context "I approve one fixed fifty-cent Cognistration custom tone preview for the selected public tone. This authorization is limited to this one request and its verified receipt." \
+  -X POST \
+  -H 'content-type: application/json' \
+  -d '{"toneId":"homepage-gamma-clarity"}'
+```
+
+The client handles the 402 challenge, creates a one-time provider token, and
+retries the same bounded request. Run this only when you intend to approve the
+live $0.50 charge; never paste a token or credential into an MCP argument,
+browser prompt, issue, or video recording.
