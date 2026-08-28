@@ -99,13 +99,13 @@ export function HomepageTonePacksSection() {
           <a href="/packs" className="shrink-0 text-sm font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-8 transition hover:text-[#1d302c]">Browse the full library</a>
         </div>
 
-        <div className="mt-14 -mx-5 overflow-x-auto px-5 pb-6 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12" role="list" aria-label="Tone packs">
+        <div className="mt-14 -mx-5 overflow-x-auto px-5 pb-8 pt-8 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12" role="list" aria-label="Tone packs">
           <div className="flex w-max gap-5">
             {packs.map((pack, index) => {
               const isPlaying = activePreview?.packSlug === pack.slug && audioRef.current && !audioRef.current.paused;
               const trackCount = pack.trackCount || pack.tracks?.length || 0;
               return (
-                <motion.article key={pack.slug} role="listitem" whileHover={{ y: -5 }} transition={{ duration: 0.2 }} className="flex w-[min(82vw,360px)] flex-col rounded-[1.75rem] border border-[#c7d2cb] bg-white/70 p-3 shadow-[0_14px_36px_rgba(45,65,59,0.07)] sm:w-[360px]">
+                <motion.article key={pack.slug} role="listitem" data-cursor-surface whileHover={{ y: -7, scale: 1.01 }} whileTap={{ scale: 0.995 }} transition={{ type: 'spring', stiffness: 380, damping: 28, mass: 0.8 }} className="flex w-[min(82vw,360px)] flex-col rounded-[1.75rem] border border-[#c7d2cb] bg-white/60 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_18px_42px_rgba(45,65,59,0.08)] backdrop-blur-xl sm:w-[360px]">
                   <div className={`relative aspect-square overflow-hidden rounded-[1.25rem] bg-gradient-to-br ${COVER_STYLES[index % COVER_STYLES.length]} p-6`}>
                     <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 22% 22%, rgba(255,255,255,.85) 0 1px, transparent 1.5px), radial-gradient(circle at 75% 66%, rgba(255,255,255,.55) 0 1px, transparent 1.5px)', backgroundSize: '23px 23px, 31px 31px' }} />
                     <div className="relative flex h-full flex-col justify-between text-white">

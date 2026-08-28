@@ -39,7 +39,7 @@ export function Omnibar({ onGenerate, isLoading, agentMessage, theme = 'dark' })
         transition={{ duration: 0.55, ease: 'easeOut' }}
         className="relative"
       >
-        <div className={`omnibar-glass-shell relative flex items-center overflow-hidden rounded-[1.35rem] p-1 transition-colors ${isLight ? 'is-light' : ''} ${isFocused ? 'is-focused' : ''}`}>
+        <div data-cursor-surface className={`omnibar-glass-shell relative flex items-center overflow-hidden rounded-[1.35rem] p-1 transition-colors ${isLight ? 'is-light' : ''} ${isFocused ? 'is-focused' : ''}`}>
           <input
             type="text"
             name="intention"

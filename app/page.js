@@ -112,7 +112,7 @@ export default function LandingPage() {
               <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/45"><span>Focus</span><span>Rest</span><span>Creative space</span><span>Intentional reset</span></div>
             </div>
 
-            <div id="session" className="hero-session-shell w-full max-w-xl justify-self-end rounded-[2rem] p-5 sm:p-7">
+            <div id="session" data-cursor-surface className="hero-session-shell w-full max-w-xl justify-self-end rounded-[2rem] p-5 sm:p-7">
               <Omnibar onGenerate={handleGenerate} isLoading={isLoading} agentMessage={agentMessage} />
               {agentTone && (
                 <div className="mt-8 border-t border-white/10 pt-8">

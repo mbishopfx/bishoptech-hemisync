@@ -3,6 +3,7 @@ import { DM_Mono, Manrope } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { buildAbsoluteUrl } from '@/lib/seo';
+import { CursorLight } from '@/components/visuals/CursorLight';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
 const siteName = 'Cognistration';
@@ -131,6 +132,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <CursorLight />
           <div className="flex min-h-[100dvh]">
             <main className="min-w-0 flex-1 flex flex-col min-h-[100dvh] relative z-0">
               {children}

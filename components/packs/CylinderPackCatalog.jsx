@@ -122,7 +122,7 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
       <div
         ref={railRef}
         onScroll={updateActiveCard}
-        className="relative mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-5 pb-7 pt-2 [scroll-padding-inline:1.25rem] [-webkit-overflow-scrolling:touch] md:mt-7 md:gap-6 md:px-[max(2.5rem,calc((100vw-1400px)/2+2.5rem))] md:[scroll-padding-inline:max(2.5rem,calc((100vw-1400px)/2+2.5rem))]"
+        className="relative mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-5 pb-9 pt-8 [scroll-padding-inline:1.25rem] [-webkit-overflow-scrolling:touch] md:mt-7 md:gap-6 md:px-[max(2.5rem,calc((100vw-1400px)/2+2.5rem))] md:[scroll-padding-inline:max(2.5rem,calc((100vw-1400px)/2+2.5rem))]"
         aria-label="Tone pack catalog"
       >
         {packs.map((pack, index) => {
@@ -135,10 +135,11 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
           return (
             <article
               key={pack.slug}
+              data-cursor-surface
               ref={(element) => {
                 cardRefs.current[index] = element;
               }}
-              className={`relative flex min-h-[35rem] w-[min(82vw,360px)] shrink-0 snap-center flex-col rounded-[1.75rem] border bg-white/70 p-3 shadow-[0_14px_36px_rgba(45,65,59,0.07)] transition-[border-color,box-shadow,transform] duration-300 sm:w-[360px] ${isSelected ? 'border-[#6b9587] shadow-[0_18px_48px_rgba(45,65,59,0.14)]' : 'border-[#c7d2cb]'}`}
+              className={`relative flex min-h-[35rem] w-[min(82vw,360px)] shrink-0 snap-center flex-col rounded-[1.75rem] border bg-white/60 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_18px_42px_rgba(45,65,59,0.08)] backdrop-blur-xl transition-[border-color,box-shadow,transform] duration-[240ms] sm:w-[360px] ${isSelected ? 'border-[#6b9587] shadow-[inset_0_1px_0_rgba(255,255,255,0.94),0_24px_68px_rgba(45,65,59,0.16)]' : 'border-[#c7d2cb]'}`}
             >
               <div className={`relative aspect-square overflow-hidden rounded-[1.25rem] bg-gradient-to-br ${COVER_STYLES[index % COVER_STYLES.length]} p-6`}>
                 <div

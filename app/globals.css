@@ -244,6 +244,126 @@ main section[id] {
   mix-blend-mode: overlay;
 }
 
+/* Cursor light: a quiet pointer-reactive flare with a WebGPU enhancement and CSS fallback. */
+.cursor-light-root {
+  --cursor-x: 50vw;
+  --cursor-y: 50vh;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cursor-light-root[data-active='true'] {
+  opacity: 1;
+}
+
+.cursor-light-fallback,
+.cursor-light-haze,
+.cursor-light-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cursor-light-fallback {
+  background:
+    radial-gradient(220px circle at var(--cursor-x) var(--cursor-y), rgba(182, 221, 204, 0.12), transparent 68%),
+    radial-gradient(620px circle at var(--cursor-x) var(--cursor-y), rgba(245, 162, 119, 0.045), transparent 72%);
+  opacity: 0.8;
+}
+
+.cursor-light-haze {
+  inset: auto;
+  left: var(--cursor-x);
+  top: var(--cursor-y);
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(182, 221, 204, 0.12), rgba(182, 221, 204, 0) 68%);
+  filter: blur(16px);
+  transform: translate(-50%, -50%);
+  opacity: 0.72;
+}
+
+.cursor-light-canvas {
+  opacity: 0;
+}
+
+.cursor-light-root[data-gpu-active='true'] .cursor-light-canvas {
+  opacity: 0.78;
+}
+
+.cursor-light-root[data-gpu-active='true'] .cursor-light-fallback {
+  opacity: 0.38;
+}
+
+[data-cursor-surface] {
+  --surface-pointer-x: 50%;
+  --surface-pointer-y: 50%;
+  --surface-pointer-alpha: 0;
+  position: relative;
+  isolation: isolate;
+  transition:
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-cursor-surface]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(190px circle at var(--surface-pointer-x) var(--surface-pointer-y), rgba(215, 234, 223, 0.62), transparent 72%);
+  content: '';
+  opacity: var(--surface-pointer-alpha);
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-cursor-surface]::after {
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(260px circle at var(--surface-pointer-x) var(--surface-pointer-y), rgba(182, 221, 204, 0.12), transparent 70%);
+  content: '';
+  opacity: calc(var(--surface-pointer-alpha) * 0.9);
+  pointer-events: none;
+  transition: opacity 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-cursor-surface] > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-light-root {
+    display: none;
+  }
+
+  [data-cursor-surface] {
+    transition: none;
+  }
+
+  [data-cursor-surface]::before,
+  [data-cursor-surface]::after {
+    opacity: 0 !important;
+    transition: none;
+  }
+}
+
 /* Liquid Glass CSS System */
 .liquid-glass {
   background: rgba(255, 255, 255, 0.01);
