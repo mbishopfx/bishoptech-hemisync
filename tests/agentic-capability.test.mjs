@@ -599,6 +599,7 @@ test('OpenAPI fallback is derived from the same public registry', () => {
 test('the challenge cockpit is discoverable and keeps the human preview boundary visible', async () => {
   const cockpit = await readFile(new URL('../components/challenge/TryCockpit.jsx', import.meta.url), 'utf8');
   const page = await readFile(new URL('../app/try/page.js', import.meta.url), 'utf8');
+  const homepage = await readFile(new URL('../app/page.js', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
   const sitemap = await readFile(new URL('../app/sitemap.js', import.meta.url), 'utf8');
   const robots = await readFile(new URL('../app/robots.js', import.meta.url), 'utf8');
@@ -610,7 +611,10 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /data-testid="try-step-payment"/);
   assert.match(cockpit, /No charge was submitted by this page/);
   assert.match(cockpit, /Start preview is still a human click/);
-  assert.match(header, /href="\/try"/);
+  assert.doesNotMatch(header, /href="\/try"/);
+  assert.doesNotMatch(header, />Agent demo</);
+  assert.match(homepage, /href="\/try"/);
+  assert.match(homepage, /Run the agent demo/);
   assert.match(sitemap, /'\/try'/);
   assert.match(robots, /'\/try'/);
 });
