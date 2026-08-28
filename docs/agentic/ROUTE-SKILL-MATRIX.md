@@ -1,0 +1,89 @@
+# Cognistration agent route and skill matrix
+
+Last updated: 2026-08-26
+
+This is the implementation map for the public Cognistration agent surface. Each adapter points to the smallest route that can truthfully complete the user's intent. Render tools remain read-only until a person explicitly submits the in-platform form; local browser actions remain confirmation-aware.
+
+## User intent map
+
+| User request | First route | Follow-up | Completion proof |
+|---|---|---|---|
+| Generate a tone for a diary session | `recommend_tone` or `cognistration_generate_tone` | Apply returned approved tone to the visible machine | Approved catalog ID and Theta/Alpha direction |
+| Clear my mind and relax | `recommend_tone` or `cognistration_generate_tone` | Offer a Delta/Theta preview | Approved catalog ID; no treatment claim |
+| Test a relaxation tone pack | `search_public_tone_packs` or `cognistration_search_tone_packs` | `get_public_tone_pack`, then confirm `cognistration_preview_tone_pack` | Published slug, listed preview track, explicit confirmation |
+| Gamma with a 246 Hz carrier | `cognistration_set_session_controls` | `cognistration_get_session_state` | State `gamma`, carrier `246` |
+| Make the carrier smaller | `cognistration_get_session_state` | Lower absolute value with `cognistration_set_session_controls` | New carrier is lower and remains within 100–400 Hz |
+| Free trial account with an email | `get_account_options` | `open_account_signup` | In-platform user-controlled form; credentials never enter MCP and checkout is separate |
+| Finished interaction feedback | `open_feedback` | In-platform rating card | Explicit user submission persists only a sanitized anonymous record; no history |
+| Safety, terms, privacy, or AI questions | `get_policy_info` | Return canonical URL | Topic, source URL, concise summary |
+| Download the iPhone app | `get_ios_app_offer` | Open the returned App Store URL | Canonical listing, current $2.99 one-time price, compatibility, on-device explanation for the lower cost, and no payment action |
+| Open the machine inside ChatGPT | `open_machine_generator` | Use the widget to match an intention, tune controls, browse packs, or request a larger view | Versioned UI resource renders; audio remains off until explicit play |
+
+## Public surface
+
+### MCP tools
+
+- `get_agentic_capabilities`
+- `search_public_tones`
+- `get_public_tone`
+- `recommend_tone`
+- `search_public_tone_packs`
+- `get_public_tone_pack`
+- `get_policy_info`
+- `get_account_options`
+- `open_account_signup` — render the in-platform signup form without receiving credentials in MCP
+- `get_ios_app_offer` — return the public iPhone App Store listing, one-time offer details, and the on-device explanation for the lower cost
+- `open_machine_generator` — render the interactive tone machine in an MCP Apps-compatible host
+- `open_feedback` — render one optional done-state feedback card without returning history
+
+### Homepage WebMCP tools
+
+- `cognistration_get_session_state`
+- `cognistration_set_session_controls`
+- `cognistration_generate_tone`
+- `cognistration_search_tone_packs`
+- `cognistration_preview_tone_pack`
+- `cognistration_get_policy_info`
+- `cognistration_get_account_options`
+- `cognistration_begin_preview`
+- `cognistration_open_account_signup`
+
+### REST fallbacks
+
+- `POST /api/agent` — intention-to-tone matching with optional AI and deterministic catalog fallback.
+- `GET /api/packs?agent=1` — safe pack search; `slug` reads one pack.
+- `GET /api/agent/policy?topic=safety` — canonical policy summary and URL.
+- `GET /api/agent/account` — public preview, workspace, and signup boundaries.
+- `GET /api/capabilities` and `GET /openapi.json` — discovery and compatibility.
+
+### ChatGPT app surface
+
+- Resource: `ui://cognistration/machine-generator/v1.html`
+- MIME type: `text/html;profile=mcp-app`
+- Host calls: portable `tools/call` for recommendation and pack search; optional `window.openai.requestDisplayMode` for a larger view
+- Visual: the supplied Aurora Current artwork is loaded from `/visuals/aurora-current.html`; the widget has a CSS fallback if a host blocks embedded frames
+
+## Installed skills
+
+The server advertises the official `io.modelcontextprotocol/skills` extension and serves these static `SKILL.md` resources:
+
+1. `cognistration-agentic-routing` — adapter choice, schemas, safety, confirmation, and retry rules.
+2. `cognistration-tone-orchestration` — diary, relaxation, pack, gamma/carrier, and relative-control workflows.
+3. `cognistration-account-safety` — pricing, policy, data minimization, safety, and user-controlled signup.
+4. `cognistration-agent-evaluation` — golden prompts, failure matrix, release oracle, and production proof.
+5. `cognistration-feedback` — optional done-state feedback with explicit submission and no history.
+
+Skills are operating guidance, not authorization. Their resources are hashed and addressable through `skills/list`, `skills/get`, and `resources/read`; changing a skill requires a fresh discovery/import by the consuming host.
+
+## Failure and retry design
+
+- Validation failures return a bounded `needs_input` or protocol `-32602`; repair the input instead of repeating it.
+- Provider or network failure falls back to the deterministic approved tone matcher, or returns `retryable: true` for a later safe retry.
+- Unknown pack/tone IDs return `NOT_FOUND` and a catalog-search next action.
+- Missing audio confirmation returns `CONFIRMATION_REQUIRED` and never starts playback.
+- Preview limits render the user-controlled signup widget; cookies are never reset to bypass access rules.
+- Credentials, payment, private records, service keys, and arbitrary writes are not accepted as public MCP arguments. Signup and feedback writes occur only after an explicit user submission in their first-party widgets.
+
+## Challenge fit
+
+The differentiator is an agent-operated but human-visible orchestrator: language chooses a bounded starting direction, the same state machine exposes editable carrier/rhythm/volume controls, and audio only begins after a clear confirmation. The ChatGPT app surface makes that machine a portable interactive artifact instead of a text-only tool result. The normal website remains complete when either app bridge is unavailable.

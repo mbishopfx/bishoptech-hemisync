@@ -1,6 +1,6 @@
 # Cognistration MCP skills and quickstart
 
-Cognistration publishes four reusable operating skills through the public MCP
+Cognistration publishes five reusable operating skills through the public MCP
 endpoint. They are guidance for an agent, not executable permissions: a skill
 never grants access to accounts, private sessions, payment credentials, or
 unrestricted writes.
@@ -16,7 +16,7 @@ unrestricted writes.
 - Current MCP transport: Streamable HTTP with JSON responses over POST
 - Current protocol metadata: `MCP-Protocol-Version: 2026-07-28`
 
-The four public skill URIs are:
+The five public skill URIs are:
 
 | Skill | Use it for |
 | --- | --- |
@@ -24,6 +24,7 @@ The four public skill URIs are:
 | `skill://cognistration/cognistration-tone-orchestration/SKILL.md` | Turning a short intention into an approved tone, pack search, bounded controls, calibration, comparison, a cue, or a timed ritual plan. |
 | `skill://cognistration/cognistration-account-safety/SKILL.md` | Grounded pricing, account, policy, privacy, AI-disclosure, and audio-safety responses. |
 | `skill://cognistration/cognistration-agent-evaluation/SKILL.md` | Evaluating golden prompts, safe failure, authorization, idempotency, native WebMCP, modern MCP, and production proof. |
+| `skill://cognistration/cognistration-feedback/SKILL.md` | Opening one optional in-platform closing feedback card after a listener signals they are done. |
 
 ## How an agent uses the skills
 
@@ -55,7 +56,12 @@ names. `prepare_session_recipe` is available on both surfaces.
 - Audio is a local side effect. It requires explicit confirmation and remains
   paused until the person starts it.
 - Account creation, private session creation, render starts, and payment
-  credentials remain user-controlled or authenticated server operations.
+  credentials remain user-controlled or authenticated server operations. Use
+  `open_account_signup` to keep account entry inside the MCP app surface; the
+  tool never receives credentials and never submits checkout.
+- When a listener says they are done, offer `open_feedback` once. The
+  in-platform card requires an explicit thumbs-up/down submission, stores only
+  a sanitized anonymous record, and exposes no history or note to the agent.
 - A recipe contains only state, carrier, beat, volume, duration, and a safe
   intention label. It never contains diary text or account data.
 - Payment options are discoverable through MCP, but a payment credential is not
@@ -153,7 +159,13 @@ For a human/browser test, open `/try` and follow this sequence:
 5. Start audio only through the explicit preview control.
 6. Submit a synthetic medical-shaped request and confirm the `/health-warning`
    handoff.
-7. For the optional payment demo, call `get_machine_payment_options`, request
+7. Ask to create an account and confirm `open_account_signup` renders the
+   signup form in-platform. Use synthetic credentials only if you intentionally
+   test the form; do not record them.
+8. Say “I’m done” and confirm the agent offers `open_feedback`; submit a
+   synthetic thumbs-up or thumbs-down only when you want to verify the live
+   storage path.
+9. For the optional payment demo, call `get_machine_payment_options`, request
    one fixed $0.50 tone preview through `/api/machine-payments/tone`, review the
    402 challenge, and let the authorized payment client retry. Never paste a
    payment credential into a browser prompt or MCP tool argument.

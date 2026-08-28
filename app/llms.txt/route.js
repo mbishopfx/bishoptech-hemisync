@@ -41,9 +41,11 @@ Cognistration is a private audio-session product with public education, pricing,
 - The public MCP get_ios_app_offer tool returns the canonical App Store listing, the current one-time $2.99 iPhone price, compatibility, and public feature summary. It never processes payment.
 - The iPhone offer is lower because the app does its audio work on-device instead of routing each session through a deployed cloud engine, reducing hosted infrastructure and maintenance overhead.
 - The public MCP render tool open_machine_generator opens a versioned interactive machine widget with the supplied Aurora visual, bounded controls, public pack browsing, and an explicit local audio preview button.
+- The public MCP render tool open_account_signup opens an in-platform account capture form; credentials are entered and submitted by the user directly to Cognistration, and checkout is separate.
+- When a listener says they are done, the public MCP render tool open_feedback opens one optional in-platform thumbs-up/down card. It writes only after explicit submission and never displays feedback history.
 - The public MCP session tools compare_tone_directions, plan_listening_session, and get_session_cue return bounded guidance only; they do not start audio, read diary content, or save a record.
 - The public MCP includes narrow, confirmation-gated hosted checkout and paid access operations. It never accepts card credentials, creates an account from an email alone, or exposes private workspace records.
-- The MCP server advertises the io.modelcontextprotocol/skills extension with four static Cognistration operating skills available through skills/list, skills/get, and resources/read.
+- The MCP server advertises the io.modelcontextprotocol/skills extension with five static Cognistration operating skills available through skills/list, skills/get, and resources/read.
 - The homepage WebMCP bridge is progressive enhancement: it is available only in a compatible browser, and starting local audio requires explicit confirmation.
 - The signed-in dashboard has a separate authenticated member workspace bridge for private planning, session creation, and render status. Private creation and rendering require explicit confirmation and are scoped to the current member.
 - Use /tutorial for product instructions and its four topic guides for their distinct evidence and safety context.

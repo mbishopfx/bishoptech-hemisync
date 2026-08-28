@@ -31,7 +31,7 @@ export default function TryPage() {
                 <Link href="/agent-instructions.md" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3.5 text-white/75 transition hover:border-white/45 hover:text-white">Agent instructions</Link>
               </div>
             </div>
-            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="rounded-full border border-white/10 px-3 py-2">18 public WebMCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">24 public MCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">No account required for the flow</span></div>
+            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="rounded-full border border-white/10 px-3 py-2">18 public WebMCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">26 public MCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">No account required for the flow</span></div>
           </div>
         </section>
 

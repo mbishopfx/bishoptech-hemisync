@@ -34,7 +34,7 @@ Build a short, composable route from the listener's words to a visible, reversib
 2. Use `get_public_tone_pack` for the selected slug and choose a listed preview track.
 3. Treat `previewUrl` as public media only. Do not expose download entitlements or payment identifiers.
 4. Ask for confirmation before calling `cognistration_preview_tone_pack` with `confirmed: true`.
-5. If audio cannot start, return the preview link and leave the visible machine usable.
+5. If audio cannot start, leave the visible machine usable and explain the bounded retry. Offer a direct media source only when the listener explicitly asks for one.
 
 ### Control changes
 
@@ -59,5 +59,5 @@ Describe state labels and frequency values as product metadata and listening dir
 - Empty or oversized intention: request a shorter intention without calling the model.
 - Unknown tone or pack ID: return a bounded not-found error and search the approved catalog.
 - Provider outage or malformed model output: use the deterministic approved-catalog matcher.
-- Public preview limit: route to `/signup`; do not bypass the limit with a new cookie or fabricated account.
+- Public preview limit: call `open_account_signup` to render the in-platform user-controlled form; do not bypass the limit with a new cookie or fabricated account.
 - Audio confirmation missing: return `CONFIRMATION_REQUIRED` and wait for a clear user yes.

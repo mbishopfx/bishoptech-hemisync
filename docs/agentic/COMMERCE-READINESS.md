@@ -7,14 +7,14 @@
 - Machine workshop access: the live Stripe product is a one-time `$2.99` pass. A paid session issues an encrypted, hashed, revocable key valid for 24 hours and limits each machine workshop session to 60 minutes. `get_workshop_access` and `/api/agent/commerce/workshop-access` verify the paid Checkout Session and resolve that key idempotently for an agent.
 - UCP discovery: `/.well-known/ucp` advertises REST and MCP transports, checkout/order capabilities, and the hosted payment handler; the autonomous-payment extension is advertised only after its provider and key gates are ready.
 - UCP checkout lifecycle: create, get, update, complete, cancel, order lookup, server-derived totals, hosted-checkout escalation, idempotency keys, signed order webhooks, and refund/dispute state handling.
-- Machine Payments Protocol: `POST /api/machine-payments/session` uses `mppx` and Stripe shared-payment-token verification when enabled. It returns a 402 challenge until a compatible agent supplies a provider credential, then issues a durable one-hour grant bound to the verified receipt. `/machine` validates that grant before opening the extended session.
+- Machine Payments Protocol: `POST /api/machine-payments/session` uses `mppx` and Stripe shared-payment-token verification in the live configured path. It returns a 402 challenge until a compatible agent supplies a provider credential, then issues a durable one-hour grant bound to the verified receipt. `/machine` validates that grant before opening the extended session. The challenge demo uses the separate fixed $0.50 tone-preview endpoint.
 - AP2-style mandate gate: autonomous completion requires user approval, an agent key identity, a closed cart hash, an amount cap, expiry, merchant verification, and a valid signature. It remains disabled until provider and key-registry requirements are satisfied.
 
-## What must happen before accepting live agent payments
+## What must happen before accepting unrestricted autonomous payments
 
 1. [x] Apply `supabase/migrations/202608260001_agentic_commerce.sql`, `supabase/migrations/202608270001_machine_session_grants.sql`, and `supabase/migrations/202608270002_ucp_lifecycle_hardening.sql` to the linked production project. The seven commerce/access tables have been verified with RLS enabled, and all three versions are recorded in the migration ledger.
 2. [x] Confirm the production Stripe webhook at `/api/webhooks/stripe` has a live signing secret and subscribes to `checkout.session.completed`, `checkout.session.expired`, `charge.refunded`, `charge.dispute.created`, `charge.dispute.closed`, `shared_payment.granted_token.used`, and `shared_payment.granted_token.deactivated`.
-3. Obtain Stripe Machine Payments / Shared Payment Token access and the merchant network ID. Stripe access is not implied by having an ordinary Stripe account or a normal Checkout price.
+3. Keep unrestricted autonomous spending disabled. The live demo route remains fixed to one $0.50 tone-preview product and server-verified provider authorization; ordinary Stripe access or a normal Checkout price never authorizes arbitrary agent spending.
 4. Add production-only environment values in Vercel without committing them:
    - `STRIPE_SECRET_KEY`
    - `STRIPE_WEBHOOK_SECRET`
@@ -29,8 +29,8 @@
 
 ## Current safe behavior
 
-Until the provider flags are enabled, public MCP can explain the payment routes and send a user to hosted checkout, but it cannot accept payment credentials or claim that an agent payment succeeded. Hosted Checkout remains the browser fallback. No route accepts raw card numbers, arbitrary prices, arbitrary product IDs, or database access.
+Public MCP can discover the fixed machine-payment resource, but it never accepts raw card credentials or a payment token as a normal MCP argument. The provider challenge is returned first; only the authorized payment client can retry. Hosted Checkout remains the browser fallback for other products. No route accepts raw card numbers, arbitrary prices, arbitrary product IDs, or database access.
 
 ## Recommended competition demo
 
-Use the public MCP connection and ask the agent to search for a tone pack, open the machine, and explain the $2.99 workshop. Demonstrate the 402 machine-payment capability as “ready for provider activation” unless Stripe has granted production SPT access; do not simulate a paid receipt in a live judging flow.
+Use the public MCP connection and ask the agent to search for a tone pack, open the machine, and explain the $2.99 workshop. Finish with the fixed $0.50 machine-payment request: show the 402 challenge, obtain the user’s explicit approval, let the approved provider client retry, and show the verified receipt. Never simulate a paid receipt or use a different amount/product.

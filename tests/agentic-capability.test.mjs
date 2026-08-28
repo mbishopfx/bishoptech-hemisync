@@ -15,7 +15,8 @@ import {
   searchPublicTonePacks
 } from '../lib/agentic/pack-capability.js';
 import { POLICY_TOPICS, PolicyInputSchema, getPolicyInfo } from '../lib/agentic/policy-capability.js';
-import { AccountOptionsInputSchema, publicAccountOptions } from '../lib/agentic/account-capability.js';
+import { AccountOptionsInputSchema, accountSignupState, publicAccountOptions } from '../lib/agentic/account-capability.js';
+import { FeedbackOpenInputSchema, feedbackOpenState } from '../lib/agentic/feedback-capability.js';
 import {
   IOS_APP_CAPABILITY_ID,
   IOS_APP_STORE_URL,
@@ -38,6 +39,8 @@ import {
   buildMachineGeneratorState
 } from '../lib/agentic/machine-capability.js';
 import { MACHINE_WIDGET_HTML } from '../lib/agentic/machine-widget.js';
+import { ACCOUNT_SIGNUP_WIDGET_HTML, ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI } from '../lib/agentic/account-widget.js';
+import { FEEDBACK_WIDGET_HTML, FEEDBACK_WIDGET_RESOURCE_URI } from '../lib/agentic/feedback-widget.js';
 import { WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.js';
 import { MEMBER_WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.js';
 import { MemberPlanInputSchema, buildMemberSessionPlan, journeyPresetForState } from '../lib/agentic/member-capability.js';
@@ -157,7 +160,50 @@ test('policy and account routes have source links and preserve user-controlled s
   assert.equal(options.privateWorkspace.price, '$20 one time');
   assert.equal(options.signup.credentialsAcceptedByPublicMcp, false);
   assert.equal(options.signup.paymentSubmittedByPublicMcp, false);
+  assert.equal(options.signup.preferredFlow, 'in_platform_widget');
+  assert.equal(options.signup.widgetAvailable, true);
   assert.throws(() => AccountOptionsInputSchema.parse({ email: 'user@example.test' }));
+});
+
+test('account and feedback MCP widgets keep sensitive submission outside tool arguments', async () => {
+  assert.equal(accountSignupState().credentialsSubmitted, false);
+  assert.equal(accountSignupState().paymentSubmitted, false);
+  assert.doesNotThrow(() => FeedbackOpenInputSchema.parse({}));
+  assert.equal(feedbackOpenState().persisted, false);
+
+  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v1.html');
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /id="account-form"/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /api\/agent\/account\/signup/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials are sent directly/i);
+  assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /window\.openai\.callTool/);
+  assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /redirectToStripeCheckout/);
+
+  assert.equal(FEEDBACK_WIDGET_RESOURCE_URI, 'ui://cognistration/feedback/v1.html');
+  assert.match(FEEDBACK_WIDGET_HTML, /data-rating="positive"/);
+  assert.match(FEEDBACK_WIDGET_HTML, /api\/agent\/feedback/);
+  assert.match(FEEDBACK_WIDGET_HTML, /Nothing is sent until you submit/i);
+  assert.doesNotMatch(FEEDBACK_WIDGET_HTML, /window\.openai\.callTool/);
+  assert.doesNotMatch(FEEDBACK_WIDGET_HTML, /openExternal/);
+  assert.match(FEEDBACK_WIDGET_HTML, /panel\.hidden = false/);
+
+  const signupRoute = await readFile(new URL('../app/api/agent/account/signup/route.js', import.meta.url), 'utf8');
+  const feedbackRoute = await readFile(new URL('../app/api/agent/feedback/route.js', import.meta.url), 'utf8');
+  const migration = await readFile(new URL('../supabase/migrations/202608270003_agent_feedback.sql', import.meta.url), 'utf8');
+  assert.match(signupRoute, /auth\.signUp/);
+  assert.match(signupRoute, /export function OPTIONS/);
+  assert.match(signupRoute, /applyCors/);
+  assert.match(signupRoute, /ORIGIN_NOT_ALLOWED/);
+  assert.match(signupRoute, /requested_plan/);
+  assert.doesNotMatch(signupRoute, /redirectToStripeCheckout/);
+  assert.doesNotMatch(signupRoute, /console\.(log|error).*password/i);
+  assert.match(feedbackRoute, /from\('agent_feedback'\)/);
+  assert.match(feedbackRoute, /surface: 'mcp_widget'/);
+  assert.match(feedbackRoute, /export function OPTIONS/);
+  assert.match(feedbackRoute, /applyCors/);
+  assert.match(feedbackRoute, /ORIGIN_NOT_ALLOWED/);
+  assert.doesNotMatch(feedbackRoute, /user_id|email|ip_address/);
+  assert.match(migration, /enable row level security/);
+  assert.match(migration, /No public or authenticated policies/);
 });
 
 test('public policy pages use the shared light shell and state their active route', async () => {
@@ -247,7 +293,7 @@ test('the ChatGPT connection helper copies a setup prompt and opens the main cha
 
 test('MCP skill catalog is paginated, addressable, and digestable', () => {
   const firstPage = listSkills();
-  assert.equal(firstPage.skills.length, 4);
+  assert.equal(firstPage.skills.length, 5);
   assert.ok(firstPage.skills.every((skill) => /^skill:\/\/cognistration\//.test(skill.uri)));
   assert.ok(firstPage.skills.every((skill) => /^sha256:[a-f0-9]{64}$/.test(skill.resources[0].digest)));
   const skill = getSkill(firstPage.skills[0].uri);
@@ -358,6 +404,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'get_public_tone_pack',
     'get_policy_info',
     'get_account_options',
+    'open_account_signup',
     'get_ios_app_offer',
     'create_tone_pack_checkout',
     'get_tone_pack_delivery',
@@ -367,7 +414,8 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'revoke_workshop_access',
     'get_machine_payment_options',
     'get_autonomous_payment_options',
-    'open_machine_generator'
+    'open_machine_generator',
+    'open_feedback'
   ]);
   const iosAppTool = MCP_TOOLS.find((tool) => tool.name === 'get_ios_app_offer');
   assert.equal(iosAppTool.annotations.readOnlyHint, true);
@@ -375,9 +423,18 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://session-guides'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://interaction-patterns'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === MACHINE_WIDGET_RESOURCE_URI && resource.mimeType === MACHINE_WIDGET_RESOURCE_MIME_TYPE));
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === FEEDBACK_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
   const machineTool = MCP_TOOLS.find((tool) => tool.name === 'open_machine_generator');
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineTool.annotations.readOnlyHint, true);
+  const accountTool = MCP_TOOLS.find((tool) => tool.name === 'open_account_signup');
+  assert.equal(accountTool.annotations.readOnlyHint, true);
+  assert.equal(accountTool._meta.ui.resourceUri, ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI);
+  assert.equal(accountTool.inputSchema.additionalProperties, false);
+  const feedbackTool = MCP_TOOLS.find((tool) => tool.name === 'open_feedback');
+  assert.equal(feedbackTool.annotations.readOnlyHint, true);
+  assert.equal(feedbackTool._meta.ui.resourceUri, FEEDBACK_WIDGET_RESOURCE_URI);
   assert.equal(machinePaymentOptions('https://example.test').status, 'provider_access_required');
   assert.equal(MACHINE_PAYMENT_AMOUNT, '0.50');
   assert.equal(machinePaymentOptions('https://example.test').amountCents, 50);

@@ -2,6 +2,11 @@
 
 Target length: 2 minutes 30 seconds or less. Record a public YouTube video with system audio enabled.
 
+> Recording companion files: use `DEMO-SCRIPT-3-MINUTE.md` for the complete
+> face-intro cut, `DEMO-SCRIPT-90-SECOND.md` for a strict time limit, and
+> `DEMO-SCRIPT-BACKUP.md` for reshoots. The final action should be the one
+> explicitly approved $0.50 preview; end on its verified receipt.
+
 ## 0:00–0:15 — The problem
 
 Open https://cognistration.com/try.
@@ -60,8 +65,8 @@ Use the payment-aware agent to request one fixed-price custom tone preview for
 the selected public tone. Let it discover the live machine-payment options,
 send the bounded request to `/api/machine-payments/tone`, receive the 402
 challenge, and retry with the provider's authorized payment credential. Show
-the verified paid resource and receipt, then leave audio paused until you
-explicitly start the preview.
+the verified paid resource and receipt. Do not start audio, navigate, or submit
+anything else after the receipt.
 
 Say: “The public path did not require an account. As an extra agent-to-agent
 step, the agent can request one bounded fifty-cent preview, with the amount,

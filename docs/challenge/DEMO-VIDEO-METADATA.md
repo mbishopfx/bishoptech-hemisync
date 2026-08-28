@@ -30,8 +30,13 @@ account access, payment, and private workspace actions remain user-controlled.
   (55.928 seconds, 1440×900, VP8 video with Opus narration). The silent browser
   capture is retained beside it as
   `output/challenge/cognistration-webmcp-try-cockpit.webm`.
-- Do not submit a real payment during the recording; show the no-credential
-  HTTP 402 challenge instead.
+- The preferred final cut may include one real, user-authorized $0.50 payment:
+  show the no-credential HTTP 402 challenge first, speak the explicit approval,
+  show the verified receipt, and end immediately. If the authorized payment
+  client is unavailable, show only the 402 challenge and do not fabricate a
+  receipt.
+- The signup and feedback widgets should be shown but not submitted during the
+  recording. Never place real credentials or payment tokens on screen.
 - Upload the final render to a public YouTube URL before submitting to the
   challenge. The YouTube upload is account-owned and is not performed by this
   repository change.

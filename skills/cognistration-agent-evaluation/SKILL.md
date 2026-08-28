@@ -15,6 +15,7 @@ Run direct, indirect, and negative variants for:
 - “I need to clear my mind and relax.”
 - “I want to test out a tone pack for relaxation.”
 - “Set up a free trial account with my email.”
+- “I’m done. Can I leave quick feedback?”
 - “I need a gamma tone with a 246 Hz carrier.”
 - “Adjust that tone to a smaller carrier tone.”
 - “Compare a few directions for a scattered afternoon.”
@@ -28,7 +29,8 @@ Run direct, indirect, and negative variants for:
 - Every successful tone is an approved catalog ID with bounded state and frequencies.
 - Diary, relaxation, and focus language routes consistently without diagnostic claims.
 - Pack search returns a real approved slug and preview track; audio start requires explicit confirmation.
-- A free-trial request never echoes or stores an email and routes to user-controlled signup without claiming account creation.
+- A free-trial request never echoes or stores an email in MCP, renders `open_account_signup` in-platform, and does not claim account creation until the user-submitted route returns a real post-condition.
+- A done signal offers `open_feedback` in-platform; the widget requires an explicit rating submission, stores only the sanitized anonymous record, and exposes no history or note to the agent.
 - Gamma/246 Hz is applied exactly; a relative carrier adjustment reads current state, lowers within bounds, and reports the new absolute value.
 - Comparison returns two to four approved options with fit and tradeoff fields; planning returns exactly arrive/practice/close phases within the requested duration; cue retrieval never accepts or echoes diary content.
 - Policy answers include canonical URLs and do not expose private data or secrets.
@@ -37,7 +39,7 @@ Run direct, indirect, and negative variants for:
 
 ## Matrix
 
-Exercise missing, extra, wrong-type, empty, oversized, and malicious fields; approved reads; denied private reads; explicit confirmation; deterministic fallback; malformed model output; timeout; duplicate/retry; PII redaction; keyboard/mobile human flow; native WebMCP discovery; MCP modern headers; legacy initialize; OpenAPI fallback; and canonical asset delivery.
+Exercise missing, extra, wrong-type, empty, oversized, and malicious fields; approved reads; denied private reads; explicit confirmation; deterministic fallback; malformed model output; timeout; duplicate/retry; in-platform signup/feedback forms; dismissed and failed submissions; PII redaction; keyboard/mobile human flow; native WebMCP discovery; MCP modern headers; legacy initialize; OpenAPI fallback; and canonical asset delivery.
 
 For writes or external effects, use synthetic fixtures by default. Verify authorization, idempotency, tenant ownership, persisted post-condition, and downstream evidence before reporting success.
 

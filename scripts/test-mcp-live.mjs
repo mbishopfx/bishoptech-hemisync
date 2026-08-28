@@ -58,10 +58,12 @@ async function main() {
   assert(tools.length >= 20, `expected the public MCP catalog, received ${tools.length} tools`);
   assert(tools.some((tool) => tool.name === 'prepare_session_recipe'), 'prepare_session_recipe is missing');
   assert(tools.some((tool) => tool.name === 'get_machine_payment_options'), 'get_machine_payment_options is missing');
+  assert(tools.some((tool) => tool.name === 'open_account_signup'), 'open_account_signup is missing');
+  assert(tools.some((tool) => tool.name === 'open_feedback'), 'open_feedback is missing');
 
   const skillsResult = await rpc('skills/list');
   const skills = skillsResult.skills || [];
-  assert(skills.length === 4, `expected four Cognistration skills, received ${skills.length}`);
+  assert(skills.length === 5, `expected five Cognistration skills, received ${skills.length}`);
   const firstSkill = skills[0];
   const skillResult = await rpc('skills/get', { uri: firstSkill.uri });
   assert(skillResult.skill?.frontmatter?.name, 'skills/get did not return frontmatter');
@@ -70,6 +72,34 @@ async function main() {
   const interactionText = interactionResult.contents?.[0]?.text || '{}';
   const interaction = JSON.parse(interactionText);
   assert(interaction.safetyRouting?.route === '/health-warning', 'safety routing resource is missing');
+
+  const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
+  const accountWidget = accountWidgetResult.contents?.[0];
+  assert(accountWidget?.mimeType === 'text/html;profile=mcp-app', 'account widget MIME type is unexpected');
+  assert(/id="account-form"/.test(accountWidget.text || ''), 'account widget form is missing');
+  assert(/api\/agent\/account\/signup/.test(accountWidget.text || ''), 'account widget first-party submit route is missing');
+  assert(!/window\.openai\.callTool/.test(accountWidget.text || ''), 'account widget must not send credentials through MCP');
+
+  const feedbackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/feedback/v1.html' }, 'ui://cognistration/feedback/v1.html');
+  const feedbackWidget = feedbackWidgetResult.contents?.[0];
+  assert(feedbackWidget?.mimeType === 'text/html;profile=mcp-app', 'feedback widget MIME type is unexpected');
+  assert(/data-rating="positive"/.test(feedbackWidget.text || ''), 'feedback widget rating controls are missing');
+  assert(/api\/agent\/feedback/.test(feedbackWidget.text || ''), 'feedback widget first-party submit route is missing');
+  assert(!/window\.openai\.callTool/.test(feedbackWidget.text || ''), 'feedback widget must not send feedback through MCP');
+
+  const accountOpen = structured(await rpc('tools/call', {
+    name: 'open_account_signup',
+    arguments: {}
+  }, 'open_account_signup'));
+  assert(accountOpen.resourceUri === 'ui://cognistration/account-signup/v1.html', 'account signup render resource is unexpected');
+  assert(accountOpen.credentialsSubmitted === false, 'account signup tool must not submit credentials');
+
+  const feedbackOpen = structured(await rpc('tools/call', {
+    name: 'open_feedback',
+    arguments: {}
+  }, 'open_feedback'));
+  assert(feedbackOpen.resourceUri === 'ui://cognistration/feedback/v1.html', 'feedback render resource is unexpected');
+  assert(feedbackOpen.persisted === false, 'feedback render tool must not persist a response');
 
   const clarifyResult = structured(await rpc('tools/call', {
     name: 'clarify_intention',
@@ -102,6 +132,7 @@ async function main() {
     safetyRoute: interaction.safetyRouting.route,
     clarificationChoices: clarifyResult.choices.length,
     recipeVersion: recipeResult.recipe.recipeVersion,
+    inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri },
     machinePayment: { status: paymentResult.status, amountCents: paymentResult.amountCents, toneEndpoint: paymentResult.toneSession.endpoint }
   }, null, 2));
 }
