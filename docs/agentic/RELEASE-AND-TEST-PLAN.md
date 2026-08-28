@@ -7,7 +7,7 @@
 - Deployment: Vercel team `bishoptech`, project `bishoptech-cognistration`
 - Environment: local implementation → Vercel production route verification when deployment is explicitly exercised
 - Canonical domain: `https://cognistration.com`
-- Production deployment proof: Vercel `dpl_ARDRQE7P6fUsWnPkBLFoLfYzJeHu` is `READY` with the `cognistration.com` alias and commit `2bf2b87`
+- Production deployment proof: Vercel `dpl_E8aJx42qdoL38EZddnhS28zw7Zoc` is `READY` with the `cognistration.com` alias and commit `25c40fa`
 - Authorized production actions: user requested full implementation control and reported authenticated Vercel/Supabase CLIs; record exact deploy/DB actions when performed
 - Test marker: `AGENTIC-20260828-06`
 
@@ -68,7 +68,7 @@
 | `POST /api/mcp` `open_account_signup` + `resources/read` | pass | render-only account form is returned in-platform; credentials and checkout are user-controlled |
 | `POST /api/mcp` `open_feedback` + `resources/read` | pass | render-only closing card is returned in-platform; submission is explicit and feedback history is not exposed |
 | `POST https://cognistration.com/api/agent/account/signup` | pass (boundary) | strict first-party signup adapter has origin/CORS guards; production preflight and malformed-input checks pass; no session, token, password, or payment result is returned |
-| `POST https://cognistration.com/api/agent/feedback` | blocked by production migration | first-party feedback adapter is origin/CORS guarded; `202608270003_agent_feedback.sql` still needs to be applied to the real Supabase project |
+| `POST https://cognistration.com/api/agent/feedback` | pass (schema live) | first-party feedback adapter is origin/CORS guarded; `agent_feedback` exists in production with RLS enabled and zero rows before any user submission |
 | `POST https://cognistration.com/api/agent` | pass | `clear mind and calm reset` resolves to an approved Theta tone with live `matchMode: ai`; deterministic fallback remains covered by tests |
 | `GET https://cognistration.com/api/packs?agent=1` | pass | public pack search/lookup returns preview-safe metadata and strips private price IDs, downloads, and provider metadata |
 | `GET https://cognistration.com/api/agent/policy?topic=safety` | pass | policy route returns the canonical safety URL and bounded summary |
@@ -81,7 +81,7 @@
 
 ## Release state
 
-Current state after the MCP Apps machine, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, and in-platform done-state feedback deployment: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-3d-fan-verified`. Production Vercel deployment `dpl_ARDRQE7P6fUsWnPkBLFoLfYzJeHu` is ready on commit `2bf2b87`. The live canonical endpoint, `/connect`, and Cloudflare relay are verified with 26 MCP tools, 13 resources, 18 homepage WebMCP tools, five readable skills, origin-guarded first-party submission routes, and a service-role-only feedback migration. The real production Supabase project is `lmzzkrcbcucosypiminc`; the workspace `.env` points at a different stale project and the current CLI account cannot access the linked database login-role endpoint. A read-only production check still returns `PGRST205` because `public.agent_feedback` is absent, so the feedback migration remains the sole explicit release prerequisite. Do not claim persisted feedback until that migration is applied and one authorized smoke submission is observed. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
+Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, and in-platform done-state feedback deployment: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-verified`. Production Vercel deployment `dpl_E8aJx42qdoL38EZddnhS28zw7Zoc` is ready on commit `25c40fa`. The live canonical endpoint, `/connect`, and Cloudflare relay are verified with 26 MCP tools, 13 resources, 18 homepage WebMCP tools, five readable skills, origin-guarded first-party submission routes, and the fixed $0.50 payment coda. The real production Supabase project is `lmzzkrcbcucosypiminc`; the workspace `.env` points at a different stale project and the current CLI account cannot access the linked database login-role endpoint. The production SQL editor applied `202608270003_agent_feedback.sql`, and a read-only production check confirms `public.agent_feedback` exists with RLS enabled and zero rows before any user submission. No synthetic feedback row was created. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
 
 ## Challenge handoff
 
