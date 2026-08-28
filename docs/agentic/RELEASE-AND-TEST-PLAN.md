@@ -5,8 +5,9 @@
 - Repository/workspace: `/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration`
 - Git repository reality: target app is nested in the parent `/Users/matthewbishop` checkout; preserve unrelated dirty files
 - Deployment: Vercel team `bishoptech`, project `bishoptech-cognistration`
-- Environment: local implementation → production route verification when deployment is explicitly exercised
+- Environment: local implementation → Vercel production route verification when deployment is explicitly exercised
 - Canonical domain: `https://cognistration.com`
+- Production deployment proof: Vercel `dpl_ARDRQE7P6fUsWnPkBLFoLfYzJeHu` is `READY` with the `cognistration.com` alias and commit `2bf2b87`
 - Authorized production actions: user requested full implementation control and reported authenticated Vercel/Supabase CLIs; record exact deploy/DB actions when performed
 - Test marker: `AGENTIC-20260828-06`
 
@@ -19,7 +20,7 @@
 | existing billing fixtures | `npm run test:billing` | pass; 6 tests |
 | existing Studio fixtures | `npm run test:studio` | pass; 13 tests |
 | lint | `npm run lint` | pass; 0 errors and two pre-existing warnings |
-| build | `npm run build` | pass locally and on Vercel |
+| build | Vercel production build | pass remotely for `dpl_ARDRQE7P6fUsWnPkBLFoLfYzJeHu`; local build intentionally not run per repository instructions |
 
 ## Agent and UX tests
 
@@ -57,16 +58,16 @@
 | Route/operation | Status | Post-condition |
 |---|---:|---|
 | `https://cognistration.com/` | pass | homepage is 200, shows the human platform story, contains one hero Aurora background, has the available-now iPhone offer with the canonical App Store CTA and on-device pricing explanation, uses the refined hero/chat presentation, and exposes the live fan carousel |
-| `https://cognistration.com/api/capabilities` | pending deploy | public manifest includes tone packs, policy/account routes, five importable skills, and bounded tools |
+| `https://cognistration.com/api/capabilities` | pass | live public manifest returns the bounded 26-tool MCP contract, five skills, account options, and signup/feedback capability references |
 | `https://cognistration.com/openapi.json` | pass | generated REST compatibility document mirrors the approved public registry and exposes no write credentials |
 | `https://cognistration.com/agent-instructions.md` | pass | public instructions include the public browser bridge, pack preview confirmation, policy reads, and authenticated member workflow |
-| `https://cognistration.com/api/mcp` | pending deploy | `2026-07-28` discovery responds with the skills extension, twenty-six public tools, thirteen resources, and five readable skills; the tone, signup, and feedback UI templates are addressable |
-| `https://cognistration.com/connect` | pending deploy | connection endpoint serves the same bounded contract; live ChatGPT-origin `tools/list` returns twenty-six public tools; human setup is routed through the header prompt and main ChatGPT chat rather than a Git/marketplace installer |
+| `https://cognistration.com/api/mcp` | pass | `2026-07-28` discovery responds with the skills extension, twenty-six public tools, thirteen resources, and five readable skills; the tone, signup, and feedback UI templates are addressable |
+| `https://cognistration.com/connect` | pass | connection endpoint serves the same bounded contract; live ChatGPT-origin `tools/list` returns twenty-six public tools; human setup is routed through the header prompt and main ChatGPT chat rather than a Git/marketplace installer |
 | `POST /api/mcp` `open_machine_generator` + `resources/read` | pass | production render returns Gamma/246 Hz with `isPlaying: false`; the widget resource is `text/html;profile=mcp-app`, loads the canonical Aurora visual, and advertises exact connect/resource/frame domains |
 | `POST /api/mcp` `get_ios_app_offer` + `resources/read` | pass | production returns the canonical App Store URL, `$2.99` one-time iPhone offer, compatibility, feature summary, and on-device pricing context without processing payment |
-| `POST /api/mcp` `open_account_signup` + `resources/read` | pending deploy | render-only account form is returned in-platform; credentials and checkout are user-controlled |
-| `POST /api/mcp` `open_feedback` + `resources/read` | pending deploy | render-only closing card is returned in-platform; submission is explicit and feedback history is not exposed |
-| `POST https://cognistration.com/api/agent/account/signup` | pending deploy/schema | strict first-party signup adapter has origin/CORS guards and returns no session, token, password, or payment result |
+| `POST /api/mcp` `open_account_signup` + `resources/read` | pass | render-only account form is returned in-platform; credentials and checkout are user-controlled |
+| `POST /api/mcp` `open_feedback` + `resources/read` | pass | render-only closing card is returned in-platform; submission is explicit and feedback history is not exposed |
+| `POST https://cognistration.com/api/agent/account/signup` | pass (boundary) | strict first-party signup adapter has origin/CORS guards; production preflight and malformed-input checks pass; no session, token, password, or payment result is returned |
 | `POST https://cognistration.com/api/agent/feedback` | blocked by production migration | first-party feedback adapter is origin/CORS guarded; `202608270003_agent_feedback.sql` still needs to be applied to the real Supabase project |
 | `POST https://cognistration.com/api/agent` | pass | `clear mind and calm reset` resolves to an approved Theta tone with live `matchMode: ai`; deterministic fallback remains covered by tests |
 | `GET https://cognistration.com/api/packs?agent=1` | pass | public pack search/lookup returns preview-safe metadata and strips private price IDs, downloads, and provider metadata |
@@ -80,7 +81,7 @@
 
 ## Release state
 
-Current state after the MCP Apps machine, iPhone offer, ChatGPT connection helper, and homepage presentation deployment: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-3d-fan-verified`. The next scoped release adds the five-skill catalog, in-platform account capture, and in-platform done-state feedback. The local contract is verified with 26 MCP tools, 13 resources, 18 homepage WebMCP tools, origin-guarded first-party submission routes, and a service-role-only feedback migration. The real production Supabase project is `lmzzkrcbcucosypiminc`; the workspace `.env` points at a different stale project and the current CLI account cannot access the linked database login-role endpoint, so the feedback migration remains an explicit release prerequisite. Do not claim persisted feedback until that migration is applied and one authorized smoke submission is observed. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
+Current state after the MCP Apps machine, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, and in-platform done-state feedback deployment: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-3d-fan-verified`. Production Vercel deployment `dpl_ARDRQE7P6fUsWnPkBLFoLfYzJeHu` is ready on commit `2bf2b87`. The live canonical endpoint, `/connect`, and Cloudflare relay are verified with 26 MCP tools, 13 resources, 18 homepage WebMCP tools, five readable skills, origin-guarded first-party submission routes, and a service-role-only feedback migration. The real production Supabase project is `lmzzkrcbcucosypiminc`; the workspace `.env` points at a different stale project and the current CLI account cannot access the linked database login-role endpoint. A read-only production check still returns `PGRST205` because `public.agent_feedback` is absent, so the feedback migration remains the sole explicit release prerequisite. Do not claim persisted feedback until that migration is applied and one authorized smoke submission is observed. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
 
 ## Challenge handoff
 
