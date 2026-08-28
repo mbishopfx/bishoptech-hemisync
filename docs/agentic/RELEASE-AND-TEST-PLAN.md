@@ -20,7 +20,7 @@
 | existing billing fixtures | `npm run test:billing` | pass; 6 tests |
 | existing Studio fixtures | `npm run test:studio` | pass; 13 tests |
 | lint | `npm run lint` | pass; 0 errors and two pre-existing warnings |
-| build | Vercel production build | pass remotely for `dpl_ARDRQE7P6fUsWnPkBLFoLfYzJeHu`; local build intentionally not run per repository instructions |
+| build | Vercel production build | pass remotely for `dpl_DQx9mSUuHNomD7yE62YTnReuaAgd`; local build intentionally not run per repository instructions |
 
 ## Agent and UX tests
 
