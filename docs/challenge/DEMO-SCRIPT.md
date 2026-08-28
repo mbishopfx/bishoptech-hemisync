@@ -51,15 +51,21 @@ bright” or “Too intense” to show the feedback loop. The machine proposes a
 bounded visible adjustment and keeps audio off until the person chooses to
 start it again.
 
-## 2:05–2:30 — The orchestrator advantage and close
+Before the paid coda, show the safety link or submit a medical-shaped test
+request in a separate tab and point to `/health-warning`.
 
-Show the live payment panel on `/try` and explain: “The public path is free. As
-an extra agent-to-agent demonstration, Cognistration advertises a fixed
-fifty-cent session resource. Without a provider credential the live server
-returns a real 402 challenge, and no charge is created in this recording.”
+## 2:05–2:30 — The paid coda and close
 
-Then show the safety link or submit a medical-shaped test request in a separate
-tab and point to `/health-warning`.
+Use the payment-aware agent to request one fixed-price custom tone preview for
+the selected public tone. Let it discover the live machine-payment options,
+send the bounded request to `/api/machine-payments/tone`, receive the 402
+challenge, and retry with the provider's authorized payment credential. Show
+the verified paid resource and receipt, then leave audio paused until you
+explicitly start the preview.
+
+Say: “The public path did not require an account. As an extra agent-to-agent
+step, the agent can request one bounded fifty-cent preview, with the amount,
+scope, and receipt verified by the server.”
 
 Say: “The differentiator is not a playlist. It is an editable orchestrator: intention becomes a tone, a state, a carrier, a beat, and a short ritual, with agents helping where structured control is useful and the person staying in charge. Cognistration does not diagnose or guarantee a brain state.”
 

@@ -11,6 +11,7 @@
     "test:billing": "node --experimental-default-type=module --test tests/billing-*.test.mjs",
     "test:agentic": "node --experimental-default-type=module --test tests/agentic-*.test.mjs",
     "test:edge": "node --test cloudflare/mcp-edge/src/index.test.mjs",
+    "test:mcp:live": "node scripts/test-mcp-live.mjs",
     "verify:supabase": "node scripts/verify-supabase-wiring.mjs",
     "prerender:samples": "node scripts/prerender-template-samples.mjs",
     "packs:build": "node scripts/build-tone-packs.mjs",
