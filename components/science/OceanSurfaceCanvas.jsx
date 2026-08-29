@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createRenderer } from './vgpu-ocean/renderer';
 
-export function OceanSurfaceCanvas({ className = '', seed = null }) {
+export function OceanSurfaceCanvas({ className = '', seed = null, onProfileChange }) {
   const canvasRef = useRef(null);
   const [status, setStatus] = useState('initializing');
   const [profile, setProfile] = useState(null);
@@ -20,14 +20,16 @@ export function OceanSurfaceCanvas({ className = '', seed = null }) {
       onReady: (nextProfile) => {
         setProfile(nextProfile);
         setStatus('live');
+        onProfileChange?.(nextProfile);
       },
+      onProfileChange,
       onError: () => setStatus('fallback')
     });
 
     return () => {
       renderer.dispose();
     };
-  }, [seed]);
+  }, [onProfileChange, seed]);
 
   const statusLabel = status === 'live' ? 'live' : status === 'fallback' ? 'static fallback' : 'starting';
 

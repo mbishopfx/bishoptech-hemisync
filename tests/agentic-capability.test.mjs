@@ -57,6 +57,7 @@ import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { calibrateTone, clarifyIntention } from '../lib/agentic/intent-capability.js';
 import { buildSessionRecipe, SessionRecipeInputSchema } from '../lib/agentic/recipe-capability.js';
 import { safetyCategoryForIntention, safetyRedirectForIntention } from '../lib/agentic/safety-capability.js';
+import { buildScienceGuidePdf, normalizeScienceGuidePdfInput, scienceGuidePdfFilename } from '../lib/agentic/science-pdf.js';
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
 import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
 import { createPaymentPassport, verifyPaymentPassport, PAYMENT_PASSPORT_TTL_SEC } from '../lib/commerce/payment-passport.mjs';
@@ -69,6 +70,7 @@ const SCIENCE_GUIDE_OCEAN_MODULE = await readFile(
 );
 const DOCS_PAGE_SOURCE = await readFile(new URL('../app/docs/page.js', import.meta.url), 'utf8');
 const NEXT_CONFIG_SOURCE = await readFile(new URL('../next.config.js', import.meta.url), 'utf8');
+const SCIENCE_GUIDE_PDF_ROUTE = await readFile(new URL('../app/api/science-guide/pdf/route.js', import.meta.url), 'utf8');
 
 test('the public tone catalog is bounded and contains only stable public fields', () => {
   assert.ok(PUBLIC_TONE_CATALOG.length >= 10);
@@ -198,9 +200,35 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Previous/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Next/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /ArrowRight/);
-  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Print \/ save PDF/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Download PDF/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /api\/science-guide\/pdf/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /cognistration:ocean-profile/);
+  assert.match(SCIENCE_GUIDE_PDF_ROUTE, /application\/pdf/);
+  assert.match(SCIENCE_GUIDE_PDF_ROUTE, /content-disposition/);
   assert.deepEqual(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains, []);
   assert.ok(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.resourceDomains.includes('https://esm.sh'));
+});
+
+test('science guide PDF export is static, bounded, and tied to the ocean run seed', () => {
+  const toneId = PUBLIC_TONE_CATALOG[0].id;
+  const model = normalizeScienceGuidePdfInput({
+    toneId,
+    controls: { targetState: 'gamma', carrierHz: 246, beatHz: 39.5, volume: 64 },
+    ocean: { seed: 101 }
+  });
+  const pdf = buildScienceGuidePdf(model);
+  const source = pdf.toString('latin1');
+
+  assert.equal(model.ocean.runLabel, createOceanProfile(101).runLabel);
+  assert.equal(model.controls.targetState, 'gamma');
+  assert.equal(scienceGuidePdfFilename(model), `cognistration-science-guide-${model.ocean.runLabel}.pdf`);
+  assert.match(source.slice(0, 16), /%PDF-1\.4/);
+  assert.match(source, /Understand the signal/);
+  assert.match(source, /STATIC SNAPSHOT/);
+  assert.match(source, new RegExp(model.ocean.runLabel));
+  assert.match(source, /FFR is a measurement/);
+  assert.match(source, /live WebGPU surface/);
+  assert.doesNotMatch(source, /my secret/);
 });
 
 test('each science-guide ocean generation has deterministic bounded parameters and a new seed changes the profile', () => {

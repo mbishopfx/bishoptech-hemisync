@@ -3,7 +3,7 @@ import { orbitControls, perspectiveCamera } from 'vgpu/scene';
 import { buildOcean, OCEAN_CAMERA } from './scene';
 import { createOceanProfile } from './ocean-profile';
 
-export function createRenderer({ canvas, seed, onReady, onError }) {
+export function createRenderer({ canvas, seed, onReady, onProfileChange, onError }) {
   let disposed = false;
   let gpu;
   let output;
@@ -15,6 +15,7 @@ export function createRenderer({ canvas, seed, onReady, onError }) {
   let motionQuery;
   let motionListener;
   const profile = createOceanProfile(seed);
+  onProfileChange?.(profile);
 
   const stopLoop = () => {
     loop?.stop();

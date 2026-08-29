@@ -66,6 +66,13 @@ function makeProfile(seed) {
   };
 }
 
+function publishOceanProfile(profile) {
+  window.__cognistrationOceanProfile = profile;
+  if (typeof window.dispatchEvent === 'function' && typeof window.CustomEvent === 'function') {
+    window.dispatchEvent(new CustomEvent('cognistration:ocean-profile', { detail: profile }));
+  }
+}
+
 function buildOcean(gpu, size, profile) {
   var resources = new Set();
   function own(resource) {
@@ -235,12 +242,13 @@ function setStatus(value) {
 
 function startOcean() {
   if (!canvas) return Promise.resolve();
+  var profile = makeProfile(randomSeed());
+  publishOceanProfile(profile);
   if (!navigator.gpu) {
     setStatus('WebGPU unavailable · guide remains readable');
     return Promise.resolve();
   }
 
-  var profile = makeProfile(randomSeed());
   if (telemetry) {
     telemetry.textContent = 'FFT ocean · run ' + profile.label + ' · wind ' + profile.windSpeed.toFixed(1) + ' m/s · speed ' + profile.timeScale.toFixed(2) + 'x';
   }

@@ -31,8 +31,10 @@ function rounded(value, digits = 0) {
 }
 
 export function normalizeOceanSeed(seed) {
-  const numeric = Number(seed);
-  if (Number.isFinite(numeric)) return Math.trunc(numeric) >>> 0;
+  if (seed !== null && seed !== undefined && seed !== '') {
+    const numeric = Number(seed);
+    if (Number.isFinite(numeric)) return Math.trunc(numeric) >>> 0;
+  }
 
   if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
     const values = new Uint32Array(1);

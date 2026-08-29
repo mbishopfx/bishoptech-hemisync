@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Printer, X } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, DownloadSimple, Printer, X } from '@phosphor-icons/react';
 import {
   SCIENCE_GUIDE_SLIDES,
   SCIENCE_GUIDE_SOURCES
@@ -26,6 +26,9 @@ export function ToneScienceLesson({
 }) {
   const [localOpen, setLocalOpen] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [oceanProfile, setOceanProfile] = useState(null);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+  const [pdfMessage, setPdfMessage] = useState('');
   const isControlled = typeof controlledOpen === 'boolean';
   const isOpen = isControlled ? controlledOpen : localOpen;
 
@@ -43,9 +46,10 @@ export function ToneScienceLesson({
     return {
       targetState: state,
       carrierHz: Math.round(boundedNumber(controls.carrierHz ?? tone?.baseFreqHz, 200, 100, 400)),
-      beatHz: Math.round(boundedNumber(controls.beatHz ?? tone?.targetHz, 6, 0.5, 40) * 10) / 10
+      beatHz: Math.round(boundedNumber(controls.beatHz ?? tone?.targetHz, 6, 0.5, 40) * 10) / 10,
+      volume: Math.round(boundedNumber(controls.volume, 72, 0, 100))
     };
-  }, [controls.beatHz, controls.carrierHz, controls.targetState, tone?.baseFreqHz, tone?.state, tone?.targetHz]);
+  }, [controls.beatHz, controls.carrierHz, controls.targetState, controls.volume, tone?.baseFreqHz, tone?.state, tone?.targetHz]);
 
   const sourceById = useMemo(() => new Map(SCIENCE_GUIDE_SOURCES.map((source) => [source.id, source])), []);
   const slide = SCIENCE_GUIDE_SLIDES[slideIndex] || SCIENCE_GUIDE_SLIDES[0];
@@ -54,6 +58,51 @@ export function ToneScienceLesson({
   useEffect(() => {
     if (isOpen) setSlideIndex(0);
   }, [isOpen]);
+
+  useEffect(() => {
+    setOceanProfile(null);
+    setPdfMessage('');
+  }, [generationKey]);
+
+  const handleOceanProfile = useCallback((profile) => {
+    setOceanProfile(profile);
+  }, []);
+
+  const downloadScienceGuidePdf = useCallback(async () => {
+    setIsDownloadingPdf(true);
+    setPdfMessage('Preparing a static guide snapshot...');
+
+    try {
+      const response = await fetch('/api/science-guide/pdf', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          toneId: tone?.id || null,
+          controls: safeControls,
+          ocean: oceanProfile ? { seed: oceanProfile.seed } : null
+        })
+      });
+      if (!response.ok) throw new Error('The PDF export request failed.');
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const runLabel = oceanProfile?.runLabel || 'snapshot';
+      link.href = downloadUrl;
+      link.download = `cognistration-science-guide-${runLabel}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+      setPdfMessage(`PDF downloaded. Ocean run ${runLabel} is recorded in the file.`);
+    } catch (error) {
+      console.error('Science guide PDF export failed:', error);
+      setPdfMessage('PDF download was unavailable, so the browser print dialog was opened instead.');
+      window.print();
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  }, [oceanProfile, safeControls, tone?.id]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -85,7 +134,7 @@ export function ToneScienceLesson({
         </div>
       ) : (
         <div className="relative isolate min-h-[42rem] overflow-hidden bg-[#10221d] p-3 sm:p-5">
-          <OceanSurfaceCanvas key={generationKey ?? 'science-ocean'} />
+          <OceanSurfaceCanvas key={generationKey ?? 'science-ocean'} onProfileChange={handleOceanProfile} />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,22,18,0.25),rgba(7,22,18,0.72))]" aria-hidden="true" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(182,221,204,0.18),transparent_30%),radial-gradient(circle_at_82%_80%,rgba(224,180,147,0.13),transparent_32%)]" aria-hidden="true" />
 
@@ -96,14 +145,15 @@ export function ToneScienceLesson({
                 <p className="mt-1 text-xs text-white/45">Audio is off. Move through the guide at your pace.</p>
               </div>
               <div className="flex items-center gap-2">
-                <button type="button" onClick={() => window.print()} className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs">
-                  <Printer className="size-4" aria-hidden="true" />
-                  Print / save PDF
+                <button type="button" onClick={downloadScienceGuidePdf} disabled={isDownloadingPdf} aria-busy={isDownloadingPdf} className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs">
+                  {isDownloadingPdf ? <Printer className="size-4 animate-pulse" aria-hidden="true" /> : <DownloadSimple className="size-4" aria-hidden="true" />}
+                  {isDownloadingPdf ? 'Preparing PDF...' : 'Download PDF'}
                 </button>
                 <button type="button" onClick={() => setOpen(false)} className="glass-action glass-action--secondary inline-flex size-9 items-center justify-center rounded-full text-white/65" aria-label="Close science guide">
                   <X className="size-4" aria-hidden="true" />
                 </button>
               </div>
+              {pdfMessage && <p className="basis-full text-right text-[11px] text-[#b6ddcc]/75" aria-live="polite">{pdfMessage}</p>}
             </div>
 
             <div className="mx-auto mt-5 flex w-full max-w-4xl flex-wrap items-center justify-center gap-x-5 gap-y-2 border-y border-white/10 py-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/40">
