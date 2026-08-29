@@ -5,22 +5,22 @@
 - Repository/workspace: `/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration`
 - Git repository reality: target app is nested in the parent `/Users/matthewbishop` checkout; preserve unrelated dirty files
 - Deployment: Vercel team `bishoptech`, project `bishoptech-cognistration`
-- Environment: local implementation → Vercel production route verification when deployment is explicitly exercised
+- Environment: Vercel production deployment with canonical-route verification
 - Canonical domain: `https://cognistration.com`
-- Production deployment proof: Vercel `dpl_E8aJx42qdoL38EZddnhS28zw7Zoc` is `READY` with the `cognistration.com` alias and commit `25c40fa`
+- Production deployment proof: Vercel `dpl_BZgjeDY7aGKB9Qe8mxxeUUjUNRa` is `READY` with the `cognistration.com` alias and commit `1b29965`; verified 2026-08-29
 - Authorized production actions: user requested full implementation control and reported authenticated Vercel/Supabase CLIs; record exact deploy/DB actions when performed
-- Test marker: `AGENTIC-20260828-06`
+- Test marker: `AGENTIC-20260829-01`
 
 ## Repository checks
 
 | Check | Command | Result |
 |---|---|---|
 | diff whitespace | `git diff --check` | pass |
-| agentic fixtures | `npm run test:agentic` | pass; 46 tests |
+| agentic fixtures | `npm run test:agentic` | pass; 47 tests |
 | existing billing fixtures | `npm run test:billing` | pass; 6 tests |
 | existing Studio fixtures | `npm run test:studio` | pass; 13 tests |
-| lint | `npm run lint` | pass; 0 errors and two pre-existing warnings |
-| build | Vercel production build | pass remotely for `dpl_DQx9mSUuHNomD7yE62YTnReuaAgd`; local build intentionally not run per repository instructions |
+| lint | `npm run lint` | pass; 0 errors |
+| build | `npm run build` + Vercel production build | pass locally and remotely for `dpl_BZgjeDY7aGKB9Qe8mxxeUUjUNRa`; Next retains three pre-existing hook warnings outside the science guide |
 
 ## Agent and UX tests
 
@@ -41,7 +41,7 @@
 - [x] The iPhone app offer is a bounded read-only App Store handoff with no payment side effect and explains the lower price through on-device operation and reduced hosted maintenance overhead.
 - [x] Account signup and done-state feedback render in-platform widgets; credentials, notes, and feedback ratings stay outside MCP arguments and require explicit user submission.
 - [x] The ChatGPT connection helper copies a setup prompt with the canonical remote endpoint, explicitly prevents Git/marketplace installation, and opens the main ChatGPT chat.
-- [ ] The science guide renders the shared seven-slide signal/FFR/evidence/safety explanation, uses the FFT ocean-surface visual reference, supports local navigation and print/save-to-PDF, and remains audio-free.
+- [x] The science guide renders the shared seven-slide signal/FFR/evidence/safety explanation, uses the FFT ocean-surface visual reference, supports local navigation and print/save-to-PDF, and remains audio-free; verified in the production `/try` browser flow and live MCP resource.
 - [x] The homepage uses scroll-revealed section titles, a shorter/wider hero lockup, a borderless frosted listening shell, and a three-card infinite iPhone preview carousel with reduced-motion behavior.
 
 ## MCP tests
@@ -53,19 +53,20 @@
 - [x] No private/admin data or provider payload appears in output.
 - [x] Response and request limits are observed.
 - [x] Production `/connect` accepts standards-compliant modern stateless Streamable HTTP requests, validates header/body agreement, returns `405` for unsupported SSE GET negotiation, returns `202` for notifications, and rejects untrusted origins.
+- [x] The expanded production MCP verifier covers the science guide tool/resource, seven-slide payload, ocean visual reference, PDF action, audio/diary boundaries, and the enabled fixed 50-cent payment lane.
 
 ## Production route proof
 
 | Route/operation | Status | Post-condition |
 |---|---:|---|
 | `https://cognistration.com/` | pass | homepage is 200, shows the human platform story, contains one hero Aurora background, has the available-now iPhone offer with the canonical App Store CTA and on-device pricing explanation, uses the refined hero/chat presentation, and exposes the live fan carousel |
-| `https://cognistration.com/api/capabilities` | pass (prior deployment) | prior live public manifest returned the bounded 26-tool MCP contract; the new 27-tool science-guide contract is implemented locally and requires deployment verification |
+| `https://cognistration.com/api/capabilities` | pass | production manifest returns 19 homepage WebMCP tools, 11 authenticated member tools, 27 public MCP tools, 14 MCP resources, and the science-guide capability |
 | `https://cognistration.com/openapi.json` | pass | generated REST compatibility document mirrors the approved public registry and exposes no write credentials |
 | `https://cognistration.com/agent-instructions.md` | pass | public instructions include the public browser bridge, pack preview confirmation, policy reads, and authenticated member workflow |
-| `https://cognistration.com/api/mcp` | pass (prior deployment) | prior live discovery returned the skills extension, twenty-six public tools, and thirteen resources; the new 27-tool/14-resource science-guide contract is implemented locally and requires deployment verification |
-| `https://cognistration.com/connect` | pass (prior deployment) | prior connection endpoint served the bounded contract; the new science-guide resource and Plugins-tab guidance require deployment verification after release |
+| `https://cognistration.com/api/mcp` | pass | live discovery and tool/resource checks return 27 public tools, 14 resources, the skills extension, and the science guide |
+| `https://cognistration.com/try` connection helper | pass | production browser flow exposes the copyable remote-app setup prompt and expanded Plugins-tab guidance; no URL is sent to a Git installer |
 | `POST /api/mcp` `open_machine_generator` + `resources/read` | pass | production render returns Gamma/246 Hz with `isPlaying: false`; the widget resource is `text/html;profile=mcp-app`, loads the canonical Aurora visual, and advertises exact connect/resource/frame domains |
-| `POST /api/mcp` `open_science_guide` + `resources/read` | pending deployment | local render returns a seven-slide `text/html;profile=mcp-app` guide with the FFT ocean-surface visual reference, print/save-to-PDF controls, and false audio/diary/medical boundaries |
+| `POST /api/mcp` `open_science_guide` + `resources/read` | pass | production render returns a seven-slide `text/html;profile=mcp-app` guide with the FFT ocean-surface visual reference, print/save-to-PDF controls, and false audio/diary/medical boundaries |
 | `POST /api/mcp` `get_ios_app_offer` + `resources/read` | pass | production returns the canonical App Store URL, `$2.99` one-time iPhone offer, compatibility, feature summary, and on-device pricing context without processing payment |
 | `POST /api/mcp` `open_account_signup` + `resources/read` | pass | render-only account form is returned in-platform; credentials and checkout are user-controlled |
 | `POST /api/mcp` `open_feedback` + `resources/read` | pass | render-only closing card is returned in-platform; submission is explicit and feedback history is not exposed |
@@ -83,7 +84,7 @@
 
 ## Release state
 
-Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, in-platform done-state feedback, and local science-guide implementation: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-science-guide-local-verified`. The prior production Vercel deployment `dpl_E8aJx42qdoL38EZddnhS28zw7Zoc` remains ready on commit `25c40fa`; this science-guide slice is not yet represented in that deployment. Prior live verification covered 26 MCP tools, 13 resources, and 18 homepage WebMCP tools; after release, re-run the public checks for 27 MCP tools, 14 resources, and 19 homepage WebMCP tools. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
+Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, in-platform done-state feedback, and the production science guide: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-science-guide-verified`. Vercel deployment `dpl_BZgjeDY7aGKB9Qe8mxxeUUjUNRa` is ready on commit `1b29965` with the `cognistration.com` alias. Live verification covers 27 MCP tools, 14 resources, 19 homepage WebMCP tools, the seven-slide science widget, and the enabled fixed $0.50 payment challenge. The payment coda must still be shown only with the existing user-approved provider client.
 
 ## Challenge handoff
 
