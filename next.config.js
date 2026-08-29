@@ -8,6 +8,7 @@ function normalizeOrigin(value) {
 
 const backendOrigin = normalizeOrigin(process.env.BACKEND_ORIGIN);
 const FFMPEG_BINARY = './node_modules/ffmpeg-static/ffmpeg';
+const WGSL_LOADER = require.resolve('@vgpu/wgsl/loader-webpack');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -20,6 +21,22 @@ const nextConfig = {
   },
   turbopack: {
     root: __dirname,
+    rules: {
+      '*.wgsl': {
+        loaders: [WGSL_LOADER],
+        as: '*.js'
+      }
+    }
+  },
+  webpack(config) {
+    config.module ??= {};
+    config.module.rules ??= [];
+    config.module.rules.push({
+      test: /\.wgsl$/,
+      loader: WGSL_LOADER,
+      options: { minify: true }
+    });
+    return config;
   },
   serverExternalPackages: ['lamejs', 'wavefile'],
   async rewrites() {

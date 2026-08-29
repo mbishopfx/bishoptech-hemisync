@@ -20,6 +20,7 @@ export function ToneScienceLesson({
   id = 'tone-science-guide',
   tone = null,
   controls = {},
+  generationKey = null,
   open: controlledOpen,
   onOpenChange
 }) {
@@ -84,7 +85,7 @@ export function ToneScienceLesson({
         </div>
       ) : (
         <div className="relative isolate min-h-[42rem] overflow-hidden bg-[#10221d] p-3 sm:p-5">
-          <OceanSurfaceCanvas />
+          <OceanSurfaceCanvas key={generationKey ?? 'science-ocean'} />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,22,18,0.25),rgba(7,22,18,0.72))]" aria-hidden="true" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(182,221,204,0.18),transparent_30%),radial-gradient(circle_at_82%_80%,rgba(224,180,147,0.13),transparent_32%)]" aria-hidden="true" />
 

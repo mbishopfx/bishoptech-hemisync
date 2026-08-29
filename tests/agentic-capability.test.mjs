@@ -49,6 +49,7 @@ import {
 } from '../lib/agentic/science-content.js';
 import { SCIENCE_GUIDE_CAPABILITY_ID, SCIENCE_GUIDE_CAPABILITY_VERSION, ScienceGuideInputSchema, buildScienceGuideState } from '../lib/agentic/science-capability.js';
 import { SCIENCE_GUIDE_WIDGET_HTML, SCIENCE_GUIDE_WIDGET_RESOURCE_META } from '../lib/agentic/science-widget.js';
+import { createOceanProfile } from '../components/science/vgpu-ocean/ocean-profile.js';
 import { WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.js';
 import { MEMBER_WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.js';
 import { MemberPlanInputSchema, buildMemberSessionPlan, journeyPresetForState } from '../lib/agentic/member-capability.js';
@@ -61,6 +62,13 @@ import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePayme
 import { createPaymentPassport, verifyPaymentPassport, PAYMENT_PASSPORT_TTL_SEC } from '../lib/commerce/payment-passport.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
+
+const SCIENCE_GUIDE_OCEAN_MODULE = await readFile(
+  new URL('../public/vgpu-ocean/science-guide-ocean.js', import.meta.url),
+  'utf8'
+);
+const DOCS_PAGE_SOURCE = await readFile(new URL('../app/docs/page.js', import.meta.url), 'utf8');
+const NEXT_CONFIG_SOURCE = await readFile(new URL('../next.config.js', import.meta.url), 'utf8');
 
 test('the public tone catalog is bounded and contains only stable public fields', () => {
   assert.ok(PUBLIC_TONE_CATALOG.length >= 10);
@@ -179,8 +187,12 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.equal(SCIENCE_GUIDE_BACKGROUND_URL, 'https://vgpu.sh/examples/fft-ocean-surface');
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /vgpu\.sh\/examples\/fft-ocean-surface/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="ocean-canvas"/);
-  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /function drawOcean/);
-  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /requestAnimationFrame/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /science-guide-ocean\.js/);
+  assert.match(SCIENCE_GUIDE_OCEAN_MODULE, /vgpu@0\.3\.1/);
+  assert.match(SCIENCE_GUIDE_OCEAN_MODULE, /navigator\.gpu/);
+  assert.match(SCIENCE_GUIDE_OCEAN_MODULE, /frameLoop/);
+  assert.match(SCIENCE_GUIDE_OCEAN_MODULE, /seed/);
+  assert.doesNotMatch(SCIENCE_GUIDE_WIDGET_HTML, /getContext\(['"]2d['"]\)/);
   assert.doesNotMatch(SCIENCE_GUIDE_WIDGET_HTML, /<iframe/i);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="science-slide"/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Previous/);
@@ -188,6 +200,37 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /ArrowRight/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Print \/ save PDF/);
   assert.deepEqual(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains, []);
+  assert.ok(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.resourceDomains.includes('https://esm.sh'));
+});
+
+test('each science-guide ocean generation has deterministic bounded parameters and a new seed changes the profile', () => {
+  const first = createOceanProfile(101);
+  const repeat = createOceanProfile(101);
+  const next = createOceanProfile(102);
+  assert.deepEqual(first, repeat);
+  assert.notDeepEqual(first, next);
+  assert.ok(first.windSpeed >= 2 && first.windSpeed <= 60);
+  assert.ok(first.amplitude >= 0.2 && first.amplitude <= 16);
+  assert.ok(first.patchSize >= 60 && first.patchSize <= 600);
+  assert.ok(first.heightScale >= 0 && first.heightScale <= 80);
+  assert.ok(first.choppyScale >= 0 && first.choppyScale <= 40);
+  assert.ok(first.foamScale >= 0.05 && first.foamScale <= 1.2);
+  assert.ok(first.sunElevation >= -2 && first.sunElevation <= 60);
+  assert.ok(first.timeScale >= 0 && first.timeScale <= 3);
+});
+
+test('SDK docs stay connected to the MCP/WebMCP registries and vGPU build path', () => {
+  assert.match(DOCS_PAGE_SOURCE, /MCP_TOOLS/);
+  assert.match(DOCS_PAGE_SOURCE, /MCP_RESOURCES/);
+  assert.match(DOCS_PAGE_SOURCE, /MCP_PROMPTS/);
+  assert.match(DOCS_PAGE_SOURCE, /WEBMCP_TOOL_DEFINITIONS/);
+  assert.match(DOCS_PAGE_SOURCE, /MEMBER_WEBMCP_TOOL_DEFINITIONS/);
+  assert.match(DOCS_PAGE_SOURCE, /skillCatalogSummary/);
+  assert.match(DOCS_PAGE_SOURCE, /document\.modelContext\.registerTool/);
+  assert.match(DOCS_PAGE_SOURCE, /\/api\/capabilities/);
+  assert.match(DOCS_PAGE_SOURCE, /\/openapi\.json/);
+  assert.match(NEXT_CONFIG_SOURCE, /@vgpu\/wgsl\/loader-webpack/);
+  assert.match(NEXT_CONFIG_SOURCE, /turbopack/);
 });
 
 test('tone-pack catalog returns playable public previews without private commerce fields', () => {

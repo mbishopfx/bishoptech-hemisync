@@ -12,6 +12,7 @@ Cognistration is a private audio-session product with public education, pricing,
 - /agent-instructions.md — browser-agent workflow, public MCP boundary, and discovery links
 - /openapi.json — REST compatibility contract derived from the public capability registry
 - /api/mcp — public MCP JSON-RPC tools, including the iPhone app offer, interactive machine and science-guide UI resources, and the public payment discovery lane for compatible ChatGPT app hosts
+- /docs — SDK-style reference for MCP/WebMCP tools, protocol commands, resources, skills, prompts, routes, and safety boundaries
 - /api/agent/account — machine-readable preview, workspace, and signup boundaries
 - /api/agent/policy?topic=safety — machine-readable canonical policy summary and URL
 - /api/packs?agent=1 — safe agent-compatible tone-pack catalog and preview links
@@ -41,7 +42,7 @@ Cognistration is a private audio-session product with public education, pricing,
 - The public MCP get_ios_app_offer tool returns the canonical App Store listing, the current one-time $2.99 iPhone price, compatibility, and public feature summary. It never processes payment.
 - The iPhone offer is lower because the app does its audio work on-device instead of routing each session through a deployed cloud engine, reducing hosted infrastructure and maintenance overhead.
 - The public MCP render tool open_machine_generator opens a versioned interactive machine widget with the supplied Aurora visual, bounded controls, public pack browsing, and an explicit local audio preview button.
-- The public MCP render tool open_science_guide opens a versioned, clickable seven-slide science guide with a self-contained animated ocean surface, a quiet FFT visual reference link, FFR and evidence boundaries, descriptive frequency-band notes, safety guidance, and a browser print/save-to-PDF action. It never starts audio or carries diary content.
+- The public MCP render tool open_science_guide opens a versioned, clickable seven-slide science guide with a vGPU FFT ocean surface and a bounded randomized sea profile per run, a quiet FFT visual reference link, FFR and evidence boundaries, descriptive frequency-band notes, safety guidance, and a browser print/save-to-PDF action. It never starts audio or carries diary content.
 - The public MCP render tool open_account_signup opens an in-platform account capture form; credentials are entered and submitted by the user directly to Cognistration, and checkout is separate.
 - When a listener says they are done, the public MCP render tool open_feedback opens one optional in-platform thumbs-up/down card. It writes only after explicit submission and never displays feedback history.
 - The public MCP session tools compare_tone_directions, plan_listening_session, and get_session_cue return bounded guidance only; they do not start audio, read diary content, or save a record.

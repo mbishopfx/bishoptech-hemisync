@@ -120,6 +120,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
         <Link href="/tutorial" className={`transition ${mutedLink}`}>Tutorial</Link>
         <Link href="/blog" className={`transition ${mutedLink}`}>Blog</Link>
         <Link href="/pricing" className={`transition ${mutedLink}`}>Pricing</Link>
+        <Link href="/docs" className={`transition ${mutedLink}`}>Docs</Link>
       </nav>
 
       <div className="hidden items-center gap-3 pointer-events-auto md:flex">
@@ -165,6 +166,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
         <Link href="/tutorial" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Tutorial</Link>
         <Link href="/blog" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Blog</Link>
         <Link href="/pricing" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>Pricing</Link>
+        <Link href="/docs" onClick={() => setMenuOpen(false)} className={`text-xl ${isLight ? 'text-[#60716b]' : 'text-white/75'}`}>MCP Docs</Link>
         <button type="button" onClick={openConnect} className={`mt-2 inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm ${actionSurface}`}>
           <Sparkle className={`size-4 ${isLight ? 'text-[#548477]' : 'text-[#b6ddcc]'}`} weight="fill" aria-hidden="true" />
           Connect ChatGPT

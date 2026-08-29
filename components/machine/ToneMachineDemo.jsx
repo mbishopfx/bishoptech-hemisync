@@ -88,6 +88,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
   const [ritualPhase, setRitualPhase] = useState(initialRitualPlan?.phases?.[0]?.id || null);
   const [recipeMessage, setRecipeMessage] = useState('');
   const [scienceGuideOpen, setScienceGuideOpen] = useState(false);
+  const [scienceGuideGeneration, setScienceGuideGeneration] = useState(0);
   const maxDurationSec = workshopAccess?.valid ? 60 * 60 : DEFAULT_MAX_DURATION_SEC;
   const isWorkshopAccess = Boolean(workshopAccess?.valid);
 
@@ -240,6 +241,14 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     state: sessionStateRef.current
   }), []);
 
+  const agentResult = useCallback((status, extra = {}) => ({
+    capabilityId: WEBMCP_CONTRACT_ID,
+    version: WEBMCP_CONTRACT_VERSION,
+    correlationId: browserCorrelationId(),
+    status,
+    ...extra
+  }), []);
+
   const generateToneForAgent = useCallback(async (input = {}) => {
     const intention = typeof input.intention === 'string' ? input.intention.trim() : '';
     if (!intention || intention.length > 240) {
@@ -307,15 +316,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         error: { code: 'NETWORK_ERROR', safeMessage: 'The library matcher could not connect.', retryable: true }
       };
     }
-  }, [applyToneSettings]);
-
-  const agentResult = useCallback((status, extra = {}) => ({
-    capabilityId: WEBMCP_CONTRACT_ID,
-    version: WEBMCP_CONTRACT_VERSION,
-    correlationId: browserCorrelationId(),
-    status,
-    ...extra
-  }), []);
+  }, [agentResult, applyToneSettings]);
 
   const fetchAgentCapability = useCallback(async (path, body) => {
     const response = await fetch(path, {
@@ -725,6 +726,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       });
     }
 
+    setScienceGuideGeneration((current) => current + 1);
     setScienceGuideOpen(true);
     setAgentActivity('Science guide opened. Audio remains off.');
     window.setTimeout(() => document.getElementById('tone-science-guide')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0);
@@ -738,6 +740,11 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       controls: sessionStateRef.current
     });
   }, [agentResult]);
+
+  const handleScienceGuideOpenChange = useCallback((nextOpen) => {
+    if (nextOpen) setScienceGuideGeneration((current) => current + 1);
+    setScienceGuideOpen(nextOpen);
+  }, []);
 
   startAudioRef.current = startAudio;
   sessionStateRef.current = {
@@ -1121,8 +1128,9 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         id="tone-science-guide"
         tone={agentTone}
         controls={{ targetState, carrierHz: carrierFreq, beatHz: beatFreq, volume }}
+        generationKey={scienceGuideGeneration}
         open={scienceGuideOpen}
-        onOpenChange={setScienceGuideOpen}
+        onOpenChange={handleScienceGuideOpenChange}
       />
 
       {showLimitModal && (

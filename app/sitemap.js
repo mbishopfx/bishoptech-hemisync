@@ -21,6 +21,7 @@ const staticRoutes = [
   '/tutorial/remote-viewing-stargate-documents',
   '/machine',
   '/try',
+  '/docs',
   '/privacy',
   '/terms',
   '/cookies',

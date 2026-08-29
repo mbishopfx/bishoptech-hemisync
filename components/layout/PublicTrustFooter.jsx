@@ -8,7 +8,8 @@ const trustLinks = [
   { href: '/health-warning', label: 'Health Warning' },
   { href: '/llms.txt', label: 'llms.txt' },
   { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contact' }
+  { href: '/contact', label: 'Contact' },
+  { href: '/docs', label: 'MCP Docs' }
 ];
 
 export function PublicTrustFooter() {
