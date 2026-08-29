@@ -7,7 +7,7 @@
 - Deployment: Vercel team `bishoptech`, project `bishoptech-cognistration`
 - Environment: Vercel production deployment with canonical-route verification
 - Canonical domain: `https://cognistration.com`
-- Production deployment proof: Vercel `dpl_BZgjeDY7aGKB9Qe8mxxeUUjUNRa` is `READY` with the `cognistration.com` alias and commit `1b29965`; verified 2026-08-29
+- Production deployment proof: Vercel `dpl_7rzJPfun2g9iPxHEkJDHSKUt17R4` is `READY` with the `cognistration.com` alias and commit `ab348a7`; verified 2026-08-29
 - Authorized production actions: user requested full implementation control and reported authenticated Vercel/Supabase CLIs; record exact deploy/DB actions when performed
 - Test marker: `AGENTIC-20260829-01`
 
@@ -20,7 +20,7 @@
 | existing billing fixtures | `npm run test:billing` | pass; 6 tests |
 | existing Studio fixtures | `npm run test:studio` | pass; 13 tests |
 | lint | `npm run lint` | pass; 0 errors |
-| build | `npm run build` + Vercel production build | pass locally and remotely for `dpl_BZgjeDY7aGKB9Qe8mxxeUUjUNRa`; Next retains three pre-existing hook warnings outside the science guide |
+| build | `npm run build` + Vercel production build | pass remotely for `dpl_7rzJPfun2g9iPxHEkJDHSKUt17R4`; local production builds remain intentionally disabled by `GEMINI.md` |
 
 ## Agent and UX tests
 
@@ -84,7 +84,7 @@
 
 ## Release state
 
-Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, in-platform done-state feedback, and the production science guide: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-science-guide-verified`. Vercel deployment `dpl_BZgjeDY7aGKB9Qe8mxxeUUjUNRa` is ready on commit `1b29965` with the `cognistration.com` alias. Live verification covers 27 MCP tools, 14 resources, 19 homepage WebMCP tools, the seven-slide science widget, and the enabled fixed $0.50 payment challenge. The payment coda must still be shown only with the existing user-approved provider client.
+Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, in-platform done-state feedback, and the production science guide: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-science-guide-canvas-verified`. Vercel deployment `dpl_7rzJPfun2g9iPxHEkJDHSKUt17R4` is ready on commit `ab348a7` with the `cognistration.com` alias. Live verification covers 27 MCP tools, 14 resources, 19 homepage WebMCP tools, the seven-slide science widget with a self-contained animated ocean canvas and no embedded source page, and the enabled fixed $0.50 payment challenge. The payment coda must still be shown only with the existing user-approved provider client.
 
 ## Challenge handoff
 
