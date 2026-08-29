@@ -702,6 +702,7 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   const page = await readFile(new URL('../app/try/page.js', import.meta.url), 'utf8');
   const homepage = await readFile(new URL('../app/page.js', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
+  const styles = await readFile(new URL('../app/globals.css', import.meta.url), 'utf8');
   const sitemap = await readFile(new URL('../app/sitemap.js', import.meta.url), 'utf8');
   const robots = await readFile(new URL('../app/robots.js', import.meta.url), 'utf8');
   assert.match(page, /WebMCP challenge cockpit/);
@@ -713,6 +714,14 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /No charge was submitted by this page/);
   assert.match(cockpit, /Start preview is still a human click/);
   assert.match(cockpit, /Open & understand/);
+  assert.match(cockpit, /glass-step-number/);
+  assert.match(cockpit, /glass-action/);
+  assert.match(machine, /glass-panel/);
+  assert.match(machine, /glass-action/);
+  assert.match(page, /glass-action/);
+  assert.match(styles, /\.glass-panel/);
+  assert.match(styles, /\.glass-action/);
+  assert.match(styles, /\.glass-step-number/);
   assert.match(machine, /ToneScienceLesson/);
   assert.match(machine, /cognistration_open_science_guide/);
   assert.match(scienceLesson, /OceanSurfaceCanvas/);

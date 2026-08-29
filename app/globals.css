@@ -424,6 +424,314 @@ main section[id] {
   z-index: 1;
 }
 
+/* Shared dark glass surfaces for the public machine and WebMCP cockpit. */
+.glass-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(215, 234, 223, 0.1), transparent 34%),
+    linear-gradient(145deg, rgba(40, 65, 57, 0.7), rgba(10, 24, 21, 0.66));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -24px 48px rgba(3, 12, 10, 0.2),
+    0 30px 100px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(32px) saturate(135%);
+  -webkit-backdrop-filter: blur(32px) saturate(135%);
+}
+
+.glass-panel::before,
+.glass-subpanel::before,
+.glass-step-card::before {
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.09), transparent 32%, transparent 72%, rgba(182, 221, 204, 0.06));
+  content: '';
+  pointer-events: none;
+}
+
+.glass-panel > *,
+.glass-subpanel > *,
+.glass-step-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-subpanel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+    rgba(8, 22, 18, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -16px 30px rgba(3, 12, 10, 0.14);
+  backdrop-filter: blur(22px) saturate(125%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+}
+
+.glass-action {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(215, 234, 223, 0.22);
+  background:
+    linear-gradient(135deg, rgba(215, 234, 223, 0.16), rgba(182, 221, 204, 0.06)),
+    rgba(12, 31, 25, 0.46);
+  color: rgba(235, 248, 240, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -8px 18px rgba(3, 12, 10, 0.12),
+    0 10px 28px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(20px) saturate(135%);
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-action::before {
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.14), transparent 36%, transparent 68%, rgba(182, 221, 204, 0.1));
+  content: '';
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-action > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-action:hover {
+  transform: translateY(-2px);
+  border-color: rgba(215, 234, 223, 0.58);
+  background:
+    linear-gradient(135deg, rgba(215, 234, 223, 0.24), rgba(182, 221, 204, 0.1)),
+    rgba(12, 31, 25, 0.54);
+  color: #f3fff7;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -10px 20px rgba(3, 12, 10, 0.1),
+    0 16px 34px rgba(0, 0, 0, 0.18);
+}
+
+.glass-action:hover::before {
+  opacity: 1;
+}
+
+.glass-action:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.glass-action:focus-visible,
+.glass-choice:focus-visible,
+.glass-step-card:focus-visible {
+  outline: 2px solid #d7eadf;
+  outline-offset: 3px;
+}
+
+.glass-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  transform: none;
+}
+
+.glass-action--primary {
+  border-color: rgba(215, 234, 223, 0.38);
+  color: #d7eadf;
+}
+
+.glass-action--secondary {
+  border-color: rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.025)),
+    rgba(10, 24, 21, 0.36);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.glass-action--secondary:hover {
+  border-color: rgba(215, 234, 223, 0.48);
+}
+
+.glass-action--warning {
+  border-color: rgba(255, 228, 169, 0.34);
+  background:
+    linear-gradient(135deg, rgba(255, 228, 169, 0.16), rgba(224, 180, 147, 0.06)),
+    rgba(42, 31, 21, 0.4);
+  color: #fff0c9;
+}
+
+.glass-input {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(8, 22, 18, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  transition:
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-input:focus {
+  border-color: rgba(182, 221, 204, 0.62);
+  background:
+    linear-gradient(135deg, rgba(215, 234, 223, 0.12), rgba(255, 255, 255, 0.035)),
+    rgba(8, 22, 18, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 0 3px rgba(182, 221, 204, 0.1);
+}
+
+.glass-pill {
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.glass-choice {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)),
+    rgba(8, 22, 18, 0.36);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-choice:hover {
+  transform: translateY(-2px);
+  border-color: rgba(215, 234, 223, 0.36);
+  background:
+    linear-gradient(145deg, rgba(215, 234, 223, 0.13), rgba(255, 255, 255, 0.035)),
+    rgba(8, 22, 18, 0.44);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.glass-choice.is-selected {
+  border-color: rgba(182, 221, 204, 0.58);
+  background:
+    linear-gradient(145deg, rgba(182, 221, 204, 0.18), rgba(182, 221, 204, 0.05)),
+    rgba(8, 22, 18, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 30px rgba(90, 146, 122, 0.12);
+}
+
+.glass-step-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(8, 22, 18, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 28px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-step-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(215, 234, 223, 0.34);
+  background:
+    linear-gradient(145deg, rgba(215, 234, 223, 0.12), rgba(255, 255, 255, 0.03)),
+    rgba(8, 22, 18, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 16px 34px rgba(0, 0, 0, 0.14);
+}
+
+.glass-step-number {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(215, 234, 223, 0.32);
+  border-radius: 0.85rem;
+  background:
+    linear-gradient(145deg, rgba(215, 234, 223, 0.2), rgba(182, 221, 204, 0.05)),
+    rgba(9, 28, 22, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 8px 18px rgba(0, 0, 0, 0.1);
+  color: #d7eadf;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+.glass-step-number--compact {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.65rem;
+  font-size: 0.6rem;
+}
+
+.glass-step-list {
+  position: relative;
+}
+
+.glass-step-item {
+  position: relative;
+}
+
+.glass-step-item:not(:last-child)::after {
+  position: absolute;
+  top: 2.6rem;
+  bottom: -1.35rem;
+  left: 1.05rem;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(182, 221, 204, 0.32), rgba(255, 255, 255, 0.04));
+  content: '';
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-action,
+  .glass-choice,
+  .glass-step-card,
+  .glass-input {
+    transition: none;
+  }
+
+  .glass-action:hover,
+  .glass-choice:hover,
+  .glass-step-card:hover {
+    transform: none;
+  }
+}
+
 .omnibar-glass-shell {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),

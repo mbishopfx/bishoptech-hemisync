@@ -67,7 +67,7 @@ export function ToneScienceLesson({
   }, [isOpen, setOpen]);
 
   return (
-    <section id={id} data-testid="tone-science-lesson" aria-label="Cognistration science guide" className="mt-8 overflow-hidden rounded-[2rem] border border-[#b6ddcc]/15 bg-[#10221d] shadow-[0_24px_90px_rgba(0,0,0,0.2)]">
+    <section id={id} data-testid="tone-science-lesson" aria-label="Cognistration science guide" className="glass-subpanel mt-8 rounded-[2rem] border border-[#b6ddcc]/15 shadow-[0_24px_90px_rgba(0,0,0,0.2)]">
       {!isOpen ? (
         <div className="relative isolate overflow-hidden p-6 sm:p-8">
           <div className="pointer-events-none absolute -left-16 top-1/2 size-64 -translate-y-1/2 rounded-full bg-[#b6ddcc]/10 blur-3xl" aria-hidden="true" />
@@ -77,7 +77,7 @@ export function ToneScienceLesson({
               <h2 className="max-w-xl text-3xl font-medium tracking-[-0.055em] text-white sm:text-4xl">Understand the signal</h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-white/55">A short, click-through guide to the two-channel signal, FFR, frequency-band shorthand, evidence limits, and safe listening.</p>
             </div>
-            <button type="button" onClick={() => setOpen(true)} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3 text-sm font-medium text-[#17332e] transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#b6ddcc] focus:ring-offset-2 focus:ring-offset-[#10221d]">
+            <button type="button" onClick={() => setOpen(true)} className="glass-action glass-action--primary inline-flex shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#b6ddcc] focus:ring-offset-2 focus:ring-offset-[#10221d]">
               Open guide
               <ArrowRight className="size-4" weight="bold" aria-hidden="true" />
             </button>
@@ -89,18 +89,18 @@ export function ToneScienceLesson({
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,22,18,0.25),rgba(7,22,18,0.72))]" aria-hidden="true" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(182,221,204,0.18),transparent_30%),radial-gradient(circle_at_82%_80%,rgba(224,180,147,0.13),transparent_32%)]" aria-hidden="true" />
 
-          <div className="relative flex min-h-[39rem] flex-col rounded-[1.65rem] border border-white/15 bg-[#10251f]/58 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] backdrop-blur-[3px] sm:p-6">
+          <div className="glass-panel relative flex min-h-[39rem] flex-col rounded-[1.65rem] border border-white/15 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
               <div>
                 <h2 className="text-lg font-medium tracking-[-0.03em] text-white">Understand the signal</h2>
                 <p className="mt-1 text-xs text-white/45">Audio is off. Move through the guide at your pace.</p>
               </div>
               <div className="flex items-center gap-2">
-                <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-2 text-xs text-white/70 transition hover:border-[#b6ddcc]/50 hover:text-white">
+                <button type="button" onClick={() => window.print()} className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-xs">
                   <Printer className="size-4" aria-hidden="true" />
                   Print / save PDF
                 </button>
-                <button type="button" onClick={() => setOpen(false)} className="inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white/65 transition hover:border-white/35 hover:text-white" aria-label="Close science guide">
+                <button type="button" onClick={() => setOpen(false)} className="glass-action glass-action--secondary inline-flex size-9 items-center justify-center rounded-full text-white/65" aria-label="Close science guide">
                   <X className="size-4" aria-hidden="true" />
                 </button>
               </div>
@@ -113,7 +113,7 @@ export function ToneScienceLesson({
               <span className="text-[#b6ddcc]/75">Audio off</span>
             </div>
 
-            <article id={`${id}-slide`} data-testid="tone-science-slideshow" tabIndex={-1} className="mx-auto my-auto w-full max-w-4xl rounded-[1.7rem] border border-white/15 bg-[#142a23]/78 p-6 shadow-[0_28px_90px_rgba(0,0,0,0.25)] outline-none backdrop-blur-xl sm:p-10" aria-live="polite" aria-label={`Slide ${slideIndex + 1} of ${SCIENCE_GUIDE_SLIDES.length}: ${slide.title}`}>
+            <article id={`${id}-slide`} data-testid="tone-science-slideshow" tabIndex={-1} className="glass-subpanel mx-auto my-auto w-full max-w-4xl rounded-[1.7rem] border border-white/15 p-6 shadow-[0_28px_90px_rgba(0,0,0,0.25)] outline-none sm:p-10" aria-live="polite" aria-label={`Slide ${slideIndex + 1} of ${SCIENCE_GUIDE_SLIDES.length}: ${slide.title}`}>
               <h3 className="max-w-3xl text-3xl font-medium leading-[1.04] tracking-[-0.055em] text-white sm:text-5xl">{slide.title}</h3>
               <p className="mt-5 max-w-3xl text-sm leading-7 text-white/65 sm:text-base">{slide.body}</p>
 
@@ -159,11 +159,11 @@ export function ToneScienceLesson({
                 ))}
               </div>
               <div className="flex items-center gap-2">
-                <button type="button" onClick={() => setSlideIndex((current) => Math.max(0, current - 1))} disabled={slideIndex === 0} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-2 text-xs text-white/65 transition hover:border-white/35 hover:text-white disabled:cursor-not-allowed disabled:opacity-30">
+                <button type="button" onClick={() => setSlideIndex((current) => Math.max(0, current - 1))} disabled={slideIndex === 0} className="glass-action glass-action--secondary inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs">
                   <ArrowLeft className="size-3.5" aria-hidden="true" />
                   Previous
                 </button>
-                <button type="button" onClick={() => setSlideIndex((current) => Math.min(SCIENCE_GUIDE_SLIDES.length - 1, current + 1))} disabled={slideIndex === SCIENCE_GUIDE_SLIDES.length - 1} className="inline-flex items-center gap-1.5 rounded-full border border-[#b6ddcc]/35 bg-[#b6ddcc]/10 px-3 py-2 text-xs text-[#d7eadf] transition hover:border-[#b6ddcc]/65 disabled:cursor-not-allowed disabled:opacity-30">
+                <button type="button" onClick={() => setSlideIndex((current) => Math.min(SCIENCE_GUIDE_SLIDES.length - 1, current + 1))} disabled={slideIndex === SCIENCE_GUIDE_SLIDES.length - 1} className="glass-action glass-action--primary inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs">
                   Next
                   <ArrowRight className="size-3.5" aria-hidden="true" />
                 </button>

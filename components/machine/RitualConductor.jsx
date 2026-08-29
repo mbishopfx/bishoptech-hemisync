@@ -8,7 +8,7 @@ export function RitualConductor({ plan, activePhase = null, onSelectPhase }) {
   if (!plan?.phases?.length) return null;
 
   return (
-    <section data-testid="ritual-conductor" aria-labelledby="ritual-conductor-title" className="space-y-4 rounded-2xl border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.05] p-4 sm:p-5">
+    <section data-testid="ritual-conductor" aria-labelledby="ritual-conductor-title" className="glass-subpanel space-y-4 rounded-2xl border border-[#b6ddcc]/15 p-4 sm:p-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#b6ddcc]/75">Three-act ritual</p>
@@ -28,10 +28,10 @@ export function RitualConductor({ plan, activePhase = null, onSelectPhase }) {
               type="button"
               aria-pressed={isActive}
               onClick={() => onSelectPhase?.(phase.id)}
-              className={`group rounded-xl border p-3 text-left transition ${isActive ? 'border-[#b6ddcc]/40 bg-[#b6ddcc]/10 text-white' : 'border-white/10 bg-[#101815]/50 text-white/60 hover:border-white/20 hover:text-white'}`}
+              className={`glass-choice group rounded-xl p-3 text-left ${isActive ? 'is-selected text-white' : 'text-white/60'}`}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] uppercase tracking-[0.18em] text-white/35">0{index + 1}</span>
+                <span className="glass-step-number glass-step-number--compact" aria-hidden="true">0{index + 1}</span>
                 {isActive ? <Check className="size-4 text-[#b6ddcc]" weight="bold" aria-label="Active phase" /> : <ArrowRight className="size-3 text-white/25 transition group-hover:translate-x-0.5" aria-hidden="true" />}
               </div>
               <p className="mt-3 text-sm font-medium">{phase.label}</p>

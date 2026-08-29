@@ -949,11 +949,11 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     <section
       id="tone-machine-demo"
       aria-label="Cognistration tone machine demo"
-      className={`w-full rounded-[2rem] border border-white/12 bg-[#14231f]/90 p-6 backdrop-blur-2xl transition-all duration-500 sm:p-8 ${visual.border} ${visual.shadow}`}
+      className="glass-panel w-full rounded-[2rem] border border-white/10 p-6 transition-all duration-500 sm:p-8"
     >
       <div data-testid="webmcp-bridge" data-webmcp-status={webmcpStatus}>
         {showWebMcpStatus && (
-          <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="glass-subpanel mb-8 flex flex-col gap-3 rounded-2xl border border-cyan-400/15 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className={`size-2 rounded-full ${webmcpStatus === 'ready' ? 'bg-emerald-300 shadow-[0_0_10px_rgba(110,231,183,0.8)]' : 'bg-cyan-300/60'}`} aria-hidden="true" />
@@ -979,7 +979,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         <div className="space-y-6 lg:col-span-7">
           <div className="space-y-4">
                 <p className="text-sm font-medium text-white/70">See the session take shape</p>
-            <div className="relative space-y-6 overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#101815]/70 p-5 sm:p-6">
+            <div className="glass-subpanel relative space-y-6 rounded-[1.5rem] border border-white/10 p-5 sm:p-6">
               <div className="relative z-10 space-y-1">
                 <div className="flex justify-between text-xs font-medium tracking-wide text-[#b6ddcc]">
                   <span>Left channel</span>
@@ -1052,7 +1052,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
             </label>
           </div>
 
-          <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+          <div className="glass-subpanel flex items-center gap-3 rounded-xl border border-white/10 p-4">
             <Pulse aria-hidden="true" className={`size-5 shrink-0 ${visual.accent}`} weight="light" />
             <p className="text-sm text-white/60">Current rhythm: {beatFreq.toFixed(1)} Hz</p>
           </div>
@@ -1064,14 +1064,14 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
             <button
               type="button"
               onClick={togglePower}
-              className={`flex w-full items-center justify-center gap-3 rounded-2xl border px-6 py-4 text-sm font-medium transition-all ${isPlaying ? 'border-[#b6ddcc]/35 bg-[#b6ddcc]/10 text-[#d7eadf] hover:bg-[#b6ddcc]/15' : 'border-white/15 bg-white/[0.04] text-white/70 hover:border-white/30 hover:bg-white/[0.08] hover:text-white'}`}
+              className={`glass-action glass-action--primary flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-medium ${isPlaying ? 'is-active' : ''}`}
             >
               <Power aria-hidden="true" weight="light" className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
               {isPlaying ? 'Pause preview' : 'Start preview'}
             </button>
           </div>
 
-          <div className="select-none space-y-2 rounded-2xl border border-white/10 bg-[#101815]/60 p-4">
+          <div className="glass-subpanel select-none space-y-2 rounded-2xl border border-white/10 p-4">
             <div className="flex justify-between text-sm">
               <span className="text-white/45">Preview time</span>
               <span className={isPlaying || packPreview ? 'animate-pulse font-medium text-[#b6ddcc]' : 'text-white/35'}>{isPlaying || packPreview ? 'Playing' : 'Ready'}</span>
@@ -1100,7 +1100,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
                   type="button"
                   aria-pressed={targetState === state.id}
                   onClick={() => handleStateSelect(state.id, state.hz)}
-                  className={`rounded-2xl border p-4 text-left transition-all ${targetState === state.id ? 'border-[#b6ddcc]/35 bg-[#b6ddcc]/10 text-white shadow-[0_0_20px_rgba(182,221,204,0.08)]' : 'border-white/10 bg-[#101815]/60 text-white/50 hover:border-white/20 hover:text-white/80'}`}
+                  className={`glass-choice rounded-2xl p-4 text-left text-white/60 ${targetState === state.id ? 'is-selected text-white' : ''}`}
                 >
                   <p className="text-sm font-bold tracking-tight">{state.label}</p>
                           <p className="mt-1 text-xs text-white/35">{state.range}</p>
@@ -1108,15 +1108,15 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
               ))}
             </div>
 
-            <div data-testid="session-recipe" className="space-y-3 rounded-2xl border border-white/10 bg-[#101815]/60 p-4">
+            <div data-testid="session-recipe" className="glass-subpanel space-y-3 rounded-2xl border border-white/10 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-medium text-white/75">Portable session recipe</p>
                 <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white/35">Technical settings only</span>
               </div>
               <p className="text-xs leading-5 text-white/40">Export or share the current direction without diary text, account data, or audio.</p>
               <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={exportLocalRecipe} className="rounded-full bg-[#d7eadf] px-3.5 py-2 text-xs font-medium text-[#17332e] transition hover:bg-white">Export JSON</button>
-                <button type="button" onClick={shareLocalRecipe} className="rounded-full border border-white/15 px-3.5 py-2 text-xs text-white/70 transition hover:border-white/30 hover:text-white">Share / copy</button>
+                <button type="button" onClick={exportLocalRecipe} className="glass-action glass-action--primary rounded-full px-3.5 py-2 text-xs font-medium">Export JSON</button>
+                <button type="button" onClick={shareLocalRecipe} className="glass-action glass-action--secondary rounded-full px-3.5 py-2 text-xs">Share / copy</button>
               </div>
               {recipeMessage && <p className="text-xs leading-5 text-[#b6ddcc]/80" aria-live="polite">{recipeMessage}</p>}
             </div>
@@ -1135,7 +1135,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
 
       {showLimitModal && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 p-6 backdrop-blur-md">
-          <div className="relative w-full max-w-md space-y-6 overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#1d2926]/95 p-8 text-center shadow-[0_0_50px_rgba(182,221,204,0.1)]">
+          <div className="glass-panel relative w-full max-w-md space-y-6 rounded-[2.5rem] border border-white/10 p-8 text-center">
             <div className="pointer-events-none absolute inset-0 bg-[#b6ddcc]/[0.04] blur-[80px]" />
             <div className="relative space-y-6">
               <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-[#b6ddcc]/20 bg-[#b6ddcc]/10 text-[#b6ddcc]">
@@ -1147,13 +1147,13 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
               </div>
               <div className="flex flex-col gap-3">
                 {isWorkshopAccess ? (
-                  <button type="button" onClick={() => setShowLimitModal(false)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d7eadf] px-4 py-3.5 text-center text-sm font-medium text-[#17332e] transition-colors hover:bg-white">Close session <ArrowRight aria-hidden="true" className="size-4" weight="bold" /></button>
+                  <button type="button" onClick={() => setShowLimitModal(false)} className="glass-action glass-action--primary flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-center text-sm font-medium">Close session <ArrowRight aria-hidden="true" className="size-4" weight="bold" /></button>
                 ) : (
-                  <Link href="/signup" className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d7eadf] px-4 py-3.5 text-center text-sm font-medium text-[#17332e] transition-colors hover:bg-white">
+                  <Link href="/signup" className="glass-action glass-action--primary flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-center text-sm font-medium">
                     Unlock the full platform <ArrowRight aria-hidden="true" className="size-4" weight="bold" />
                   </Link>
                 )}
-                <button type="button" onClick={() => setShowLimitModal(false)} className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-sm text-zinc-400 transition-all hover:bg-white/10 hover:text-white">Close preview</button>
+                <button type="button" onClick={() => setShowLimitModal(false)} className="glass-action glass-action--secondary w-full rounded-xl px-4 py-3.5 text-sm">Close preview</button>
               </div>
             </div>
           </div>

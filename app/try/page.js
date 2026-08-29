@@ -27,17 +27,17 @@ export default function TryPage() {
               <h1 className="mt-6 max-w-3xl text-5xl font-medium leading-[0.98] tracking-[-0.07em] sm:text-7xl">From an intention to a session you can actually try.</h1>
               <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">A judge-friendly route through Cognistration’s public agent tools: clarify the moment, compare a direction, stage a ritual, open the machine, understand the signal, and keep the final preview under human control.</p>
               <div className="mt-8 flex flex-wrap gap-4 text-sm">
-                <a href="#cockpit" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 font-medium text-[#17332e] transition hover:bg-white">Run the flow <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
-                <Link href="/agent-instructions.md" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3.5 text-white/75 transition hover:border-white/45 hover:text-white">Agent instructions</Link>
+                <a href="#cockpit" className="glass-action glass-action--primary inline-flex items-center gap-2 rounded-full px-5 py-3.5 font-medium">Run the flow <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
+                <Link href="/agent-instructions.md" className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-5 py-3.5">Agent instructions</Link>
               </div>
             </div>
-            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="rounded-full border border-white/10 px-3 py-2">19 public WebMCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">27 public MCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">No account required for the flow</span></div>
+            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="glass-pill rounded-full px-3 py-2">19 public WebMCP tools</span><span className="glass-pill rounded-full px-3 py-2">27 public MCP tools</span><span className="glass-pill rounded-full px-3 py-2">No account required for the flow</span></div>
           </div>
         </section>
 
         <section id="cockpit" className="bg-[#182723] px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
           <div className="mx-auto max-w-[1400px]">
-            <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.045] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="glass-subpanel mb-8 flex flex-col gap-4 rounded-2xl border border-[#b6ddcc]/15 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex gap-3"><ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#b6ddcc]" aria-hidden="true" /><p className="max-w-3xl text-sm leading-6 text-white/60">The public route is deliberately bounded: tools can return choices and stage visible controls, but they do not save diary content or start audio without an explicit preview action.</p></div>
               <Link href="/health-warning" className="shrink-0 text-xs text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4">Safety boundaries ↗</Link>
             </div>

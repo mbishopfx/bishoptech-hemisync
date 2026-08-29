@@ -158,21 +158,21 @@ export function TryCockpit() {
     <div data-testid="try-cockpit" className="space-y-8">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {stepCopy.map(([number, title, copy]) => (
-          <div key={number} className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
-            <p className="font-mono text-[10px] tracking-[0.24em] text-[#b6ddcc]/70">{number}</p>
-            <p className="mt-4 text-sm font-medium text-white">{title}</p>
+          <div key={number} className="glass-step-card rounded-2xl p-4">
+            <span className="glass-step-number" aria-hidden="true">{number}</span>
+            <p className="mt-5 text-sm font-medium text-white">{title}</p>
             <p className="mt-2 text-xs leading-5 text-white/45">{copy}</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[0.68fr_1.32fr]">
-        <aside className="rounded-[1.75rem] border border-white/10 bg-[#101815]/65 p-5 sm:p-6">
+        <aside className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">Judge path</p>
-          <div className="mt-5 space-y-5">
+          <div className="glass-step-list mt-5 space-y-5">
             {stepCopy.map(([number, title, copy]) => (
-              <div key={number} className="flex gap-3">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-white/15 font-mono text-[10px] text-white/50">{number}</span>
+              <div key={number} className="glass-step-item flex gap-3">
+                <span className="glass-step-number shrink-0" aria-hidden="true">{number}</span>
                 <div>
                   <p className="text-sm text-white/80">{title}</p>
                   <p className="mt-1 text-xs leading-5 text-white/35">{copy}</p>
@@ -187,7 +187,7 @@ export function TryCockpit() {
         </aside>
 
         <div className="space-y-5">
-          <form data-testid="try-step-intention" onSubmit={handleClarify} className="rounded-[1.75rem] border border-white/10 bg-[#101815]/65 p-5 sm:p-6">
+          <form data-testid="try-step-intention" onSubmit={handleClarify} className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">01 · Intent clarifier</p>
@@ -201,36 +201,36 @@ export function TryCockpit() {
                 onChange={(event) => setIntention(event.target.value)}
                 maxLength={240}
                 aria-label="Intention for the Cognistration challenge"
-                className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#b6ddcc]/45"
+                className="glass-input min-w-0 flex-1 rounded-xl px-4 py-3 text-sm text-white outline-none placeholder:text-white/30"
               />
-              <button type="submit" disabled={working !== '' || !intention.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#d7eadf] px-5 py-3 text-sm font-medium text-[#17332e] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-45">
+              <button type="submit" disabled={working !== '' || !intention.trim()} className="glass-action glass-action--primary inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium">
                 {working === 'clarify' && <CircleNotch className="size-4 animate-spin" aria-hidden="true" />}
                 Clarify direction
               </button>
             </div>
             {guidance && !safetyRedirect && (
-              <div className="mt-5 rounded-xl border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.05] p-4">
+              <div className="glass-subpanel mt-5 rounded-xl border border-[#b6ddcc]/15 p-4">
                 <p className="text-xs uppercase tracking-[0.16em] text-[#b6ddcc]">{guidance.status === 'needs_input' ? 'Choose a direction' : 'Starting direction'}</p>
                 <p className="mt-2 text-sm leading-6 text-white/75">{guidance.nextAction}</p>
-                {guidance.choices?.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{guidance.choices.map((choice) => <button key={choice.id} type="button" onClick={() => { setIntention(choice.example); setGuidance(null); clearDownstream(); }} className="rounded-full border border-white/15 px-3 py-2 text-xs text-white/70 transition hover:border-[#b6ddcc]/40 hover:text-white">Use {choice.label.toLowerCase()}</button>)}</div>}
+                {guidance.choices?.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{guidance.choices.map((choice) => <button key={choice.id} type="button" onClick={() => { setIntention(choice.example); setGuidance(null); clearDownstream(); }} className="glass-action glass-action--secondary rounded-full px-3 py-2 text-xs">Use {choice.label.toLowerCase()}</button>)}</div>}
               </div>
             )}
           </form>
 
-          <section data-testid="try-step-comparison" className="rounded-[1.75rem] border border-white/10 bg-[#101815]/65 p-5 sm:p-6">
+          <section data-testid="try-step-comparison" className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">02 · Comparison</p>
                 <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">See the tradeoffs</h2>
               </div>
-              <button type="button" onClick={handleCompare} disabled={working !== '' || !intention.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-3 text-sm text-white/75 transition hover:border-white/35 hover:text-white disabled:cursor-not-allowed disabled:opacity-40">
+              <button type="button" onClick={handleCompare} disabled={working !== '' || !intention.trim()} className="glass-action glass-action--secondary inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm">
                 {working === 'compare' && <CircleNotch className="size-4 animate-spin" aria-hidden="true" />}
                 Compare directions
               </button>
             </div>
             {comparison?.options?.length > 0 && !safetyRedirect && (
               <div className="mt-5 grid gap-3 md:grid-cols-3">{comparison.options.map((option) => (
-                <button key={option.tone.id} type="button" onClick={() => chooseTone(option.tone)} className={`rounded-xl border p-4 text-left transition ${selectedTone?.id === option.tone.id ? 'border-[#b6ddcc]/45 bg-[#b6ddcc]/10' : 'border-white/10 bg-white/[0.03] hover:border-white/25'}`}>
+                <button key={option.tone.id} type="button" onClick={() => chooseTone(option.tone)} className={`glass-choice rounded-xl p-4 text-left text-white/70 ${selectedTone?.id === option.tone.id ? 'is-selected text-white' : ''}`}>
                   <span className="font-mono text-[10px] text-[#b6ddcc]/70">0{option.rank}</span>
                   <p className="mt-3 text-sm font-medium text-white">{option.tone.name}</p>
                   <p className="mt-2 text-xs leading-5 text-white/45">{option.direction}</p>
@@ -242,18 +242,18 @@ export function TryCockpit() {
             {!comparison && <p className="mt-5 text-sm leading-6 text-white/40">The comparison stays inside the approved public tone catalog.</p>}
           </section>
 
-          <section data-testid="try-step-plan" className="rounded-[1.75rem] border border-white/10 bg-[#101815]/65 p-5 sm:p-6">
+          <section data-testid="try-step-plan" className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">03 · Ritual conductor</p>
                 <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">Stage a three-act session</h2>
               </div>
-              <button type="button" onClick={handlePlan} disabled={working !== '' || !intention.trim()} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-3 text-sm text-white/75 transition hover:border-white/35 hover:text-white disabled:cursor-not-allowed disabled:opacity-40">
+              <button type="button" onClick={handlePlan} disabled={working !== '' || !intention.trim()} className="glass-action glass-action--secondary inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm">
                 {working === 'plan' && <CircleNotch className="size-4 animate-spin" aria-hidden="true" />}
                 Build the ritual
               </button>
             </div>
-            {plan && !safetyRedirect && <div className="mt-5 grid gap-3 md:grid-cols-3">{plan.phases.map((phase) => <div key={phase.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">{phase.id}</p><p className="mt-3 text-sm font-medium text-white">{phase.label}</p><p className="mt-2 text-xs leading-5 text-white/45">{phase.instruction}</p><p className="mt-3 text-xs text-white/30">{Math.round(phase.durationSec / 60)} min · {phase.controls.targetState}</p></div>)}</div>}
+            {plan && !safetyRedirect && <div className="mt-5 grid gap-3 md:grid-cols-3">{plan.phases.map((phase) => <div key={phase.id} className="glass-subpanel rounded-xl border border-white/10 p-4"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">{phase.id}</p><p className="mt-3 text-sm font-medium text-white">{phase.label}</p><p className="mt-2 text-xs leading-5 text-white/45">{phase.instruction}</p><p className="mt-3 text-xs text-white/30">{Math.round(phase.durationSec / 60)} min · {phase.controls.targetState}</p></div>)}</div>}
             {!plan && <p className="mt-5 text-sm leading-6 text-white/40">Each phase has its own bounded controls and a manual transition.</p>}
           </section>
 
@@ -262,7 +262,7 @@ export function TryCockpit() {
               <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-amber-100/75">Safety-aware routing</p>
               <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">{safetyRedirect.safety?.title || 'Pause before continuing'}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{safetyRedirect.safety?.message}</p>
-              <Link href="/health-warning" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-100 px-4 py-3 text-sm font-medium text-[#3c3021] transition hover:bg-white">Open health and safety page <ArrowRight className="size-4" aria-hidden="true" /></Link>
+              <Link href="/health-warning" className="glass-action glass-action--warning mt-5 inline-flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium">Open health and safety page <ArrowRight className="size-4" aria-hidden="true" /></Link>
             </section>
           )}
 
@@ -270,7 +270,7 @@ export function TryCockpit() {
         </div>
       </div>
 
-      <section data-testid="try-step-machine" className="rounded-[2rem] border border-white/10 bg-[#202b28] p-3 shadow-[0_24px_80px_rgba(0,0,0,0.16)] sm:p-5 lg:p-7">
+      <section data-testid="try-step-machine" className="glass-panel rounded-[2rem] border border-white/10 p-3 sm:p-5 lg:p-7">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4 px-2 sm:px-3">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">04 · Machine widget</p>
@@ -281,7 +281,7 @@ export function TryCockpit() {
         <ToneMachineDemo agentTone={selectedTone} showWebMcpStatus ritualPlan={plan} />
       </section>
 
-      <section data-testid="try-step-payment" className="rounded-[1.75rem] border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.045] p-5 sm:p-6">
+      <section data-testid="try-step-payment" className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/15 p-5 sm:p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">06 · Optional payment lane</p>
@@ -289,16 +289,16 @@ export function TryCockpit() {
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">The live route is fixed at $0.50 for one bounded machine session. This cockpit reads the real 402 challenge without submitting a charge.</p>
           </div>
           <div className="shrink-0">
-            <button type="button" onClick={handlePaymentChallenge} disabled={working !== 'payment' && paymentInfo?.ok === false} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#b6ddcc]/30 px-4 py-3 text-sm text-[#d7eadf] transition hover:border-[#b6ddcc]/60 hover:bg-[#b6ddcc]/10 disabled:cursor-not-allowed disabled:opacity-40">
+            <button type="button" onClick={handlePaymentChallenge} disabled={working !== 'payment' && paymentInfo?.ok === false} className="glass-action glass-action--primary inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm">
               {working === 'payment' && <CircleNotch className="size-4 animate-spin" aria-hidden="true" />}
               Show live 402 challenge
             </button>
           </div>
         </div>
         <div className="mt-5 flex flex-wrap gap-3 text-xs text-white/45">
-          <span className="rounded-full border border-white/10 px-3 py-2">{paymentInfo?.ok ? 'Route enabled' : paymentInfo ? 'Route needs attention' : 'Checking route'}</span>
-          <span className="rounded-full border border-white/10 px-3 py-2">$0.50 · USD</span>
-          <span className="rounded-full border border-white/10 px-3 py-2">No card credentials in the browser</span>
+          <span className="glass-pill rounded-full px-3 py-2">{paymentInfo?.ok ? 'Route enabled' : paymentInfo ? 'Route needs attention' : 'Checking route'}</span>
+          <span className="glass-pill rounded-full px-3 py-2">$0.50 · USD</span>
+          <span className="glass-pill rounded-full px-3 py-2">No card credentials in the browser</span>
         </div>
         {paymentChallenge && <div className="mt-5 rounded-xl border border-[#b6ddcc]/20 bg-[#0d1714]/55 p-4"><p className="flex items-center gap-2 text-sm text-[#d7eadf]"><Check className="size-4" weight="bold" aria-hidden="true" /> {paymentChallenge.status === '402_payment_required' ? 'Live 402 challenge received' : 'Payment route returned a paid resource'}</p><p className="mt-2 text-xs leading-5 text-white/45">{paymentChallenge.status === '402_payment_required' ? 'The compatible agent can now pay and retry with its provider credential. No charge was submitted by this page.' : 'This page did not submit a payment credential.'} {paymentChallenge.headerPresent ? 'WWW-Authenticate challenge header present.' : ''}</p></div>}
       </section>
