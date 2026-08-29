@@ -200,6 +200,8 @@ export function TryCockpit() {
                 value={intention}
                 onChange={(event) => setIntention(event.target.value)}
                 maxLength={240}
+                name="intention"
+                autoComplete="off"
                 aria-label="Intention for the Cognistration challenge"
                 className="glass-input min-w-0 flex-1 rounded-xl px-4 py-3 text-sm text-white outline-none placeholder:text-white/30"
               />
