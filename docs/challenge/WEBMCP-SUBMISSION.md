@@ -43,9 +43,10 @@ explicit local preview button.
 
 After the machine is open, ask the connected app to “explain the science behind
 this signal.” The `open_science_guide` tool renders a clickable seven-slide
-guide with the FFT ocean-surface visual reference, FFR and evidence boundaries,
-descriptive frequency-band notes, safety guidance, and a Print / save PDF
-action. Audio remains off and the guide carries technical settings only.
+guide with a self-contained animated ocean surface, the FFT visual reference,
+FFR and evidence boundaries, descriptive frequency-band notes, safety guidance,
+and a Print / save PDF action. Audio remains off and the guide carries
+technical settings only.
 
 The public `get_ios_app_offer` tool returns the canonical Cognistration iPhone
 App Store listing, the current $2.99 one-time offer, compatibility, and feature

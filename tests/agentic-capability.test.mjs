@@ -178,12 +178,16 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.throws(() => buildScienceGuideState({ toneId: 'not-a-public-tone' }));
   assert.equal(SCIENCE_GUIDE_BACKGROUND_URL, 'https://vgpu.sh/examples/fft-ocean-surface');
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /vgpu\.sh\/examples\/fft-ocean-surface/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="ocean-canvas"/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /function drawOcean/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /requestAnimationFrame/);
+  assert.doesNotMatch(SCIENCE_GUIDE_WIDGET_HTML, /<iframe/i);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="science-slide"/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Previous/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Next/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /ArrowRight/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Print \/ save PDF/);
-  assert.equal(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains[0], 'https://vgpu.sh');
+  assert.deepEqual(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains, []);
 });
 
 test('tone-pack catalog returns playable public previews without private commerce fields', () => {
@@ -651,6 +655,7 @@ test('OpenAPI fallback is derived from the same public registry', () => {
 test('the challenge cockpit is discoverable and keeps the human preview boundary visible', async () => {
   const cockpit = await readFile(new URL('../components/challenge/TryCockpit.jsx', import.meta.url), 'utf8');
   const machine = await readFile(new URL('../components/machine/ToneMachineDemo.jsx', import.meta.url), 'utf8');
+  const scienceLesson = await readFile(new URL('../components/science/ToneScienceLesson.jsx', import.meta.url), 'utf8');
   const page = await readFile(new URL('../app/try/page.js', import.meta.url), 'utf8');
   const homepage = await readFile(new URL('../app/page.js', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
@@ -667,6 +672,10 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /Open & understand/);
   assert.match(machine, /ToneScienceLesson/);
   assert.match(machine, /cognistration_open_science_guide/);
+  assert.match(scienceLesson, /OceanSurfaceCanvas/);
+  assert.doesNotMatch(scienceLesson, /<iframe/i);
+  assert.doesNotMatch(scienceLesson, /Cognistration · signal notes/);
+  assert.doesNotMatch(scienceLesson, /A calm technical walkthrough/);
   assert.doesNotMatch(header, /href="\/try"/);
   assert.doesNotMatch(header, />Agent demo</);
   assert.match(homepage, /href="\/try"/);

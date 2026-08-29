@@ -30,9 +30,11 @@ The science guide is a public MCP Apps resource rather than a fifth operating
 skill. After a tone or machine result, call `open_science_guide` to render
 `ui://cognistration/science-guide/v1.html`. It is a seven-slide educational
 walkthrough of the two-channel signal, FFR, descriptive frequency bands,
-evidence limits, and safe listening. It uses the FFT ocean-surface visual
-reference at `https://vgpu.sh/examples/fft-ocean-surface`, supports local
-previous/next navigation, and lets the person print or save the guide as a PDF.
+evidence limits, and safe listening. It uses a self-contained animated ocean
+surface so a host never exposes source code or page chrome behind the lesson;
+the FFT ocean-surface page remains a quiet visual reference at
+`https://vgpu.sh/examples/fft-ocean-surface`. It supports local previous/next
+navigation and lets the person print or save the guide as a PDF.
 It never starts audio, stores a record, or receives diary content.
 
 ## How an agent uses the skills

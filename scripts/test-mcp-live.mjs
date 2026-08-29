@@ -85,6 +85,9 @@ async function main() {
   const scienceWidget = scienceWidgetResult.contents?.[0];
   assert(scienceWidget?.mimeType === 'text/html;profile=mcp-app', 'science widget MIME type is unexpected');
   assert(/vgpu\.sh\/examples\/fft-ocean-surface/.test(scienceWidget.text || ''), 'science widget ocean visual reference is missing');
+  assert(/id="ocean-canvas"/.test(scienceWidget.text || ''), 'science widget animated ocean canvas is missing');
+  assert(/function drawOcean/.test(scienceWidget.text || ''), 'science widget ocean renderer is missing');
+  assert(!/<iframe/i.test(scienceWidget.text || ''), 'science widget must not embed the visual reference page');
   assert(/Print \/ save PDF/.test(scienceWidget.text || ''), 'science widget PDF print action is missing');
   assert(/ArrowRight/.test(scienceWidget.text || ''), 'science widget keyboard navigation is missing');
 

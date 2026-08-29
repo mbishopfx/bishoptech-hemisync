@@ -45,7 +45,7 @@ use the supported `initialize` handshake.
 | `cognistration://ios-app` | `application/json` | public | App Store listing, one-time price, compatibility, feature summary, and on-device pricing context | no |
 | `cognistration://skills` | `application/json` | public | skill extension summary | no |
 | `ui://cognistration/machine-generator/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded local preview | no |
-| `ui://cognistration/science-guide/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with FFT ocean-surface visual and print/save-to-PDF action | no |
+| `ui://cognistration/science-guide/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
 | `ui://cognistration/account-signup/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
 | `skill://cognistration/*/SKILL.md` | `text/markdown` | public | static operating guidance | no |
@@ -79,10 +79,11 @@ until the listener explicitly presses play.
 The `open_science_guide` render tool links `_meta.ui.resourceUri` to
 `ui://cognistration/science-guide/v1.html`. The widget is a seven-slide,
 clickable explanation of the two-channel signal, FFR, descriptive frequency
-bands, evidence limits, and safe listening. It uses the public FFT ocean-surface
-visual reference at `https://vgpu.sh/examples/fft-ocean-surface`, and its print
-button delegates PDF creation to the host browser. It never starts audio,
-stores a record, or includes diary text.
+bands, evidence limits, and safe listening. It uses a self-contained animated
+ocean surface and keeps the public FFT ocean-surface page at
+`https://vgpu.sh/examples/fft-ocean-surface` as a source link rather than an
+embedded page. Its print button delegates PDF creation to the host browser.
+It never starts audio, stores a record, or includes diary text.
 
 Every tool returns bounded `content` and `structuredContent`. Tool-level failures use `isError: true`; protocol failures use stable JSON-RPC errors. Unknown tool names, private-data requests, and write attempts are denied.
 
@@ -120,7 +121,8 @@ The route must pass:
    controls, and a readable `text/html;profile=mcp-app` resource with accurate
    UI CSP metadata.
 10. Science-guide render returns the versioned UI resource, seven readable
-    slides, the FFT ocean-surface visual reference, print/save-to-PDF controls,
+    slides, a self-contained animated ocean surface with a quiet FFT visual
+    reference link, print/save-to-PDF controls,
     and explicit audio/diary/medical boundaries.
 11. The iPhone app offer returns the canonical App Store listing, the bounded
     one-time price, compatibility, on-device pricing context, and no payment side

@@ -18,7 +18,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 | Safety, terms, privacy, or AI questions | `get_policy_info` | Return canonical URL | Topic, source URL, concise summary |
 | Download the iPhone app | `get_ios_app_offer` | Open the returned App Store URL | Canonical listing, current $2.99 one-time price, compatibility, on-device explanation for the lower cost, and no payment action |
 | Open the machine inside ChatGPT | `open_machine_generator` | Use the widget to match an intention, tune controls, browse packs, or request a larger view | Versioned UI resource renders; audio remains off until explicit play |
-| Understand the generated signal | `open_science_guide` | Click through the two-channel signal, FFR, descriptive bands, evidence limits, and safety notes; print/save the guide as PDF | Versioned science-guide UI renders with the FFT ocean-surface visual; audio and diary content remain off |
+| Understand the generated signal | `open_science_guide` | Click through the two-channel signal, FFR, descriptive bands, evidence limits, and safety notes; print/save the guide as PDF | Versioned science-guide UI renders with a self-contained animated ocean surface; audio and diary content remain off |
 
 ## Public surface
 
@@ -35,7 +35,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `open_account_signup` — render the in-platform signup form without receiving credentials in MCP
 - `get_ios_app_offer` — return the public iPhone App Store listing, one-time offer details, and the on-device explanation for the lower cost
 - `open_machine_generator` — render the interactive tone machine in an MCP Apps-compatible host
-- `open_science_guide` — render the seven-slide educational signal guide with the FFT ocean-surface visual and browser PDF fallback
+- `open_science_guide` — render the seven-slide educational signal guide with a self-contained animated ocean surface and browser PDF fallback
 - `open_feedback` — render one optional done-state feedback card without returning history
 
 ### Homepage WebMCP tools
@@ -65,7 +65,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - Resource: `ui://cognistration/science-guide/v1.html`
 - MIME type: `text/html;profile=mcp-app`
 - Host calls: portable `tools/call` for recommendation and pack search; optional `window.openai.requestDisplayMode` for a larger view; science-guide navigation is local and its PDF action is browser-controlled
-- Visuals: the machine uses the supplied Aurora Current artwork; the science guide uses `https://vgpu.sh/examples/fft-ocean-surface`; both have safe fallbacks if a host blocks embedded frames
+- Visuals: the machine uses the supplied Aurora Current artwork; the science guide uses a self-contained animated ocean surface with `https://vgpu.sh/examples/fft-ocean-surface` as a source link, so neither surface depends on an embedded frame
 
 ## Installed skills
 

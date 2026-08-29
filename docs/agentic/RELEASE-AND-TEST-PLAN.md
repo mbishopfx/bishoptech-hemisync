@@ -41,7 +41,7 @@
 - [x] The iPhone app offer is a bounded read-only App Store handoff with no payment side effect and explains the lower price through on-device operation and reduced hosted maintenance overhead.
 - [x] Account signup and done-state feedback render in-platform widgets; credentials, notes, and feedback ratings stay outside MCP arguments and require explicit user submission.
 - [x] The ChatGPT connection helper copies a setup prompt with the canonical remote endpoint, explicitly prevents Git/marketplace installation, and opens the main ChatGPT chat.
-- [x] The science guide renders the shared seven-slide signal/FFR/evidence/safety explanation, uses the FFT ocean-surface visual reference, supports local navigation and print/save-to-PDF, and remains audio-free; verified in the production `/try` browser flow and live MCP resource.
+- [x] The science guide renders the shared seven-slide signal/FFR/evidence/safety explanation over a self-contained animated ocean surface, keeps the FFT page as a quiet visual reference link, supports local navigation and print/save-to-PDF, and remains audio-free; verified in the production `/try` browser flow and live MCP resource.
 - [x] The homepage uses scroll-revealed section titles, a shorter/wider hero lockup, a borderless frosted listening shell, and a three-card infinite iPhone preview carousel with reduced-motion behavior.
 
 ## MCP tests
@@ -66,7 +66,7 @@
 | `https://cognistration.com/api/mcp` | pass | live discovery and tool/resource checks return 27 public tools, 14 resources, the skills extension, and the science guide |
 | `https://cognistration.com/try` connection helper | pass | production browser flow exposes the copyable remote-app setup prompt and expanded Plugins-tab guidance; no URL is sent to a Git installer |
 | `POST /api/mcp` `open_machine_generator` + `resources/read` | pass | production render returns Gamma/246 Hz with `isPlaying: false`; the widget resource is `text/html;profile=mcp-app`, loads the canonical Aurora visual, and advertises exact connect/resource/frame domains |
-| `POST /api/mcp` `open_science_guide` + `resources/read` | pass | production render returns a seven-slide `text/html;profile=mcp-app` guide with the FFT ocean-surface visual reference, print/save-to-PDF controls, and false audio/diary/medical boundaries |
+| `POST /api/mcp` `open_science_guide` + `resources/read` | pass | production render returns a seven-slide `text/html;profile=mcp-app` guide with a self-contained animated ocean surface, a quiet FFT visual reference link, print/save-to-PDF controls, and false audio/diary/medical boundaries |
 | `POST /api/mcp` `get_ios_app_offer` + `resources/read` | pass | production returns the canonical App Store URL, `$2.99` one-time iPhone offer, compatibility, feature summary, and on-device pricing context without processing payment |
 | `POST /api/mcp` `open_account_signup` + `resources/read` | pass | render-only account form is returned in-platform; credentials and checkout are user-controlled |
 | `POST /api/mcp` `open_feedback` + `resources/read` | pass | render-only closing card is returned in-platform; submission is explicit and feedback history is not exposed |
