@@ -76,6 +76,7 @@ body,
 
 html {
   background: var(--bg-0);
+  scroll-padding-top: 7rem;
 }
 
 body {
