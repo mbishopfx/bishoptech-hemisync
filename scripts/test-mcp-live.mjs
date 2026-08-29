@@ -90,7 +90,9 @@ async function main() {
   assert(/vgpu@0\.3\.1/.test(scienceWidget.text || ''), 'science widget vGPU version marker is missing');
   assert(!/getContext\(['"]2d['"]\)/.test(scienceWidget.text || ''), 'science widget must not use the retired 2D renderer');
   assert(!/<iframe/i.test(scienceWidget.text || ''), 'science widget must not embed the visual reference page');
-  assert(/Print \/ save PDF/.test(scienceWidget.text || ''), 'science widget PDF print action is missing');
+  assert(/Download PDF/.test(scienceWidget.text || ''), 'science widget PDF download action is missing');
+  assert(/api\/science-guide\/pdf/.test(scienceWidget.text || ''), 'science widget PDF export route is missing');
+  assert(/cognistration:ocean-profile/.test(scienceWidget.text || ''), 'science widget ocean run handoff is missing');
   assert(/ArrowRight/.test(scienceWidget.text || ''), 'science widget keyboard navigation is missing');
 
   const oceanModuleResponse = await fetch(new URL('/vgpu-ocean/science-guide-ocean.js', requestOrigin));
