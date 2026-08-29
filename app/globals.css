@@ -429,6 +429,7 @@ main section[id] {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  scroll-margin-top: 7rem;
   background:
     radial-gradient(circle at 12% 0%, rgba(215, 234, 223, 0.1), transparent 34%),
     linear-gradient(145deg, rgba(40, 65, 57, 0.7), rgba(10, 24, 21, 0.66));
