@@ -86,10 +86,19 @@ async function main() {
   assert(scienceWidget?.mimeType === 'text/html;profile=mcp-app', 'science widget MIME type is unexpected');
   assert(/vgpu\.sh\/examples\/fft-ocean-surface/.test(scienceWidget.text || ''), 'science widget ocean visual reference is missing');
   assert(/id="ocean-canvas"/.test(scienceWidget.text || ''), 'science widget animated ocean canvas is missing');
-  assert(/function drawOcean/.test(scienceWidget.text || ''), 'science widget ocean renderer is missing');
+  assert(/science-guide-ocean\.js/.test(scienceWidget.text || ''), 'science widget vGPU module is missing');
+  assert(/vgpu@0\.3\.1/.test(scienceWidget.text || ''), 'science widget vGPU version marker is missing');
+  assert(!/getContext\(['"]2d['"]\)/.test(scienceWidget.text || ''), 'science widget must not use the retired 2D renderer');
   assert(!/<iframe/i.test(scienceWidget.text || ''), 'science widget must not embed the visual reference page');
   assert(/Print \/ save PDF/.test(scienceWidget.text || ''), 'science widget PDF print action is missing');
   assert(/ArrowRight/.test(scienceWidget.text || ''), 'science widget keyboard navigation is missing');
+
+  const oceanModuleResponse = await fetch(new URL('/vgpu-ocean/science-guide-ocean.js', requestOrigin));
+  const oceanModule = await oceanModuleResponse.text();
+  assert(oceanModuleResponse.ok, `science ocean module returned HTTP ${oceanModuleResponse.status}`);
+  assert(/navigator\.gpu/.test(oceanModule), 'science ocean module does not request WebGPU');
+  assert(/frameLoop/.test(oceanModule), 'science ocean module does not animate through vGPU');
+  assert(/seed/.test(oceanModule), 'science ocean module is missing seeded variation');
 
   const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
   const accountWidget = accountWidgetResult.contents?.[0];
