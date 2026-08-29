@@ -11,7 +11,8 @@ const stepCopy = [
   ['01', 'Name the moment', 'Give the public agent a short intention.'],
   ['02', 'Compare directions', 'See the practical tradeoffs before choosing.'],
   ['03', 'Stage the ritual', 'Build arrive, practice, and close.'],
-  ['04', 'Preview with consent', 'The browser machine stays quiet until you start it.']
+  ['04', 'Open & understand', 'Inspect the machine, then click through the signal guide.'],
+  ['05', 'Preview with consent', 'The browser machine stays quiet until you start it.']
 ];
 
 function errorMessage(data, fallback) {
@@ -155,7 +156,7 @@ export function TryCockpit() {
 
   return (
     <div data-testid="try-cockpit" className="space-y-8">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {stepCopy.map(([number, title, copy]) => (
           <div key={number} className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
             <p className="font-mono text-[10px] tracking-[0.24em] text-[#b6ddcc]/70">{number}</p>
@@ -283,7 +284,7 @@ export function TryCockpit() {
       <section data-testid="try-step-payment" className="rounded-[1.75rem] border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.045] p-5 sm:p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">05 · Optional payment lane</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">06 · Optional payment lane</p>
             <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">Agent-to-agent machine access</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">The live route is fixed at $0.50 for one bounded machine session. This cockpit reads the real 402 challenge without submitting a charge.</p>
           </div>

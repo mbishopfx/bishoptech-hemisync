@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { ArrowRight, Lightning, Power, Pulse } from '@phosphor-icons/react';
 import { nativeWebMcpTool, WEBMCP_TOOL_DEFINITIONS, WEBMCP_CONTRACT_ID, WEBMCP_CONTRACT_VERSION } from '@/lib/agentic/webmcp-contract';
 import { buildSessionRecipe, sessionRecipeInputFromControls } from '@/lib/agentic/recipe-capability';
+import { SCIENCE_GUIDE_RESOURCE_URI } from '@/lib/agentic/science-content';
+import { ToneScienceLesson } from '@/components/science/ToneScienceLesson';
 import { RitualConductor } from './RitualConductor';
 
 const DEFAULT_MAX_DURATION_SEC = 120;
@@ -85,6 +87,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
   const [ritualPlan, setRitualPlan] = useState(initialRitualPlan?.phases?.length ? initialRitualPlan : null);
   const [ritualPhase, setRitualPhase] = useState(initialRitualPlan?.phases?.[0]?.id || null);
   const [recipeMessage, setRecipeMessage] = useState('');
+  const [scienceGuideOpen, setScienceGuideOpen] = useState(false);
   const maxDurationSec = workshopAccess?.valid ? 60 * 60 : DEFAULT_MAX_DURATION_SEC;
   const isWorkshopAccess = Boolean(workshopAccess?.valid);
 
@@ -700,6 +703,42 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     }
   }, [agentResult]);
 
+  const openScienceGuideForAgent = useCallback((input = {}) => {
+    const allowedStates = new Set(STATE_OPTIONS.map((option) => option.id));
+    const allowedLabels = new Set(['rest', 'reflect', 'focus', 'momentum', 'synthesis']);
+    const allowedKeys = ['toneId', 'state', 'targetState', 'carrierHz', 'beatHz', 'volume', 'intentionLabel'];
+    const hasUnknownKey = Object.keys(input).some((key) => !allowedKeys.includes(key));
+    const invalidToneId = input.toneId !== undefined && (typeof input.toneId !== 'string' || input.toneId.trim().length === 0 || input.toneId.length > 120);
+    const invalidState = input.state !== undefined && !allowedStates.has(input.state);
+    const invalidTargetState = input.targetState !== undefined && !allowedStates.has(input.targetState);
+    const carrierHz = input.carrierHz === undefined ? null : Number(input.carrierHz);
+    const beatHz = input.beatHz === undefined ? null : Number(input.beatHz);
+    const nextVolume = input.volume === undefined ? null : Number(input.volume);
+    const invalidControls = (carrierHz !== null && (!Number.isInteger(carrierHz) || carrierHz < 100 || carrierHz > 400))
+      || (beatHz !== null && (!Number.isFinite(beatHz) || beatHz < 0.5 || beatHz > 40))
+      || (nextVolume !== null && (!Number.isInteger(nextVolume) || nextVolume < 0 || nextVolume > 100));
+    const invalidLabel = input.intentionLabel !== undefined && !allowedLabels.has(input.intentionLabel);
+
+    if (hasUnknownKey || invalidToneId || invalidState || invalidTargetState || invalidControls || invalidLabel) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_SCIENCE_GUIDE_INPUT', safeMessage: 'Use the current machine direction or approved bounded controls to open the science guide.', retryable: false }
+      });
+    }
+
+    setScienceGuideOpen(true);
+    setAgentActivity('Science guide opened. Audio remains off.');
+    window.setTimeout(() => document.getElementById('tone-science-guide')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0);
+    return agentResult('completed', {
+      guide: {
+        resourceUri: SCIENCE_GUIDE_RESOURCE_URI,
+        status: 'ready',
+        audioStarted: false,
+        diaryContentIncluded: false
+      },
+      controls: sessionStateRef.current
+    });
+  }, [agentResult]);
+
   startAudioRef.current = startAudio;
   sessionStateRef.current = {
     isPlaying,
@@ -744,6 +783,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     cognistration_begin_ritual: beginRitualForAgent,
     cognistration_advance_ritual: advanceRitualForAgent,
     cognistration_prepare_session_recipe: prepareSessionRecipeForAgent,
+    cognistration_open_science_guide: openScienceGuideForAgent,
     cognistration_search_tone_packs: searchTonePacksForAgent,
     cognistration_preview_tone_pack: previewTonePackForAgent,
     cognistration_get_policy_info: getPolicyInfoForAgent,
@@ -1076,6 +1116,14 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
           </div>
         </div>
       </div>
+
+      <ToneScienceLesson
+        id="tone-science-guide"
+        tone={agentTone}
+        controls={{ targetState, carrierHz: carrierFreq, beatHz: beatFreq, volume }}
+        open={scienceGuideOpen}
+        onOpenChange={setScienceGuideOpen}
+      />
 
       {showLimitModal && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 p-6 backdrop-blur-md">

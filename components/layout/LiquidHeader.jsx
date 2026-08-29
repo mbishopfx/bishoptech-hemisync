@@ -15,12 +15,15 @@ This is an HTTPS MCP endpoint, not a Git repository. Do not run git clone, do no
 
 If you can use browser controls, open ChatGPT's app or connector setup, enable Developer mode if it is required, add this remote server, and pause for my confirmation before saving the connection. If you cannot change account settings from this chat, give me the exact clicks to complete the one user-controlled setup step.
 
+If you are looking at a Plugins or marketplace form with Source, Git ref, or Sparse paths, do not paste this endpoint there. That form installs Git repositories; Cognistration must be added as a remote HTTPS app or connector.
+
 After the connection is saved, verify it with Cognistration's public capability read, then offer to open the Cognistration tone machine. Keep audio off until I explicitly ask for a preview.`;
 
 export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [connectOpen, setConnectOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showPluginInstructions, setShowPluginInstructions] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
@@ -84,6 +87,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
   const openConnect = () => {
     setMenuOpen(false);
     setCopied(false);
+    setShowPluginInstructions(false);
     setConnectOpen(true);
   };
 
@@ -204,6 +208,21 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
                 <ArrowSquareOut className="size-4" aria-hidden="true" />
               </a>
             </div>
+            <button type="button" onClick={() => setShowPluginInstructions((open) => !open)} aria-expanded={showPluginInstructions} className="mt-6 text-left text-xs text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4 transition hover:text-white">
+              {showPluginInstructions ? 'Hide Plugins-tab instructions' : 'Adding from the Plugins tab?'}
+            </button>
+            {showPluginInstructions && (
+              <div className="mt-4 rounded-2xl border border-[#e0b493]/20 bg-[#e0b493]/[0.06] p-4 text-xs leading-5 text-white/65">
+                <p className="font-medium text-[#e0b493]">Use the remote connection flow</p>
+                <p className="mt-2">A screen asking for Source, Git ref, and Sparse paths is a repository marketplace installer. It is not the right form for Cognistration’s HTTPS MCP endpoint.</p>
+                <ol className="mt-3 list-decimal space-y-1.5 pl-5">
+                  <li>Close that Git or marketplace form for this connection.</li>
+                  <li>Open ChatGPT’s Add connector, remote app, or Developer mode flow.</li>
+                  <li>Paste <code className="rounded bg-black/20 px-1.5 py-0.5 text-[#d7eadf]">{MCP_SERVER_URL}</code> and approve the connection.</li>
+                </ol>
+                <p className="mt-3 text-white/45">For a different Git plugin, Source is that repository URL, Git ref is its requested branch or tag, and Sparse paths are optional repository folders. Do not invent those values for Cognistration.</p>
+              </div>
+            )}
             <p className="mt-6 text-xs leading-5 text-white/40">Availability depends on your ChatGPT plan and workspace settings.</p>
           </div>
         </div>

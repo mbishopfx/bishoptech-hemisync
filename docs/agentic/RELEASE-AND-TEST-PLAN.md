@@ -24,7 +24,7 @@
 
 ## Agent and UX tests
 
-- [x] A compatible in-app browser main-page context exposes `document.modelContext`; live discovery returns all nine homepage WebMCP tools.
+- [x] A compatible in-app browser main-page context exposes `document.modelContext`; live discovery returns the public homepage WebMCP tools.
 - [x] A normal browser still renders and operates human controls without `document.modelContext`.
 - [x] Agent can read state, set gamma plus a 246 Hz carrier, and see the same controls reflected in the live page state.
 - [x] Intention matching updates the same machine the human sees.
@@ -41,6 +41,7 @@
 - [x] The iPhone app offer is a bounded read-only App Store handoff with no payment side effect and explains the lower price through on-device operation and reduced hosted maintenance overhead.
 - [x] Account signup and done-state feedback render in-platform widgets; credentials, notes, and feedback ratings stay outside MCP arguments and require explicit user submission.
 - [x] The ChatGPT connection helper copies a setup prompt with the canonical remote endpoint, explicitly prevents Git/marketplace installation, and opens the main ChatGPT chat.
+- [ ] The science guide renders the shared seven-slide signal/FFR/evidence/safety explanation, uses the FFT ocean-surface visual reference, supports local navigation and print/save-to-PDF, and remains audio-free.
 - [x] The homepage uses scroll-revealed section titles, a shorter/wider hero lockup, a borderless frosted listening shell, and a three-card infinite iPhone preview carousel with reduced-motion behavior.
 
 ## MCP tests
@@ -58,12 +59,13 @@
 | Route/operation | Status | Post-condition |
 |---|---:|---|
 | `https://cognistration.com/` | pass | homepage is 200, shows the human platform story, contains one hero Aurora background, has the available-now iPhone offer with the canonical App Store CTA and on-device pricing explanation, uses the refined hero/chat presentation, and exposes the live fan carousel |
-| `https://cognistration.com/api/capabilities` | pass | live public manifest returns the bounded 26-tool MCP contract, five skills, account options, and signup/feedback capability references |
+| `https://cognistration.com/api/capabilities` | pass (prior deployment) | prior live public manifest returned the bounded 26-tool MCP contract; the new 27-tool science-guide contract is implemented locally and requires deployment verification |
 | `https://cognistration.com/openapi.json` | pass | generated REST compatibility document mirrors the approved public registry and exposes no write credentials |
 | `https://cognistration.com/agent-instructions.md` | pass | public instructions include the public browser bridge, pack preview confirmation, policy reads, and authenticated member workflow |
-| `https://cognistration.com/api/mcp` | pass | `2026-07-28` discovery responds with the skills extension, twenty-six public tools, thirteen resources, and five readable skills; the tone, signup, and feedback UI templates are addressable |
-| `https://cognistration.com/connect` | pass | connection endpoint serves the same bounded contract; live ChatGPT-origin `tools/list` returns twenty-six public tools; human setup is routed through the header prompt and main ChatGPT chat rather than a Git/marketplace installer |
+| `https://cognistration.com/api/mcp` | pass (prior deployment) | prior live discovery returned the skills extension, twenty-six public tools, and thirteen resources; the new 27-tool/14-resource science-guide contract is implemented locally and requires deployment verification |
+| `https://cognistration.com/connect` | pass (prior deployment) | prior connection endpoint served the bounded contract; the new science-guide resource and Plugins-tab guidance require deployment verification after release |
 | `POST /api/mcp` `open_machine_generator` + `resources/read` | pass | production render returns Gamma/246 Hz with `isPlaying: false`; the widget resource is `text/html;profile=mcp-app`, loads the canonical Aurora visual, and advertises exact connect/resource/frame domains |
+| `POST /api/mcp` `open_science_guide` + `resources/read` | pending deployment | local render returns a seven-slide `text/html;profile=mcp-app` guide with the FFT ocean-surface visual reference, print/save-to-PDF controls, and false audio/diary/medical boundaries |
 | `POST /api/mcp` `get_ios_app_offer` + `resources/read` | pass | production returns the canonical App Store URL, `$2.99` one-time iPhone offer, compatibility, feature summary, and on-device pricing context without processing payment |
 | `POST /api/mcp` `open_account_signup` + `resources/read` | pass | render-only account form is returned in-platform; credentials and checkout are user-controlled |
 | `POST /api/mcp` `open_feedback` + `resources/read` | pass | render-only closing card is returned in-platform; submission is explicit and feedback history is not exposed |
@@ -81,7 +83,7 @@
 
 ## Release state
 
-Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, and in-platform done-state feedback deployment: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-verified`. Production Vercel deployment `dpl_E8aJx42qdoL38EZddnhS28zw7Zoc` is ready on commit `25c40fa`. The live canonical endpoint, `/connect`, and Cloudflare relay are verified with 26 MCP tools, 13 resources, 18 homepage WebMCP tools, five readable skills, origin-guarded first-party submission routes, and the fixed $0.50 payment coda. The real production Supabase project is `lmzzkrcbcucosypiminc`; the workspace `.env` points at a different stale project and the current CLI account cannot access the linked database login-role endpoint. The production SQL editor applied `202608270003_agent_feedback.sql`, and a read-only production check confirms `public.agent_feedback` exists with RLS enabled and zero rows before any user submission. No synthetic feedback row was created. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
+Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, in-platform done-state feedback, and local science-guide implementation: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-science-guide-local-verified`. The prior production Vercel deployment `dpl_E8aJx42qdoL38EZddnhS28zw7Zoc` remains ready on commit `25c40fa`; this science-guide slice is not yet represented in that deployment. Prior live verification covered 26 MCP tools, 13 resources, and 18 homepage WebMCP tools; after release, re-run the public checks for 27 MCP tools, 14 resources, and 19 homepage WebMCP tools. The payment coda remains the fixed $0.50 path and must be shown only with the existing user-approved provider client.
 
 ## Challenge handoff
 

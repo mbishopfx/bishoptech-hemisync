@@ -6,7 +6,7 @@
 - Transport: Streamable HTTP JSON-RPC over HTTP POST; dual-era public adapter
 - Current discovery protocol: `2026-07-28` `server/discover`
 - Legacy initialize compatibility: `2025-11-25`, `2025-06-18`, `2025-03-26`
-- Server name/version: `cognistration-agentic-platform` / `0.4.0`
+- Server name/version: `cognistration-agentic-platform` / `0.10.0`
 - Manifest: `https://cognistration.com/api/capabilities`
 - REST/OpenAPI fallback: `https://cognistration.com/openapi.json`
 - Human/agent instructions: `https://cognistration.com/agent-instructions.md`
@@ -26,7 +26,7 @@ use the supported `initialize` handshake.
 
 | Surface | Allowed | Not allowed |
 |---|---|---|
-| Resources | capability manifest, public catalogs, policy index, account options, iPhone app offer, skill index, skill resources, and the tone-machine, signup, and feedback UIs | private sessions, profiles, saved tones, secrets |
+| Resources | capability manifest, public catalogs, policy index, account options, iPhone app offer, skill index, skill resources, and the tone-machine, science-guide, signup, and feedback UIs | private sessions, profiles, saved tones, secrets |
 | Tools | bounded tone/pack search, lookup, deterministic recommendation, policy/account reads, and machine rendering | arbitrary SQL, code execution, file access, unrestricted web search |
 | Visitor writes | first-party signup/feedback widget submission only after explicit user action | credentials or feedback in MCP arguments, payment, email collection by the agent, library writes |
 | Browser WebMCP | visible machine controls and explicit local preview | hidden navigation side effects, silent audio, silent credential/payment submission |
@@ -45,6 +45,7 @@ use the supported `initialize` handshake.
 | `cognistration://ios-app` | `application/json` | public | App Store listing, one-time price, compatibility, feature summary, and on-device pricing context | no |
 | `cognistration://skills` | `application/json` | public | skill extension summary | no |
 | `ui://cognistration/machine-generator/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded local preview | no |
+| `ui://cognistration/science-guide/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with FFT ocean-surface visual and print/save-to-PDF action | no |
 | `ui://cognistration/account-signup/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
 | `skill://cognistration/*/SKILL.md` | `text/markdown` | public | static operating guidance | no |
@@ -64,6 +65,7 @@ use the supported `initialize` handshake.
 | `open_account_signup` | `public_read` render | widget submission only | empty object; credentials never enter MCP |
 | `get_ios_app_offer` | `public_read` | none | empty object; returns the canonical App Store listing, current one-time price, and why on-device operation keeps the offer lower |
 | `open_machine_generator` | `public_read` | none | optional intention, tone ID, state, and bounded controls |
+| `open_science_guide` | `public_read` render | none | optional public tone ID, state, carrier, beat, volume, and safe intention label; no audio or diary content |
 | `open_feedback` | `public_read` render | widget submission only | empty object; rating and note never enter MCP |
 
 The `open_machine_generator` render tool links `_meta.ui.resourceUri` to the
@@ -73,6 +75,14 @@ versioned MCP Apps resource. The widget renders from the concise
 compatibility enhancement. Its Aurora background is the public
 `/visuals/aurora-current.html` visual, and its Web Audio preview remains off
 until the listener explicitly presses play.
+
+The `open_science_guide` render tool links `_meta.ui.resourceUri` to
+`ui://cognistration/science-guide/v1.html`. The widget is a seven-slide,
+clickable explanation of the two-channel signal, FFR, descriptive frequency
+bands, evidence limits, and safe listening. It uses the public FFT ocean-surface
+visual reference at `https://vgpu.sh/examples/fft-ocean-surface`, and its print
+button delegates PDF creation to the host browser. It never starts audio,
+stores a record, or includes diary text.
 
 Every tool returns bounded `content` and `structuredContent`. Tool-level failures use `isError: true`; protocol failures use stable JSON-RPC errors. Unknown tool names, private-data requests, and write attempts are denied.
 
@@ -101,7 +111,7 @@ The route must pass:
 1. Modern `server/discover` with `MCP-Protocol-Version: 2026-07-28` and `Mcp-Method: server/discover`.
 2. Modern `tools/list`, `resources/list`, and `prompts/list` with matching body metadata and standard headers.
 3. Modern `resources/read` and `prompts/get` with matching `Mcp-Name` headers.
-4. Valid modern `tools/call` for all twenty-six public tools with matching `Mcp-Name` headers, including the signup and feedback render tools.
+4. Valid modern `tools/call` for all twenty-seven public tools with matching `Mcp-Name` headers, including the science-guide, signup, and feedback render tools.
 5. `initialize` and subsequent calls with a supported legacy version.
 6. Missing or mismatched modern headers, malformed JSON, oversized body, invalid schema, unknown tool, and write-shaped request denial.
 7. Valid pack, policy, account, signup render, feedback render, and skills calls, including skill resource digests.
@@ -109,6 +119,9 @@ The route must pass:
 9. Machine render returns the versioned UI resource, exact seeded Gamma/246 Hz
    controls, and a readable `text/html;profile=mcp-app` resource with accurate
    UI CSP metadata.
-10. The iPhone app offer returns the canonical App Store listing, the bounded
+10. Science-guide render returns the versioned UI resource, seven readable
+    slides, the FFT ocean-surface visual reference, print/save-to-PDF controls,
+    and explicit audio/diary/medical boundaries.
+11. The iPhone app offer returns the canonical App Store listing, the bounded
     one-time price, compatibility, on-device pricing context, and no payment side
     effect.

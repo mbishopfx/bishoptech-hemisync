@@ -9,7 +9,7 @@ const challengeJsonLd = {
   '@type': 'WebPage',
   name: 'Cognistration WebMCP challenge cockpit',
   url: 'https://cognistration.com/try',
-  description: 'A public, bounded path through Cognistration intention clarification, tone comparison, ritual planning, machine controls, and payment challenge discovery.'
+  description: 'A public, bounded path through Cognistration intention clarification, tone comparison, ritual planning, machine controls, science education, and payment challenge discovery.'
 };
 
 export default function TryPage() {
@@ -25,13 +25,13 @@ export default function TryPage() {
             <div className="max-w-3xl">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#b6ddcc]">WebMCP challenge cockpit</p>
               <h1 className="mt-6 max-w-3xl text-5xl font-medium leading-[0.98] tracking-[-0.07em] sm:text-7xl">From an intention to a session you can actually try.</h1>
-              <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">A judge-friendly route through Cognistration’s public agent tools: clarify the moment, compare a direction, stage a ritual, open the machine, and keep the final preview under human control.</p>
+              <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">A judge-friendly route through Cognistration’s public agent tools: clarify the moment, compare a direction, stage a ritual, open the machine, understand the signal, and keep the final preview under human control.</p>
               <div className="mt-8 flex flex-wrap gap-4 text-sm">
                 <a href="#cockpit" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 font-medium text-[#17332e] transition hover:bg-white">Run the flow <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
                 <Link href="/agent-instructions.md" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3.5 text-white/75 transition hover:border-white/45 hover:text-white">Agent instructions</Link>
               </div>
             </div>
-            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="rounded-full border border-white/10 px-3 py-2">18 public WebMCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">26 public MCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">No account required for the flow</span></div>
+            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="rounded-full border border-white/10 px-3 py-2">19 public WebMCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">27 public MCP tools</span><span className="rounded-full border border-white/10 px-3 py-2">No account required for the flow</span></div>
           </div>
         </section>
 

@@ -41,6 +41,12 @@ point such as “open the machine for a gamma tone with a 246 Hz carrier.” The
 visual, intention matching, bounded controls, public pack browsing, and an
 explicit local preview button.
 
+After the machine is open, ask the connected app to “explain the science behind
+this signal.” The `open_science_guide` tool renders a clickable seven-slide
+guide with the FFT ocean-surface visual reference, FFR and evidence boundaries,
+descriptive frequency-band notes, safety guidance, and a Print / save PDF
+action. Audio remains off and the guide carries technical settings only.
+
 The public `get_ios_app_offer` tool returns the canonical Cognistration iPhone
 App Store listing, the current $2.99 one-time offer, compatibility, and feature
 summary. It also explains that the iPhone app does its audio work on-device
@@ -69,8 +75,8 @@ render tool for every slider or direction change.
 
 The no-sign-in `/try` cockpit makes the primary challenge path reproducible in
 one tab: intent clarification, ranked comparison, an arrive/practice/close
-ritual plan, the visible machine widget, a technical session recipe, and a
-human-confirmed preview. A vague request returns bounded choices instead of a
+ritual plan, the visible machine widget, a clickable science guide, a
+technical session recipe, and a human-confirmed preview. A vague request returns bounded choices instead of a
 guess. A calibration phrase such as “too intense” applies a small, explained
 adjustment. Safety-shaped medical or crisis language routes to the canonical
 health-warning page without repeating or storing the request.
@@ -95,8 +101,8 @@ spending.
 
 ## Implementation map
 
-- `components/machine/ToneMachineDemo.jsx` registers the eighteen homepage tools with `document.modelContext.registerTool`.
-- `lib/agentic/webmcp-contract.js` defines the bounded input/output contracts, relative carrier nudge, session planning, and confirmation annotations.
+- `components/machine/ToneMachineDemo.jsx` registers the nineteen homepage tools with `document.modelContext.registerTool`.
+- `lib/agentic/webmcp-contract.js` defines the bounded input/output contracts, relative carrier nudge, session planning, science-guide action, and confirmation annotations.
 - `lib/agentic/tone-capability.js` owns catalog validation, intention matching, AI-first classification, and deterministic fallback.
 - `app/api/agent/route.js` provides the public REST fallback used by the hero and browser bridge.
 - `app/api/mcp/route.js` exposes the public JSON-RPC catalog, policy, account, iPhone app offer, session guidance, in-platform signup and feedback render tools, narrow hosted-commerce operations, and skill surface.
@@ -105,6 +111,7 @@ spending.
 - `app/api/agent/intent-guidance`, `app/api/agent/tone-calibrate`, `app/api/agent/tone-compare`, `app/api/agent/session-plan`, and `app/api/agent/session-cue` provide REST fallbacks for the same intent and session journeys.
 - `lib/agentic/machine-capability.js` defines the versioned MCP Apps render contract and submission-safe CSP metadata.
 - `lib/agentic/machine-widget.js` serves the self-contained ChatGPT machine widget with the Aurora visual, bridge calls, and explicit local audio preview.
+- `lib/agentic/science-content.js`, `lib/agentic/science-capability.js`, and `lib/agentic/science-widget.js` share the bounded science copy, render contract, source list, and interactive MCP Apps slideshow.
 - `lib/agentic/skill-capability.js` serves five hashed, static operating skills through the MCP skills extension.
 - `lib/agentic/account-widget.js` and `app/api/agent/account/signup/route.js` keep account capture in the MCP app surface while sending credentials directly to the first-party auth adapter only after user submission.
 - `lib/agentic/feedback-widget.js`, `app/api/agent/feedback/route.js`, and the service-role-only `agent_feedback` table provide one optional done-state feedback card without a history view.
@@ -123,7 +130,7 @@ spending.
 
 ## Judge walkthrough
 
-Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a reproducible local Chrome run, open `chrome://flags/#enable-webmcp-testing`, set the flag to Enabled, relaunch Chrome, and visit `/try` first. The cockpit should expose the eighteen public browser tools: state, absolute controls, relative carrier nudge, intention matching, intent clarification, sensory calibration, direction comparison, session planning, session cues, pack search, pack preview, policy, account options, generic preview, signup navigation, ritual begin, ritual advance, and technical recipe preparation. The public MCP endpoint should expose twenty-six tools, including `get_ios_app_offer`, `clarify_intention`, `calibrate_tone`, `compare_tone_directions`, `plan_listening_session`, `get_session_cue`, `prepare_session_recipe`, `open_account_signup`, and `open_feedback`; the authenticated member bridge exposes eleven bounded tools. Confirm that the iPhone offer returns the App Store URL and $2.99 one-time price without a payment side effect. Confirm that intention matching selects a public tone, a vague request returns three bounded directions, a `too_bright` calibration lowers the carrier without crossing the published floor, a relaxation search returns a published pack, an unconfirmed pack preview returns `CONFIRMATION_REQUIRED`, a 20-minute plan returns arrive/practice/close phases, a cue does not echo diary content, the recipe contains no raw intention/diary text, and a gamma/246 Hz control call is reflected in the visible state. Send a medical or crisis-shaped request and verify the safety redirect points to `/health-warning`. In the connected ChatGPT app, ask “open the tone machine for gamma at 246 Hz” and verify that the `text/html;profile=mcp-app` widget renders the Aurora visual, shows Gamma/246 Hz, offers the session guidance and calibration actions, and leaves audio off until the play button is pressed. Ask to create an account and verify that `open_account_signup` renders the credential form in-platform without an automatic checkout. Say “I’m done,” verify that `open_feedback` renders one optional thumbs-up/down card, and confirm that nothing is submitted until the user presses Submit. The `/try` payment panel should show live machine-payment status and a no-credential HTTP 402 challenge without creating a charge. Start at the live cockpit and follow the short recording script in `DEMO-SCRIPT.md`. A normal browser should still provide the complete human controls without either agent surface.
+Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a reproducible local Chrome run, open `chrome://flags/#enable-webmcp-testing`, set the flag to Enabled, relaunch Chrome, and visit `/try` first. The cockpit should expose the nineteen public browser tools: state, absolute controls, relative carrier nudge, intention matching, intent clarification, sensory calibration, direction comparison, session planning, session cues, ritual begin, ritual advance, technical recipe preparation, science-guide open, pack search, pack preview, policy, account options, generic preview, and signup navigation. The public MCP endpoint should expose twenty-seven tools, including `get_ios_app_offer`, `clarify_intention`, `calibrate_tone`, `compare_tone_directions`, `plan_listening_session`, `get_session_cue`, `prepare_session_recipe`, `open_machine_generator`, `open_science_guide`, `open_account_signup`, and `open_feedback`; the authenticated member bridge exposes eleven bounded tools. Confirm that the iPhone offer returns the App Store URL and $2.99 one-time price without a payment side effect. Confirm that intention matching selects a public tone, a vague request returns three bounded directions, a `too_bright` calibration lowers the carrier without crossing the published floor, a relaxation search returns a published pack, an unconfirmed pack preview returns `CONFIRMATION_REQUIRED`, a 20-minute plan returns arrive/practice/close phases, a cue does not echo diary content, the recipe contains no raw intention/diary text, and a gamma/246 Hz control call is reflected in the visible state. Open the science guide and verify that its seven slides advance, the FFT ocean-surface visual is referenced, Print / save PDF is available, and audio remains off. Send a medical or crisis-shaped request and verify the safety redirect points to `/health-warning`. In the connected ChatGPT app, ask “open the tone machine for gamma at 246 Hz” and verify that the `text/html;profile=mcp-app` widget renders the Aurora visual, shows Gamma/246 Hz, offers the session guidance and calibration actions, and leaves audio off until the play button is pressed. Ask to create an account and verify that `open_account_signup` renders the credential form in-platform without an automatic checkout. Say “I’m done,” verify that `open_feedback` renders one optional thumbs-up/down card, and confirm that nothing is submitted until the user presses Submit. The `/try` payment panel should show live machine-payment status and a no-credential HTTP 402 challenge without creating a charge. Start at the live cockpit and follow the short recording script in `DEMO-SCRIPT.md`. A normal browser should still provide the complete human controls without either agent surface.
 
 ## Judging-fit summary
 

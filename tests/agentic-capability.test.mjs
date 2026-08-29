@@ -41,6 +41,14 @@ import {
 import { MACHINE_WIDGET_HTML } from '../lib/agentic/machine-widget.js';
 import { ACCOUNT_SIGNUP_WIDGET_HTML, ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI } from '../lib/agentic/account-widget.js';
 import { FEEDBACK_WIDGET_HTML, FEEDBACK_WIDGET_RESOURCE_URI } from '../lib/agentic/feedback-widget.js';
+import {
+  SCIENCE_GUIDE_BACKGROUND_URL,
+  SCIENCE_GUIDE_RESOURCE_MIME_TYPE,
+  SCIENCE_GUIDE_RESOURCE_URI,
+  SCIENCE_GUIDE_SLIDES
+} from '../lib/agentic/science-content.js';
+import { SCIENCE_GUIDE_CAPABILITY_ID, SCIENCE_GUIDE_CAPABILITY_VERSION, ScienceGuideInputSchema, buildScienceGuideState } from '../lib/agentic/science-capability.js';
+import { SCIENCE_GUIDE_WIDGET_HTML, SCIENCE_GUIDE_WIDGET_RESOURCE_META } from '../lib/agentic/science-widget.js';
 import { WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.js';
 import { MEMBER_WEBMCP_TOOL_DEFINITIONS } from '../lib/agentic/webmcp-contract.js';
 import { MemberPlanInputSchema, buildMemberSessionPlan, journeyPresetForState } from '../lib/agentic/member-capability.js';
@@ -139,6 +147,43 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /getEntrainmentPath/);
   assert.match(MACHINE_WIDGET_HTML, /id="beat-wave-path"/);
   assert.doesNotMatch(MACHINE_WIDGET_HTML, /repeating-linear-gradient/);
+});
+
+test('science guide stays educational, bounded, and interactive without starting audio', () => {
+  const guide = buildScienceGuideState({
+    toneId: PUBLIC_TONE_CATALOG[0].id,
+    targetState: 'gamma',
+    carrierHz: 246,
+    beatHz: 39.5,
+    volume: 64,
+    intentionLabel: 'synthesis'
+  });
+
+  assert.equal(guide.capabilityId, SCIENCE_GUIDE_CAPABILITY_ID);
+  assert.equal(guide.version, SCIENCE_GUIDE_CAPABILITY_VERSION);
+  assert.equal(guide.resourceUri, SCIENCE_GUIDE_RESOURCE_URI);
+  assert.equal(guide.resourceMimeType, SCIENCE_GUIDE_RESOURCE_MIME_TYPE);
+  assert.equal(guide.status, 'ready');
+  assert.deepEqual(guide.controls, { targetState: 'gamma', carrierHz: 246, beatHz: 39.5, volume: 64, isPlaying: false });
+  assert.equal(guide.tone.id, PUBLIC_TONE_CATALOG[0].id);
+  assert.equal(guide.slides.length, SCIENCE_GUIDE_SLIDES.length);
+  assert.equal(guide.boundaries.audioStarted, false);
+  assert.equal(guide.boundaries.recordSaved, false);
+  assert.equal(guide.boundaries.diaryContentIncluded, false);
+  assert.equal(guide.boundaries.medicalGuidance, false);
+  assert.equal(guide.boundaries.diagnosticClaim, false);
+  assert.match(JSON.stringify(guide), /frequency-following response/i);
+  assert.doesNotMatch(JSON.stringify(guide), /private diary|medical advice/i);
+  assert.throws(() => ScienceGuideInputSchema.parse({ volume: 101 }));
+  assert.throws(() => buildScienceGuideState({ toneId: 'not-a-public-tone' }));
+  assert.equal(SCIENCE_GUIDE_BACKGROUND_URL, 'https://vgpu.sh/examples/fft-ocean-surface');
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /vgpu\.sh\/examples\/fft-ocean-surface/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="science-slide"/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Previous/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Next/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /ArrowRight/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Print \/ save PDF/);
+  assert.equal(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains[0], 'https://vgpu.sh');
 });
 
 test('tone-pack catalog returns playable public previews without private commerce fields', () => {
@@ -419,6 +464,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'get_machine_payment_options',
     'get_autonomous_payment_options',
     'open_machine_generator',
+    'open_science_guide',
     'open_feedback'
   ]);
   const iosAppTool = MCP_TOOLS.find((tool) => tool.name === 'get_ios_app_offer');
@@ -432,6 +478,11 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   const machineTool = MCP_TOOLS.find((tool) => tool.name === 'open_machine_generator');
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineTool.annotations.readOnlyHint, true);
+  const scienceTool = MCP_TOOLS.find((tool) => tool.name === 'open_science_guide');
+  assert.equal(scienceTool._meta.ui.resourceUri, SCIENCE_GUIDE_RESOURCE_URI);
+  assert.equal(scienceTool.annotations.readOnlyHint, true);
+  assert.equal(scienceTool.inputSchema.additionalProperties, false);
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === SCIENCE_GUIDE_RESOURCE_URI && resource.mimeType === SCIENCE_GUIDE_RESOURCE_MIME_TYPE));
   const accountTool = MCP_TOOLS.find((tool) => tool.name === 'open_account_signup');
   assert.equal(accountTool.annotations.readOnlyHint, true);
   assert.equal(accountTool._meta.ui.resourceUri, ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI);
@@ -461,6 +512,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_begin_ritual' && tool.sideEffect === 'updates_visible_controls'));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_advance_ritual' && tool.annotations.idempotentHint));
   assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_prepare_session_recipe' && tool.annotations.readOnlyHint));
+  assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === 'cognistration_open_science_guide' && tool.sideEffect === 'reveals_educational_guide'));
   assert.equal(MCP_TOOLS.find((tool) => tool.name === 'create_tone_pack_checkout').annotations.openWorldHint, true);
   assert.equal(MCP_TOOLS.find((tool) => tool.name === 'revoke_workshop_access').annotations.openWorldHint, true);
   assert.ok(MCP_TOOLS.some((tool) => tool.name === 'prepare_session_recipe' && tool.annotations.readOnlyHint));
@@ -598,6 +650,7 @@ test('OpenAPI fallback is derived from the same public registry', () => {
 
 test('the challenge cockpit is discoverable and keeps the human preview boundary visible', async () => {
   const cockpit = await readFile(new URL('../components/challenge/TryCockpit.jsx', import.meta.url), 'utf8');
+  const machine = await readFile(new URL('../components/machine/ToneMachineDemo.jsx', import.meta.url), 'utf8');
   const page = await readFile(new URL('../app/try/page.js', import.meta.url), 'utf8');
   const homepage = await readFile(new URL('../app/page.js', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
@@ -611,6 +664,9 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /data-testid="try-step-payment"/);
   assert.match(cockpit, /No charge was submitted by this page/);
   assert.match(cockpit, /Start preview is still a human click/);
+  assert.match(cockpit, /Open & understand/);
+  assert.match(machine, /ToneScienceLesson/);
+  assert.match(machine, /cognistration_open_science_guide/);
   assert.doesNotMatch(header, /href="\/try"/);
   assert.doesNotMatch(header, />Agent demo</);
   assert.match(homepage, /href="\/try"/);

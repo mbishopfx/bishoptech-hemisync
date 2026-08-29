@@ -26,6 +26,15 @@ The five public skill URIs are:
 | `skill://cognistration/cognistration-agent-evaluation/SKILL.md` | Evaluating golden prompts, safe failure, authorization, idempotency, native WebMCP, modern MCP, and production proof. |
 | `skill://cognistration/cognistration-feedback/SKILL.md` | Opening one optional in-platform closing feedback card after a listener signals they are done. |
 
+The science guide is a public MCP Apps resource rather than a fifth operating
+skill. After a tone or machine result, call `open_science_guide` to render
+`ui://cognistration/science-guide/v1.html`. It is a seven-slide educational
+walkthrough of the two-channel signal, FFR, descriptive frequency bands,
+evidence limits, and safe listening. It uses the FFT ocean-surface visual
+reference at `https://vgpu.sh/examples/fft-ocean-surface`, supports local
+previous/next navigation, and lets the person print or save the guide as a PDF.
+It never starts audio, stores a record, or receives diary content.
+
 ## How an agent uses the skills
 
 1. Discover the server and confirm that `io.modelcontextprotocol/skills` is
@@ -156,16 +165,18 @@ For a human/browser test, open `/try` and follow this sequence:
    and use a bounded calibration such as “too intense.”
 4. Prepare or export the technical-only recipe and confirm that no diary text
    is included.
-5. Start audio only through the explicit preview control.
-6. Submit a synthetic medical-shaped request and confirm the `/health-warning`
+5. Open `open_science_guide`, click through the signal, FFR, bands, evidence,
+   and safety slides, and optionally use Print / save PDF.
+6. Start audio only through the explicit preview control.
+7. Submit a synthetic medical-shaped request and confirm the `/health-warning`
    handoff.
-7. Ask to create an account and confirm `open_account_signup` renders the
+8. Ask to create an account and confirm `open_account_signup` renders the
    signup form in-platform. Use synthetic credentials only if you intentionally
    test the form; do not record them.
-8. Say “I’m done” and confirm the agent offers `open_feedback`; submit a
+9. Say “I’m done” and confirm the agent offers `open_feedback`; submit a
    synthetic thumbs-up or thumbs-down only when you want to verify the live
    storage path.
-9. For the optional payment demo, call `get_machine_payment_options`, request
+10. For the optional payment demo, call `get_machine_payment_options`, request
    one fixed $0.50 tone preview through `/api/machine-payments/tone`, review the
    402 challenge, and let the authorized payment client retry. Never paste a
    payment credential into a browser prompt or MCP tool argument.

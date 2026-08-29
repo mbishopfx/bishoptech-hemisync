@@ -58,6 +58,7 @@ async function main() {
   assert(tools.length >= 20, `expected the public MCP catalog, received ${tools.length} tools`);
   assert(tools.some((tool) => tool.name === 'prepare_session_recipe'), 'prepare_session_recipe is missing');
   assert(tools.some((tool) => tool.name === 'get_machine_payment_options'), 'get_machine_payment_options is missing');
+  assert(tools.some((tool) => tool.name === 'open_science_guide'), 'open_science_guide is missing');
   assert(tools.some((tool) => tool.name === 'open_account_signup'), 'open_account_signup is missing');
   assert(tools.some((tool) => tool.name === 'open_feedback'), 'open_feedback is missing');
 
@@ -79,6 +80,13 @@ async function main() {
   assert(/class="frequency-stage"/.test(machineWidget.text || ''), 'machine widget frequency-wave stage is missing');
   assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
   assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
+
+  const scienceWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/science-guide/v1.html' }, 'ui://cognistration/science-guide/v1.html');
+  const scienceWidget = scienceWidgetResult.contents?.[0];
+  assert(scienceWidget?.mimeType === 'text/html;profile=mcp-app', 'science widget MIME type is unexpected');
+  assert(/vgpu\.sh\/examples\/fft-ocean-surface/.test(scienceWidget.text || ''), 'science widget ocean visual reference is missing');
+  assert(/Print \/ save PDF/.test(scienceWidget.text || ''), 'science widget PDF print action is missing');
+  assert(/ArrowRight/.test(scienceWidget.text || ''), 'science widget keyboard navigation is missing');
 
   const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
   const accountWidget = accountWidgetResult.contents?.[0];
@@ -107,6 +115,15 @@ async function main() {
   }, 'open_feedback'));
   assert(feedbackOpen.resourceUri === 'ui://cognistration/feedback/v1.html', 'feedback render resource is unexpected');
   assert(feedbackOpen.persisted === false, 'feedback render tool must not persist a response');
+
+  const scienceOpen = structured(await rpc('tools/call', {
+    name: 'open_science_guide',
+    arguments: { targetState: 'gamma', carrierHz: 246, beatHz: 39.5, volume: 64, intentionLabel: 'synthesis' }
+  }, 'open_science_guide'));
+  assert(scienceOpen.resourceUri === 'ui://cognistration/science-guide/v1.html', 'science guide render resource is unexpected');
+  assert(scienceOpen.slides?.length === 7, 'science guide did not return seven slides');
+  assert(scienceOpen.boundaries?.audioStarted === false, 'science guide must not start audio');
+  assert(scienceOpen.boundaries?.diaryContentIncluded === false, 'science guide must not carry diary content');
 
   const clarifyResult = structured(await rpc('tools/call', {
     name: 'clarify_intention',
@@ -140,6 +157,7 @@ async function main() {
     machineWidget: 'frequency-wave',
     clarificationChoices: clarifyResult.choices.length,
     recipeVersion: recipeResult.recipe.recipeVersion,
+    scienceGuide: { resourceUri: scienceOpen.resourceUri, slides: scienceOpen.slides.length },
     inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri },
     machinePayment: { status: paymentResult.status, amountCents: paymentResult.amountCents, toneEndpoint: paymentResult.toneSession.endpoint }
   }, null, 2));
