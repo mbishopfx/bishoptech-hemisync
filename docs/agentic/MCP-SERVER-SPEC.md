@@ -48,7 +48,7 @@ use the supported `initialize` handshake.
 | `ui://cognistration/science-guide/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
 | `ui://cognistration/ios-app/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted iPhone offer with real screenshots and a Download Now App Store badge | no |
 | `ui://cognistration/phone-download/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted phone handoff with the fixed `$0.50` agent-preview path and separate `$2.99` iPhone app path | no |
-| `ui://cognistration/tone-pack-checkout/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted tone-pack purchase card with email capture, explicit $5.99 confirmation, hosted checkout, and verified download action | email stays in widget/provider flow |
+| `ui://cognistration/tone-pack-checkout/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted tone-pack purchase card with email capture, explicit $5.99 confirmation, hosted checkout, and verified download action | email stays in widget/provider flow |
 | `ui://cognistration/account-signup/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
 | `skill://cognistration/*/SKILL.md` | `text/markdown` | public | static operating guidance | no |
@@ -109,7 +109,7 @@ must obtain explicit confirmation before sending payment credentials, and the
 server verifies the provider receipt before releasing a session.
 
 The `open_tone_pack_checkout` render tool links `_meta.ui.resourceUri` to
-`ui://cognistration/tone-pack-checkout/v1.html`. The card asks for a delivery
+`ui://cognistration/tone-pack-checkout/v2.html`. The card asks for a delivery
 email and explicit confirmation of the fixed `$5.99` one-time price before it
 opens hosted Checkout. After `get_tone_pack_delivery` verifies the completed
 session, the same card renders a download button and reports the email fallback.

@@ -75,7 +75,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - Resource: `ui://cognistration/science-guide/v2.html`
 - Resource: `ui://cognistration/ios-app/v1.html`
 - Resource: `ui://cognistration/phone-download/v1.html`
-- Resource: `ui://cognistration/tone-pack-checkout/v1.html`
+- Resource: `ui://cognistration/tone-pack-checkout/v2.html`
 - MIME type: `text/html;profile=mcp-app`
 - Host calls: portable `tools/call` for recommendation, pack search, checkout, and verified delivery; optional `window.openai.requestDisplayMode` for a larger view; science-guide PDF and App Store actions use `window.openai.openExternal` with direct-link fallbacks, while phone preview uses `window.openai.sendFollowUpMessage`
 - Visuals: the machine uses the supplied Aurora Current artwork; the science guide uses a self-contained animated ocean surface with `https://vgpu.sh/examples/fft-ocean-surface` as a source link, so neither surface depends on an embedded frame

@@ -122,7 +122,7 @@ async function main() {
   assert(phoneWidget._meta?.ui?.prefersBorder === false, 'phone download widget must not request a host-added hard border');
   assert(!/border: 1px solid rgba\(255, 255, 255/.test(phoneWidget.text || ''), 'phone download widget contains a hard white UI border');
 
-  const tonePackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/tone-pack-checkout/v1.html' }, 'ui://cognistration/tone-pack-checkout/v1.html');
+  const tonePackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/tone-pack-checkout/v2.html' }, 'ui://cognistration/tone-pack-checkout/v2.html');
   const tonePackWidget = tonePackWidgetResult.contents?.[0];
   assert(tonePackWidget?.mimeType === 'text/html;profile=mcp-app', 'tone-pack widget MIME type is unexpected');
   assert(/Delivery email/.test(tonePackWidget.text || ''), 'tone-pack widget email field is missing');
@@ -213,7 +213,7 @@ async function main() {
     name: 'open_tone_pack_checkout',
     arguments: { slug: 'full-spectrum-pack' }
   }, 'open_tone_pack_checkout'));
-  assert(tonePackOpen.resourceUri === 'ui://cognistration/tone-pack-checkout/v1.html', 'tone-pack checkout render resource is unexpected');
+  assert(tonePackOpen.resourceUri === 'ui://cognistration/tone-pack-checkout/v2.html', 'tone-pack checkout render resource is unexpected');
   assert(tonePackOpen.selectedPack?.slug === 'full-spectrum-pack', 'tone-pack checkout did not select the requested pack');
   assert(tonePackOpen.userSubmissionRequired === true, 'tone-pack checkout must require user submission');
   assert(tonePackOpen.paymentSubmitted === false, 'tone-pack checkout must not submit payment while rendering');
