@@ -57,7 +57,11 @@ import {
   buildMachineGeneratorState
 } from '../lib/agentic/machine-capability.js';
 import { MACHINE_WIDGET_HTML } from '../lib/agentic/machine-widget.js';
-import { ACCOUNT_SIGNUP_WIDGET_HTML, ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI } from '../lib/agentic/account-widget.js';
+import {
+  ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI,
+  ACCOUNT_SIGNUP_WIDGET_HTML,
+  ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI
+} from '../lib/agentic/account-widget.js';
 import { FEEDBACK_WIDGET_HTML, FEEDBACK_WIDGET_RESOURCE_URI } from '../lib/agentic/feedback-widget.js';
 import {
   TONE_PACK_CHECKOUT_WIDGET_HTML,
@@ -350,6 +354,7 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.equal(feedbackOpenState().persisted, false);
 
   assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v2.html');
+  assert.equal(ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v1.html');
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /id="account-form"/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /api\/agent\/account\/signup/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /fetch\('https:\/\/cognistration\.com\/api\/agent\/account\/signup'/);

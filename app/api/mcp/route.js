@@ -21,6 +21,7 @@ import {
   ACCOUNT_SIGNUP_WIDGET_RESOURCE_META,
   ACCOUNT_SIGNUP_WIDGET_RESOURCE_MIME_TYPE,
   ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI,
+  ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI,
   ACCOUNT_SIGNUP_WIDGET_HTML
 } from '@/lib/agentic/account-widget';
 import { AccountOptionsInputSchema, AccountSignupInputSchema, accountSignupState, publicAccountOptions } from '@/lib/agentic/account-capability';
@@ -397,7 +398,7 @@ async function readResource(uri) {
     };
   }
 
-  if (uri === ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI) {
+  if (uri === ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI || uri === ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI) {
     return {
       uri,
       mimeType: ACCOUNT_SIGNUP_WIDGET_RESOURCE_MIME_TYPE,

@@ -160,6 +160,12 @@ async function main() {
   assert(/credentials: 'omit'/.test(accountWidget.text || ''), 'account widget must omit ambient credentials');
   assert(!/window\.openai\.callTool/.test(accountWidget.text || ''), 'account widget must not send credentials through MCP');
 
+  const legacyAccountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
+  const legacyAccountWidget = legacyAccountWidgetResult.contents?.[0];
+  assert(legacyAccountWidget?.mimeType === 'text/html;profile=mcp-app', 'legacy account widget MIME type is unexpected');
+  assert(legacyAccountWidget?.uri === 'ui://cognistration/account-signup/v1.html', 'legacy account widget URI was not preserved');
+  assert(/id="account-form"/.test(legacyAccountWidget.text || ''), 'legacy account widget form is missing');
+
   const feedbackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/feedback/v1.html' }, 'ui://cognistration/feedback/v1.html');
   const feedbackWidget = feedbackWidgetResult.contents?.[0];
   assert(feedbackWidget?.mimeType === 'text/html;profile=mcp-app', 'feedback widget MIME type is unexpected');

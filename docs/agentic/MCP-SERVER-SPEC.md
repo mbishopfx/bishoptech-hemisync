@@ -49,7 +49,7 @@ use the supported `initialize` handshake.
 | `ui://cognistration/ios-app/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted iPhone offer with real screenshots and a Download Now App Store badge | no |
 | `ui://cognistration/phone-download/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted phone handoff with the fixed `$0.50` agent-preview path and separate `$2.99` iPhone app path | no |
 | `ui://cognistration/tone-pack-checkout/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted tone-pack purchase card with email capture, explicit $5.99 confirmation, hosted checkout, and verified download action | email stays in widget/provider flow |
-| `ui://cognistration/account-signup/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget |
+| `ui://cognistration/account-signup/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget; canonical URI |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
 | `skill://cognistration/*/SKILL.md` | `text/markdown` | public | static operating guidance | no |
 
@@ -119,6 +119,8 @@ their own `Payment-Authorization` credential, and receive delivery only after
 the server verifies the exact Stripe PaymentIntent.
 
 Every tool returns bounded `content` and `structuredContent`. Tool-level failures use `isError: true`; protocol failures use stable JSON-RPC errors. Unknown tool names, private-data requests, and write attempts are denied.
+
+The previous `ui://cognistration/account-signup/v1.html` resource remains readable as a compatibility alias for conversations that cached the earlier tool descriptor.
 
 ## Compatibility fallback
 
