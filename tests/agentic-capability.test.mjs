@@ -801,6 +801,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(machinePaymentOptions('https://example.test').toneSession.scopePrefix, MACHINE_PAYMENT_TONE_SCOPE_PREFIX);
   assert.ok(machinePaymentOptions('https://example.test').activation.requiredProductionConfiguration.includes('MACHINE_PAYMENT_GRANT_SECRET'));
   assert.equal(autonomousPaymentOptions('https://example.test').status, 'provider_access_required');
+  assert.match(MCP_TOOLS.find((tool) => tool.name === 'get_autonomous_payment_options').description, /get_tone_pack_payment_options/);
   const ucp = ucpProfile('https://example.test');
   assert.equal(ucp.ucp.version, '2026-01-23');
   assert.equal(ucp.ucp.services['dev.ucp.shopping'][0].endpoint, 'https://example.test/api/ucp');
