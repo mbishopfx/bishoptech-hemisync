@@ -18,6 +18,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 | Finished interaction feedback | `open_feedback` | In-platform rating card | Explicit user submission persists only a sanitized anonymous record; no history |
 | Safety, terms, privacy, or AI questions | `get_policy_info` | Return canonical URL | Topic, source URL, concise summary |
 | Download the iPhone app | `get_ios_app_offer` | Open the returned App Store URL | Canonical listing, current $2.99 one-time price, compatibility, on-device explanation for the lower cost, and no payment action |
+| Download the current tone to a phone | `open_phone_download_options` | Choose the fixed $0.50 agent-preview handoff or the full iPhone app; require explicit confirmation before MPP payment | Current bounded tone/settings, exact payment challenge, explicit approval, and server-verified release |
 | Open the machine inside ChatGPT | `open_machine_generator` | Use the widget to match an intention, tune controls, browse packs, or request a larger view | Versioned UI resource renders; audio remains off until explicit play |
 | Understand the generated signal | `open_science_guide` | Click through the two-channel signal, FFR, descriptive bands, evidence limits, and safety notes; print/save the guide as PDF | Versioned science-guide UI renders with a self-contained animated ocean surface; audio and diary content remain off |
 
@@ -34,7 +35,8 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `get_policy_info`
 - `get_account_options`
 - `open_account_signup` — render the in-platform signup form without receiving credentials in MCP
-- `get_ios_app_offer` — return the public iPhone App Store listing, one-time offer details, and the on-device explanation for the lower cost
+- `get_ios_app_offer` — render the frosted iPhone offer with real screenshots and a Download Now App Store badge, alongside the public listing and one-time offer details
+- `open_phone_download_options` — render the fixed `$0.50` no-account agent-preview handoff and separate `$2.99` iPhone app path; payment remains explicit and user-controlled
 - `create_tone_pack_checkout` — after explicit confirmation, create a server-priced hosted checkout for a published pack
 - `get_tone_pack_delivery` — verify a completed checkout and return the download/email fallback paths
 - `open_tone_pack_checkout` — render the frosted in-platform pack card with email capture, hosted checkout, and verified download state
@@ -70,10 +72,12 @@ This is the implementation map for the public Cognistration agent surface. Each 
 ### ChatGPT app surface
 
 - Resource: `ui://cognistration/machine-generator/v1.html`
-- Resource: `ui://cognistration/science-guide/v1.html`
+- Resource: `ui://cognistration/science-guide/v2.html`
+- Resource: `ui://cognistration/ios-app/v1.html`
+- Resource: `ui://cognistration/phone-download/v1.html`
 - Resource: `ui://cognistration/tone-pack-checkout/v1.html`
 - MIME type: `text/html;profile=mcp-app`
-- Host calls: portable `tools/call` for recommendation, pack search, checkout, and verified delivery; optional `window.openai.requestDisplayMode` for a larger view; science-guide navigation is local and its PDF action is browser-controlled
+- Host calls: portable `tools/call` for recommendation, pack search, checkout, and verified delivery; optional `window.openai.requestDisplayMode` for a larger view; science-guide PDF and App Store actions use `window.openai.openExternal` with direct-link fallbacks, while phone preview uses `window.openai.sendFollowUpMessage`
 - Visuals: the machine uses the supplied Aurora Current artwork; the science guide uses a self-contained animated ocean surface with `https://vgpu.sh/examples/fft-ocean-surface` as a source link, so neither surface depends on an embedded frame
 - Commerce UI: the tone-pack card uses frosted surfaces and asks for email/confirmation in-platform; payment credentials remain with the hosted checkout or compatible MPP payment client, and the download link appears only after server verification
 

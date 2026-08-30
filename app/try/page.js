@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { LiquidHeader } from '@/components/layout/LiquidHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 import { TryCockpit } from '@/components/challenge/TryCockpit';
+import { MCP_TOOLS } from '@/lib/agentic/mcp-contract';
+
+const MCP_TOOL_COUNT = MCP_TOOLS.length;
 
 const challengeJsonLd = {
   '@context': 'https://schema.org',
@@ -31,7 +34,7 @@ export default function TryPage() {
                 <Link href="/agent-instructions.md" className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-5 py-3.5">Agent instructions</Link>
               </div>
             </div>
-            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="glass-pill rounded-full px-3 py-2">19 public WebMCP tools</span><span className="glass-pill rounded-full px-3 py-2">29 public MCP tools</span><span className="glass-pill rounded-full px-3 py-2">No account required for the flow</span></div>
+            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="glass-pill rounded-full px-3 py-2">19 public WebMCP tools</span><span className="glass-pill rounded-full px-3 py-2">{MCP_TOOL_COUNT} public MCP tools</span><span className="glass-pill rounded-full px-3 py-2">No account required for the flow</span></div>
           </div>
         </section>
 

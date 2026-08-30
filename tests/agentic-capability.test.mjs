@@ -23,6 +23,24 @@ import {
   IosAppOfferInputSchema,
   publicIosAppOffer
 } from '../lib/agentic/ios-capability.js';
+import {
+  IOS_APP_WIDGET_HTML,
+  IOS_APP_WIDGET_RESOURCE_META,
+  IOS_APP_WIDGET_RESOURCE_MIME_TYPE,
+  IOS_APP_WIDGET_RESOURCE_URI
+} from '../lib/agentic/ios-widget.js';
+import {
+  PHONE_DOWNLOAD_CAPABILITY_ID,
+  PHONE_DOWNLOAD_CAPABILITY_VERSION,
+  PHONE_DOWNLOAD_WIDGET_RESOURCE_MIME_TYPE,
+  PHONE_DOWNLOAD_WIDGET_RESOURCE_URI,
+  PhoneDownloadOptionsInputSchema,
+  buildPhoneDownloadOptions
+} from '../lib/agentic/phone-download.js';
+import {
+  PHONE_DOWNLOAD_WIDGET_HTML,
+  PHONE_DOWNLOAD_WIDGET_RESOURCE_META
+} from '../lib/agentic/phone-download-widget.js';
 import { getSkill, listSkills, readSkillResource } from '../lib/agentic/skill-capability.js';
 import {
   SessionCueInputSchema,
@@ -212,6 +230,8 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /api\/science-guide\/pdf/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="pdf-direct-link"/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /new URLSearchParams/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /window\.openai\.openExternal/);
+  assert.doesNotMatch(SCIENCE_GUIDE_WIDGET_HTML, /ocean-telemetry/);
   assert.doesNotMatch(SCIENCE_GUIDE_WIDGET_HTML, /fetch\('https:\/\/cognistration\.com\/api\/science-guide\/pdf'/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /cognistration:ocean-profile/);
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /application\/pdf/);
@@ -220,6 +240,7 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /oceanSeed/);
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /origin === 'null'/);
   assert.match(SCIENCE_GUIDE_LESSON_SOURCE, /scienceGuidePdfUrl/);
+  assert.match(SCIENCE_GUIDE_LESSON_SOURCE, /window\.openai\?\.openExternal/);
   assert.match(SCIENCE_GUIDE_LESSON_SOURCE, /target = '_blank'/);
   assert.doesNotMatch(SCIENCE_GUIDE_LESSON_SOURCE, /fetch\('\/api\/science-guide\/pdf'/);
   assert.deepEqual(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains, []);
@@ -416,6 +437,48 @@ test('the iPhone app offer is public, bounded, and user-purchased', async () => 
   assert.match(appSection, /prefers-reduced-motion/);
   assert.match(appSection, /on-device/);
   assert.doesNotMatch(appSection, /coming iOS app|Join the waitlist|ios-waitlist/i);
+  assert.equal(IOS_APP_WIDGET_RESOURCE_MIME_TYPE, 'text/html;profile=mcp-app');
+  assert.equal(IOS_APP_WIDGET_RESOURCE_META.ui.prefersBorder, false);
+  assert.equal(IOS_APP_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
+  assert.equal(IOS_APP_WIDGET_RESOURCE_META.ui.csp.frameDomains.length, 0);
+  assert.match(IOS_APP_WIDGET_HTML, /slide1-tune-your-brain-waves\.png/);
+  assert.match(IOS_APP_WIDGET_HTML, /slide3-custom-binaural-beats\.png/);
+  assert.match(IOS_APP_WIDGET_HTML, /slide5-build-mindful-habits\.png/);
+  assert.match(IOS_APP_WIDGET_HTML, /Download now/);
+  assert.match(IOS_APP_WIDGET_HTML, /openExternal/);
+  assert.doesNotMatch(IOS_APP_WIDGET_HTML, /border: 1px solid rgba\(255, 255, 255/);
+});
+
+test('phone download options preserve the fixed preview boundary and separate iPhone offer', () => {
+  const tone = PUBLIC_TONE_CATALOG[0];
+  const options = buildPhoneDownloadOptions({
+    toneId: tone.id,
+    targetState: 'gamma',
+    carrierHz: 246,
+    beatHz: 39.5,
+    volume: 64
+  }, 'https://example.test');
+
+  assert.equal(options.capabilityId, PHONE_DOWNLOAD_CAPABILITY_ID);
+  assert.equal(options.version, PHONE_DOWNLOAD_CAPABILITY_VERSION);
+  assert.equal(options.resourceUri, PHONE_DOWNLOAD_WIDGET_RESOURCE_URI);
+  assert.equal(options.phonePreview.amountCents, 50);
+  assert.equal(options.phonePreview.price, '$0.50');
+  assert.equal(options.phonePreview.requiresAccount, false);
+  assert.equal(options.phonePreview.requiresExplicitConfirmation, true);
+  assert.equal(options.phonePreview.endpoint, 'https://example.test/api/machine-payments/tone');
+  assert.equal(options.iosApp.price, '$2.99');
+  assert.deepEqual(options.controls, { targetState: 'gamma', carrierHz: 246, beatHz: 39.5, volume: 64 });
+  assert.throws(() => PhoneDownloadOptionsInputSchema.parse({ carrierHz: 401 }));
+  assert.equal(PHONE_DOWNLOAD_WIDGET_RESOURCE_MIME_TYPE, 'text/html;profile=mcp-app');
+  assert.equal(PHONE_DOWNLOAD_WIDGET_RESOURCE_META.ui.prefersBorder, false);
+  assert.equal(PHONE_DOWNLOAD_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
+  assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /\$0\.50/);
+  assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /\$2\.99/);
+  assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /sendFollowUpMessage/);
+  assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /Payment-Authorization/);
+  assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /openExternal/);
+  assert.doesNotMatch(PHONE_DOWNLOAD_WIDGET_HTML, /border: 1px solid rgba\(255, 255, 255/);
 });
 
 test('homepage visual treatment keeps the hero wide, glassy, and free of hard panel borders', async () => {
@@ -562,6 +625,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'get_account_options',
     'open_account_signup',
     'get_ios_app_offer',
+    'open_phone_download_options',
     'create_tone_pack_checkout',
     'get_tone_pack_delivery',
     'open_tone_pack_checkout',
@@ -578,6 +642,12 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   ]);
   const iosAppTool = MCP_TOOLS.find((tool) => tool.name === 'get_ios_app_offer');
   assert.equal(iosAppTool.annotations.readOnlyHint, true);
+  assert.equal(iosAppTool._meta.ui.resourceUri, IOS_APP_WIDGET_RESOURCE_URI);
+  const phoneDownloadTool = MCP_TOOLS.find((tool) => tool.name === 'open_phone_download_options');
+  assert.equal(phoneDownloadTool.annotations.readOnlyHint, true);
+  assert.equal(phoneDownloadTool._meta.ui.resourceUri, PHONE_DOWNLOAD_WIDGET_RESOURCE_URI);
+  assert.equal(phoneDownloadTool.consent, 'explicit_payment_confirmation_required_before_agent_charge');
+  assert.equal(phoneDownloadTool.inputSchema.additionalProperties, false);
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://ios-app'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://session-guides'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://interaction-patterns'));
@@ -585,6 +655,8 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === FEEDBACK_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === TONE_PACK_CHECKOUT_WIDGET_RESOURCE_URI && resource.mimeType === TONE_PACK_CHECKOUT_WIDGET_RESOURCE_MIME_TYPE));
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === IOS_APP_WIDGET_RESOURCE_URI && resource.mimeType === IOS_APP_WIDGET_RESOURCE_MIME_TYPE));
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === PHONE_DOWNLOAD_WIDGET_RESOURCE_URI && resource.mimeType === PHONE_DOWNLOAD_WIDGET_RESOURCE_MIME_TYPE));
   const machineTool = MCP_TOOLS.find((tool) => tool.name === 'open_machine_generator');
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineTool.annotations.readOnlyHint, true);
@@ -787,7 +859,8 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   const sitemap = await readFile(new URL('../app/sitemap.js', import.meta.url), 'utf8');
   const robots = await readFile(new URL('../app/robots.js', import.meta.url), 'utf8');
   assert.match(page, /WebMCP challenge cockpit/);
-  assert.match(page, /29 public MCP tools/);
+  assert.match(page, /MCP_TOOL_COUNT/);
+  assert.doesNotMatch(page, /29 public MCP tools/);
   assert.match(cockpit, /data-testid="try-step-intention"/);
   assert.match(cockpit, /data-testid="try-step-comparison"/);
   assert.match(cockpit, /data-testid="try-step-plan"/);

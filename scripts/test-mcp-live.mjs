@@ -60,6 +60,8 @@ async function main() {
   assert(tools.some((tool) => tool.name === 'get_machine_payment_options'), 'get_machine_payment_options is missing');
   assert(tools.some((tool) => tool.name === 'get_tone_pack_payment_options'), 'get_tone_pack_payment_options is missing');
   assert(tools.some((tool) => tool.name === 'open_science_guide'), 'open_science_guide is missing');
+  assert(tools.some((tool) => tool.name === 'get_ios_app_offer'), 'get_ios_app_offer is missing');
+  assert(tools.some((tool) => tool.name === 'open_phone_download_options'), 'open_phone_download_options is missing');
   assert(tools.some((tool) => tool.name === 'open_tone_pack_checkout'), 'open_tone_pack_checkout is missing');
   assert(tools.some((tool) => tool.name === 'open_account_signup'), 'open_account_signup is missing');
   assert(tools.some((tool) => tool.name === 'open_feedback'), 'open_feedback is missing');
@@ -83,7 +85,7 @@ async function main() {
   assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
   assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
 
-  const scienceWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/science-guide/v1.html' }, 'ui://cognistration/science-guide/v1.html');
+  const scienceWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/science-guide/v2.html' }, 'ui://cognistration/science-guide/v2.html');
   const scienceWidget = scienceWidgetResult.contents?.[0];
   assert(scienceWidget?.mimeType === 'text/html;profile=mcp-app', 'science widget MIME type is unexpected');
   assert(/vgpu\.sh\/examples\/fft-ocean-surface/.test(scienceWidget.text || ''), 'science widget ocean visual reference is missing');
@@ -96,8 +98,29 @@ async function main() {
   assert(/api\/science-guide\/pdf/.test(scienceWidget.text || ''), 'science widget PDF export route is missing');
   assert(/cognistration:ocean-profile/.test(scienceWidget.text || ''), 'science widget ocean run handoff is missing');
   assert(/ArrowRight/.test(scienceWidget.text || ''), 'science widget keyboard navigation is missing');
+  assert(/openExternal/.test(scienceWidget.text || ''), 'science widget host download bridge is missing');
+  assert(!/ocean-telemetry/.test(scienceWidget.text || ''), 'science widget still contains the retired telemetry badge');
   assert(scienceWidget._meta?.ui?.prefersBorder === false, 'science widget must not request a host-added hard border');
   assert(!/border: 1px solid rgba\(255, 255, 255/.test(scienceWidget.text || ''), 'science widget contains a hard white UI border');
+
+  const iosWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/ios-app/v1.html' }, 'ui://cognistration/ios-app/v1.html');
+  const iosWidget = iosWidgetResult.contents?.[0];
+  assert(iosWidget?.mimeType === 'text/html;profile=mcp-app', 'iPhone app widget MIME type is unexpected');
+  assert(/slide1-tune-your-brain-waves\.png/.test(iosWidget.text || ''), 'iPhone app widget screenshots are missing');
+  assert(/Download now/.test(iosWidget.text || ''), 'iPhone app widget Download Now CTA is missing');
+  assert(/openExternal/.test(iosWidget.text || ''), 'iPhone app widget host link bridge is missing');
+  assert(iosWidget._meta?.ui?.prefersBorder === false, 'iPhone app widget must not request a host-added hard border');
+  assert(!/border: 1px solid rgba\(255, 255, 255/.test(iosWidget.text || ''), 'iPhone app widget contains a hard white UI border');
+
+  const phoneWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/phone-download/v1.html' }, 'ui://cognistration/phone-download/v1.html');
+  const phoneWidget = phoneWidgetResult.contents?.[0];
+  assert(phoneWidget?.mimeType === 'text/html;profile=mcp-app', 'phone download widget MIME type is unexpected');
+  assert(/\$0\.50/.test(phoneWidget.text || ''), 'phone download widget fixed preview price is missing');
+  assert(/\$2\.99/.test(phoneWidget.text || ''), 'phone download widget iPhone price is missing');
+  assert(/sendFollowUpMessage/.test(phoneWidget.text || ''), 'phone download widget agent handoff is missing');
+  assert(/Payment-Authorization/.test(phoneWidget.text || ''), 'phone download widget payment boundary is missing');
+  assert(phoneWidget._meta?.ui?.prefersBorder === false, 'phone download widget must not request a host-added hard border');
+  assert(!/border: 1px solid rgba\(255, 255, 255/.test(phoneWidget.text || ''), 'phone download widget contains a hard white UI border');
 
   const tonePackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/tone-pack-checkout/v1.html' }, 'ui://cognistration/tone-pack-checkout/v1.html');
   const tonePackWidget = tonePackWidgetResult.contents?.[0];
@@ -116,6 +139,7 @@ async function main() {
   assert(/navigator\.gpu/.test(oceanModule), 'science ocean module does not request WebGPU');
   assert(/frameLoop/.test(oceanModule), 'science ocean module does not animate through vGPU');
   assert(/seed/.test(oceanModule), 'science ocean module is missing seeded variation');
+  assert(!/ocean-telemetry/.test(oceanModule), 'science ocean module still targets the retired telemetry badge');
 
   const pdfExportResponse = await fetch(new URL('/api/science-guide/pdf?targetState=gamma&carrierHz=246&beatHz=6&volume=64&oceanSeed=101', requestOrigin), {
     headers: { Origin: 'null' }
@@ -123,6 +147,9 @@ async function main() {
   assert(pdfExportResponse.ok, `science guide GET PDF export returned HTTP ${pdfExportResponse.status}`);
   assert((pdfExportResponse.headers.get('content-type') || '').includes('application/pdf'), 'science guide GET PDF export MIME type is unexpected');
   assert(/attachment; filename="cognistration-science-guide-/.test(pdfExportResponse.headers.get('content-disposition') || ''), 'science guide GET PDF export is missing attachment disposition');
+  const pdfBytes = new Uint8Array(await pdfExportResponse.arrayBuffer());
+  assert(new TextDecoder().decode(pdfBytes.slice(0, 8)) === '%PDF-1.4', 'science guide GET PDF export is not a valid PDF');
+  assert(pdfBytes.length > 1000, 'science guide GET PDF export is unexpectedly empty');
 
   const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
   const accountWidget = accountWidgetResult.contents?.[0];
@@ -156,10 +183,31 @@ async function main() {
     name: 'open_science_guide',
     arguments: { targetState: 'gamma', carrierHz: 246, beatHz: 39.5, volume: 64, intentionLabel: 'synthesis' }
   }, 'open_science_guide'));
-  assert(scienceOpen.resourceUri === 'ui://cognistration/science-guide/v1.html', 'science guide render resource is unexpected');
+  assert(scienceOpen.resourceUri === 'ui://cognistration/science-guide/v2.html', 'science guide render resource is unexpected');
   assert(scienceOpen.slides?.length === 7, 'science guide did not return seven slides');
   assert(scienceOpen.boundaries?.audioStarted === false, 'science guide must not start audio');
   assert(scienceOpen.boundaries?.diaryContentIncluded === false, 'science guide must not carry diary content');
+
+  const iosOpenEnvelope = await rpc('tools/call', {
+    name: 'get_ios_app_offer',
+    arguments: {}
+  }, 'get_ios_app_offer');
+  const iosOpen = structured(iosOpenEnvelope);
+  assert(iosOpen.app?.url?.includes('apps.apple.com'), 'iPhone app offer URL is missing');
+  assert(iosOpen.app?.price === '$2.99', 'iPhone app offer price is unexpected');
+  assert(iosOpenEnvelope._meta?.ui?.resourceUri === 'ui://cognistration/ios-app/v1.html', 'iPhone app widget metadata is missing');
+
+  const phoneOpenEnvelope = await rpc('tools/call', {
+    name: 'open_phone_download_options',
+    arguments: { targetState: 'gamma', carrierHz: 246, beatHz: 6, volume: 64 }
+  }, 'open_phone_download_options');
+  const phoneOpen = structured(phoneOpenEnvelope);
+  assert(phoneOpen.resourceUri === 'ui://cognistration/phone-download/v1.html', 'phone download render resource is unexpected');
+  assert(phoneOpen.phonePreview?.amountCents === 50, 'phone preview amount is not 50 cents');
+  assert(phoneOpen.phonePreview?.requiresAccount === false, 'phone preview unexpectedly requires an account');
+  assert(phoneOpen.phonePreview?.requiresExplicitConfirmation === true, 'phone preview is missing explicit confirmation');
+  assert(phoneOpen.iosApp?.price === '$2.99', 'phone download iPhone offer price is unexpected');
+  assert(phoneOpenEnvelope._meta?.ui?.resourceUri === 'ui://cognistration/phone-download/v1.html', 'phone download widget metadata is missing');
 
   const tonePackOpen = structured(await rpc('tools/call', {
     name: 'open_tone_pack_checkout',
@@ -202,7 +250,8 @@ async function main() {
   const tryResponse = await fetch(new URL('/try', requestOrigin));
   const tryText = await tryResponse.text();
   assert(tryResponse.ok, `/try returned HTTP ${tryResponse.status}`);
-  assert(/29 public MCP tools/.test(tryText), '/try still shows a stale MCP tool count');
+  assert(/30 public MCP tools/.test(tryText), '/try does not show the current MCP tool count');
+  assert(!/29 public MCP tools/.test(tryText), '/try still shows the retired MCP tool count');
   assert(!/27 public MCP tools/.test(tryText), '/try contains the retired MCP tool count');
 
   console.log(JSON.stringify({
@@ -217,7 +266,7 @@ async function main() {
     clarificationChoices: clarifyResult.choices.length,
     recipeVersion: recipeResult.recipe.recipeVersion,
     scienceGuide: { resourceUri: scienceOpen.resourceUri, slides: scienceOpen.slides.length },
-    inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri, tonePack: tonePackOpen.resourceUri },
+    inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri, tonePack: tonePackOpen.resourceUri, ios: iosOpenEnvelope._meta?.ui?.resourceUri, phone: phoneOpen.resourceUri },
     machinePayment: { status: paymentResult.status, amountCents: paymentResult.amountCents, toneEndpoint: paymentResult.toneSession.endpoint },
     tonePackPayment: { status: tonePackPaymentResult.status, amountCents: tonePackPaymentResult.amountCents, endpoint: tonePackPaymentResult.endpoint }
   }, null, 2));

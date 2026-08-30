@@ -234,7 +234,6 @@ function buildOcean(gpu, size, profile) {
 
 var canvas = document.getElementById('ocean-canvas');
 var status = document.getElementById('ocean-status');
-var telemetry = document.getElementById('ocean-telemetry');
 
 function setStatus(value) {
   if (status) status.textContent = value;
@@ -247,10 +246,6 @@ function startOcean() {
   if (!navigator.gpu) {
     setStatus('WebGPU unavailable · guide remains readable');
     return Promise.resolve();
-  }
-
-  if (telemetry) {
-    telemetry.textContent = 'FFT ocean · run ' + profile.label + ' · wind ' + profile.windSpeed.toFixed(1) + ' m/s · speed ' + profile.timeScale.toFixed(2) + 'x';
   }
 
   var gpu;

@@ -6,7 +6,7 @@
 - Transport: Streamable HTTP JSON-RPC over HTTP POST; dual-era public adapter
 - Current discovery protocol: `2026-07-28` `server/discover`
 - Legacy initialize compatibility: `2025-11-25`, `2025-06-18`, `2025-03-26`
-- Server name/version: `cognistration-agentic-platform` / `0.11.0`
+- Server name/version: `cognistration-agentic-platform` / `0.12.0`
 - Manifest: `https://cognistration.com/api/capabilities`
 - REST/OpenAPI fallback: `https://cognistration.com/openapi.json`
 - Human/agent instructions: `https://cognistration.com/agent-instructions.md`
@@ -26,7 +26,7 @@ use the supported `initialize` handshake.
 
 | Surface | Allowed | Not allowed |
 |---|---|---|
-| Resources | capability manifest, public catalogs, policy index, account options, iPhone app offer, skill index, skill resources, and the tone-machine, science-guide, tone-pack checkout, signup, and feedback UIs | private sessions, profiles, saved tones, secrets |
+| Resources | capability manifest, public catalogs, policy index, account options, iPhone app offer, skill index, skill resources, and the tone-machine, science-guide, phone-download, iPhone-app, tone-pack checkout, signup, and feedback UIs | private sessions, profiles, saved tones, secrets |
 | Tools | bounded tone/pack search, lookup, deterministic recommendation, policy/account reads, machine rendering, checkout preparation, and payment discovery | arbitrary SQL, code execution, file access, unrestricted web search |
 | Visitor writes | first-party signup/feedback widget submission and server-verified hosted/MPP commerce flows only after explicit user action or provider authorization | credentials, payment credentials, or feedback in MCP arguments; arbitrary email/library writes |
 | Browser WebMCP | visible machine controls and explicit local preview | hidden navigation side effects, silent audio, silent credential/payment submission |
@@ -45,7 +45,9 @@ use the supported `initialize` handshake.
 | `cognistration://ios-app` | `application/json` | public | App Store listing, one-time price, compatibility, feature summary, and on-device pricing context | no |
 | `cognistration://skills` | `application/json` | public | skill extension summary | no |
 | `ui://cognistration/machine-generator/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded local preview | no |
-| `ui://cognistration/science-guide/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
+| `ui://cognistration/science-guide/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
+| `ui://cognistration/ios-app/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted iPhone offer with real screenshots and a Download Now App Store badge | no |
+| `ui://cognistration/phone-download/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted phone handoff with the fixed `$0.50` agent-preview path and separate `$2.99` iPhone app path | no |
 | `ui://cognistration/tone-pack-checkout/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted tone-pack purchase card with email capture, explicit $5.99 confirmation, hosted checkout, and verified download action | email stays in widget/provider flow |
 | `ui://cognistration/account-signup/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
@@ -64,7 +66,8 @@ use the supported `initialize` handshake.
 | `get_policy_info` | `public_read` | none | one published policy topic |
 | `get_account_options` | `public_read` | none | empty object |
 | `open_account_signup` | `public_read` render | widget submission only | empty object; credentials never enter MCP |
-| `get_ios_app_offer` | `public_read` | none | empty object; returns the canonical App Store listing, current one-time price, and why on-device operation keeps the offer lower |
+| `get_ios_app_offer` | `public_read` render | none | empty object; renders real screenshots and a Download Now badge while returning the canonical App Store listing and current one-time price |
+| `open_phone_download_options` | `public_read` render | widget handoff only | optional public tone ID and bounded controls; the `$0.50` payment challenge requires explicit approval |
 | `create_tone_pack_checkout` | `public_checkout` | creates unpaid hosted checkout | published pack slug, delivery email, confirmation, idempotency key |
 | `get_tone_pack_delivery` | `paid_checkout_session` | verifies payment and resolves delivery | published pack slug, completed Checkout Session ID |
 | `open_tone_pack_checkout` | `public_read` render | widget submission only | optional published pack slug; email and payment stay in widget/provider flow |
@@ -82,13 +85,28 @@ compatibility enhancement. Its Aurora background is the public
 until the listener explicitly presses play.
 
 The `open_science_guide` render tool links `_meta.ui.resourceUri` to
-`ui://cognistration/science-guide/v1.html`. The widget is a seven-slide,
+`ui://cognistration/science-guide/v2.html`. The widget is a seven-slide,
 clickable explanation of the two-channel signal, FFR, descriptive frequency
 bands, evidence limits, and safe listening. It uses a self-contained animated
 ocean surface and keeps the public FFT ocean-surface page at
 `https://vgpu.sh/examples/fft-ocean-surface` as a source link rather than an
-embedded page. Its print button delegates PDF creation to the host browser.
+embedded page. Its PDF button uses the host external-link bridge when available
+and leaves a direct first-party link available as a fallback. The export is a
+static, server-generated snapshot of the current settings and ocean seed.
 It never starts audio, stores a record, or includes diary text.
+
+The `get_ios_app_offer` render tool links `_meta.ui.resourceUri` to
+`ui://cognistration/ios-app/v1.html`. The card uses real public app screenshots,
+the current `$2.99` one-time price, and an App Store Download Now badge. It does
+not process payment.
+
+The `open_phone_download_options` render tool links `_meta.ui.resourceUri` to
+`ui://cognistration/phone-download/v1.html`. The card carries the current tone
+settings when available and separates a fixed `$0.50` no-account agent-preview
+handoff from the full `$2.99` iPhone app. The preview button sends a follow-up
+request for the exact Machine Payments Protocol challenge; the connected agent
+must obtain explicit confirmation before sending payment credentials, and the
+server verifies the provider receipt before releasing a session.
 
 The `open_tone_pack_checkout` render tool links `_meta.ui.resourceUri` to
 `ui://cognistration/tone-pack-checkout/v1.html`. The card asks for a delivery

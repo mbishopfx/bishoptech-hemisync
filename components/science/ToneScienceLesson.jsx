@@ -88,11 +88,21 @@ export function ToneScienceLesson({
     setPdfUrl(exportUrl);
 
     try {
-      // Navigate directly to the attachment endpoint while the click still
-      // has user activation. This works in normal pages and sandboxed MCP Apps
-      // where an awaited blob URL can be blocked as an unsolicited download.
+      const absoluteUrl = new URL(exportUrl, window.location.origin).toString();
+      const openExternal = window.openai?.openExternal;
+      if (typeof openExternal === 'function') {
+        const result = openExternal({ href: absoluteUrl, redirectUrl: false });
+        if (result && typeof result.catch === 'function') {
+          result.catch(() => setPdfMessage('The host could not open the PDF. Use the direct link below.'));
+        }
+        setPdfMessage('PDF download started.');
+        return;
+      }
+
+      // Keep the navigation inside the user click for normal browsers. The
+      // visible direct link remains available if a host blocks this fallback.
       const link = document.createElement('a');
-      link.href = exportUrl;
+      link.href = absoluteUrl;
       link.target = '_blank';
       link.rel = 'noreferrer';
       document.body.appendChild(link);

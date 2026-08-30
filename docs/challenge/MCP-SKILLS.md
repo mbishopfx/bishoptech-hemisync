@@ -28,7 +28,7 @@ The five public skill URIs are:
 
 The science guide is a public MCP Apps resource rather than a fifth operating
 skill. After a tone or machine result, call `open_science_guide` to render
-`ui://cognistration/science-guide/v1.html`. It is a seven-slide educational
+`ui://cognistration/science-guide/v2.html`. It is a seven-slide educational
 walkthrough of the two-channel signal, FFR, descriptive frequency bands,
 evidence limits, and safe listening. It uses a self-contained animated ocean
 surface so a host never exposes source code or page chrome behind the lesson;
@@ -36,6 +36,13 @@ the FFT ocean-surface page remains a quiet visual reference at
 `https://vgpu.sh/examples/fft-ocean-surface`. It supports local previous/next
 navigation and lets the person print or save the guide as a PDF.
 It never starts audio, stores a record, or receives diary content.
+
+When a listener asks to move the current or generated tone to a phone, call
+`open_phone_download_options`. It renders a frosted card with the fixed `$0.50`
+no-account agent-preview handoff and a separate `$2.99` iPhone App Store path.
+The preview request asks the connected agent to show the exact payment challenge
+and wait for explicit approval before payment; it never sends a free phone audio
+file or accepts payment credentials in MCP arguments.
 
 ## How an agent uses the skills
 
