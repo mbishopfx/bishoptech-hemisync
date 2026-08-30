@@ -88,6 +88,8 @@ async function main() {
   assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
   assert(/ui\/update-model-context/.test(machineWidget.text || ''), 'machine widget model context bridge is missing');
   assert(/adjust_machine_controls/.test(machineWidget.text || ''), 'machine widget relative control bridge is missing');
+  assert(/resumeAudioContext/.test(machineWidget.text || ''), 'machine widget audio resume verification is missing');
+  assert(/audioReady/.test(machineWidget.text || ''), 'machine widget audio readiness state is missing');
   assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
 
   const legacyMachineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v1.html' }, 'ui://cognistration/machine-generator/v1.html');
@@ -166,6 +168,8 @@ async function main() {
   assert(/api\/agent\/account\/signup/.test(accountWidget.text || ''), 'account widget first-party submit route is missing');
   assert(/Content-Type': 'text\/plain'/.test(accountWidget.text || ''), 'account widget must use a CORS-simple credential submission');
   assert(/credentials: 'omit'/.test(accountWidget.text || ''), 'account widget must omit ambient credentials');
+  assert(/account-fallback/.test(accountWidget.text || ''), 'account widget first-party fallback is missing');
+  assert(/credentials were not submitted through MCP/i.test(accountWidget.text || ''), 'account widget fallback boundary is missing');
   assert(!/window\.openai\.callTool/.test(accountWidget.text || ''), 'account widget must not send credentials through MCP');
 
   const legacyAccountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');

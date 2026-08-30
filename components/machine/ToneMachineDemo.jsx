@@ -98,6 +98,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
   const rightOscRef = useRef(null);
   const masterGainRef = useRef(null);
   const packAudioRef = useRef(null);
+  const stopTimerRef = useRef(null);
   const startAudioRef = useRef(null);
   const sessionStateRef = useRef(null);
   const toolHandlersRef = useRef({});
@@ -132,6 +133,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
   }, []);
 
   const stopAudio = useCallback(() => {
+    if (stopTimerRef.current) window.clearTimeout(stopTimerRef.current);
     stopPackAudio();
     if (audioCtxRef.current && masterGainRef.current) {
       const ctx = audioCtxRef.current;
@@ -142,15 +144,36 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       } catch {}
     }
 
-    window.setTimeout(() => {
+    stopTimerRef.current = window.setTimeout(() => {
       stopAudioNodes();
       setIsPlaying(false);
+      stopTimerRef.current = null;
     }, 200);
   }, [stopAudioNodes, stopPackAudio]);
 
-  const startAudio = useCallback(() => {
+  const startAudio = useCallback(async () => {
     try {
-      if (isPlaying && leftOscRef.current && rightOscRef.current) return true;
+      if (stopTimerRef.current) {
+        window.clearTimeout(stopTimerRef.current);
+        stopTimerRef.current = null;
+      }
+      const existingContext = audioCtxRef.current;
+      if (isPlaying && leftOscRef.current && rightOscRef.current) {
+        if (existingContext?.state === 'suspended') {
+          try {
+            await existingContext.resume();
+          } catch {
+            return false;
+          }
+        }
+        if (!existingContext || existingContext.state !== 'running') {
+          stopAudioNodes();
+          setIsPlaying(false);
+          setAgentActivity('The browser suspended audio. Press Start preview to resume it.');
+          return false;
+        }
+        return true;
+      }
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) {
         window.alert('Web Audio API is not supported in this browser.');
@@ -160,7 +183,17 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       const ctx = audioCtxRef.current || new AudioContextClass();
       audioCtxRef.current = ctx;
 
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx.state === 'suspended') {
+        try {
+          await ctx.resume();
+        } catch {
+          return false;
+        }
+      }
+      if (ctx.state !== 'running') {
+        setAgentActivity('The browser blocked automatic audio. Press Start preview to begin listening.');
+        return false;
+      }
       stopPackAudio();
       stopAudioNodes();
 
@@ -876,7 +909,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       if (input.confirmed !== true) {
         return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'needs_input', error: { code: 'CONFIRMATION_REQUIRED', safeMessage: 'Explicit confirmation is required before browser audio starts.', retryable: false } };
       }
-      const started = startAudioRef.current?.();
+      const started = await startAudioRef.current?.();
       if (!started) {
         return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'failed', error: { code: 'AUDIO_UNAVAILABLE', safeMessage: 'The browser could not start local audio.', retryable: true } };
       }
@@ -981,7 +1014,24 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     }
   }, [volume, isPlaying]);
 
+  useEffect(() => {
+    const ctx = audioCtxRef.current;
+    if (!isPlaying || !ctx || typeof ctx.addEventListener !== 'function') return undefined;
+
+    const handleAudioStateChange = () => {
+      if (ctx.state === 'running') return;
+      stopAudioNodes();
+      setIsPlaying(false);
+      setAgentActivity('The browser suspended audio. Press Start preview to resume it.');
+    };
+
+    if (ctx.state !== 'running') handleAudioStateChange();
+    ctx.addEventListener('statechange', handleAudioStateChange);
+    return () => ctx.removeEventListener('statechange', handleAudioStateChange);
+  }, [isPlaying, stopAudioNodes]);
+
   useEffect(() => () => {
+    if (stopTimerRef.current) window.clearTimeout(stopTimerRef.current);
     stopAudioNodes();
     stopPackAudio();
     if (audioCtxRef.current) {

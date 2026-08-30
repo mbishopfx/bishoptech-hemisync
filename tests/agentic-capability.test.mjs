@@ -199,6 +199,9 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /start_machine_preview/);
   assert.match(MACHINE_WIDGET_HTML, /stop_machine_preview/);
   assert.match(MACHINE_WIDGET_HTML, /open_machine_fullscreen/);
+  assert.match(MACHINE_WIDGET_HTML, /resumeAudioContext/);
+  assert.match(MACHINE_WIDGET_HTML, /audioReady/);
+  assert.match(MACHINE_WIDGET_HTML, /audio-suspended/);
   assert.match(MACHINE_WIDGET_HTML, /without pausing audio/);
   assert.doesNotMatch(MACHINE_WIDGET_HTML, /repeating-linear-gradient/);
 });
@@ -400,6 +403,9 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials: 'omit'/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /mode: 'cors'/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials are sent directly/i);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /account-fallback/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /openExternal/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials were not submitted through MCP/i);
   assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /window\.openai\.callTool/);
   assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /redirectToStripeCheckout/);
 
@@ -959,6 +965,9 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /glass-action/);
   assert.match(machine, /glass-panel/);
   assert.match(machine, /glass-action/);
+  assert.match(machine, /await existingContext\.resume\(\)/);
+  assert.match(machine, /ctx\.state !== 'running'/);
+  assert.match(machine, /statechange/);
   assert.match(page, /glass-action/);
   assert.doesNotMatch(cockpit, /border-white/);
   assert.doesNotMatch(machine, /border-white/);
