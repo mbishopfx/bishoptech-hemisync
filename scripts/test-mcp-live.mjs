@@ -192,6 +192,12 @@ async function main() {
   assert(tonePackPaymentResult.amountCents === 599, 'tone-pack machine-payment amount is not $5.99');
   assert(tonePackPaymentResult.endpoint.endsWith('/api/machine-payments/tone-pack'), 'tone-pack machine-payment endpoint is missing');
 
+  const tryResponse = await fetch(new URL('/try', requestOrigin));
+  const tryText = await tryResponse.text();
+  assert(tryResponse.ok, `/try returned HTTP ${tryResponse.status}`);
+  assert(/29 public MCP tools/.test(tryText), '/try still shows a stale MCP tool count');
+  assert(!/27 public MCP tools/.test(tryText), '/try contains the retired MCP tool count');
+
   console.log(JSON.stringify({
     endpoint,
     protocol: protocolVersion,

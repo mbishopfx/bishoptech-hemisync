@@ -31,13 +31,13 @@ export default function TryPage() {
                 <Link href="/agent-instructions.md" className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-5 py-3.5">Agent instructions</Link>
               </div>
             </div>
-            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="glass-pill rounded-full px-3 py-2">19 public WebMCP tools</span><span className="glass-pill rounded-full px-3 py-2">27 public MCP tools</span><span className="glass-pill rounded-full px-3 py-2">No account required for the flow</span></div>
+            <div className="mt-12 flex flex-wrap gap-3 text-xs text-white/45"><span className="glass-pill rounded-full px-3 py-2">19 public WebMCP tools</span><span className="glass-pill rounded-full px-3 py-2">29 public MCP tools</span><span className="glass-pill rounded-full px-3 py-2">No account required for the flow</span></div>
           </div>
         </section>
 
         <section id="cockpit" className="bg-[#182723] px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
           <div className="mx-auto max-w-[1400px]">
-            <div className="glass-subpanel mb-8 flex flex-col gap-4 rounded-2xl border border-[#b6ddcc]/15 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="glass-subpanel mb-8 flex flex-col gap-4 rounded-2xl border border-[#b6ddcc]/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex gap-3"><ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#b6ddcc]" aria-hidden="true" /><p className="max-w-3xl text-sm leading-6 text-white/60">The public route is deliberately bounded: tools can return choices and stage visible controls, but they do not save diary content or start audio without an explicit preview action.</p></div>
               <Link href="/health-warning" className="shrink-0 text-xs text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4">Safety boundaries ↗</Link>
             </div>

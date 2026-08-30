@@ -260,7 +260,7 @@ export function TryCockpit() {
           </section>
 
           {safetyRedirect && (
-            <section data-testid="try-safety-redirect" className="rounded-[1.75rem] border border-amber-200/25 bg-amber-100/[0.08] p-5 sm:p-6">
+            <section data-testid="try-safety-redirect" className="glass-subpanel rounded-[1.75rem] border border-[#e0b493]/20 bg-[#e0b493]/[0.06] p-5 sm:p-6">
               <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-amber-100/75">Safety-aware routing</p>
               <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">{safetyRedirect.safety?.title || 'Pause before continuing'}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-white/70">{safetyRedirect.safety?.message}</p>

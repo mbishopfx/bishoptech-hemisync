@@ -777,6 +777,7 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   const sitemap = await readFile(new URL('../app/sitemap.js', import.meta.url), 'utf8');
   const robots = await readFile(new URL('../app/robots.js', import.meta.url), 'utf8');
   assert.match(page, /WebMCP challenge cockpit/);
+  assert.match(page, /29 public MCP tools/);
   assert.match(cockpit, /data-testid="try-step-intention"/);
   assert.match(cockpit, /data-testid="try-step-comparison"/);
   assert.match(cockpit, /data-testid="try-step-plan"/);
@@ -795,6 +796,7 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.doesNotMatch(scienceLesson, /border-white/);
   assert.doesNotMatch(oceanCanvas, /border-white/);
   assert.doesNotMatch(ritual, /border-white/);
+  assert.doesNotMatch(header, /border-white/);
   assert.match(styles, /\.glass-panel/);
   assert.match(styles, /\.glass-action/);
   assert.match(styles, /\.glass-step-number/);

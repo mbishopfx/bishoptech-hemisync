@@ -42,11 +42,11 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
     : 'text-white';
   const navSurface = isLight
     ? 'border-[#cbd6cf] bg-white/80 text-[#31443e] shadow-[0_10px_24px_rgba(45,65,59,0.06)]'
-    : 'border-white/15 bg-[#13201d]/55 text-white';
+    : 'border-[#b6ddcc]/15 bg-[#13201d]/55 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_12px_32px_rgba(0,0,0,0.12)]';
   const mutedLink = isLight ? 'text-[#60716b] hover:text-[#1d302c]' : 'text-white/70 hover:text-white';
   const actionSurface = isLight
     ? 'border-[#b8cbc0] bg-white/60 text-[#315e55] hover:border-[#7fa594] hover:bg-white'
-    : 'border-white/20 bg-white/[0.08] text-white hover:border-white/40 hover:bg-white/[0.14]';
+    : 'border-[#b6ddcc]/20 bg-[#13201d]/55 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_24px_rgba(0,0,0,0.1)] hover:border-[#b6ddcc]/42 hover:bg-[#b6ddcc]/[0.1]';
   const mobileSurface = isLight ? 'bg-[#eef1ee]/98 text-[#1d302c]' : 'bg-[#13201d]/96 text-white';
 
   const copySetupPrompt = async () => {
@@ -172,8 +172,8 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
           Connect ChatGPT
         </button>
         <Link href="/signup" onClick={() => setMenuOpen(false)} className="inline-flex items-center rounded-full bg-[#d7eadf] px-5 py-3 text-sm font-medium text-[#17332e]">Create account</Link>
-        <div className="mt-2 border-t border-white/10 pt-6">
-          <button type="button" onClick={openAccount} className={`inline-flex items-center gap-3 rounded-full border px-5 py-3 text-sm ${isLight ? 'border-[#cbd6cf] text-[#60716b]' : 'border-white/15 text-white/75'}`}>
+        <div className="mt-2 border-t border-[#b6ddcc]/10 pt-6">
+          <button type="button" onClick={openAccount} className={`inline-flex items-center gap-3 rounded-full border px-5 py-3 text-sm ${isLight ? 'border-[#cbd6cf] text-[#60716b]' : 'border-[#b6ddcc]/15 text-white/75'}`}>
             <svg className="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M20 21a8 8 0 0 0-16 0" /></svg>
             Sign in
           </button>
@@ -182,7 +182,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
 
       {connectOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#0e1614]/80 p-5 backdrop-blur-md pointer-events-auto" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConnectOpen(false); }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="connect-chatgpt-title" className="relative max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-[2rem] border border-slate-200/15 bg-[#1d2926] p-7 text-white shadow-2xl sm:p-9">
+          <div role="dialog" aria-modal="true" aria-labelledby="connect-chatgpt-title" className="glass-panel relative max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-[2rem] border border-[#b6ddcc]/10 bg-[#1d2926] p-7 text-white shadow-2xl sm:p-9">
             <button type="button" onClick={() => setConnectOpen(false)} className="absolute right-5 top-5 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white" aria-label="Close connection instructions">
               <X className="size-5" aria-hidden="true" />
             </button>
@@ -196,7 +196,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
               <li className="connect-step"><span className="connect-step__number" aria-hidden="true">02</span><span>Open ChatGPT, start a new chat, and paste the prompt. It will guide you to the one-time app connection step.</span></li>
               <li className="connect-step"><span className="connect-step__number" aria-hidden="true">03</span><span>Approve the connection when ChatGPT asks. The app server is remote; do not send the URL to a Git or marketplace installer.</span></li>
             </ol>
-            <div className="mt-7 rounded-2xl border border-white/10 bg-white/[0.06] p-3">
+            <div className="glass-subpanel mt-7 rounded-2xl border border-[#b6ddcc]/10 bg-white/[0.04] p-3">
               <p className="px-2 text-[11px] uppercase tracking-[0.16em] text-white/40">ChatGPT setup prompt</p>
               <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap px-2 text-xs leading-5 text-white/75">{CHATGPT_SETUP_PROMPT}</pre>
             </div>
@@ -205,7 +205,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
                 {copied ? <Check className="size-4" weight="bold" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}
                 {copied ? 'Copied' : 'Copy setup prompt'}
               </button>
-              <a href={CHATGPT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-sm text-white transition hover:bg-white/10">
+              <a href={CHATGPT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#b6ddcc]/20 bg-[#13201d]/45 px-5 py-3 text-sm text-white transition hover:border-[#b6ddcc]/42 hover:bg-[#b6ddcc]/[0.1]">
                 Open ChatGPT chat
                 <ArrowSquareOut className="size-4" aria-hidden="true" />
               </a>
