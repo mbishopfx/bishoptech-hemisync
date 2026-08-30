@@ -266,6 +266,7 @@ test('tone-pack checkout widget uses frosted host metadata and keeps delivery ac
   assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /rgba\(182, 221, 204, \.2\)/);
   assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /elements\.status\.parentNode\.insertBefore\(link, elements\.status\)/);
   assert.doesNotMatch(TONE_PACK_CHECKOUT_WIDGET_HTML, /elements\.checkout\.parentNode\.insertBefore\(link, elements\.status\)/);
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /elements\.select\.disabled = true;\s+elements\.checkout\.disabled = false;/);
   assert.doesNotMatch(TONE_PACK_CHECKOUT_WIDGET_HTML, /border: 1px solid rgba\(255, 255, 255/);
 });
 
