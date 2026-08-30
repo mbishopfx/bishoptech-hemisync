@@ -48,6 +48,14 @@ FFR and evidence boundaries, descriptive frequency-band notes, safety guidance,
 and a Print / save PDF action. Audio remains off and the guide carries
 technical settings only.
 
+The same app surface can also open `open_tone_pack_checkout` for a complete
+published tone pack. The frosted card asks for a delivery email and explicit
+confirmation of the one-time `$5.99` price, opens a reviewable hosted Checkout,
+and then renders the verified download button in the same app card after
+`get_tone_pack_delivery` completes. Compatible agent-payment clients can use
+the separate fixed-price MPP route instead; the browser/widget path never
+handles payment credentials.
+
 The public `get_ios_app_offer` tool returns the canonical Cognistration iPhone
 App Store listing, the current $2.99 one-time offer, compatibility, and feature
 summary. It also explains that the iPhone app does its audio work on-device
@@ -67,7 +75,7 @@ The agent is useful because it handles interpretation and control selection; the
 2. The agent can read the visible session state and choose a bounded public tone from the approved library.
 3. The site updates the same controls the person can see: state, carrier, beat, and volume.
 4. The agent may request a preview, but audio starts only after explicit confirmation.
-5. The person can listen, change the controls, continue manually, or open the account flow. Credentials and payment are never submitted by an agent.
+5. The person can listen, change the controls, continue manually, or open the account and pack-purchase flows. Credentials and hosted payment details remain user-controlled; a compatible payment client may submit only its provider credential to the fixed MPP route.
 
 In a ChatGPT app host, the machine can also stay mounted while the person
 repeats those interactions. The widget calls the public recommendation and
@@ -93,12 +101,15 @@ planning remain read-only; public commerce actions are narrow, hosted, and
 confirmation-gated.
 
 The live machine-payment path is an optional agent-to-agent bonus: the server
-advertises a fixed $0.50 USD session resource, returns a real HTTP 402 payment
-challenge when no credential is supplied, and verifies the provider receipt
-before fulfillment. The payment passport is a fail-closed staged contract with
-an expiry, fixed amount/product/recipient/scope, and idempotency key; it is not
-accepted as a substitute for provider verification or used for unrestricted
-spending.
+advertises a fixed $0.50 USD session resource and a fixed $5.99 USD tone-pack
+resource, returns a real HTTP 402 payment challenge when no credential is
+supplied, and verifies the provider receipt before fulfillment. For the pack
+resource, the approved slug and normalized delivery email are bound into the
+request scope; successful verification returns the bundle, protected fallback,
+and email-delivery result. The payment passport is a fail-closed staged
+contract with an expiry, fixed amount/product/recipient/scope, and idempotency
+key; it is not accepted as a substitute for provider verification or used for
+unrestricted spending.
 
 ## Implementation map
 
@@ -106,13 +117,14 @@ spending.
 - `lib/agentic/webmcp-contract.js` defines the bounded input/output contracts, relative carrier nudge, session planning, science-guide action, and confirmation annotations.
 - `lib/agentic/tone-capability.js` owns catalog validation, intention matching, AI-first classification, and deterministic fallback.
 - `app/api/agent/route.js` provides the public REST fallback used by the hero and browser bridge.
-- `app/api/mcp/route.js` exposes the public JSON-RPC catalog, policy, account, iPhone app offer, session guidance, in-platform signup and feedback render tools, narrow hosted-commerce operations, and skill surface.
+- `app/api/mcp/route.js` exposes the public JSON-RPC catalog, policy, account, iPhone app offer, session guidance, in-platform signup, tone-pack checkout, and feedback render tools, narrow hosted-commerce operations, and skill surface.
 - `lib/agentic/session-capability.js` provides deterministic comparisons, timed plans, cues, and explicit no-save/no-audio boundaries.
 - `lib/agentic/safety-capability.js` and `lib/agentic/recipe-capability.js` keep safety routing and technical-only recipe export bounded and local.
 - `app/api/agent/intent-guidance`, `app/api/agent/tone-calibrate`, `app/api/agent/tone-compare`, `app/api/agent/session-plan`, and `app/api/agent/session-cue` provide REST fallbacks for the same intent and session journeys.
 - `lib/agentic/machine-capability.js` defines the versioned MCP Apps render contract and submission-safe CSP metadata.
 - `lib/agentic/machine-widget.js` serves the self-contained ChatGPT machine widget with the Aurora visual, bridge calls, and explicit local audio preview.
 - `lib/agentic/science-content.js`, `lib/agentic/science-capability.js`, and `lib/agentic/science-widget.js` share the bounded science copy, render contract, source list, and interactive MCP Apps slideshow.
+- `lib/agentic/tone-pack-widget.js`, `lib/commerce/tone-pack-machine-payment.mjs`, and `app/api/machine-payments/tone-pack/route.js` share the frosted checkout card, fixed-price MPP contract, verified PaymentIntent binding, and download/email delivery handoff.
 - `lib/agentic/skill-capability.js` serves five hashed, static operating skills through the MCP skills extension.
 - `lib/agentic/account-widget.js` and `app/api/agent/account/signup/route.js` keep account capture in the MCP app surface while sending credentials directly to the first-party auth adapter only after user submission.
 - `lib/agentic/feedback-widget.js`, `app/api/agent/feedback/route.js`, and the service-role-only `agent_feedback` table provide one optional done-state feedback card without a history view.
@@ -131,7 +143,7 @@ spending.
 
 ## Judge walkthrough
 
-Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a reproducible local Chrome run, open `chrome://flags/#enable-webmcp-testing`, set the flag to Enabled, relaunch Chrome, and visit `/try` first. The cockpit should expose the nineteen public browser tools: state, absolute controls, relative carrier nudge, intention matching, intent clarification, sensory calibration, direction comparison, session planning, session cues, ritual begin, ritual advance, technical recipe preparation, science-guide open, pack search, pack preview, policy, account options, generic preview, and signup navigation. The public MCP endpoint should expose twenty-seven tools, including `get_ios_app_offer`, `clarify_intention`, `calibrate_tone`, `compare_tone_directions`, `plan_listening_session`, `get_session_cue`, `prepare_session_recipe`, `open_machine_generator`, `open_science_guide`, `open_account_signup`, and `open_feedback`; the authenticated member bridge exposes eleven bounded tools. Confirm that the iPhone offer returns the App Store URL and $2.99 one-time price without a payment side effect. Confirm that intention matching selects a public tone, a vague request returns three bounded directions, a `too_bright` calibration lowers the carrier without crossing the published floor, a relaxation search returns a published pack, an unconfirmed pack preview returns `CONFIRMATION_REQUIRED`, a 20-minute plan returns arrive/practice/close phases, a cue does not echo diary content, the recipe contains no raw intention/diary text, and a gamma/246 Hz control call is reflected in the visible state. Open the science guide and verify that its seven slides advance, the FFT ocean-surface visual is referenced, Print / save PDF is available, and audio remains off. Send a medical or crisis-shaped request and verify the safety redirect points to `/health-warning`. In the connected ChatGPT app, ask “open the tone machine for gamma at 246 Hz” and verify that the `text/html;profile=mcp-app` widget renders the Aurora visual, shows Gamma/246 Hz, offers the session guidance and calibration actions, and leaves audio off until the play button is pressed. Ask to create an account and verify that `open_account_signup` renders the credential form in-platform without an automatic checkout. Say “I’m done,” verify that `open_feedback` renders one optional thumbs-up/down card, and confirm that nothing is submitted until the user presses Submit. The `/try` payment panel should show live machine-payment status and a no-credential HTTP 402 challenge without creating a charge. Start at the live cockpit and follow the short recording script in `DEMO-SCRIPT.md`. A normal browser should still provide the complete human controls without either agent surface.
+Use a compatible ChatGPT in-app browser or Chrome with WebMCP enabled. For a reproducible local Chrome run, open `chrome://flags/#enable-webmcp-testing`, set the flag to Enabled, relaunch Chrome, and visit `/try` first. The cockpit should expose the nineteen public browser tools: state, absolute controls, relative carrier nudge, intention matching, intent clarification, sensory calibration, direction comparison, session planning, session cues, ritual begin, ritual advance, technical recipe preparation, science-guide open, pack search, pack preview, policy, account options, generic preview, and signup navigation. The public MCP endpoint should expose twenty-nine tools, including `get_ios_app_offer`, `clarify_intention`, `calibrate_tone`, `compare_tone_directions`, `plan_listening_session`, `get_session_cue`, `prepare_session_recipe`, `open_machine_generator`, `open_science_guide`, `open_tone_pack_checkout`, `get_tone_pack_payment_options`, `open_account_signup`, and `open_feedback`; the authenticated member bridge exposes eleven bounded tools. Confirm that the iPhone offer returns the App Store URL and $2.99 one-time price without a payment side effect. Confirm that intention matching selects a public tone, a vague request returns three bounded directions, a `too_bright` calibration lowers the carrier without crossing the published floor, a relaxation search returns a published pack, an unconfirmed pack preview returns `CONFIRMATION_REQUIRED`, a 20-minute plan returns arrive/practice/close phases, a cue does not echo diary content, the recipe contains no raw intention/diary text, and a gamma/246 Hz control call is reflected in the visible state. Open the science guide and verify that its seven slides advance, the FFT ocean-surface visual is referenced, Print / save PDF is available, and audio remains off. Ask to buy the full tone pack and verify that the frosted card asks for email and explicit $5.99 confirmation, opens hosted Checkout, and keeps the download action hidden until the paid delivery result is verified. For the optional agent-to-agent coda, read `get_tone_pack_payment_options`, show the fixed $5.99 endpoint and a no-credential HTTP 402 challenge, and do not execute a charge in the recording. Send a medical or crisis-shaped request and verify the safety redirect points to `/health-warning`. In the connected ChatGPT app, ask “open the tone machine for gamma at 246 Hz” and verify that the `text/html;profile=mcp-app` widget renders the Aurora visual, shows Gamma/246 Hz, offers the session guidance and calibration actions, and leaves audio off until the play button is pressed. Ask to create an account and verify that `open_account_signup` renders the credential form in-platform without an automatic checkout. Say “I’m done,” verify that `open_feedback` renders one optional thumbs-up/down card, and confirm that nothing is submitted until the user presses Submit. The `/try` payment panel should show live machine-payment status and a no-credential HTTP 402 challenge without creating a charge. Start at the live cockpit and follow the short recording script in `DEMO-SCRIPT.md`. A normal browser should still provide the complete human controls without either agent surface.
 
 ## Judging-fit summary
 

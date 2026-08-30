@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { assertPaidTonePackSession, fulfillTonePackPurchase } from '@/lib/commerce/tone-packs.mjs';
-import { safeCommerceError, safeCommerceStatus, stripeVerificationError } from '@/lib/commerce/commerce-utils.mjs';
+import { assertPaidTonePackPaymentIntent, buildTonePackPaymentSession, tonePackProtectedDeliveryUrl } from '@/lib/commerce/tone-pack-machine-payment.mjs';
+import { commerceError, safeCommerceError, safeCommerceStatus, stripeVerificationError } from '@/lib/commerce/commerce-utils.mjs';
 import { commerceRateLimited } from '@/lib/commerce/rate-limit.mjs';
 
 export const dynamic = 'force-dynamic';
@@ -21,13 +22,17 @@ export async function GET(req, { params }) {
   }
   try {
     const sessionId = req.nextUrl.searchParams.get('session_id');
+    const paymentReference = req.nextUrl.searchParams.get('payment_reference');
     const trackId = req.nextUrl.searchParams.get('trackId');
     const packSlug = params.packSlug;
-    if (!packSlug || !sessionId) {
-      return jsonNoStore({ error: 'A completed checkout session is required' }, { status: 400 });
+    if (!packSlug || (!sessionId && !paymentReference) || (sessionId && paymentReference)) {
+      return jsonNoStore({ error: 'A completed checkout session or payment reference is required' }, { status: 400 });
     }
-    if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId)) {
+    if (sessionId && !/^cs_[A-Za-z0-9_]+$/.test(sessionId)) {
       return jsonNoStore({ error: 'A valid checkout session is required', code: 'INVALID_CHECKOUT_SESSION' }, { status: 400 });
+    }
+    if (paymentReference && !/^pi_[A-Za-z0-9_]+$/.test(paymentReference)) {
+      return jsonNoStore({ error: 'A valid payment reference is required', code: 'INVALID_PAYMENT_REFERENCE' }, { status: 400 });
     }
     if (trackId && !/^[A-Za-z0-9._-]{1,120}$/.test(trackId)) {
       return jsonNoStore({ error: 'The requested track is invalid', code: 'INVALID_TRACK' }, { status: 400 });
@@ -37,16 +42,27 @@ export async function GET(req, { params }) {
     if (!stripeSecret) return jsonNoStore({ error: 'Download verification is temporarily unavailable', code: 'STRIPE_NOT_CONFIGURED' }, { status: 503 });
     const stripe = new Stripe(stripeSecret);
     let stripeSession;
-    try {
-      stripeSession = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
-    } catch (error) {
-      throw stripeVerificationError(error, 'Tone-pack download verification is temporarily unavailable.');
+    if (sessionId) {
+      try {
+        stripeSession = await stripe.checkout.sessions.retrieve(sessionId, { expand: ['line_items'] });
+      } catch (error) {
+        throw stripeVerificationError(error, 'Tone-pack download verification is temporarily unavailable.');
+      }
+      assertPaidTonePackSession({ stripeSession, expectedSlug: packSlug });
+    } else {
+      let paymentIntent;
+      try {
+        paymentIntent = await stripe.paymentIntents.retrieve(paymentReference);
+      } catch {
+        throw commerceError('PAYMENT_NOT_VERIFIED', 'That payment could not be verified.', 403);
+      }
+      const verified = assertPaidTonePackPaymentIntent({ paymentIntent, expectedSlug: packSlug });
+      stripeSession = buildTonePackPaymentSession({ paymentIntent, pack: verified.pack, email: verified.email });
     }
-    assertPaidTonePackSession({ stripeSession, expectedSlug: packSlug });
 
     const supabase = getSupabaseAdmin();
     if (!supabase) return jsonNoStore({ error: 'Download delivery is temporarily unavailable', code: 'COMMERCE_STORAGE_NOT_READY' }, { status: 503 });
-    const protectedDeliveryUrl = `${new URL(req.url).origin}/api/packs/${encodeURIComponent(packSlug)}/download?session_id=${encodeURIComponent(sessionId)}`;
+    const protectedDeliveryUrl = tonePackProtectedDeliveryUrl(packSlug, sessionId || paymentReference, new URL(req.url).origin);
     const purchase = await fulfillTonePackPurchase({ stripeSession, supabase, fallbackDownloadUrl: protectedDeliveryUrl });
 
     if (!trackId) {

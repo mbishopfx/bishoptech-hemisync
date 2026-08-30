@@ -16,7 +16,7 @@
 | Check | Command | Result |
 |---|---|---|
 | diff whitespace | `git diff --check` | pass |
-| agentic fixtures | `npm run test:agentic` | pass; 47 tests |
+| agentic fixtures | `npm run test:agentic` | pass; 52 tests |
 | existing billing fixtures | `npm run test:billing` | pass; 6 tests |
 | existing Studio fixtures | `npm run test:studio` | pass; 13 tests |
 | lint | `npm run lint` | pass; 0 errors |

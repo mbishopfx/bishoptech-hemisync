@@ -480,7 +480,7 @@ main section[id] {
   overflow: hidden;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(182, 221, 204, 0.18);
-  border: 1px solid rgba(215, 234, 223, 0.22);
+  border: 1px solid rgba(182, 221, 204, 0.2);
   background:
     linear-gradient(135deg, rgba(215, 234, 223, 0.16), rgba(182, 221, 204, 0.06)),
     rgba(12, 31, 25, 0.46);
@@ -518,7 +518,7 @@ main section[id] {
 
 .glass-action:hover {
   transform: translateY(-2px);
-  border-color: rgba(215, 234, 223, 0.58);
+  border-color: rgba(182, 221, 204, 0.46);
   background:
     linear-gradient(135deg, rgba(215, 234, 223, 0.24), rgba(182, 221, 204, 0.1)),
     rgba(12, 31, 25, 0.54);
@@ -551,14 +551,14 @@ main section[id] {
 }
 
 .glass-action--primary {
-  border-color: rgba(215, 234, 223, 0.38);
+  border-color: rgba(182, 221, 204, 0.3);
   color: #d7eadf;
 }
 
 .glass-action--secondary {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(182, 221, 204, 0.14);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.025)),
+    linear-gradient(135deg, rgba(182, 221, 204, 0.09), rgba(255, 255, 255, 0.02)),
     rgba(10, 24, 21, 0.36);
   color: rgba(255, 255, 255, 0.75);
 }
@@ -576,7 +576,7 @@ main section[id] {
 }
 
 .glass-input {
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(182, 221, 204, 0.14);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
     rgba(8, 22, 18, 0.38);
@@ -600,8 +600,8 @@ main section[id] {
 }
 
 .glass-pill {
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(182, 221, 204, 0.11);
+  background: rgba(182, 221, 204, 0.045);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -613,7 +613,7 @@ main section[id] {
   overflow: hidden;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(182, 221, 204, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(182, 221, 204, 0.11);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)),
     rgba(8, 22, 18, 0.36);
@@ -650,7 +650,7 @@ main section[id] {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(182, 221, 204, 0.11);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
     rgba(8, 22, 18, 0.34);
@@ -677,17 +677,17 @@ main section[id] {
 
 .glass-step-number {
   display: inline-flex;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.15rem;
+  height: 2.15rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(215, 234, 223, 0.32);
-  border-radius: 0.85rem;
+  border: 1px solid rgba(182, 221, 204, 0.24);
+  border-radius: 999px;
   background:
-    linear-gradient(145deg, rgba(215, 234, 223, 0.2), rgba(182, 221, 204, 0.05)),
+    linear-gradient(145deg, rgba(182, 221, 204, 0.18), rgba(182, 221, 204, 0.04)),
     rgba(9, 28, 22, 0.55);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 1px 0 rgba(242, 246, 242, 0.12),
     0 8px 18px rgba(0, 0, 0, 0.1);
   color: #d7eadf;
   font-family: var(--font-sans), sans-serif;

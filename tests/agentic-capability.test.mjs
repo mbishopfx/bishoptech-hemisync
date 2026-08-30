@@ -42,6 +42,12 @@ import { MACHINE_WIDGET_HTML } from '../lib/agentic/machine-widget.js';
 import { ACCOUNT_SIGNUP_WIDGET_HTML, ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI } from '../lib/agentic/account-widget.js';
 import { FEEDBACK_WIDGET_HTML, FEEDBACK_WIDGET_RESOURCE_URI } from '../lib/agentic/feedback-widget.js';
 import {
+  TONE_PACK_CHECKOUT_WIDGET_HTML,
+  TONE_PACK_CHECKOUT_WIDGET_RESOURCE_META,
+  TONE_PACK_CHECKOUT_WIDGET_RESOURCE_MIME_TYPE,
+  TONE_PACK_CHECKOUT_WIDGET_RESOURCE_URI
+} from '../lib/agentic/tone-pack-widget.js';
+import {
   SCIENCE_GUIDE_BACKGROUND_URL,
   SCIENCE_GUIDE_RESOURCE_MIME_TYPE,
   SCIENCE_GUIDE_RESOURCE_URI,
@@ -60,6 +66,7 @@ import { safetyCategoryForIntention, safetyRedirectForIntention } from '../lib/a
 import { buildScienceGuidePdf, normalizeScienceGuidePdfInput, scienceGuidePdfFilename } from '../lib/agentic/science-pdf.js';
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
 import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
+import { TONE_PACK_PAYMENT_AMOUNT, TONE_PACK_PAYMENT_PRICE_CENTS, tonePackPaymentOptions } from '../lib/commerce/tone-pack-machine-payment.mjs';
 import { createPaymentPassport, verifyPaymentPassport, PAYMENT_PASSPORT_TTL_SEC } from '../lib/commerce/payment-passport.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
@@ -206,7 +213,22 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /application\/pdf/);
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /content-disposition/);
   assert.deepEqual(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains, []);
+  assert.equal(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.prefersBorder, false);
+  assert.equal(SCIENCE_GUIDE_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
   assert.ok(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.resourceDomains.includes('https://esm.sh'));
+});
+
+test('tone-pack checkout widget uses frosted host metadata and keeps delivery actions in-app', () => {
+  assert.equal(TONE_PACK_CHECKOUT_WIDGET_RESOURCE_META.ui.prefersBorder, false);
+  assert.equal(TONE_PACK_CHECKOUT_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
+  assert.equal(TONE_PACK_CHECKOUT_WIDGET_RESOURCE_MIME_TYPE, 'text/html;profile=mcp-app');
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /Delivery email/);
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /\$5\.99/);
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /create_tone_pack_checkout/);
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /get_tone_pack_delivery/);
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /Download pack/);
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /rgba\(182, 221, 204, \.2\)/);
+  assert.doesNotMatch(TONE_PACK_CHECKOUT_WIDGET_HTML, /border: 1px solid rgba\(255, 255, 255/);
 });
 
 test('science guide PDF export is static, bounded, and tied to the ocean run seed', () => {
@@ -532,11 +554,13 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'get_ios_app_offer',
     'create_tone_pack_checkout',
     'get_tone_pack_delivery',
+    'open_tone_pack_checkout',
     'create_workshop_access_checkout',
     'get_workshop_access',
     'get_workshop_access_status',
     'revoke_workshop_access',
     'get_machine_payment_options',
+    'get_tone_pack_payment_options',
     'get_autonomous_payment_options',
     'open_machine_generator',
     'open_science_guide',
@@ -550,6 +574,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === MACHINE_WIDGET_RESOURCE_URI && resource.mimeType === MACHINE_WIDGET_RESOURCE_MIME_TYPE));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === FEEDBACK_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
+  assert.ok(MCP_RESOURCES.some((resource) => resource.uri === TONE_PACK_CHECKOUT_WIDGET_RESOURCE_URI && resource.mimeType === TONE_PACK_CHECKOUT_WIDGET_RESOURCE_MIME_TYPE));
   const machineTool = MCP_TOOLS.find((tool) => tool.name === 'open_machine_generator');
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineTool.annotations.readOnlyHint, true);
@@ -565,6 +590,19 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   const feedbackTool = MCP_TOOLS.find((tool) => tool.name === 'open_feedback');
   assert.equal(feedbackTool.annotations.readOnlyHint, true);
   assert.equal(feedbackTool._meta.ui.resourceUri, FEEDBACK_WIDGET_RESOURCE_URI);
+  const tonePackCheckoutTool = MCP_TOOLS.find((tool) => tool.name === 'open_tone_pack_checkout');
+  assert.equal(tonePackCheckoutTool.annotations.readOnlyHint, true);
+  assert.equal(tonePackCheckoutTool._meta.ui.resourceUri, TONE_PACK_CHECKOUT_WIDGET_RESOURCE_URI);
+  assert.equal(tonePackCheckoutTool.inputSchema.additionalProperties, false);
+  const createTonePackCheckoutTool = MCP_TOOLS.find((tool) => tool.name === 'create_tone_pack_checkout');
+  assert.equal(createTonePackCheckoutTool._meta['openai/widgetAccessible'], true);
+  assert.equal(createTonePackCheckoutTool._meta.ui.resourceUri, TONE_PACK_CHECKOUT_WIDGET_RESOURCE_URI);
+  const tonePackPaymentTool = MCP_TOOLS.find((tool) => tool.name === 'get_tone_pack_payment_options');
+  assert.equal(tonePackPaymentTool.annotations.readOnlyHint, true);
+  assert.equal(tonePackPaymentOptions('https://example.test').amountCents, TONE_PACK_PAYMENT_PRICE_CENTS);
+  assert.equal(tonePackPaymentOptions('https://example.test').amount, TONE_PACK_PAYMENT_AMOUNT);
+  assert.equal(tonePackPaymentOptions('https://example.test').defaultPack, 'full-spectrum-pack');
+  assert.equal(tonePackPaymentOptions('https://example.test').endpoint, 'https://example.test/api/machine-payments/tone-pack');
   assert.equal(machinePaymentOptions('https://example.test').status, 'provider_access_required');
   assert.equal(MACHINE_PAYMENT_AMOUNT, '0.50');
   assert.equal(machinePaymentOptions('https://example.test').amountCents, 50);
@@ -719,6 +757,9 @@ test('OpenAPI fallback is derived from the same public registry', () => {
   assert.ok(document.paths['/api/agent/commerce/workshop-access'].get.responses['200'].content['application/json'].schema.required.includes('accessKey'));
   assert.ok(document.paths['/api/packs'].get.parameters.some((parameter) => parameter.name === 'agent'));
   assert.ok(document.paths['/api/machine-payments/tone'].post.requestBody.content['application/json'].schema.properties.carrierHz);
+  assert.ok(document.paths['/api/machine-payments/tone-pack'].post);
+  assert.equal(document.paths['/api/machine-payments/tone-pack'].post.requestBody.content['application/json'].schema.properties.confirmed.const, true);
+  assert.equal(document.paths['/api/machine-payments/tone-pack'].post.responses['200'].description, 'A paid tone-pack resource, verified receipt, and download paths.');
   assert.ok(document.components.schemas.UcpCheckout.properties.status.enum.includes('complete_in_progress'));
   assert.doesNotMatch(JSON.stringify(document), /service_role|OPENAI_API_KEY|STRIPE_SECRET|arbitrary SQL/i);
 });
@@ -727,6 +768,8 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   const cockpit = await readFile(new URL('../components/challenge/TryCockpit.jsx', import.meta.url), 'utf8');
   const machine = await readFile(new URL('../components/machine/ToneMachineDemo.jsx', import.meta.url), 'utf8');
   const scienceLesson = await readFile(new URL('../components/science/ToneScienceLesson.jsx', import.meta.url), 'utf8');
+  const oceanCanvas = await readFile(new URL('../components/science/OceanSurfaceCanvas.jsx', import.meta.url), 'utf8');
+  const ritual = await readFile(new URL('../components/machine/RitualConductor.jsx', import.meta.url), 'utf8');
   const page = await readFile(new URL('../app/try/page.js', import.meta.url), 'utf8');
   const homepage = await readFile(new URL('../app/page.js', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
@@ -747,6 +790,11 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(machine, /glass-panel/);
   assert.match(machine, /glass-action/);
   assert.match(page, /glass-action/);
+  assert.doesNotMatch(cockpit, /border-white/);
+  assert.doesNotMatch(machine, /border-white/);
+  assert.doesNotMatch(scienceLesson, /border-white/);
+  assert.doesNotMatch(oceanCanvas, /border-white/);
+  assert.doesNotMatch(ritual, /border-white/);
   assert.match(styles, /\.glass-panel/);
   assert.match(styles, /\.glass-action/);
   assert.match(styles, /\.glass-step-number/);
@@ -767,14 +815,19 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
 test('machine payment routes use major-unit pricing and bind custom tone requests', async () => {
   const sessionRoute = await readFile(new URL('../app/api/machine-payments/session/route.js', import.meta.url), 'utf8');
   const toneRoute = await readFile(new URL('../app/api/machine-payments/tone/route.js', import.meta.url), 'utf8');
+  const tonePackRoute = await readFile(new URL('../app/api/machine-payments/tone-pack/route.js', import.meta.url), 'utf8');
   const handler = await readFile(new URL('../lib/commerce/machine-payment-handler.mjs', import.meta.url), 'utf8');
   assert.match(sessionRoute, /MACHINE_PAYMENT_SESSION_SCOPE/);
   assert.match(toneRoute, /MachineGeneratorInputSchema/);
   assert.match(toneRoute, /tonePaymentScope/);
   assert.match(toneRoute, /issueMachineSessionGrant/);
   assert.match(toneRoute, /issueMachineSessionGrantWithRetry/);
-  assert.match(handler, /amount: MACHINE_PAYMENT_AMOUNT/);
-  assert.match(handler, /amountCents: String\(MACHINE_PAYMENT_PRICE_CENTS\)/);
+  assert.match(tonePackRoute, /TONE_PACK_PAYMENT_PRICE_CENTS/);
+  assert.match(tonePackRoute, /assertPaidTonePackPaymentIntent/);
+  assert.match(tonePackRoute, /fulfillTonePackPurchase/);
+  assert.match(handler, /amount = MACHINE_PAYMENT_AMOUNT/);
+  assert.match(handler, /amountCents = MACHINE_PAYMENT_PRICE_CENTS/);
+  assert.match(handler, /amountCents: String\(amountCents\)/);
 });
 
 test('member planning maps bounded inputs to private Studio journeys without echoing the intention', async () => {

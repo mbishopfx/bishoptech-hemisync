@@ -167,7 +167,7 @@ export function TryCockpit() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[0.68fr_1.32fr]">
-        <aside className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
+        <aside className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">Judge path</p>
           <div className="glass-step-list mt-5 space-y-5">
             {stepCopy.map(([number, title, copy]) => (
@@ -180,14 +180,14 @@ export function TryCockpit() {
               </div>
             ))}
           </div>
-          <div className="mt-7 border-t border-white/10 pt-5 text-xs leading-5 text-white/40">
+          <div className="mt-7 border-t border-[#b6ddcc]/10 pt-5 text-xs leading-5 text-white/40">
             <p className="flex gap-2"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-[#b6ddcc]" aria-hidden="true" /> Public tools are free, bounded, and audio-free until you choose to preview.</p>
             <Link href="/agent-instructions.md" className="mt-4 inline-flex items-center gap-2 text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4">Read the agent guide <ArrowRight className="size-3" aria-hidden="true" /></Link>
           </div>
         </aside>
 
         <div className="space-y-5">
-          <form data-testid="try-step-intention" onSubmit={handleClarify} className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
+          <form data-testid="try-step-intention" onSubmit={handleClarify} className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">01 · Intent clarifier</p>
@@ -219,7 +219,7 @@ export function TryCockpit() {
             )}
           </form>
 
-          <section data-testid="try-step-comparison" className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
+          <section data-testid="try-step-comparison" className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">02 · Comparison</p>
@@ -244,7 +244,7 @@ export function TryCockpit() {
             {!comparison && <p className="mt-5 text-sm leading-6 text-white/40">The comparison stays inside the approved public tone catalog.</p>}
           </section>
 
-          <section data-testid="try-step-plan" className="glass-subpanel rounded-[1.75rem] border border-white/10 p-5 sm:p-6">
+          <section data-testid="try-step-plan" className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">03 · Ritual conductor</p>
@@ -255,7 +255,7 @@ export function TryCockpit() {
                 Build the ritual
               </button>
             </div>
-            {plan && !safetyRedirect && <div className="mt-5 grid gap-3 md:grid-cols-3">{plan.phases.map((phase) => <div key={phase.id} className="glass-subpanel rounded-xl border border-white/10 p-4"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">{phase.id}</p><p className="mt-3 text-sm font-medium text-white">{phase.label}</p><p className="mt-2 text-xs leading-5 text-white/45">{phase.instruction}</p><p className="mt-3 text-xs text-white/30">{Math.round(phase.durationSec / 60)} min · {phase.controls.targetState}</p></div>)}</div>}
+            {plan && !safetyRedirect && <div className="mt-5 grid gap-3 md:grid-cols-3">{plan.phases.map((phase) => <div key={phase.id} className="glass-subpanel rounded-xl border border-[#b6ddcc]/10 p-4"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">{phase.id}</p><p className="mt-3 text-sm font-medium text-white">{phase.label}</p><p className="mt-2 text-xs leading-5 text-white/45">{phase.instruction}</p><p className="mt-3 text-xs text-white/30">{Math.round(phase.durationSec / 60)} min · {phase.controls.targetState}</p></div>)}</div>}
             {!plan && <p className="mt-5 text-sm leading-6 text-white/40">Each phase has its own bounded controls and a manual transition.</p>}
           </section>
 
@@ -272,7 +272,7 @@ export function TryCockpit() {
         </div>
       </div>
 
-      <section data-testid="try-step-machine" className="glass-panel rounded-[2rem] border border-white/10 p-3 sm:p-5 lg:p-7">
+      <section data-testid="try-step-machine" className="glass-panel rounded-[2rem] border border-[#b6ddcc]/10 p-3 sm:p-5 lg:p-7">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4 px-2 sm:px-3">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">04 · Machine widget</p>

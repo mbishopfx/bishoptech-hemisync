@@ -40,7 +40,7 @@ export function OceanSurfaceCanvas({ className = '', seed = null, onProfileChang
         aria-hidden="true"
         className="pointer-events-auto absolute inset-0 block h-full w-full touch-none"
       />
-      <div className="pointer-events-none absolute left-5 top-5 z-[2] rounded-full border border-white/15 bg-[#10221d]/55 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55 backdrop-blur-md" aria-live="polite">
+      <div className="pointer-events-none absolute left-5 top-5 z-[2] rounded-full border border-[#b6ddcc]/15 bg-[#10221d]/55 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55 backdrop-blur-md" aria-live="polite">
         <span className="text-[#b6ddcc]">FFT ocean</span>
         <span className="mx-1.5 text-white/25">/</span>
         {statusLabel}

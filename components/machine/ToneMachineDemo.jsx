@@ -949,7 +949,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     <section
       id="tone-machine-demo"
       aria-label="Cognistration tone machine demo"
-      className="glass-panel w-full rounded-[2rem] border border-white/10 p-6 transition-all duration-500 sm:p-8"
+      className="glass-panel w-full rounded-[2rem] border border-[#b6ddcc]/10 p-6 transition-all duration-500 sm:p-8"
     >
       <div data-testid="webmcp-bridge" data-webmcp-status={webmcpStatus}>
         {showWebMcpStatus && (
@@ -979,7 +979,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         <div className="space-y-6 lg:col-span-7">
           <div className="space-y-4">
                 <p className="text-sm font-medium text-white/70">See the session take shape</p>
-            <div className="glass-subpanel relative space-y-6 rounded-[1.5rem] border border-white/10 p-5 sm:p-6">
+            <div className="glass-subpanel relative space-y-6 rounded-[1.5rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
               <div className="relative z-10 space-y-1">
                 <div className="flex justify-between text-xs font-medium tracking-wide text-[#b6ddcc]">
                   <span>Left channel</span>
@@ -1000,7 +1000,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
                 </svg>
               </div>
 
-              <div className="relative z-10 space-y-1 border-t border-white/5 pt-4">
+              <div className="relative z-10 space-y-1 border-t border-[#b6ddcc]/10 pt-4">
                 <div className="flex justify-between text-xs font-medium tracking-wide text-white/75">
                   <span>Perceived rhythm</span>
                   <span className="font-medium">{beatFreq.toFixed(1)} Hz · {targetState}</span>
@@ -1022,7 +1022,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
             </div>
           </div>
 
-          <div className="space-y-5 border-t border-white/5 pt-5">
+          <div className="space-y-5 border-t border-[#b6ddcc]/10 pt-5">
             <p className="text-sm font-medium text-white/70">Shape the session</p>
 
             <label className="block space-y-2">
@@ -1052,7 +1052,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
             </label>
           </div>
 
-          <div className="glass-subpanel flex items-center gap-3 rounded-xl border border-white/10 p-4">
+          <div className="glass-subpanel flex items-center gap-3 rounded-xl border border-[#b6ddcc]/10 p-4">
             <Pulse aria-hidden="true" className={`size-5 shrink-0 ${visual.accent}`} weight="light" />
             <p className="text-sm text-white/60">Current rhythm: {beatFreq.toFixed(1)} Hz</p>
           </div>
@@ -1071,7 +1071,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
             </button>
           </div>
 
-          <div className="glass-subpanel select-none space-y-2 rounded-2xl border border-white/10 p-4">
+          <div className="glass-subpanel select-none space-y-2 rounded-2xl border border-[#b6ddcc]/10 p-4">
             <div className="flex justify-between text-sm">
               <span className="text-white/45">Preview time</span>
               <span className={isPlaying || packPreview ? 'animate-pulse font-medium text-[#b6ddcc]' : 'text-white/35'}>{isPlaying || packPreview ? 'Playing' : 'Ready'}</span>
@@ -1108,10 +1108,10 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
               ))}
             </div>
 
-            <div data-testid="session-recipe" className="glass-subpanel space-y-3 rounded-2xl border border-white/10 p-4">
+            <div data-testid="session-recipe" className="glass-subpanel space-y-3 rounded-2xl border border-[#b6ddcc]/10 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-medium text-white/75">Portable session recipe</p>
-                <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white/35">Technical settings only</span>
+                <span className="rounded-full border border-[#b6ddcc]/10 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white/35">Technical settings only</span>
               </div>
               <p className="text-xs leading-5 text-white/40">Export or share the current direction without diary text, account data, or audio.</p>
               <div className="flex flex-wrap gap-2">
@@ -1135,7 +1135,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
 
       {showLimitModal && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 p-6 backdrop-blur-md">
-          <div className="glass-panel relative w-full max-w-md space-y-6 rounded-[2.5rem] border border-white/10 p-8 text-center">
+          <div className="glass-panel relative w-full max-w-md space-y-6 rounded-[2.5rem] border border-[#b6ddcc]/10 p-8 text-center">
             <div className="pointer-events-none absolute inset-0 bg-[#b6ddcc]/[0.04] blur-[80px]" />
             <div className="relative space-y-6">
               <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-[#b6ddcc]/20 bg-[#b6ddcc]/10 text-[#b6ddcc]">

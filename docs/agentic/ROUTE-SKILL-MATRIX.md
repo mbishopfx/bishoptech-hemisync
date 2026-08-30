@@ -11,6 +11,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 | Generate a tone for a diary session | `recommend_tone` or `cognistration_generate_tone` | Apply returned approved tone to the visible machine | Approved catalog ID and Theta/Alpha direction |
 | Clear my mind and relax | `recommend_tone` or `cognistration_generate_tone` | Offer a Delta/Theta preview | Approved catalog ID; no treatment claim |
 | Test a relaxation tone pack | `search_public_tone_packs` or `cognistration_search_tone_packs` | `get_public_tone_pack`, then confirm `cognistration_preview_tone_pack` | Published slug, listed preview track, explicit confirmation |
+| Buy a complete tone pack | `open_tone_pack_checkout` | Select the pack, enter the delivery email, confirm `$5.99`, then use hosted Checkout; compatible agents may use `get_tone_pack_payment_options` and the fixed MPP route | Server-verified payment, browser download button, and email fallback |
 | Gamma with a 246 Hz carrier | `cognistration_set_session_controls` | `cognistration_get_session_state` | State `gamma`, carrier `246` |
 | Make the carrier smaller | `cognistration_get_session_state` | Lower absolute value with `cognistration_set_session_controls` | New carrier is lower and remains within 100–400 Hz |
 | Free trial account with an email | `get_account_options` | `open_account_signup` | In-platform user-controlled form; credentials never enter MCP and checkout is separate |
@@ -34,6 +35,10 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `get_account_options`
 - `open_account_signup` — render the in-platform signup form without receiving credentials in MCP
 - `get_ios_app_offer` — return the public iPhone App Store listing, one-time offer details, and the on-device explanation for the lower cost
+- `create_tone_pack_checkout` — after explicit confirmation, create a server-priced hosted checkout for a published pack
+- `get_tone_pack_delivery` — verify a completed checkout and return the download/email fallback paths
+- `open_tone_pack_checkout` — render the frosted in-platform pack card with email capture, hosted checkout, and verified download state
+- `get_tone_pack_payment_options` — discover the fixed `$5.99` agent-to-agent MPP route and delivery contract
 - `open_machine_generator` — render the interactive tone machine in an MCP Apps-compatible host
 - `open_science_guide` — render the seven-slide educational signal guide with a self-contained animated ocean surface and browser PDF fallback
 - `open_feedback` — render one optional done-state feedback card without returning history
@@ -57,15 +62,20 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `GET /api/packs?agent=1` — safe pack search; `slug` reads one pack.
 - `GET /api/agent/policy?topic=safety` — canonical policy summary and URL.
 - `GET /api/agent/account` — public preview, workspace, and signup boundaries.
+- `POST /api/agent/commerce/tone-pack-checkout` — create the reviewable hosted checkout after confirmation.
+- `GET /api/agent/commerce/tone-pack-delivery` — verify paid hosted checkout and resolve the download/email delivery.
+- `GET/POST /api/machine-payments/tone-pack` — fixed `$5.99` MPP discovery/payment route for compatible agent payment clients; the credential is header-only and the PaymentIntent is verified before fulfillment.
 - `GET /api/capabilities` and `GET /openapi.json` — discovery and compatibility.
 
 ### ChatGPT app surface
 
 - Resource: `ui://cognistration/machine-generator/v1.html`
 - Resource: `ui://cognistration/science-guide/v1.html`
+- Resource: `ui://cognistration/tone-pack-checkout/v1.html`
 - MIME type: `text/html;profile=mcp-app`
-- Host calls: portable `tools/call` for recommendation and pack search; optional `window.openai.requestDisplayMode` for a larger view; science-guide navigation is local and its PDF action is browser-controlled
+- Host calls: portable `tools/call` for recommendation, pack search, checkout, and verified delivery; optional `window.openai.requestDisplayMode` for a larger view; science-guide navigation is local and its PDF action is browser-controlled
 - Visuals: the machine uses the supplied Aurora Current artwork; the science guide uses a self-contained animated ocean surface with `https://vgpu.sh/examples/fft-ocean-surface` as a source link, so neither surface depends on an embedded frame
+- Commerce UI: the tone-pack card uses frosted surfaces and asks for email/confirmation in-platform; payment credentials remain with the hosted checkout or compatible MPP payment client, and the download link appears only after server verification
 
 ## Installed skills
 
@@ -85,6 +95,7 @@ Skills are operating guidance, not authorization. Their resources are hashed and
 - Provider or network failure falls back to the deterministic approved tone matcher, or returns `retryable: true` for a later safe retry.
 - Unknown pack/tone IDs return `NOT_FOUND` and a catalog-search next action.
 - Missing audio confirmation returns `CONFIRMATION_REQUIRED` and never starts playback.
+- Missing tone-pack confirmation, email, provider credential, or a mismatched PaymentIntent returns a bounded commerce error; no bundle is released until the server verifies the exact approved `$5.99` transaction.
 - Preview limits render the user-controlled signup widget; cookies are never reset to bypass access rules.
 - Credentials, payment, private records, service keys, and arbitrary writes are not accepted as public MCP arguments. Signup and feedback writes occur only after an explicit user submission in their first-party widgets.
 

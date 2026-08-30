@@ -6,7 +6,7 @@
 - Transport: Streamable HTTP JSON-RPC over HTTP POST; dual-era public adapter
 - Current discovery protocol: `2026-07-28` `server/discover`
 - Legacy initialize compatibility: `2025-11-25`, `2025-06-18`, `2025-03-26`
-- Server name/version: `cognistration-agentic-platform` / `0.10.0`
+- Server name/version: `cognistration-agentic-platform` / `0.11.0`
 - Manifest: `https://cognistration.com/api/capabilities`
 - REST/OpenAPI fallback: `https://cognistration.com/openapi.json`
 - Human/agent instructions: `https://cognistration.com/agent-instructions.md`
@@ -26,9 +26,9 @@ use the supported `initialize` handshake.
 
 | Surface | Allowed | Not allowed |
 |---|---|---|
-| Resources | capability manifest, public catalogs, policy index, account options, iPhone app offer, skill index, skill resources, and the tone-machine, science-guide, signup, and feedback UIs | private sessions, profiles, saved tones, secrets |
-| Tools | bounded tone/pack search, lookup, deterministic recommendation, policy/account reads, and machine rendering | arbitrary SQL, code execution, file access, unrestricted web search |
-| Visitor writes | first-party signup/feedback widget submission only after explicit user action | credentials or feedback in MCP arguments, payment, email collection by the agent, library writes |
+| Resources | capability manifest, public catalogs, policy index, account options, iPhone app offer, skill index, skill resources, and the tone-machine, science-guide, tone-pack checkout, signup, and feedback UIs | private sessions, profiles, saved tones, secrets |
+| Tools | bounded tone/pack search, lookup, deterministic recommendation, policy/account reads, machine rendering, checkout preparation, and payment discovery | arbitrary SQL, code execution, file access, unrestricted web search |
+| Visitor writes | first-party signup/feedback widget submission and server-verified hosted/MPP commerce flows only after explicit user action or provider authorization | credentials, payment credentials, or feedback in MCP arguments; arbitrary email/library writes |
 | Browser WebMCP | visible machine controls and explicit local preview | hidden navigation side effects, silent audio, silent credential/payment submission |
 | Authenticated dashboard bridge | private planning, owned session/render records, and render status | public access, cross-member reads, silent rendering |
 
@@ -46,6 +46,7 @@ use the supported `initialize` handshake.
 | `cognistration://skills` | `application/json` | public | skill extension summary | no |
 | `ui://cognistration/machine-generator/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded local preview | no |
 | `ui://cognistration/science-guide/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
+| `ui://cognistration/tone-pack-checkout/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted tone-pack purchase card with email capture, explicit $5.99 confirmation, hosted checkout, and verified download action | email stays in widget/provider flow |
 | `ui://cognistration/account-signup/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
 | `skill://cognistration/*/SKILL.md` | `text/markdown` | public | static operating guidance | no |
@@ -64,6 +65,10 @@ use the supported `initialize` handshake.
 | `get_account_options` | `public_read` | none | empty object |
 | `open_account_signup` | `public_read` render | widget submission only | empty object; credentials never enter MCP |
 | `get_ios_app_offer` | `public_read` | none | empty object; returns the canonical App Store listing, current one-time price, and why on-device operation keeps the offer lower |
+| `create_tone_pack_checkout` | `public_checkout` | creates unpaid hosted checkout | published pack slug, delivery email, confirmation, idempotency key |
+| `get_tone_pack_delivery` | `paid_checkout_session` | verifies payment and resolves delivery | published pack slug, completed Checkout Session ID |
+| `open_tone_pack_checkout` | `public_read` render | widget submission only | optional published pack slug; email and payment stay in widget/provider flow |
+| `get_tone_pack_payment_options` | `public_read` | none | empty object; fixed $5.99 MPP route and delivery contract |
 | `open_machine_generator` | `public_read` | none | optional intention, tone ID, state, and bounded controls |
 | `open_science_guide` | `public_read` render | none | optional public tone ID, state, carrier, beat, volume, and safe intention label; no audio or diary content |
 | `open_feedback` | `public_read` render | widget submission only | empty object; rating and note never enter MCP |
@@ -85,11 +90,21 @@ ocean surface and keeps the public FFT ocean-surface page at
 embedded page. Its print button delegates PDF creation to the host browser.
 It never starts audio, stores a record, or includes diary text.
 
+The `open_tone_pack_checkout` render tool links `_meta.ui.resourceUri` to
+`ui://cognistration/tone-pack-checkout/v1.html`. The card asks for a delivery
+email and explicit confirmation of the fixed `$5.99` one-time price before it
+opens hosted Checkout. After `get_tone_pack_delivery` verifies the completed
+session, the same card renders a download button and reports the email fallback.
+Compatible agent payment clients can instead discover
+`/api/machine-payments/tone-pack`, receive an HTTP 402 challenge, retry with
+their own `Payment-Authorization` credential, and receive delivery only after
+the server verifies the exact Stripe PaymentIntent.
+
 Every tool returns bounded `content` and `structuredContent`. Tool-level failures use `isError: true`; protocol failures use stable JSON-RPC errors. Unknown tool names, private-data requests, and write attempts are denied.
 
 ## Compatibility fallback
 
-`/openapi.json` is generated from the same public MCP tool registry and documents the bounded REST recommendation route, public tone-pack metadata, policy/account reads, and the JSON-RPC adapter. It is a compatibility surface for hosts that cannot consume the native MCP transport; it does not add credential-taking, payment, private-workspace, or arbitrary write access. In-platform signup and feedback forms remain the only narrow visitor-write surfaces, and both require the person to press Submit.
+`/openapi.json` is generated from the same public MCP tool registry and documents the bounded REST recommendation route, public tone-pack metadata, policy/account reads, the provider-gated `$5.99` tone-pack MPP route, and the JSON-RPC adapter. It is a compatibility surface for hosts that cannot consume the native MCP transport; it does not accept card details, arbitrary prices, arbitrary products, private-workspace access, or unrestricted writes. In-platform signup and feedback forms remain user-submission surfaces, and hosted/MPP commerce remains fixed to approved products and server verification.
 
 ## Authenticated member bridge
 
@@ -112,7 +127,7 @@ The route must pass:
 1. Modern `server/discover` with `MCP-Protocol-Version: 2026-07-28` and `Mcp-Method: server/discover`.
 2. Modern `tools/list`, `resources/list`, and `prompts/list` with matching body metadata and standard headers.
 3. Modern `resources/read` and `prompts/get` with matching `Mcp-Name` headers.
-4. Valid modern `tools/call` for all twenty-seven public tools with matching `Mcp-Name` headers, including the science-guide, signup, and feedback render tools.
+4. Valid modern `tools/call` for all twenty-nine public tools with matching `Mcp-Name` headers, including the science-guide, tone-pack checkout, signup, and feedback render tools.
 5. `initialize` and subsequent calls with a supported legacy version.
 6. Missing or mismatched modern headers, malformed JSON, oversized body, invalid schema, unknown tool, and write-shaped request denial.
 7. Valid pack, policy, account, signup render, feedback render, and skills calls, including skill resource digests.
@@ -127,3 +142,8 @@ The route must pass:
 11. The iPhone app offer returns the canonical App Store listing, the bounded
     one-time price, compatibility, on-device pricing context, and no payment side
     effect.
+12. The tone-pack checkout resource renders without a host-added hard border,
+    requires the delivery email and explicit `$5.99` confirmation, and only
+    reveals a download action from a server-verified delivery result. The
+    direct MPP route is fixed to the approved pack price, rejects mismatched
+    pack/email/amount metadata, and never treats a client claim as payment.

@@ -58,7 +58,9 @@ async function main() {
   assert(tools.length >= 20, `expected the public MCP catalog, received ${tools.length} tools`);
   assert(tools.some((tool) => tool.name === 'prepare_session_recipe'), 'prepare_session_recipe is missing');
   assert(tools.some((tool) => tool.name === 'get_machine_payment_options'), 'get_machine_payment_options is missing');
+  assert(tools.some((tool) => tool.name === 'get_tone_pack_payment_options'), 'get_tone_pack_payment_options is missing');
   assert(tools.some((tool) => tool.name === 'open_science_guide'), 'open_science_guide is missing');
+  assert(tools.some((tool) => tool.name === 'open_tone_pack_checkout'), 'open_tone_pack_checkout is missing');
   assert(tools.some((tool) => tool.name === 'open_account_signup'), 'open_account_signup is missing');
   assert(tools.some((tool) => tool.name === 'open_feedback'), 'open_feedback is missing');
 
@@ -94,6 +96,19 @@ async function main() {
   assert(/api\/science-guide\/pdf/.test(scienceWidget.text || ''), 'science widget PDF export route is missing');
   assert(/cognistration:ocean-profile/.test(scienceWidget.text || ''), 'science widget ocean run handoff is missing');
   assert(/ArrowRight/.test(scienceWidget.text || ''), 'science widget keyboard navigation is missing');
+  assert(scienceWidget._meta?.ui?.prefersBorder === false, 'science widget must not request a host-added hard border');
+  assert(!/border: 1px solid rgba\(255, 255, 255/.test(scienceWidget.text || ''), 'science widget contains a hard white UI border');
+
+  const tonePackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/tone-pack-checkout/v1.html' }, 'ui://cognistration/tone-pack-checkout/v1.html');
+  const tonePackWidget = tonePackWidgetResult.contents?.[0];
+  assert(tonePackWidget?.mimeType === 'text/html;profile=mcp-app', 'tone-pack widget MIME type is unexpected');
+  assert(/Delivery email/.test(tonePackWidget.text || ''), 'tone-pack widget email field is missing');
+  assert(/\$5\.99/.test(tonePackWidget.text || ''), 'tone-pack widget fixed price is missing');
+  assert(/create_tone_pack_checkout/.test(tonePackWidget.text || ''), 'tone-pack widget checkout action is missing');
+  assert(/get_tone_pack_delivery/.test(tonePackWidget.text || ''), 'tone-pack widget delivery action is missing');
+  assert(/Download pack/.test(tonePackWidget.text || ''), 'tone-pack widget download action is missing');
+  assert(tonePackWidget._meta?.ui?.prefersBorder === false, 'tone-pack widget must not request a host-added hard border');
+  assert(!/border: 1px solid rgba\(255, 255, 255/.test(tonePackWidget.text || ''), 'tone-pack widget contains a hard white UI border');
 
   const oceanModuleResponse = await fetch(new URL('/vgpu-ocean/science-guide-ocean.js', requestOrigin));
   const oceanModule = await oceanModuleResponse.text();
@@ -139,6 +154,15 @@ async function main() {
   assert(scienceOpen.boundaries?.audioStarted === false, 'science guide must not start audio');
   assert(scienceOpen.boundaries?.diaryContentIncluded === false, 'science guide must not carry diary content');
 
+  const tonePackOpen = structured(await rpc('tools/call', {
+    name: 'open_tone_pack_checkout',
+    arguments: { slug: 'full-spectrum-pack' }
+  }, 'open_tone_pack_checkout'));
+  assert(tonePackOpen.resourceUri === 'ui://cognistration/tone-pack-checkout/v1.html', 'tone-pack checkout render resource is unexpected');
+  assert(tonePackOpen.selectedPack?.slug === 'full-spectrum-pack', 'tone-pack checkout did not select the requested pack');
+  assert(tonePackOpen.userSubmissionRequired === true, 'tone-pack checkout must require user submission');
+  assert(tonePackOpen.paymentSubmitted === false, 'tone-pack checkout must not submit payment while rendering');
+
   const clarifyResult = structured(await rpc('tools/call', {
     name: 'clarify_intention',
     arguments: { intention: 'I need something better' }
@@ -160,6 +184,14 @@ async function main() {
   assert(paymentResult.amountCents === 50, 'machine-payment amount is not 50 cents');
   assert(paymentResult.toneSession?.endpoint, 'paid tone-session endpoint is missing');
 
+  const tonePackPaymentResult = structured(await rpc('tools/call', {
+    name: 'get_tone_pack_payment_options',
+    arguments: {}
+  }, 'get_tone_pack_payment_options'));
+  assert(tonePackPaymentResult.status === 'enabled', 'tone-pack machine-payment provider is not enabled');
+  assert(tonePackPaymentResult.amountCents === 599, 'tone-pack machine-payment amount is not $5.99');
+  assert(tonePackPaymentResult.endpoint.endsWith('/api/machine-payments/tone-pack'), 'tone-pack machine-payment endpoint is missing');
+
   console.log(JSON.stringify({
     endpoint,
     protocol: protocolVersion,
@@ -172,8 +204,9 @@ async function main() {
     clarificationChoices: clarifyResult.choices.length,
     recipeVersion: recipeResult.recipe.recipeVersion,
     scienceGuide: { resourceUri: scienceOpen.resourceUri, slides: scienceOpen.slides.length },
-    inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri },
-    machinePayment: { status: paymentResult.status, amountCents: paymentResult.amountCents, toneEndpoint: paymentResult.toneSession.endpoint }
+    inPlatformWidgets: { account: accountOpen.resourceUri, feedback: feedbackOpen.resourceUri, tonePack: tonePackOpen.resourceUri },
+    machinePayment: { status: paymentResult.status, amountCents: paymentResult.amountCents, toneEndpoint: paymentResult.toneSession.endpoint },
+    tonePackPayment: { status: tonePackPaymentResult.status, amountCents: tonePackPaymentResult.amountCents, endpoint: tonePackPaymentResult.endpoint }
   }, null, 2));
 }
 

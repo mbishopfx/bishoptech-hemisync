@@ -11,7 +11,7 @@ Cognistration is a private audio-session product with public education, pricing,
 - / — homepage and product entry point
 - /agent-instructions.md — browser-agent workflow, public MCP boundary, and discovery links
 - /openapi.json — REST compatibility contract derived from the public capability registry
-- /api/mcp — public MCP JSON-RPC tools, including the iPhone app offer, interactive machine and science-guide UI resources, and the public payment discovery lane for compatible ChatGPT app hosts
+- /api/mcp — public MCP JSON-RPC tools, including the iPhone app offer, interactive machine, science-guide, and tone-pack checkout UI resources, plus payment discovery lanes for compatible ChatGPT app hosts
 - /docs — SDK-style reference for MCP/WebMCP tools, protocol commands, resources, skills, prompts, routes, and safety boundaries
 - /api/agent/account — machine-readable preview, workspace, and signup boundaries
 - /api/agent/policy?topic=safety — machine-readable canonical policy summary and URL
@@ -38,7 +38,7 @@ Cognistration is a private audio-session product with public education, pricing,
 
 ## Reference guidance
 - Use /api/capabilities for the public machine-readable capability manifest, /openapi.json for REST compatibility, and /api/mcp for the bounded JSON-RPC public surface.
-- Public agent routes support tone recommendations, tone-direction comparison, timed session planning, session cues, tone-pack search and lookup, policy information, account options, and the iPhone app offer. Public pack responses omit checkout identifiers and full-download fields.
+- Public agent routes support tone recommendations, tone-direction comparison, timed session planning, session cues, tone-pack search and lookup, policy information, account options, the iPhone app offer, hosted tone-pack checkout/delivery, and the fixed-price tone-pack Machine Payments Protocol route. Public catalog responses omit checkout identifiers and full-download fields.
 - The public MCP get_ios_app_offer tool returns the canonical App Store listing, the current one-time $2.99 iPhone price, compatibility, and public feature summary. It never processes payment.
 - The iPhone offer is lower because the app does its audio work on-device instead of routing each session through a deployed cloud engine, reducing hosted infrastructure and maintenance overhead.
 - The public MCP render tool open_machine_generator opens a versioned interactive machine widget with the supplied Aurora visual, bounded controls, public pack browsing, and an explicit local audio preview button.
@@ -46,7 +46,7 @@ Cognistration is a private audio-session product with public education, pricing,
 - The public MCP render tool open_account_signup opens an in-platform account capture form; credentials are entered and submitted by the user directly to Cognistration, and checkout is separate.
 - When a listener says they are done, the public MCP render tool open_feedback opens one optional in-platform thumbs-up/down card. It writes only after explicit submission and never displays feedback history.
 - The public MCP session tools compare_tone_directions, plan_listening_session, and get_session_cue return bounded guidance only; they do not start audio, read diary content, or save a record.
-- The public MCP includes narrow, confirmation-gated hosted checkout and paid access operations. It never accepts card credentials, creates an account from an email alone, or exposes private workspace records.
+- The public MCP includes narrow, confirmation-gated hosted checkout and paid access operations. The tone-pack card asks for a delivery email and reveals a download action only from server-verified delivery; a compatible agent may use the separate fixed $5.99 MPP pack route. It never accepts card credentials, creates an account from an email alone, or exposes private workspace records.
 - The MCP server advertises the io.modelcontextprotocol/skills extension with five static Cognistration operating skills available through skills/list, skills/get, and resources/read.
 - The homepage WebMCP bridge is progressive enhancement: it is available only in a compatible browser, and starting local audio requires explicit confirmation.
 - When connecting ChatGPT, use https://cognistration.com/api/mcp in the supported remote app, connector, or Developer-mode flow. A Plugins or marketplace form asking for Source, Git ref, or Sparse paths is a Git repository installer and is not the correct surface for Cognistration’s HTTPS endpoint.

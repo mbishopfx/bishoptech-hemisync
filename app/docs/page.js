@@ -59,7 +59,7 @@ const SUPPORTING_ROUTE_FAMILIES = [
   { method: 'GET', path: '/api/agent/policy, /account', description: 'Canonical policy and account-option lookups.' },
   { method: 'POST', path: '/api/agent/account/signup, /feedback', description: 'User-controlled signup and optional feedback submission widgets.' },
   { method: 'POST', path: '/api/agent/commerce/*', description: 'Server-priced tone-pack and workshop checkout, delivery, access, and revocation adapters.' },
-  { method: 'GET / POST', path: '/api/machine-payments/*', description: 'Machine Payments Protocol challenge, session, and reconciliation compatibility routes.' },
+  { method: 'GET / POST', path: '/api/machine-payments/*', description: 'Machine Payments Protocol challenge, fixed $0.50 machine resources, fixed $5.99 tone-pack fulfillment, and reconciliation compatibility routes.' },
   { method: 'GET / POST', path: '/api/ucp/*', description: 'UCP checkout-session and order compatibility routes; not a substitute for MCP confirmation rules.' },
   { method: 'GET / POST', path: '/api/member/*', description: 'Authenticated member-only workspace adapters; private records never enter the public tool registry.' }
 ];
@@ -331,7 +331,7 @@ export default function DocsPage() {
             </section>
 
             <section id="resources" className="scroll-mt-28">
-              <SectionIntro eyebrow="05 · Readable surfaces" title="Resources and interactive UI">Resources are addressable by stable URI. The four <code className="text-[#d7eadf]">ui://</code> entries are MCP Apps resources; they render in a compatible host and keep their user actions inside the declared boundary.</SectionIntro>
+              <SectionIntro eyebrow="05 · Readable surfaces" title="Resources and interactive UI">Resources are addressable by stable URI. The {MCP_RESOURCES.filter((resource) => resource.uri.startsWith('ui://')).length} <code className="text-[#d7eadf]">ui://</code> entries are MCP Apps resources; they render in a compatible host and keep their user actions inside the declared boundary.</SectionIntro>
               <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_RESOURCES.map((resource) => <ResourceRow key={resource.uri} resource={resource} />)}</div>
             </section>
 

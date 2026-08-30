@@ -116,7 +116,7 @@ export function ToneScienceLesson({
   }, [isOpen, setOpen]);
 
   return (
-    <section id={id} data-testid="tone-science-lesson" aria-label="Cognistration science guide" className="glass-subpanel mt-8 rounded-[2rem] border border-[#b6ddcc]/15 shadow-[0_24px_90px_rgba(0,0,0,0.2)]">
+    <section id={id} data-testid="tone-science-lesson" aria-label="Cognistration science guide" className="glass-subpanel mt-8 rounded-[2rem] border border-[#b6ddcc]/10 shadow-[0_24px_90px_rgba(0,0,0,0.2)]">
       {!isOpen ? (
         <div className="relative isolate overflow-hidden p-6 sm:p-8">
           <div className="pointer-events-none absolute -left-16 top-1/2 size-64 -translate-y-1/2 rounded-full bg-[#b6ddcc]/10 blur-3xl" aria-hidden="true" />
@@ -138,8 +138,8 @@ export function ToneScienceLesson({
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,22,18,0.25),rgba(7,22,18,0.72))]" aria-hidden="true" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(182,221,204,0.18),transparent_30%),radial-gradient(circle_at_82%_80%,rgba(224,180,147,0.13),transparent_32%)]" aria-hidden="true" />
 
-          <div className="glass-panel relative flex min-h-[39rem] flex-col rounded-[1.65rem] border border-white/15 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+          <div className="glass-panel relative flex min-h-[39rem] flex-col rounded-[1.65rem] border border-[#b6ddcc]/10 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.28)] sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#b6ddcc]/10 pb-4">
               <div>
                 <h2 className="text-lg font-medium tracking-[-0.03em] text-white">Understand the signal</h2>
                 <p className="mt-1 text-xs text-white/45">Audio is off. Move through the guide at your pace.</p>
@@ -156,21 +156,21 @@ export function ToneScienceLesson({
               {pdfMessage && <p className="basis-full text-right text-[11px] text-[#b6ddcc]/75" aria-live="polite">{pdfMessage}</p>}
             </div>
 
-            <div className="mx-auto mt-5 flex w-full max-w-4xl flex-wrap items-center justify-center gap-x-5 gap-y-2 border-y border-white/10 py-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/40">
+            <div className="mx-auto mt-5 flex w-full max-w-4xl flex-wrap items-center justify-center gap-x-5 gap-y-2 border-y border-[#b6ddcc]/10 py-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/40">
               <span>Direction <strong className="text-[#b6ddcc]">{safeControls.targetState}</strong></span>
               <span>Carrier <strong className="text-white/75">{safeControls.carrierHz} Hz</strong></span>
               <span>Difference <strong className="text-white/75">{safeControls.beatHz.toFixed(1)} Hz</strong></span>
               <span className="text-[#b6ddcc]/75">Audio off</span>
             </div>
 
-            <article id={`${id}-slide`} data-testid="tone-science-slideshow" tabIndex={-1} className="glass-subpanel mx-auto my-auto w-full max-w-4xl rounded-[1.7rem] border border-white/15 p-6 shadow-[0_28px_90px_rgba(0,0,0,0.25)] outline-none sm:p-10" aria-live="polite" aria-label={`Slide ${slideIndex + 1} of ${SCIENCE_GUIDE_SLIDES.length}: ${slide.title}`}>
+            <article id={`${id}-slide`} data-testid="tone-science-slideshow" tabIndex={-1} className="glass-subpanel mx-auto my-auto w-full max-w-4xl rounded-[1.7rem] border border-[#b6ddcc]/10 p-6 shadow-[0_28px_90px_rgba(0,0,0,0.25)] outline-none sm:p-10" aria-live="polite" aria-label={`Slide ${slideIndex + 1} of ${SCIENCE_GUIDE_SLIDES.length}: ${slide.title}`}>
               <h3 className="max-w-3xl text-3xl font-medium leading-[1.04] tracking-[-0.055em] text-white sm:text-5xl">{slide.title}</h3>
               <p className="mt-5 max-w-3xl text-sm leading-7 text-white/65 sm:text-base">{slide.body}</p>
 
               {slide.bands?.length > 0 && (
-                <div className="mt-7 overflow-hidden border-y border-white/10" role="table" aria-label="Descriptive frequency bands">
+                <div className="mt-7 overflow-hidden border-y border-[#b6ddcc]/10" role="table" aria-label="Descriptive frequency bands">
                   {slide.bands.map((band) => (
-                    <div key={band.label} className="grid gap-2 border-b border-white/10 px-1 py-3 last:border-b-0 sm:grid-cols-[0.55fr_0.9fr_1fr] sm:gap-4" role="row">
+                    <div key={band.label} className="grid gap-2 border-b border-[#b6ddcc]/10 px-1 py-3 last:border-b-0 sm:grid-cols-[0.55fr_0.9fr_1fr] sm:gap-4" role="row">
                       <strong className="text-xs text-white" role="cell">{band.label}</strong>
                       <span className="text-xs text-white/55" role="cell">{band.range}</span>
                       <span className="text-xs text-[#b6ddcc]" role="cell">{band.direction}</span>
@@ -180,9 +180,9 @@ export function ToneScienceLesson({
               )}
 
               {slide.facts?.length > 0 && (
-                <div className="mt-7 space-y-0 border-t border-white/10">
+                <div className="mt-7 space-y-0 border-t border-[#b6ddcc]/10">
                   {slide.facts.map((fact) => (
-                    <div key={fact.label} className="grid gap-2 border-b border-white/10 py-3 sm:grid-cols-[0.34fr_1fr] sm:gap-5">
+                    <div key={fact.label} className="grid gap-2 border-b border-[#b6ddcc]/10 py-3 sm:grid-cols-[0.34fr_1fr] sm:gap-5">
                       <strong className="text-xs text-white/90">{fact.label}</strong>
                       <span className="text-xs leading-5 text-white/55">{fact.detail}</span>
                     </div>
@@ -191,9 +191,9 @@ export function ToneScienceLesson({
               )}
 
               {sourceLinks.length > 0 && (
-                <div className="mt-7 flex flex-wrap gap-x-4 gap-y-2 border-t border-white/10 pt-4">
+                <div className="mt-7 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#b6ddcc]/10 pt-4">
                   {sourceLinks.map((source) => (
-                    <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="text-xs text-white/45 underline decoration-white/15 underline-offset-4 transition hover:text-[#b6ddcc]">
+                    <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="text-xs text-white/45 underline decoration-[#b6ddcc]/20 underline-offset-4 transition hover:text-[#b6ddcc]">
                       {source.label}
                     </a>
                   ))}
@@ -201,7 +201,7 @@ export function ToneScienceLesson({
               )}
             </article>
 
-            <div className="mx-auto mt-4 flex w-full max-w-4xl flex-wrap items-center justify-between gap-3 border-t border-white/10 px-1 pt-4">
+            <div className="mx-auto mt-4 flex w-full max-w-4xl flex-wrap items-center justify-between gap-3 border-t border-[#b6ddcc]/10 px-1 pt-4">
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Slide {String(slideIndex + 1).padStart(2, '0')} / {String(SCIENCE_GUIDE_SLIDES.length).padStart(2, '0')}</span>
               <div className="flex items-center gap-2" role="tablist" aria-label="Science guide slides">
                 {SCIENCE_GUIDE_SLIDES.map((candidate, index) => (

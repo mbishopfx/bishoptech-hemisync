@@ -42,7 +42,7 @@ export function RitualConductor({ plan, activePhase = null, onSelectPhase }) {
       </div>
 
       {activePhase && plan.phases.find((phase) => phase.id === activePhase) && (
-        <p className="border-t border-white/10 pt-3 text-xs leading-5 text-white/50" aria-live="polite">
+        <p className="border-t border-[#b6ddcc]/10 pt-3 text-xs leading-5 text-white/50" aria-live="polite">
           {plan.phases.find((phase) => phase.id === activePhase).instruction} Controls are staged locally; audio remains off until you confirm a preview.
         </p>
       )}

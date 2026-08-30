@@ -27,6 +27,15 @@ import {
 import { assertPaidTonePackSession } from '../lib/commerce/tone-packs.mjs';
 import { PUBLIC_TONE_PACK_CATALOG } from '../lib/agentic/pack-capability.js';
 import {
+  TONE_PACK_PAYMENT_AMOUNT,
+  TONE_PACK_PAYMENT_PRICE_CENTS,
+  assertPaidTonePackPaymentIntent,
+  buildTonePackPaymentSession,
+  parseTonePackPaymentInput,
+  tonePackPaymentOptions,
+  tonePackPaymentScope
+} from '../lib/commerce/tone-pack-machine-payment.mjs';
+import {
   createMachineSessionGrant,
   decryptMachineSessionGrant,
   encryptMachineSessionGrant,
@@ -245,6 +254,92 @@ test('paid tone-pack fulfillment binds the selected pack to its server price', (
     }),
     (error) => error.code === 'PAYMENT_MISMATCH' && error.status === 403
   );
+});
+
+test('machine tone-pack payments normalize email, bind the $5.99 pack, and create a verified delivery session', async () => {
+  await withEnv({ NEXT_PUBLIC_SITE_URL: 'https://cognistration.com' }, async () => {
+    const pack = PUBLIC_TONE_PACK_CATALOG.find((candidate) => candidate.slug === 'full-spectrum-pack');
+    const email = 'listener@example.com';
+    const priceId = getTonePackPriceId(pack);
+    const parsed = parseTonePackPaymentInput({ email: ' Listener@Example.com ', confirmed: true });
+
+    assert.equal(parsed.slug, 'full-spectrum-pack');
+    assert.equal(parsed.email, email);
+    assert.equal(parsed.pack.slug, pack.slug);
+    assert.equal(TONE_PACK_PAYMENT_PRICE_CENTS, 599);
+    assert.equal(TONE_PACK_PAYMENT_AMOUNT, '5.99');
+    assert.match(tonePackPaymentScope({ slug: pack.slug, email }), /^cognistration-tone-pack-v1:[a-f0-9]{64}$/);
+    assert.notEqual(
+      tonePackPaymentScope({ slug: pack.slug, email }),
+      tonePackPaymentScope({ slug: pack.slug, email: 'another@example.com' })
+    );
+    assert.throws(
+      () => parseTonePackPaymentInput({ email, confirmed: false }),
+      (error) => error.code === 'CONFIRMATION_REQUIRED'
+    );
+    assert.throws(
+      () => parseTonePackPaymentInput({ email: 'not-an-email', confirmed: true }),
+      (error) => error.code === 'INVALID_EMAIL'
+    );
+
+    const paymentIntent = {
+      id: 'pi_tone_pack_unit',
+      status: 'succeeded',
+      amount: TONE_PACK_PAYMENT_PRICE_CENTS,
+      currency: 'usd',
+      receipt_email: email,
+      customer: 'cus_tone_pack_unit',
+      metadata: {
+        productType: 'tone-pack-machine-payment',
+        cognistrationMppRoute: 'tone-pack-v1',
+        mpp_intent: 'charge',
+        mpp_server_id: 'cognistration.com',
+        amountCents: String(TONE_PACK_PAYMENT_PRICE_CENTS),
+        packSlug: pack.slug,
+        priceId,
+        purchaserEmail: email
+      }
+    };
+
+    const verified = assertPaidTonePackPaymentIntent({
+      paymentIntent,
+      expectedSlug: pack.slug,
+      expectedEmail: email
+    });
+    assert.equal(verified.pack.slug, pack.slug);
+    assert.equal(verified.email, email);
+
+    const session = buildTonePackPaymentSession({ paymentIntent, pack: verified.pack, email: verified.email });
+    assert.equal(session.id, 'mpp_pi_tone_pack_unit');
+    assert.equal(session.payment_status, 'paid');
+    assert.equal(session.customer_details.email, email);
+    assert.equal(assertPaidTonePackSession({ stripeSession: session, expectedSlug: pack.slug }).slug, pack.slug);
+
+    assert.throws(
+      () => assertPaidTonePackPaymentIntent({
+        paymentIntent: { ...paymentIntent, amount: 600 },
+        expectedSlug: pack.slug,
+        expectedEmail: email
+      }),
+      (error) => error.code === 'PAYMENT_MISMATCH'
+    );
+    assert.throws(
+      () => assertPaidTonePackPaymentIntent({
+        paymentIntent: { ...paymentIntent, metadata: { ...paymentIntent.metadata, priceId: 'price_wrong' } },
+        expectedSlug: pack.slug,
+        expectedEmail: email
+      }),
+      (error) => error.code === 'PAYMENT_MISMATCH'
+    );
+    assert.throws(
+      () => assertPaidTonePackPaymentIntent({
+        paymentIntent: { ...paymentIntent, metadata: { ...paymentIntent.metadata, purchaserEmail: 'other@example.com' } },
+        expectedSlug: pack.slug,
+        expectedEmail: email
+      }),
+      (error) => error.code === 'PAYMENT_MISMATCH'
+    );
+  });
 });
 
 test('paid workshop checkout resolves to one idempotent 24-hour bearer grant', async () => {
