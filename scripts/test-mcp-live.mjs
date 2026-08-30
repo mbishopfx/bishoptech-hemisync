@@ -81,7 +81,7 @@ async function main() {
   const interaction = JSON.parse(interactionText);
   assert(interaction.safetyRouting?.route === '/health-warning', 'safety routing resource is missing');
 
-  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v2.html' }, 'ui://cognistration/machine-generator/v2.html');
+  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v3.html' }, 'ui://cognistration/machine-generator/v3.html');
   const machineWidget = machineWidgetResult.contents?.[0];
   assert(machineWidget?.mimeType === 'text/html;profile=mcp-app', 'machine widget MIME type is unexpected');
   assert(/class="frequency-stage"/.test(machineWidget.text || ''), 'machine widget frequency-wave stage is missing');
@@ -92,6 +92,8 @@ async function main() {
   assert(/audioReady/.test(machineWidget.text || ''), 'machine widget audio readiness state is missing');
   assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
 
+  const previousMachineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v2.html' }, 'ui://cognistration/machine-generator/v2.html');
+  assert(previousMachineWidgetResult.contents?.[0]?.uri === 'ui://cognistration/machine-generator/v2.html', 'previous machine resource alias was not preserved');
   const legacyMachineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v1.html' }, 'ui://cognistration/machine-generator/v1.html');
   assert(legacyMachineWidgetResult.contents?.[0]?.uri === 'ui://cognistration/machine-generator/v1.html', 'legacy machine resource alias was not preserved');
 
@@ -257,7 +259,7 @@ async function main() {
   const setMachineData = structured(setMachine);
   assert(setMachineData.controlPatch?.carrierHz === 246, 'machine absolute control patch is missing');
   assert(setMachineData.playbackPreserved === true, 'machine absolute control patch must preserve playback');
-  assert(setMachine._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v2.html', 'machine control result is not bound to the widget');
+  assert(setMachine._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine control result is not bound to the widget');
 
   const adjustMachine = structured(await rpc('tools/call', {
     name: 'adjust_machine_controls',

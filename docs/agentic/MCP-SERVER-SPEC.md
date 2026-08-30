@@ -44,7 +44,7 @@ use the supported `initialize` handshake.
 | `cognistration://account-options` | `application/json` | public | preview/workspace access boundary | no |
 | `cognistration://ios-app` | `application/json` | public | App Store listing, one-time price, compatibility, feature summary, and on-device pricing context | no |
 | `cognistration://skills` | `application/json` | public | skill extension summary | no |
-| `ui://cognistration/machine-generator/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded live controls and explicit local preview | no |
+| `ui://cognistration/machine-generator/v3.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded live controls and explicit local preview | no |
 | `ui://cognistration/science-guide/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
 | `ui://cognistration/ios-app/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted iPhone offer with real screenshots and a Download Now App Store badge | no |
 | `ui://cognistration/phone-download/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted phone handoff with the fixed `$0.50` agent-preview path and separate `$2.99` iPhone app path | no |
@@ -84,7 +84,7 @@ use the supported `initialize` handshake.
 | `open_feedback` | `public_read` render | widget submission only | empty object; rating and note never enter MCP |
 
 The `open_machine_generator` render tool links `_meta.ui.resourceUri` to
-`ui://cognistration/machine-generator/v2.html`. The widget renders from the
+`ui://cognistration/machine-generator/v3.html`. The widget renders from the
 concise `structuredContent` snapshot, uses the portable `tools/call` bridge for
 recommendation, browsing, exact control, relative adjustment, direction,
 playback, and display requests, and keeps `window.openai` as a compatibility
@@ -136,9 +136,10 @@ Every tool returns bounded `content` and `structuredContent`. Tool-level failure
 The previous `ui://cognistration/account-signup/v2.html` and
 `ui://cognistration/account-signup/v1.html` resources remain readable as
 compatibility aliases for conversations that cached an earlier tool
-descriptor. The previous `ui://cognistration/machine-generator/v1.html`
-resource is likewise readable as a compatibility alias; new tool descriptors
-point at the v2 resource so hosts refresh the control bridge.
+descriptor. The previous `ui://cognistration/machine-generator/v2.html` and
+`ui://cognistration/machine-generator/v1.html` resources are likewise readable
+as compatibility aliases; new tool descriptors point at the v3 resource so
+hosts refresh the control bridge.
 
 ## Compatibility fallback
 

@@ -53,6 +53,7 @@ import {
 import { MCP_TOOLS, MCP_RESOURCES, MCP_PROTOCOL_VERSION } from '../lib/agentic/mcp-contract.js';
 import {
   MACHINE_WIDGET_LEGACY_RESOURCE_URI,
+  MACHINE_WIDGET_PREVIOUS_RESOURCE_URI,
   MACHINE_WIDGET_RESOURCE_MIME_TYPE,
   MACHINE_WIDGET_RESOURCE_URI,
   buildMachineGeneratorState
@@ -180,6 +181,8 @@ test('machine generator render state stays bounded and seeds direct user control
   });
   assert.equal(machine.capabilityId, 'cognistration-machine-generator');
   assert.equal(machine.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
+  assert.equal(MACHINE_WIDGET_PREVIOUS_RESOURCE_URI, 'ui://cognistration/machine-generator/v2.html');
+  assert.equal(MACHINE_WIDGET_LEGACY_RESOURCE_URI, 'ui://cognistration/machine-generator/v1.html');
   assert.equal(machine.controls.targetState, 'gamma');
   assert.equal(machine.controls.carrierHz, 246);
   assert.equal(machine.controls.beatHz, 39.5);

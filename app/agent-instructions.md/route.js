@@ -103,8 +103,13 @@ The signed-in dashboard progressively exposes private workspace tools. These too
 Never infer a member token, expose another user's records, submit payment, or start a render without the user's explicit confirmation.
 `;
 
+const publishedInstructions = instructions.replace(
+  'ui://cognistration/machine-generator/v2.html',
+  'ui://cognistration/machine-generator/v3.html'
+);
+
 export async function GET() {
-  return new Response(instructions, {
+  return new Response(publishedInstructions, {
     headers: {
       'content-type': 'text/markdown; charset=utf-8',
       'cache-control': 'public, max-age=300, s-maxage=300'
