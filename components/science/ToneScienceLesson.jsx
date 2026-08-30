@@ -16,6 +16,18 @@ function boundedNumber(value, fallback, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, number));
 }
 
+function scienceGuidePdfUrl({ toneId, controls, oceanProfile }) {
+  const params = new URLSearchParams({
+    targetState: controls.targetState,
+    carrierHz: String(controls.carrierHz),
+    beatHz: String(controls.beatHz),
+    volume: String(controls.volume)
+  });
+  if (toneId) params.set('toneId', toneId);
+  if (oceanProfile?.seed !== undefined && oceanProfile?.seed !== null) params.set('oceanSeed', String(oceanProfile.seed));
+  return `/api/science-guide/pdf?${params.toString()}`;
+}
+
 export function ToneScienceLesson({
   id = 'tone-science-guide',
   tone = null,
@@ -29,6 +41,7 @@ export function ToneScienceLesson({
   const [oceanProfile, setOceanProfile] = useState(null);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [pdfMessage, setPdfMessage] = useState('');
+  const [pdfUrl, setPdfUrl] = useState('');
   const isControlled = typeof controlledOpen === 'boolean';
   const isOpen = isControlled ? controlledOpen : localOpen;
 
@@ -62,43 +75,33 @@ export function ToneScienceLesson({
   useEffect(() => {
     setOceanProfile(null);
     setPdfMessage('');
+    setPdfUrl('');
   }, [generationKey]);
 
   const handleOceanProfile = useCallback((profile) => {
     setOceanProfile(profile);
   }, []);
 
-  const downloadScienceGuidePdf = useCallback(async () => {
+  const downloadScienceGuidePdf = useCallback(() => {
     setIsDownloadingPdf(true);
-    setPdfMessage('Preparing a static guide snapshot...');
+    const exportUrl = scienceGuidePdfUrl({ toneId: tone?.id || null, controls: safeControls, oceanProfile });
+    setPdfUrl(exportUrl);
 
     try {
-      const response = await fetch('/api/science-guide/pdf', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          toneId: tone?.id || null,
-          controls: safeControls,
-          ocean: oceanProfile ? { seed: oceanProfile.seed } : null
-        })
-      });
-      if (!response.ok) throw new Error('The PDF export request failed.');
-
-      const blob = await response.blob();
-      const downloadUrl = URL.createObjectURL(blob);
+      // Navigate directly to the attachment endpoint while the click still
+      // has user activation. This works in normal pages and sandboxed MCP Apps
+      // where an awaited blob URL can be blocked as an unsolicited download.
       const link = document.createElement('a');
-      const runLabel = oceanProfile?.runLabel || 'snapshot';
-      link.href = downloadUrl;
-      link.download = `cognistration-science-guide-${runLabel}.pdf`;
+      link.href = exportUrl;
+      link.target = '_blank';
+      link.rel = 'noreferrer';
       document.body.appendChild(link);
       link.click();
       link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
-      setPdfMessage(`PDF downloaded. Ocean run ${runLabel} is recorded in the file.`);
+      setPdfMessage('PDF export opened. If it did not download, use the direct link below.');
     } catch (error) {
       console.error('Science guide PDF export failed:', error);
-      setPdfMessage('PDF download was unavailable, so the browser print dialog was opened instead.');
-      window.print();
+      setPdfMessage('PDF export was blocked. Use the direct link below or your browser print command.');
     } finally {
       setIsDownloadingPdf(false);
     }
@@ -153,7 +156,12 @@ export function ToneScienceLesson({
                   <X className="size-4" aria-hidden="true" />
                 </button>
               </div>
-              {pdfMessage && <p className="basis-full text-right text-[11px] text-[#b6ddcc]/75" aria-live="polite">{pdfMessage}</p>}
+              {pdfMessage && (
+                <div className="flex basis-full flex-wrap items-center justify-end gap-3 text-right text-[11px] text-[#b6ddcc]/75" aria-live="polite">
+                  <span>{pdfMessage}</span>
+                  {pdfUrl && <a href={pdfUrl} target="_blank" rel="noreferrer" className="text-[#b6ddcc] underline decoration-[#b6ddcc]/35 underline-offset-4 transition hover:text-white">Open PDF directly</a>}
+                </div>
+              )}
             </div>
 
             <div className="mx-auto mt-5 flex w-full max-w-4xl flex-wrap items-center justify-center gap-x-5 gap-y-2 border-y border-[#b6ddcc]/10 py-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/40">

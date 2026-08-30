@@ -117,6 +117,13 @@ async function main() {
   assert(/frameLoop/.test(oceanModule), 'science ocean module does not animate through vGPU');
   assert(/seed/.test(oceanModule), 'science ocean module is missing seeded variation');
 
+  const pdfExportResponse = await fetch(new URL('/api/science-guide/pdf?targetState=gamma&carrierHz=246&beatHz=6&volume=64&oceanSeed=101', requestOrigin), {
+    headers: { Origin: 'null' }
+  });
+  assert(pdfExportResponse.ok, `science guide GET PDF export returned HTTP ${pdfExportResponse.status}`);
+  assert((pdfExportResponse.headers.get('content-type') || '').includes('application/pdf'), 'science guide GET PDF export MIME type is unexpected');
+  assert(/attachment; filename="cognistration-science-guide-/.test(pdfExportResponse.headers.get('content-disposition') || ''), 'science guide GET PDF export is missing attachment disposition');
+
   const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
   const accountWidget = accountWidgetResult.contents?.[0];
   assert(accountWidget?.mimeType === 'text/html;profile=mcp-app', 'account widget MIME type is unexpected');

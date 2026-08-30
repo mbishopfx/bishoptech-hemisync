@@ -78,6 +78,7 @@ const SCIENCE_GUIDE_OCEAN_MODULE = await readFile(
 const DOCS_PAGE_SOURCE = await readFile(new URL('../app/docs/page.js', import.meta.url), 'utf8');
 const NEXT_CONFIG_SOURCE = await readFile(new URL('../next.config.js', import.meta.url), 'utf8');
 const SCIENCE_GUIDE_PDF_ROUTE = await readFile(new URL('../app/api/science-guide/pdf/route.js', import.meta.url), 'utf8');
+const SCIENCE_GUIDE_LESSON_SOURCE = await readFile(new URL('../components/science/ToneScienceLesson.jsx', import.meta.url), 'utf8');
 
 test('the public tone catalog is bounded and contains only stable public fields', () => {
   assert.ok(PUBLIC_TONE_CATALOG.length >= 10);
@@ -209,9 +210,18 @@ test('science guide stays educational, bounded, and interactive without starting
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /ArrowRight/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /Download PDF/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /api\/science-guide\/pdf/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /id="pdf-direct-link"/);
+  assert.match(SCIENCE_GUIDE_WIDGET_HTML, /new URLSearchParams/);
+  assert.doesNotMatch(SCIENCE_GUIDE_WIDGET_HTML, /fetch\('https:\/\/cognistration\.com\/api\/science-guide\/pdf'/);
   assert.match(SCIENCE_GUIDE_WIDGET_HTML, /cognistration:ocean-profile/);
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /application\/pdf/);
   assert.match(SCIENCE_GUIDE_PDF_ROUTE, /content-disposition/);
+  assert.match(SCIENCE_GUIDE_PDF_ROUTE, /export async function GET/);
+  assert.match(SCIENCE_GUIDE_PDF_ROUTE, /oceanSeed/);
+  assert.match(SCIENCE_GUIDE_PDF_ROUTE, /origin === 'null'/);
+  assert.match(SCIENCE_GUIDE_LESSON_SOURCE, /scienceGuidePdfUrl/);
+  assert.match(SCIENCE_GUIDE_LESSON_SOURCE, /target = '_blank'/);
+  assert.doesNotMatch(SCIENCE_GUIDE_LESSON_SOURCE, /fetch\('\/api\/science-guide\/pdf'/);
   assert.deepEqual(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.csp.frameDomains, []);
   assert.equal(SCIENCE_GUIDE_WIDGET_RESOURCE_META.ui.prefersBorder, false);
   assert.equal(SCIENCE_GUIDE_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
