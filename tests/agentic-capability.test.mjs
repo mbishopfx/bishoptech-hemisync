@@ -349,10 +349,13 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.doesNotThrow(() => FeedbackOpenInputSchema.parse({}));
   assert.equal(feedbackOpenState().persisted, false);
 
-  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v1.html');
+  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v2.html');
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /id="account-form"/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /api\/agent\/account\/signup/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /fetch\('https:\/\/cognistration\.com\/api\/agent\/account\/signup'/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /Content-Type': 'text\/plain'/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials: 'omit'/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /mode: 'cors'/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials are sent directly/i);
   assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /window\.openai\.callTool/);
   assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /redirectToStripeCheckout/);

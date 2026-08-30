@@ -151,11 +151,13 @@ async function main() {
   assert(new TextDecoder().decode(pdfBytes.slice(0, 8)) === '%PDF-1.4', 'science guide GET PDF export is not a valid PDF');
   assert(pdfBytes.length > 1000, 'science guide GET PDF export is unexpectedly empty');
 
-  const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
+  const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v2.html' }, 'ui://cognistration/account-signup/v2.html');
   const accountWidget = accountWidgetResult.contents?.[0];
   assert(accountWidget?.mimeType === 'text/html;profile=mcp-app', 'account widget MIME type is unexpected');
   assert(/id="account-form"/.test(accountWidget.text || ''), 'account widget form is missing');
   assert(/api\/agent\/account\/signup/.test(accountWidget.text || ''), 'account widget first-party submit route is missing');
+  assert(/Content-Type': 'text\/plain'/.test(accountWidget.text || ''), 'account widget must use a CORS-simple credential submission');
+  assert(/credentials: 'omit'/.test(accountWidget.text || ''), 'account widget must omit ambient credentials');
   assert(!/window\.openai\.callTool/.test(accountWidget.text || ''), 'account widget must not send credentials through MCP');
 
   const feedbackWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/feedback/v1.html' }, 'ui://cognistration/feedback/v1.html');
@@ -169,7 +171,7 @@ async function main() {
     name: 'open_account_signup',
     arguments: {}
   }, 'open_account_signup'));
-  assert(accountOpen.resourceUri === 'ui://cognistration/account-signup/v1.html', 'account signup render resource is unexpected');
+  assert(accountOpen.resourceUri === 'ui://cognistration/account-signup/v2.html', 'account signup render resource is unexpected');
   assert(accountOpen.credentialsSubmitted === false, 'account signup tool must not submit credentials');
 
   const feedbackOpen = structured(await rpc('tools/call', {
