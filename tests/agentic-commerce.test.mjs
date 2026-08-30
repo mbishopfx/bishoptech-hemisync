@@ -218,6 +218,7 @@ test('every published tone pack resolves to a server-priced hosted checkout', as
       assert.equal(result.delivery.webUrl, `https://example.test/packs#${pack.slug}`);
       assert.equal(created[index].params.line_items[0].price, 'price_tone_pack_unit');
       assert.equal(created[index].params.metadata.packSlug, pack.slug);
+      assert.equal('payment_method_types' in created[index].params, false);
       assert.equal(created[index].options.idempotencyKey, `cognistration-mcp-pack-${index + 1}-unit`);
     }
   });

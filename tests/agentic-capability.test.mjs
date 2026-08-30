@@ -88,6 +88,7 @@ import { TONE_PACK_PAYMENT_AMOUNT, TONE_PACK_PAYMENT_PRICE_CENTS, tonePackPaymen
 import { createPaymentPassport, verifyPaymentPassport, PAYMENT_PASSPORT_TTL_SEC } from '../lib/commerce/payment-passport.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
+import { resolveAllowedOrigin } from '../lib/http/cors.js';
 
 const SCIENCE_GUIDE_OCEAN_MODULE = await readFile(
   new URL('../public/vgpu-ocean/science-guide-ocean.js', import.meta.url),
@@ -351,6 +352,7 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v1.html');
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /id="account-form"/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /api\/agent\/account\/signup/);
+  assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /fetch\('https:\/\/cognistration\.com\/api\/agent\/account\/signup'/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /credentials are sent directly/i);
   assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /window\.openai\.callTool/);
   assert.doesNotMatch(ACCOUNT_SIGNUP_WIDGET_HTML, /redirectToStripeCheckout/);
@@ -371,6 +373,7 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.match(signupRoute, /applyCors/);
   assert.match(signupRoute, /ORIGIN_NOT_ALLOWED/);
   assert.match(signupRoute, /requested_plan/);
+  assert.match(signupRoute, /resolveAllowedOrigin/);
   assert.doesNotMatch(signupRoute, /redirectToStripeCheckout/);
   assert.doesNotMatch(signupRoute, /console\.(log|error).*password/i);
   assert.match(feedbackRoute, /from\('agent_feedback'\)/);
@@ -381,6 +384,24 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.doesNotMatch(feedbackRoute, /user_id|email|ip_address/);
   assert.match(migration, /enable row level security/);
   assert.match(migration, /No public or authenticated policies/);
+
+  assert.equal(resolveAllowedOrigin('null'), 'null');
+  assert.equal(resolveAllowedOrigin('https://web-sandbox.oaiusercontent.com'), 'https://web-sandbox.oaiusercontent.com');
+  assert.equal(resolveAllowedOrigin('https://evil.example'), null);
+});
+
+test('tone-pack checkout widget uses the standard MCP Apps bridge and CORS-safe commerce routes', async () => {
+  const checkoutRoute = await readFile(new URL('../app/api/agent/commerce/tone-pack-checkout/route.js', import.meta.url), 'utf8');
+  const deliveryRoute = await readFile(new URL('../app/api/agent/commerce/tone-pack-delivery/route.js', import.meta.url), 'utf8');
+  const bridgeIndex = TONE_PACK_CHECKOUT_WIDGET_HTML.indexOf("requestBridge('tools/call'");
+  const compatibilityIndex = TONE_PACK_CHECKOUT_WIDGET_HTML.indexOf('window.openai.callTool');
+
+  assert.ok(bridgeIndex >= 0 && bridgeIndex < compatibilityIndex, 'tone-pack widget must use the MCP Apps bridge before the compatibility alias');
+  assert.match(TONE_PACK_CHECKOUT_WIDGET_HTML, /safeErrorMessage/);
+  assert.match(checkoutRoute, /export function OPTIONS/);
+  assert.match(checkoutRoute, /resolveAllowedOrigin/);
+  assert.match(deliveryRoute, /export function OPTIONS/);
+  assert.match(deliveryRoute, /resolveAllowedOrigin/);
 });
 
 test('public policy pages use the shared light shell and state their active route', async () => {
