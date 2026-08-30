@@ -49,7 +49,7 @@ use the supported `initialize` handshake.
 | `ui://cognistration/ios-app/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted iPhone offer with real screenshots and a Download Now App Store badge | no |
 | `ui://cognistration/phone-download/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted phone handoff with the fixed `$0.50` agent-preview path and separate `$2.99` iPhone app path | no |
 | `ui://cognistration/tone-pack-checkout/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted tone-pack purchase card with email capture, explicit $5.99 confirmation, hosted checkout, and verified download action | email stays in widget/provider flow |
-| `ui://cognistration/account-signup/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget; canonical URI |
+| `ui://cognistration/account-signup/v3.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | user-controlled account capture form | credentials stay in widget; canonical URI |
 | `ui://cognistration/feedback/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | optional user-controlled closing feedback | no account or history |
 | `skill://cognistration/*/SKILL.md` | `text/markdown` | public | static operating guidance | no |
 
@@ -76,7 +76,7 @@ use the supported `initialize` handshake.
 | `set_machine_controls` | `public_session` | updates visible controls and live audio | one or more bounded absolute controls |
 | `adjust_machine_controls` | `public_session` | updates visible controls and live audio | carrier/rhythm/volume plus semantic direction and optional step |
 | `set_machine_direction` | `public_session` | updates visible controls and live audio | published state plus optional preset controls |
-| `start_machine_preview` | `public_session` | requests local browser audio | `confirmed: true`; browser gesture may still be required |
+| `start_machine_preview` | `public_session` | requests local browser audio | `confirmed: true`; result remains pending until widget state reports `audioReady: true`; browser gesture may still be required |
 | `stop_machine_preview` | `public_session` | stops local browser audio | empty object |
 | `open_machine_fullscreen` | `public_session` | requests larger host display | empty object |
 | `open_machine_generator` | `public_read` | none | optional intention, tone ID, state, and bounded controls |
@@ -126,12 +126,19 @@ opens hosted Checkout. After `get_tone_pack_delivery` verifies the completed
 session, the same card renders a download button and reports the email fallback.
 Compatible agent payment clients can instead discover
 `/api/machine-payments/tone-pack`, receive an HTTP 402 challenge, retry with
-their own `Payment-Authorization` credential, and receive delivery only after
-the server verifies the exact Stripe PaymentIntent.
+their own `Authorization: Payment <credential>` header, and receive delivery
+only after the server verifies the exact Stripe PaymentIntent. The server also
+accepts `Payment-Authorization` for clients that reserve `Authorization` for
+application authentication.
 
 Every tool returns bounded `content` and `structuredContent`. Tool-level failures use `isError: true`; protocol failures use stable JSON-RPC errors. Unknown tool names, private-data requests, and write attempts are denied.
 
-The previous `ui://cognistration/account-signup/v1.html` resource remains readable as a compatibility alias for conversations that cached the earlier tool descriptor. The previous `ui://cognistration/machine-generator/v1.html` resource is likewise readable as a compatibility alias; new tool descriptors point at the v2 resource so hosts refresh the control bridge.
+The previous `ui://cognistration/account-signup/v2.html` and
+`ui://cognistration/account-signup/v1.html` resources remain readable as
+compatibility aliases for conversations that cached an earlier tool
+descriptor. The previous `ui://cognistration/machine-generator/v1.html`
+resource is likewise readable as a compatibility alias; new tool descriptors
+point at the v2 resource so hosts refresh the control bridge.
 
 ## Compatibility fallback
 

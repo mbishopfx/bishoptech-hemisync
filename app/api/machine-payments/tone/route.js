@@ -85,7 +85,9 @@ export async function GET() {
     method: 'POST',
     amountCents: MACHINE_PAYMENT_PRICE_CENTS,
     currency: 'usd',
-    paymentHeader: 'Payment-Authorization',
+    paymentHeader: 'Authorization',
+    acceptedPaymentHeaders: ['Authorization', 'Payment-Authorization'],
+    paymentCredentialScheme: 'Payment',
     endpoint: `${siteOrigin()}/api/machine-payments/tone`,
     input: 'Approved public tone ID or short intention with bounded controls.',
     audioStartsOnlyAfterExplicitUserAction: true

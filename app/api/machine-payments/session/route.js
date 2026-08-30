@@ -35,7 +35,9 @@ export async function GET(request) {
     method: 'POST',
     amountCents: MACHINE_PAYMENT_PRICE_CENTS,
     currency: 'usd',
-    paymentHeader: 'Payment-Authorization',
+    paymentHeader: 'Authorization',
+    acceptedPaymentHeaders: ['Authorization', 'Payment-Authorization'],
+    paymentCredentialScheme: 'Payment',
     endpoint: `${new URL(request.url).origin}${new URL(request.url).pathname}`
   }, { headers: { 'cache-control': 'no-store' } });
 }

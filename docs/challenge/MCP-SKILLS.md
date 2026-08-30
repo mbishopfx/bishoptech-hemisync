@@ -84,7 +84,9 @@ names. `prepare_session_recipe` is available on both surfaces.
   intention label. It never contains diary text or account data.
 - Payment options are discoverable through MCP, but a payment credential is not
   an MCP argument. The fixed $0.50 paid tone route uses the provider's
-  `Payment-Authorization` retry and server receipt verification.
+  `Authorization: Payment` retry and server receipt verification. The server
+  also accepts `Payment-Authorization` for clients that reserve `Authorization`
+  for application authentication.
 - Retry one transient transport/provider failure with the same safe input. Do
   not retry an invalid schema or authorization error unchanged.
 
@@ -202,7 +204,7 @@ payment client should:
    `https://cognistration.com/api/machine-payments/tone`.
 3. Receive HTTP 402 and inspect the provider challenge.
 4. Obtain user-approved provider authorization through the payment client.
-5. Retry the same request with `Payment-Authorization`.
+5. Retry the same request with `Authorization: Payment <credential>`.
 6. Show the verified receipt and resource. Audio still requires explicit local
    user action.
 

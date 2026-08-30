@@ -128,7 +128,8 @@ async function main() {
   assert(/\$0\.50/.test(phoneWidget.text || ''), 'phone download widget fixed preview price is missing');
   assert(/\$2\.99/.test(phoneWidget.text || ''), 'phone download widget iPhone price is missing');
   assert(/sendFollowUpMessage/.test(phoneWidget.text || ''), 'phone download widget agent handoff is missing');
-  assert(/Payment-Authorization/.test(phoneWidget.text || ''), 'phone download widget payment boundary is missing');
+  assert(/Authorization: Payment/.test(phoneWidget.text || ''), 'phone download widget default payment boundary is missing');
+  assert(/Payment-Authorization/.test(phoneWidget.text || ''), 'phone download widget compatibility payment boundary is missing');
   assert(phoneWidget._meta?.ui?.prefersBorder === false, 'phone download widget must not request a host-added hard border');
   assert(!/border: 1px solid rgba\(255, 255, 255/.test(phoneWidget.text || ''), 'phone download widget contains a hard white UI border');
 
@@ -161,7 +162,7 @@ async function main() {
   assert(new TextDecoder().decode(pdfBytes.slice(0, 8)) === '%PDF-1.4', 'science guide GET PDF export is not a valid PDF');
   assert(pdfBytes.length > 1000, 'science guide GET PDF export is unexpectedly empty');
 
-  const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v2.html' }, 'ui://cognistration/account-signup/v2.html');
+  const accountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v3.html' }, 'ui://cognistration/account-signup/v3.html');
   const accountWidget = accountWidgetResult.contents?.[0];
   assert(accountWidget?.mimeType === 'text/html;profile=mcp-app', 'account widget MIME type is unexpected');
   assert(/id="account-form"/.test(accountWidget.text || ''), 'account widget form is missing');
@@ -171,6 +172,10 @@ async function main() {
   assert(/account-fallback/.test(accountWidget.text || ''), 'account widget first-party fallback is missing');
   assert(/credentials were not submitted through MCP/i.test(accountWidget.text || ''), 'account widget fallback boundary is missing');
   assert(!/window\.openai\.callTool/.test(accountWidget.text || ''), 'account widget must not send credentials through MCP');
+
+  const previousAccountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v2.html' }, 'ui://cognistration/account-signup/v2.html');
+  const previousAccountWidget = previousAccountWidgetResult.contents?.[0];
+  assert(previousAccountWidget?.mimeType === 'text/html;profile=mcp-app', 'previous account widget URI was not preserved');
 
   const legacyAccountWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/account-signup/v1.html' }, 'ui://cognistration/account-signup/v1.html');
   const legacyAccountWidget = legacyAccountWidgetResult.contents?.[0];
@@ -189,7 +194,7 @@ async function main() {
     name: 'open_account_signup',
     arguments: {}
   }, 'open_account_signup'));
-  assert(accountOpen.resourceUri === 'ui://cognistration/account-signup/v2.html', 'account signup render resource is unexpected');
+  assert(accountOpen.resourceUri === 'ui://cognistration/account-signup/v3.html', 'account signup render resource is unexpected');
   assert(accountOpen.credentialsSubmitted === false, 'account signup tool must not submit credentials');
 
   const feedbackOpen = structured(await rpc('tools/call', {
@@ -281,6 +286,8 @@ async function main() {
   assert(startMachine.status === 'requested', 'machine start should be an explicit request');
   assert(startMachine.audioAction === 'start', 'machine start audio action is missing');
   assert(startMachine.requiresUserGesture === true, 'machine start browser gesture boundary is missing');
+  assert(startMachine.audioReady === false, 'machine start must not claim audible playback before browser verification');
+  assert(startMachine.audioVerification === 'pending', 'machine start audio verification state is missing');
   const stopMachine = structured(await rpc('tools/call', {
     name: 'stop_machine_preview',
     arguments: {}

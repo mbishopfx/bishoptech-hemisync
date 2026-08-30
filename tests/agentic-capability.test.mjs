@@ -65,6 +65,7 @@ import {
 import { MACHINE_WIDGET_HTML } from '../lib/agentic/machine-widget.js';
 import {
   ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI,
+  ACCOUNT_SIGNUP_PREVIOUS_WIDGET_RESOURCE_URI,
   ACCOUNT_SIGNUP_WIDGET_HTML,
   ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI
 } from '../lib/agentic/account-widget.js';
@@ -95,6 +96,7 @@ import { buildScienceGuidePdf, normalizeScienceGuidePdfInput, scienceGuidePdfFil
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
 import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
 import { TONE_PACK_PAYMENT_AMOUNT, TONE_PACK_PAYMENT_PRICE_CENTS, tonePackPaymentOptions } from '../lib/commerce/tone-pack-machine-payment.mjs';
+import { MACHINE_PAYMENT_CREDENTIAL_HEADERS, createMachinePaymentTransport } from '../lib/commerce/machine-payment-handler.mjs';
 import { createPaymentPassport, verifyPaymentPassport, PAYMENT_PASSPORT_TTL_SEC } from '../lib/commerce/payment-passport.mjs';
 import { ucpProfile } from '../lib/commerce/ucp.mjs';
 import { UCP_MCP_TOOLS } from '../lib/commerce/ucp-contract.mjs';
@@ -395,7 +397,8 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
   assert.doesNotThrow(() => FeedbackOpenInputSchema.parse({}));
   assert.equal(feedbackOpenState().persisted, false);
 
-  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v2.html');
+  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v3.html');
+  assert.equal(ACCOUNT_SIGNUP_PREVIOUS_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v2.html');
   assert.equal(ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v1.html');
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /id="account-form"/);
   assert.match(ACCOUNT_SIGNUP_WIDGET_HTML, /api\/agent\/account\/signup/);
@@ -440,6 +443,7 @@ test('account and feedback MCP widgets keep sensitive submission outside tool ar
 
   assert.equal(resolveAllowedOrigin('null'), 'null');
   assert.equal(resolveAllowedOrigin('https://web-sandbox.oaiusercontent.com'), 'https://web-sandbox.oaiusercontent.com');
+  assert.equal(resolveAllowedOrigin('https://mcp-7.oaiusercontent.com'), 'https://mcp-7.oaiusercontent.com');
   assert.equal(resolveAllowedOrigin('https://evil.example'), null);
 });
 
@@ -550,6 +554,7 @@ test('phone download options preserve the fixed preview boundary and separate iP
   assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /\$0\.50/);
   assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /\$2\.99/);
   assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /sendFollowUpMessage/);
+  assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /Authorization: Payment/);
   assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /Payment-Authorization/);
   assert.match(PHONE_DOWNLOAD_WIDGET_HTML, /openExternal/);
   assert.doesNotMatch(PHONE_DOWNLOAD_WIDGET_HTML, /border: 1px solid rgba\(255, 255, 255/);
@@ -779,6 +784,15 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(tonePackPaymentOptions('https://example.test').defaultPack, 'full-spectrum-pack');
   assert.equal(tonePackPaymentOptions('https://example.test').endpoint, 'https://example.test/api/machine-payments/tone-pack');
   assert.equal(machinePaymentOptions('https://example.test').status, 'provider_access_required');
+  assert.equal(machinePaymentOptions('https://example.test').activation.paymentHeader, 'Authorization');
+  assert.deepEqual(machinePaymentOptions('https://example.test').activation.acceptedPaymentHeaders, ['Authorization', 'Payment-Authorization']);
+  assert.deepEqual(MACHINE_PAYMENT_CREDENTIAL_HEADERS, ['Payment-Authorization', 'Authorization']);
+  for (const headerName of MACHINE_PAYMENT_CREDENTIAL_HEADERS) {
+    assert.throws(
+      () => createMachinePaymentTransport().getCredential(new Request('https://example.test/pay', { headers: { [headerName]: 'Payment broken' } })),
+      /Invalid base64url or JSON/
+    );
+  }
   assert.equal(MACHINE_PAYMENT_AMOUNT, '0.50');
   assert.equal(machinePaymentOptions('https://example.test').amountCents, 50);
   assert.equal(machinePaymentOptions('https://example.test').toneSession.scopePrefix, MACHINE_PAYMENT_TONE_SCOPE_PREFIX);
