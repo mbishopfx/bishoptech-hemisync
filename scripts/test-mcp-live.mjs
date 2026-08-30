@@ -65,6 +65,9 @@ async function main() {
   assert(tools.some((tool) => tool.name === 'open_tone_pack_checkout'), 'open_tone_pack_checkout is missing');
   assert(tools.some((tool) => tool.name === 'open_account_signup'), 'open_account_signup is missing');
   assert(tools.some((tool) => tool.name === 'open_feedback'), 'open_feedback is missing');
+  for (const name of ['get_machine_control_contract', 'set_machine_controls', 'adjust_machine_controls', 'set_machine_direction', 'start_machine_preview', 'stop_machine_preview', 'open_machine_fullscreen']) {
+    assert(tools.some((tool) => tool.name === name), `${name} is missing`);
+  }
 
   const skillsResult = await rpc('skills/list');
   const skills = skillsResult.skills || [];
@@ -78,12 +81,17 @@ async function main() {
   const interaction = JSON.parse(interactionText);
   assert(interaction.safetyRouting?.route === '/health-warning', 'safety routing resource is missing');
 
-  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v1.html' }, 'ui://cognistration/machine-generator/v1.html');
+  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v2.html' }, 'ui://cognistration/machine-generator/v2.html');
   const machineWidget = machineWidgetResult.contents?.[0];
   assert(machineWidget?.mimeType === 'text/html;profile=mcp-app', 'machine widget MIME type is unexpected');
   assert(/class="frequency-stage"/.test(machineWidget.text || ''), 'machine widget frequency-wave stage is missing');
   assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
+  assert(/ui\/update-model-context/.test(machineWidget.text || ''), 'machine widget model context bridge is missing');
+  assert(/adjust_machine_controls/.test(machineWidget.text || ''), 'machine widget relative control bridge is missing');
   assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
+
+  const legacyMachineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v1.html' }, 'ui://cognistration/machine-generator/v1.html');
+  assert(legacyMachineWidgetResult.contents?.[0]?.uri === 'ui://cognistration/machine-generator/v1.html', 'legacy machine resource alias was not preserved');
 
   const scienceWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/science-guide/v2.html' }, 'ui://cognistration/science-guide/v2.html');
   const scienceWidget = scienceWidgetResult.contents?.[0];
@@ -226,6 +234,60 @@ async function main() {
   assert(tonePackOpen.userSubmissionRequired === true, 'tone-pack checkout must require user submission');
   assert(tonePackOpen.paymentSubmitted === false, 'tone-pack checkout must not submit payment while rendering');
 
+  const machineContract = structured(await rpc('tools/call', {
+    name: 'get_machine_control_contract',
+    arguments: {}
+  }, 'get_machine_control_contract'));
+  assert(machineContract.bounds?.beatHz?.min === 0.5, 'machine control rhythm lower bound is missing');
+  assert(machineContract.defaultSteps?.rhythm === 1, 'machine control rhythm default step is missing');
+
+  const setMachine = await rpc('tools/call', {
+    name: 'set_machine_controls',
+    arguments: { targetState: 'gamma', carrierHz: 246, beatHz: 18, volume: 64 }
+  }, 'set_machine_controls');
+  const setMachineData = structured(setMachine);
+  assert(setMachineData.controlPatch?.carrierHz === 246, 'machine absolute control patch is missing');
+  assert(setMachineData.playbackPreserved === true, 'machine absolute control patch must preserve playback');
+  assert(setMachine._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v2.html', 'machine control result is not bound to the widget');
+
+  const adjustMachine = structured(await rpc('tools/call', {
+    name: 'adjust_machine_controls',
+    arguments: {
+      control: 'rhythm',
+      direction: 'faster',
+      step: 1,
+      currentControls: { targetState: 'gamma', carrierHz: 246, beatHz: 18, volume: 64 }
+    }
+  }, 'adjust_machine_controls'));
+  assert(adjustMachine.adjustment?.delta === 1, 'machine relative rhythm adjustment is missing');
+  assert(adjustMachine.controls?.beatHz === 19, 'machine relative adjustment did not resolve from current controls');
+  assert(adjustMachine.playbackPreserved === true, 'machine relative adjustment must preserve playback');
+
+  const directionMachine = structured(await rpc('tools/call', {
+    name: 'set_machine_direction',
+    arguments: { targetState: 'alpha' }
+  }, 'set_machine_direction'));
+  assert(directionMachine.controlPatch?.targetState === 'alpha', 'machine direction patch is missing');
+  assert(directionMachine.controlPatch?.beatHz === 10, 'machine direction did not apply its published default rhythm');
+
+  const startMachine = structured(await rpc('tools/call', {
+    name: 'start_machine_preview',
+    arguments: { confirmed: true }
+  }, 'start_machine_preview'));
+  assert(startMachine.status === 'requested', 'machine start should be an explicit request');
+  assert(startMachine.audioAction === 'start', 'machine start audio action is missing');
+  assert(startMachine.requiresUserGesture === true, 'machine start browser gesture boundary is missing');
+  const stopMachine = structured(await rpc('tools/call', {
+    name: 'stop_machine_preview',
+    arguments: {}
+  }, 'stop_machine_preview'));
+  assert(stopMachine.audioAction === 'stop', 'machine stop audio action is missing');
+  const fullscreenMachine = structured(await rpc('tools/call', {
+    name: 'open_machine_fullscreen',
+    arguments: {}
+  }, 'open_machine_fullscreen'));
+  assert(fullscreenMachine.displayAction === 'fullscreen', 'machine fullscreen action is missing');
+
   const clarifyResult = structured(await rpc('tools/call', {
     name: 'clarify_intention',
     arguments: { intention: 'I need something better' }
@@ -259,7 +321,8 @@ async function main() {
   const tryText = await tryResponse.text();
   const normalizedTryText = tryText.replace(/<!-- -->/g, '');
   assert(tryResponse.ok, `/try returned HTTP ${tryResponse.status}`);
-  assert(/30 public MCP tools/.test(normalizedTryText), '/try does not show the current MCP tool count');
+  assert(/37 public MCP tools/.test(normalizedTryText), '/try does not show the current MCP tool count');
+  assert(!/30 public MCP tools/.test(normalizedTryText), '/try still shows the retired MCP tool count');
   assert(!/29 public MCP tools/.test(normalizedTryText), '/try still shows the retired MCP tool count');
   assert(!/27 public MCP tools/.test(tryText), '/try contains the retired MCP tool count');
 
@@ -272,6 +335,7 @@ async function main() {
     fetchedSkill: skillResult.skill.frontmatter.name,
     safetyRoute: interaction.safetyRouting.route,
     machineWidget: 'frequency-wave',
+    machineControls: { contract: machineContract.version, absolute: setMachineData.controlPatch, relative: adjustMachine.adjustment, direction: directionMachine.controlPatch, start: startMachine.status, stop: stopMachine.audioAction },
     clarificationChoices: clarifyResult.choices.length,
     recipeVersion: recipeResult.recipe.recipeVersion,
     scienceGuide: { resourceUri: scienceOpen.resourceUri, slides: scienceOpen.slides.length },

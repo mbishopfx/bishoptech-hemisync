@@ -39,17 +39,20 @@ Let the agent read the current state, call the bounded tone-selection tool, and 
 
 Then ask: “Compare a few directions for this writing block and build me a 20-minute plan.” Show the three returned phases and the ranked options. Say: “The useful part is not just picking a tone. The agent can explain the choice, shape a short routine, and keep the plan separate from audio playback and saved data.”
 
-When the agent asks for confirmation, say: “Start the preview.” Let the audio begin and show the confirmation activity in the machine.
+When the agent asks for confirmation, say: “Start the preview.” Let the audio begin and show the confirmation activity in the machine. Once it is playing, say: “Speed it up a little,” then “That’s a little too fast.” The agent should call the relative control route twice while the same audio remains continuous; point to the rhythm slider and the live waveform changing without a restart.
 
 If time allows, ask: “Find me a relaxation tone pack.” Show the returned pack, then say “Preview that pack.” Confirm only after the agent asks. This demonstrates search-before-action and a real library preview rather than a generic chat response.
 
 For the MCP Apps version, use the connected ChatGPT app and ask: “Open the
 Cognistration tone machine for a gamma tone with a 246 Hz carrier.” The
 interactive machine should appear inline with the Aurora visual, Gamma/246 Hz
-controls, a “Make carrier smaller” action, and audio paused. Press “Start
-explicit preview” yourself. Then type “I need a clear mind before writing” in
-the widget, choose “Find a tone,” and point out that the machine remains mounted
-while the public recommendation tool updates its tone card.
+controls, a “Make carrier smaller” action, and audio paused. Say “Start the
+preview,” then “Speed it up a little,” followed by “That’s a little too fast.”
+Point to the rhythm value changing in place while the audio stays continuous;
+the agent should use the live machine controls instead of navigating to `/machine`.
+Then type “I need a clear mind before writing” in the widget, choose “Find a
+tone,” and point out that the machine remains mounted while the public
+recommendation tool updates its tone card.
 
 If time allows, press “Help me choose” with a broad request, then use “Too
 bright” or “Too intense” to show the feedback loop. The machine proposes a

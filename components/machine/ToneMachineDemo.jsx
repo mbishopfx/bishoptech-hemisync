@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Lightning, Power, Pulse } from '@phosphor-icons/react';
 import { nativeWebMcpTool, WEBMCP_TOOL_DEFINITIONS, WEBMCP_CONTRACT_ID, WEBMCP_CONTRACT_VERSION } from '@/lib/agentic/webmcp-contract';
+import { resolveMachineAdjustment } from '@/lib/agentic/machine-control-capability';
 import { buildSessionRecipe, sessionRecipeInputFromControls } from '@/lib/agentic/recipe-capability';
 import { SCIENCE_GUIDE_RESOURCE_URI } from '@/lib/agentic/science-content';
 import { ToneScienceLesson } from '@/components/science/ToneScienceLesson';
@@ -100,6 +101,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
   const startAudioRef = useRef(null);
   const sessionStateRef = useRef(null);
   const toolHandlersRef = useRef({});
+  const controlVersionRef = useRef(1);
   const visual = STATE_VISUALS[targetState] || STATE_VISUALS.theta;
 
   const stopAudioNodes = useCallback(() => {
@@ -148,6 +150,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
 
   const startAudio = useCallback(() => {
     try {
+      if (isPlaying && leftOscRef.current && rightOscRef.current) return true;
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) {
         window.alert('Web Audio API is not supported in this browser.');
@@ -189,7 +192,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       console.error('Failed to start demonstration synthesizer:', error);
       return false;
     }
-  }, [beatFreq, carrierFreq, stopAudioNodes, stopPackAudio, volume]);
+  }, [beatFreq, carrierFreq, isPlaying, stopAudioNodes, stopPackAudio, volume]);
 
   const togglePower = useCallback(() => {
     if (isPlaying) stopAudio();
@@ -220,6 +223,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       ? Math.round(clamp(Number(settings.volume), 0, 100))
       : currentControls.volume ?? 80;
 
+    controlVersionRef.current += 1;
     setTargetState(nextState);
     setCarrierFreq(nextCarrier);
     setBeatFreq(nextBeat);
@@ -229,7 +233,9 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       targetState: nextState,
       carrierHz: nextCarrier,
       beatHz: nextBeat,
-      volume: nextVolume
+      volume: nextVolume,
+      isPlaying: Boolean(currentControls.isPlaying),
+      stateVersion: controlVersionRef.current
     };
   }, []);
 
@@ -587,6 +593,75 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     });
   }, [agentResult, applyToneSettings, carrierFreq]);
 
+  const adjustSessionControlForAgent = useCallback((input = {}) => {
+    try {
+      const adjustment = resolveMachineAdjustment(input, sessionStateRef.current || {
+        targetState,
+        carrierHz: carrierFreq,
+        beatHz: beatFreq,
+        volume,
+        isPlaying
+      });
+      const controls = applyToneSettings({ [adjustment.field]: adjustment.nextValue });
+      const publicAdjustment = { ...adjustment };
+      delete publicAdjustment.controls;
+      setAgentActivity(`Live ${adjustment.control} moved ${adjustment.direction} to ${controls[adjustment.field]}.`);
+      return agentResult('completed', {
+        adjustment: publicAdjustment,
+        controls,
+        playbackPreserved: true
+      });
+    } catch (error) {
+      return agentResult('needs_input', {
+        error: { code: error.code || 'INVALID_ADJUSTMENT', safeMessage: error.safeMessage || 'Choose a valid live carrier, rhythm, or volume adjustment.', retryable: false }
+      });
+    }
+  }, [agentResult, applyToneSettings, beatFreq, carrierFreq, isPlaying, targetState, volume]);
+
+  const setSessionDirectionForAgent = useCallback((input = {}) => {
+    const option = STATE_OPTIONS.find((state) => state.id === input.targetState);
+    const allowedKeys = ['targetState', 'carrierHz', 'beatHz', 'volume'];
+    const hasUnknownKey = Object.keys(input).some((key) => !allowedKeys.includes(key));
+    const controlsAreValid = input.carrierHz === undefined || (Number.isInteger(Number(input.carrierHz)) && Number(input.carrierHz) >= 100 && Number(input.carrierHz) <= 400);
+    const beatIsValid = input.beatHz === undefined || (Number.isFinite(Number(input.beatHz)) && Number(input.beatHz) >= 0.5 && Number(input.beatHz) <= 40);
+    const volumeIsValid = input.volume === undefined || (Number.isInteger(Number(input.volume)) && Number(input.volume) >= 0 && Number(input.volume) <= 100);
+    if (!option || hasUnknownKey || !controlsAreValid || !beatIsValid || !volumeIsValid) {
+      return agentResult('needs_input', {
+        error: { code: 'INVALID_MACHINE_DIRECTION', safeMessage: 'Choose a published direction and optional controls within their bounds.', retryable: false }
+      });
+    }
+
+    const controls = applyToneSettings({
+      targetState: option.id,
+      carrierHz: input.carrierHz,
+      beatHz: input.beatHz === undefined ? option.hz : input.beatHz,
+      volume: input.volume
+    });
+    setAgentActivity(`${option.label} direction selected; live audio continues if it was already playing.`);
+    return agentResult('completed', { controls, playbackPreserved: true });
+  }, [agentResult, applyToneSettings]);
+
+  const stopPreviewForAgent = useCallback(() => {
+    stopAudio();
+    return agentResult('completed', {
+      audio: 'stopped',
+      controls: { ...(sessionStateRef.current || {}), isPlaying: false },
+      playbackPreserved: false
+    });
+  }, [agentResult, stopAudio]);
+
+  const openFullscreenForAgent = useCallback(async () => {
+    if (window.openai && typeof window.openai.requestDisplayMode === 'function') {
+      try {
+        await window.openai.requestDisplayMode({ mode: 'fullscreen' });
+        return agentResult('completed', { display: 'fullscreen', playbackPreserved: true });
+      } catch {
+        return agentResult('failed', { error: { code: 'DISPLAY_MODE_UNAVAILABLE', safeMessage: 'The host could not open the larger machine view.', retryable: true } });
+      }
+    }
+    return agentResult('failed', { error: { code: 'DISPLAY_MODE_UNAVAILABLE', safeMessage: 'The current browser host does not expose a larger machine view.', retryable: false } });
+  }, [agentResult]);
+
   const searchTonePacksForAgent = useCallback(async (input = {}) => {
     const query = typeof input.query === 'string' ? input.query.trim() : '';
     const state = input.state;
@@ -761,7 +836,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     cognistration_set_session_controls: async (input = {}) => {
       const allowedStates = new Set(STATE_OPTIONS.map((state) => state.id));
       const keys = ['targetState', 'carrierHz', 'beatHz', 'volume'];
-      if (Object.keys(input).some((key) => !keys.includes(key))) {
+      if (!Object.keys(input).length || Object.keys(input).some((key) => !keys.includes(key))) {
         return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'failed', error: { code: 'INVALID_CONTROL', safeMessage: 'Only published tone controls can be changed.', retryable: false } };
       }
       if (input.targetState !== undefined && !allowedStates.has(input.targetState)) {
@@ -780,6 +855,8 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       setAgentActivity(`Session controls set to ${controls.targetState}, ${controls.carrierHz} Hz carrier, and ${controls.beatHz} Hz beat.`);
       return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'completed', controls };
     },
+    cognistration_adjust_session_control: adjustSessionControlForAgent,
+    cognistration_set_session_direction: setSessionDirectionForAgent,
     cognistration_nudge_carrier: nudgeCarrierForAgent,
     cognistration_generate_tone: generateToneForAgent,
     cognistration_clarify_intention: clarifyIntentionForAgent,
@@ -804,8 +881,10 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
         return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'failed', error: { code: 'AUDIO_UNAVAILABLE', safeMessage: 'The browser could not start local audio.', retryable: true } };
       }
       setAgentActivity('Your confirmed preview is playing.');
-      return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'completed', audio: 'local-browser-preview', controls: sessionStateRef.current };
+      return { capabilityId: WEBMCP_CONTRACT_ID, version: WEBMCP_CONTRACT_VERSION, correlationId: browserCorrelationId(), status: 'completed', audio: 'local-browser-preview', controls: { ...(sessionStateRef.current || {}), isPlaying: true } };
     },
+    cognistration_stop_preview: stopPreviewForAgent,
+    cognistration_open_fullscreen: openFullscreenForAgent,
     cognistration_open_account_signup: async () => {
       setAgentActivity('Opening the account form; the user must review and submit it.');
       window.location.assign('/signup?source=webmcp');

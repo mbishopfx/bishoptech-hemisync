@@ -6,7 +6,7 @@
 - Transport: Streamable HTTP JSON-RPC over HTTP POST; dual-era public adapter
 - Current discovery protocol: `2026-07-28` `server/discover`
 - Legacy initialize compatibility: `2025-11-25`, `2025-06-18`, `2025-03-26`
-- Server name/version: `cognistration-agentic-platform` / `0.12.0`
+- Server name/version: `cognistration-agentic-platform` / `0.13.0`
 - Manifest: `https://cognistration.com/api/capabilities`
 - REST/OpenAPI fallback: `https://cognistration.com/openapi.json`
 - Human/agent instructions: `https://cognistration.com/agent-instructions.md`
@@ -44,7 +44,7 @@ use the supported `initialize` handshake.
 | `cognistration://account-options` | `application/json` | public | preview/workspace access boundary | no |
 | `cognistration://ios-app` | `application/json` | public | App Store listing, one-time price, compatibility, feature summary, and on-device pricing context | no |
 | `cognistration://skills` | `application/json` | public | skill extension summary | no |
-| `ui://cognistration/machine-generator/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded local preview | no |
+| `ui://cognistration/machine-generator/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | interactive tone machine with bounded live controls and explicit local preview | no |
 | `ui://cognistration/science-guide/v2.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | seven-slide signal, FFR, evidence, and safety guide with a self-contained animated ocean surface and print/save-to-PDF action | no |
 | `ui://cognistration/ios-app/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted iPhone offer with real screenshots and a Download Now App Store badge | no |
 | `ui://cognistration/phone-download/v1.html` | `text/html;profile=mcp-app` | ChatGPT-compatible app host | frosted phone handoff with the fixed `$0.50` agent-preview path and separate `$2.99` iPhone app path | no |
@@ -72,17 +72,28 @@ use the supported `initialize` handshake.
 | `get_tone_pack_delivery` | `paid_checkout_session` | verifies payment and resolves delivery | published pack slug, completed Checkout Session ID |
 | `open_tone_pack_checkout` | `public_read` render | widget submission only | optional published pack slug; email and payment stay in widget/provider flow |
 | `get_tone_pack_payment_options` | `public_read` | none | empty object; fixed $5.99 MPP route and delivery contract |
+| `get_machine_control_contract` | `public_read` | none | empty object; returns bounds, defaults, semantic directions, and audio boundary |
+| `set_machine_controls` | `public_session` | updates visible controls and live audio | one or more bounded absolute controls |
+| `adjust_machine_controls` | `public_session` | updates visible controls and live audio | carrier/rhythm/volume plus semantic direction and optional step |
+| `set_machine_direction` | `public_session` | updates visible controls and live audio | published state plus optional preset controls |
+| `start_machine_preview` | `public_session` | requests local browser audio | `confirmed: true`; browser gesture may still be required |
+| `stop_machine_preview` | `public_session` | stops local browser audio | empty object |
+| `open_machine_fullscreen` | `public_session` | requests larger host display | empty object |
 | `open_machine_generator` | `public_read` | none | optional intention, tone ID, state, and bounded controls |
 | `open_science_guide` | `public_read` render | none | optional public tone ID, state, carrier, beat, volume, and safe intention label; no audio or diary content |
 | `open_feedback` | `public_read` render | widget submission only | empty object; rating and note never enter MCP |
 
-The `open_machine_generator` render tool links `_meta.ui.resourceUri` to the
-versioned MCP Apps resource. The widget renders from the concise
-`structuredContent` snapshot, uses the portable `tools/call` bridge for
-`recommend_tone` and `search_public_tone_packs`, and keeps `window.openai` as a
-compatibility enhancement. Its Aurora background is the public
-`/visuals/aurora-current.html` visual, and its Web Audio preview remains off
-until the listener explicitly presses play.
+The `open_machine_generator` render tool links `_meta.ui.resourceUri` to
+`ui://cognistration/machine-generator/v2.html`. The widget renders from the
+concise `structuredContent` snapshot, uses the portable `tools/call` bridge for
+recommendation, browsing, exact control, relative adjustment, direction,
+playback, and display requests, and keeps `window.openai` as a compatibility
+enhancement. `ui/update-model-context` publishes the current controls and
+playback state back to the model. Exact setters and relative adjustments update
+the existing oscillator and gain nodes without pausing playback. Its Aurora
+background is the public `/visuals/aurora-current.html` visual, and its Web
+Audio preview remains off until the listener explicitly confirms playback;
+browser autoplay may still require a visible user gesture.
 
 The `open_science_guide` render tool links `_meta.ui.resourceUri` to
 `ui://cognistration/science-guide/v2.html`. The widget is a seven-slide,
@@ -120,7 +131,7 @@ the server verifies the exact Stripe PaymentIntent.
 
 Every tool returns bounded `content` and `structuredContent`. Tool-level failures use `isError: true`; protocol failures use stable JSON-RPC errors. Unknown tool names, private-data requests, and write attempts are denied.
 
-The previous `ui://cognistration/account-signup/v1.html` resource remains readable as a compatibility alias for conversations that cached the earlier tool descriptor.
+The previous `ui://cognistration/account-signup/v1.html` resource remains readable as a compatibility alias for conversations that cached the earlier tool descriptor. The previous `ui://cognistration/machine-generator/v1.html` resource is likewise readable as a compatibility alias; new tool descriptors point at the v2 resource so hosts refresh the control bridge.
 
 ## Compatibility fallback
 

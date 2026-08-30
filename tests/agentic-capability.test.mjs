@@ -52,10 +52,16 @@ import {
 } from '../lib/agentic/session-capability.js';
 import { MCP_TOOLS, MCP_RESOURCES, MCP_PROTOCOL_VERSION } from '../lib/agentic/mcp-contract.js';
 import {
+  MACHINE_WIDGET_LEGACY_RESOURCE_URI,
   MACHINE_WIDGET_RESOURCE_MIME_TYPE,
   MACHINE_WIDGET_RESOURCE_URI,
   buildMachineGeneratorState
 } from '../lib/agentic/machine-capability.js';
+import {
+  MACHINE_CONTROL_DEFAULT_STEPS,
+  applyMachineControlPatch,
+  resolveMachineAdjustment
+} from '../lib/agentic/machine-control-capability.js';
 import { MACHINE_WIDGET_HTML } from '../lib/agentic/machine-widget.js';
 import {
   ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI,
@@ -187,7 +193,36 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /class="frequency-stage"/);
   assert.match(MACHINE_WIDGET_HTML, /getEntrainmentPath/);
   assert.match(MACHINE_WIDGET_HTML, /id="beat-wave-path"/);
+  assert.match(MACHINE_WIDGET_HTML, /ui\/update-model-context/);
+  assert.match(MACHINE_WIDGET_HTML, /set_machine_controls/);
+  assert.match(MACHINE_WIDGET_HTML, /adjust_machine_controls/);
+  assert.match(MACHINE_WIDGET_HTML, /start_machine_preview/);
+  assert.match(MACHINE_WIDGET_HTML, /stop_machine_preview/);
+  assert.match(MACHINE_WIDGET_HTML, /open_machine_fullscreen/);
+  assert.match(MACHINE_WIDGET_HTML, /without pausing audio/);
   assert.doesNotMatch(MACHINE_WIDGET_HTML, /repeating-linear-gradient/);
+});
+
+test('machine control adjustments are semantic, bounded, and preserve playback state', () => {
+  const current = { targetState: 'theta', carrierHz: 200, beatHz: 6, volume: 72, isPlaying: true, stateVersion: 4 };
+  const faster = resolveMachineAdjustment({ control: 'rhythm', direction: 'faster', step: 1 }, current);
+  assert.equal(faster.field, 'beatHz');
+  assert.equal(faster.delta, 1);
+  assert.equal(faster.nextValue, 7);
+  assert.equal(faster.controls.isPlaying, true);
+  assert.equal(faster.controls.stateVersion, 5);
+
+  const quieter = resolveMachineAdjustment({ control: 'volume', direction: 'quieter' }, current);
+  assert.equal(quieter.step, MACHINE_CONTROL_DEFAULT_STEPS.volume);
+  assert.equal(quieter.nextValue, 64);
+  assert.equal(quieter.controls.isPlaying, true);
+
+  const clamped = resolveMachineAdjustment({ control: 'rhythm', direction: 'slower', step: 10 }, { ...current, beatHz: 0.5 });
+  assert.equal(clamped.nextValue, 0.5);
+  assert.equal(clamped.clamped, true);
+  assert.throws(() => resolveMachineAdjustment({ control: 'volume', direction: 'faster' }, current));
+  assert.equal(applyMachineControlPatch(current, { carrierHz: 246 }).carrierHz, 246);
+  assert.equal(applyMachineControlPatch(current, { carrierHz: 246 }).isPlaying, true);
 });
 
 test('science guide stays educational, bounded, and interactive without starting audio', () => {
@@ -668,6 +703,13 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
     'get_machine_payment_options',
     'get_tone_pack_payment_options',
     'get_autonomous_payment_options',
+    'get_machine_control_contract',
+    'set_machine_controls',
+    'adjust_machine_controls',
+    'set_machine_direction',
+    'start_machine_preview',
+    'stop_machine_preview',
+    'open_machine_fullscreen',
     'open_machine_generator',
     'open_science_guide',
     'open_feedback'
@@ -692,6 +734,18 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   const machineTool = MCP_TOOLS.find((tool) => tool.name === 'open_machine_generator');
   assert.equal(machineTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineTool.annotations.readOnlyHint, true);
+  assert.equal(MCP_RESOURCES.some((resource) => resource.uri === MACHINE_WIDGET_LEGACY_RESOURCE_URI), false);
+  const machineSetTool = MCP_TOOLS.find((tool) => tool.name === 'set_machine_controls');
+  assert.equal(machineSetTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
+  assert.equal(machineSetTool._meta.ui.visibility.join(','), 'model,app');
+  assert.equal(machineSetTool.annotations.idempotentHint, true);
+  const machineAdjustTool = MCP_TOOLS.find((tool) => tool.name === 'adjust_machine_controls');
+  assert.equal(machineAdjustTool.annotations.idempotentHint, false);
+  assert.equal(machineAdjustTool.inputSchema.properties.control.enum.join(','), 'carrier,rhythm,volume');
+  const machineStartTool = MCP_TOOLS.find((tool) => tool.name === 'start_machine_preview');
+  assert.equal(machineStartTool.consent, 'explicit_confirmation_required');
+  assert.equal(machineStartTool.inputSchema.properties.confirmed.const, true);
+  assert.equal(MCP_TOOLS.find((tool) => tool.name === 'stop_machine_preview').annotations.idempotentHint, true);
   const scienceTool = MCP_TOOLS.find((tool) => tool.name === 'open_science_guide');
   assert.equal(scienceTool._meta.ui.resourceUri, SCIENCE_GUIDE_RESOURCE_URI);
   assert.equal(scienceTool.annotations.readOnlyHint, true);
