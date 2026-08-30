@@ -249,9 +249,10 @@ async function main() {
 
   const tryResponse = await fetch(new URL('/try', requestOrigin));
   const tryText = await tryResponse.text();
+  const normalizedTryText = tryText.replace(/<!-- -->/g, '');
   assert(tryResponse.ok, `/try returned HTTP ${tryResponse.status}`);
-  assert(/30 public MCP tools/.test(tryText), '/try does not show the current MCP tool count');
-  assert(!/29 public MCP tools/.test(tryText), '/try still shows the retired MCP tool count');
+  assert(/30 public MCP tools/.test(normalizedTryText), '/try does not show the current MCP tool count');
+  assert(!/29 public MCP tools/.test(normalizedTryText), '/try still shows the retired MCP tool count');
   assert(!/27 public MCP tools/.test(tryText), '/try contains the retired MCP tool count');
 
   console.log(JSON.stringify({
