@@ -201,6 +201,7 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /open_machine_fullscreen/);
   assert.match(MACHINE_WIDGET_HTML, /resumeAudioContext/);
   assert.match(MACHINE_WIDGET_HTML, /audioReady/);
+  assert.doesNotMatch(MACHINE_WIDGET_HTML, /stopPackAudio/);
   assert.match(MACHINE_WIDGET_HTML, /audio-suspended/);
   assert.match(MACHINE_WIDGET_HTML, /without pausing audio/);
   assert.doesNotMatch(MACHINE_WIDGET_HTML, /repeating-linear-gradient/);
