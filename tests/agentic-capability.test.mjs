@@ -568,6 +568,8 @@ test('homepage visual treatment keeps the hero wide, glassy, and free of hard pa
   const omnibar = await readFile(new URL('../components/agent/Omnibar.jsx', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
   const styles = await readFile(new URL('../app/globals.css', import.meta.url), 'utf8');
+  assert.match(homepage, /When everything around you competes for attention/);
+  assert.match(homepage, /one steady sound to return to/);
   assert.match(homepage, /lg:max-w-\[18ch\]/);
   assert.match(homepage, /hero-session-shell/);
   assert.match(omnibar, /omnibar-glass-shell/);

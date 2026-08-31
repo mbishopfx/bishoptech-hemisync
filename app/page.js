@@ -103,7 +103,7 @@ export default function LandingPage() {
                 A clearer way to enter the next moment.
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="mt-7 max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
-                Cognistration turns how you feel into a personal listening session, then gives you the controls to shape it around your day.
+                When everything around you competes for attention, Cognistration gives you one steady sound to return to—so you can focus, rest, create, or reset on your own terms.
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="mt-9 flex flex-wrap gap-3">
                 <a href="#session" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Try a session <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
