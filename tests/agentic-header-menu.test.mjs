@@ -13,6 +13,7 @@ test('the published header uses the MCP menu and protects the ChatGPT setup moda
   assert.match(header, /!overflow-y-auto overscroll-contain/);
   assert.match(header, /createPortal/);
   assert.match(header, /document\.body/);
+  assert.match(header, /!absolute right-5 top-5 z-10/);
   assert.match(header, /setShowPluginInstructions\(true\)/);
   assert.match(header, /aria-expanded=\{showPluginInstructions\}/);
   assert.doesNotMatch(header, /<Sparkle/);
