@@ -343,7 +343,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
       {connectOpen && typeof document !== 'undefined' ? createPortal(
         <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden overscroll-none bg-[#0e1614]/80 p-5 backdrop-blur-md pointer-events-auto" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConnectOpen(false); }}>
           <div role="dialog" aria-modal="true" aria-labelledby="connect-chatgpt-title" className="glass-panel relative max-h-[calc(100dvh-2rem)] min-h-0 w-full max-w-lg overflow-hidden rounded-[2rem] border border-[#b6ddcc]/10 bg-[#1d2926] text-white shadow-2xl">
-            <button type="button" onClick={() => setConnectOpen(false)} className="!absolute right-5 top-5 z-10 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white" aria-label="Close connection instructions">
+            <button type="button" onClick={() => setConnectOpen(false)} className="!absolute right-5 top-5 !z-10 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white" aria-label="Close connection instructions">
               <X className="size-5" aria-hidden="true" />
             </button>
             <div data-testid="chatgpt-connect-scroll" className="max-h-[calc(100dvh-2rem)] !overflow-y-auto overscroll-contain p-7 sm:p-9">
