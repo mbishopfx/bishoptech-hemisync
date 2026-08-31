@@ -11,6 +11,7 @@ test('the published header uses the MCP menu and protects the ChatGPT setup moda
   assert.match(header, /body\.style\.overflow = 'hidden'/);
   assert.match(header, /documentElement\.style\.overflow = 'hidden'/);
   assert.match(header, /!overflow-y-auto overscroll-contain/);
+  assert.match(header, /data-testid="chatgpt-connect-scroll"/);
   assert.match(header, /createPortal/);
   assert.match(header, /document\.body/);
   assert.match(header, /!absolute right-5 top-5 z-10/);

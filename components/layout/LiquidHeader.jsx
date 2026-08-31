@@ -342,10 +342,11 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
 
       {connectOpen && typeof document !== 'undefined' ? createPortal(
         <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden overscroll-none bg-[#0e1614]/80 p-5 backdrop-blur-md pointer-events-auto" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConnectOpen(false); }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="connect-chatgpt-title" className="glass-panel relative max-h-[calc(100dvh-2rem)] min-h-0 w-full max-w-lg !overflow-y-auto overscroll-contain rounded-[2rem] border border-[#b6ddcc]/10 bg-[#1d2926] p-7 text-white shadow-2xl sm:p-9">
+          <div role="dialog" aria-modal="true" aria-labelledby="connect-chatgpt-title" className="glass-panel relative max-h-[calc(100dvh-2rem)] min-h-0 w-full max-w-lg overflow-hidden rounded-[2rem] border border-[#b6ddcc]/10 bg-[#1d2926] text-white shadow-2xl">
             <button type="button" onClick={() => setConnectOpen(false)} className="!absolute right-5 top-5 z-10 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white" aria-label="Close connection instructions">
               <X className="size-5" aria-hidden="true" />
             </button>
+            <div data-testid="chatgpt-connect-scroll" className="max-h-[calc(100dvh-2rem)] !overflow-y-auto overscroll-contain p-7 sm:p-9">
             <div className="max-w-sm">
               <p className="text-sm font-medium text-[#b6ddcc]">Bring your sessions with you</p>
               <h2 id="connect-chatgpt-title" className="mt-3 text-3xl font-medium tracking-[-0.04em]">Connect ChatGPT</h2>
@@ -386,6 +387,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
               </div>
             )}
             <p className="mt-6 text-xs leading-5 text-white/40">Availability depends on your ChatGPT plan and workspace settings.</p>
+          </div>
           </div>
         </div>,
         document.body
