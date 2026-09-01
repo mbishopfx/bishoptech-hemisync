@@ -15,6 +15,7 @@ Cognistration is a public audio-session product. The homepage exposes a native W
 - OpenAPI compatibility document: https://cognistration.com/openapi.json
 - MCP endpoint: https://cognistration.com/api/mcp
 - MCP server card: https://cognistration.com/api/mcp/server-card
+- MCP compatibility manifest: https://cognistration.com/.well-known/mcp/manifest.json
 - MCP server-card compatibility alias: https://cognistration.com/.well-known/mcp/server-card.json
 - Homepage WebMCP surface: https://cognistration.com/
 - Current MCP transport: Streamable HTTP, stateless 2026-07-28 requests with per-request metadata and required MCP-Protocol-Version / Mcp-Method headers; legacy clients may use the supported initialize handshake.

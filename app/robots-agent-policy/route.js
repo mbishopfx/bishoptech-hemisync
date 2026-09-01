@@ -40,6 +40,7 @@ Allow: /docs
 Allow: /api/mcp
 Allow: /api/mcp/server-card
 Allow: /api/capabilities
+Allow: /.well-known/mcp/manifest.json
 Allow: /.well-known/mcp/server-card.json
 Allow: /.well-known/mcp.json
 Allow: /mcp.json

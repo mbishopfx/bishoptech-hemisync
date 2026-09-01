@@ -49,7 +49,7 @@ const HTTP_SURFACES = [
   { method: 'GET', path: '/agent-instructions.md', label: 'Agent instructions', description: 'Human-readable routing guidance, safety rules, and the distinction between public and member surfaces.' },
   { method: 'GET', path: '/llms.txt', label: 'LLM discovery file', description: 'Canonical public product, policy, documentation, and agent-discovery links.' },
   { method: 'GET', path: '/.well-known/agent-card.json, /.well-known/ard.json', label: 'Agent discovery', description: 'A2A agent card and Agentic Resource Discovery manifest for compatible clients.' },
-  { method: 'GET', path: '/.well-known/api-catalog, /api/mcp/server-card, /.well-known/mcp/server-card.json', label: 'API and MCP catalogs', description: 'RFC-style API Linkset and standard MCP Server Card connection metadata.' },
+  { method: 'GET', path: '/.well-known/api-catalog, /api/mcp/server-card, /.well-known/mcp/manifest.json', label: 'API and MCP catalogs', description: 'RFC-style API Linkset, standards-based Server Card metadata, and the executable compatibility manifest.' },
   { method: 'GET', path: '/.well-known/agent-skills/index.json', label: 'Skills index', description: 'Five static, reusable operating skills with source and endpoint links.' },
   { method: 'GET + POST', path: '/api/docs-mcp', label: 'Documentation MCP', description: 'Read-only tools/list, resources/list, resources/read, and docs search/retrieval.' },
   { method: 'GET + POST', path: '/ask, /a2a', label: 'Agent compatibility', description: 'Bounded natural-language and stateless A2A compatibility surfaces.' },

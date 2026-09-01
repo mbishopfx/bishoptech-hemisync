@@ -58,6 +58,8 @@ test('discovery manifests expose complete machine-readable entry points', () => 
 
   const compatibilityManifest = mcpCompatibilityManifest('https://example.test');
   assert.equal(compatibilityManifest.serverUrl, links.mcp);
+  assert.equal(compatibilityManifest.protocolVersion, '2025-11-25');
+  assert.equal(compatibilityManifest.currentProtocolVersion, '2026-07-28');
   assert.equal(compatibilityManifest.tools.length, MCP_TOOLS.length);
   assert.equal(compatibilityManifest.resources.length, 17);
   assert.equal(compatibilityManifest.prompts.length, 1);
