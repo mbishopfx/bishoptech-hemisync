@@ -739,6 +739,9 @@ test('payment passports are fixed, expiring, signed intents and never credential
 
 test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.match(MCP_ROUTE_SOURCE, /https:\/\/ora\.ai/);
+  assert.match(MCP_ROUTE_SOURCE, /request\.method !== 'initialize'/);
+  assert.match(MCP_ROUTE_SOURCE, /standard MCP initialize header/);
+  assert.doesNotMatch(MCP_ROUTE_SOURCE, /if \(modern\) return rpcError\(request\.id, -32601, 'Method not found\.'/);
   assert.equal(MCP_PROTOCOL_VERSION, '2026-07-28');
   assert.deepEqual(MCP_TOOLS.map((tool) => tool.name), [
     'get_agentic_capabilities',

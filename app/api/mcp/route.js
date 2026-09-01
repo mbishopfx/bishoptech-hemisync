@@ -255,12 +255,18 @@ function validateModernRequest(req, request) {
   if (headerProtocol !== MCP_PROTOCOL_VERSION) {
     return unsupportedProtocol(request.id, headerProtocol);
   }
-  if (request.method !== 'server/discover' && bodyProtocol !== MCP_PROTOCOL_VERSION) {
+  // MCP clients negotiate the protocol in initialize.params. Keep the
+  // handshake compatible with standard clients that do not copy our
+  // stateless per-request metadata into that negotiation message.
+  if (request.method !== 'server/discover' && request.method !== 'initialize' && bodyProtocol !== MCP_PROTOCOL_VERSION) {
     return modernHeaderMismatch(request.id, `the body must include _meta.${MODERN_PROTOCOL_VERSION_META}='${MCP_PROTOCOL_VERSION}'.`);
   }
 
   const methodHeader = decodeHeaderValue(req.headers.get('mcp-method'));
-  if (!methodHeader.valid || methodHeader.value !== request.method) {
+  // Mcp-Method is required for modern stateless operations, but it is not a
+  // standard MCP initialize header. If a client sends it during initialize,
+  // still reject an explicit mismatch while allowing a missing header.
+  if (!methodHeader.valid || (methodHeader.value && methodHeader.value !== request.method) || (request.method !== 'initialize' && methodHeader.value !== request.method)) {
     return modernHeaderMismatch(request.id, `Mcp-Method '${methodHeader.value || ''}' does not match body method '${request.method}'.`);
   }
 
@@ -941,7 +947,6 @@ export async function POST(req) {
   }
 
   if (request.method === 'initialize') {
-    if (modern) return rpcError(request.id, -32601, 'Method not found.', MCP_PROTOCOL_VERSION, 404);
     return rpcResult(request.id, {
       protocolVersion: responseProtocol,
       capabilities: {
@@ -952,7 +957,7 @@ export async function POST(req) {
       },
       serverInfo: { name: MCP_SERVER_NAME, version: MCP_SERVER_VERSION },
       instructions: PUBLISHED_MODERN_INSTRUCTIONS
-    }, responseProtocol);
+    }, responseProtocol, { modern });
   }
 
   if (request.method === 'server/discover') {

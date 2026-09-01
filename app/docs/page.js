@@ -73,7 +73,7 @@ const SUPPORTING_ROUTE_FAMILIES = [
 
 const PROTOCOL_COMMANDS = [
   { command: 'server/discover', access: 'modern', description: 'Return the current protocol version, server capabilities, extension support, and routing instructions.' },
-  { command: 'initialize', access: 'legacy', description: 'Perform the legacy MCP handshake for clients that do not use the modern stateless request metadata.' },
+  { command: 'initialize', access: 'both', description: 'Negotiate the MCP protocol and return server capabilities; standard clients may omit stateless request metadata during this handshake.' },
   { command: 'ping', access: 'both', description: 'Check that the endpoint is reachable.' },
   { command: 'tools/list', access: 'both', description: `List the ${MCP_TOOL_COUNT} remote MCP tools and their schemas.` },
   { command: 'tools/call', access: 'both', description: 'Call one named tool with a bounded arguments object.' },
@@ -302,7 +302,7 @@ export default function DocsPage() {
             </section>
 
             <section id="commands" className="scroll-mt-28">
-              <SectionIntro eyebrow="02 · Transport" title="RPC commands and protocol behavior">The endpoint supports modern stateless requests with per-request metadata and the legacy initialize handshake for older compatible clients.</SectionIntro>
+              <SectionIntro eyebrow="02 · Transport" title="RPC commands and protocol behavior">The endpoint supports the standard initialize handshake plus modern stateless requests with per-request metadata. Legacy protocol versions remain available for older compatible clients.</SectionIntro>
               <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{PROTOCOL_COMMANDS.map((item) => <CommandRow key={item.command} item={item} />)}</div>
             </section>
 

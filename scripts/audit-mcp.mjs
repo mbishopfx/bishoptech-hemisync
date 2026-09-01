@@ -530,7 +530,16 @@ async function auditDiscovery() {
     return { count: result.tools.length, protocol: MCP_LEGACY_PROTOCOL_VERSION };
   });
 
-  await runCheck('mcp.discovery.initialize-modern-denied', 'protocol', async () => expectedMcpError('initialize', { protocolVersion: MCP_PROTOCOL_VERSION, capabilities: {}, clientInfo: { name: 'audit', version: '1' } }, { code: -32601, status: 404 }), { severity: 'medium' });
+  await runCheck('mcp.discovery.initialize-modern-compatible', 'protocol', async () => {
+    const result = await mcp('initialize', {
+      protocolVersion: MCP_PROTOCOL_VERSION,
+      capabilities: {},
+      clientInfo: { name: 'cognistration-standard-compatibility-audit', version: '1.0.0' }
+    }, { bodyMeta: false, methodHeader: false });
+    assert(result.protocolVersion === MCP_PROTOCOL_VERSION, 'modern initialize did not negotiate the requested protocol version.');
+    assert(result.capabilities?.tools && result.serverInfo?.name === MCP_SERVER_NAME, 'modern initialize is missing server capabilities.');
+    return { protocolVersion: result.protocolVersion, serverInfo: result.serverInfo };
+  });
   await runCheck('mcp.discovery.ping', 'protocol', async () => {
     const result = await mcp('ping');
     assert(Object.keys(result).sort().join(',') === '_meta,resultType', 'ping returned an unexpected payload.');

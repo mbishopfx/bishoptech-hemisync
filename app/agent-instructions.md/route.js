@@ -18,7 +18,7 @@ Cognistration is a public audio-session product. The homepage exposes a native W
 - MCP compatibility manifest: https://cognistration.com/.well-known/mcp/manifest.json
 - MCP server-card compatibility alias: https://cognistration.com/.well-known/mcp/server-card.json
 - Homepage WebMCP surface: https://cognistration.com/
-- Current MCP transport: Streamable HTTP, stateless 2026-07-28 requests with per-request metadata and required MCP-Protocol-Version / Mcp-Method headers; legacy clients may use the supported initialize handshake.
+- Current MCP transport: Streamable HTTP, standard initialize negotiation plus stateless 2026-07-28 requests with per-request metadata and required MCP-Protocol-Version / Mcp-Method headers for post-handshake operations; supported legacy protocol versions remain available.
 
 ## When to use each surface
 
