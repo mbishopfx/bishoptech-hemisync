@@ -866,6 +866,36 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     setScienceGuideOpen(nextOpen);
   }, []);
 
+  const handleDeclarativeControlsSubmit = useCallback((event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const readNumber = (name) => {
+      const value = formData.get(name);
+      return value === null || value === '' ? undefined : Number(value);
+    };
+    const controls = applyToneSettings({
+      carrierHz: readNumber('carrierHz'),
+      beatHz: readNumber('beatHz'),
+      volume: readNumber('volume')
+    });
+    setAgentActivity(`Session controls set to ${controls.targetState}, ${controls.carrierHz} Hz carrier, and ${controls.beatHz} Hz beat.`);
+  }, [applyToneSettings]);
+
+  const handleDeclarativeDirectionSubmit = useCallback((event) => {
+    event.preventDefault();
+    const stateId = String(new FormData(event.currentTarget).get('targetState') || '');
+    const state = STATE_OPTIONS.find((option) => option.id === stateId);
+    if (state) {
+      handleStateSelect(state.id, state.hz);
+      setAgentActivity(`${state.label} direction selected; live audio continues if it was already playing.`);
+    }
+  }, [handleStateSelect]);
+
+  const handleDeclarativePreviewSubmit = useCallback((event) => {
+    event.preventDefault();
+    togglePower();
+  }, [togglePower]);
+
   startAudioRef.current = startAudio;
   sessionStateRef.current = {
     isPlaying,
@@ -1163,7 +1193,13 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
             </div>
           </div>
 
-          <div className="space-y-5 border-t border-[#b6ddcc]/10 pt-5">
+          <form
+            data-agent-action="set-session-controls"
+            toolname="cognistration_set_session_controls"
+            tooldescription="Set the visible carrier, rhythm, and volume controls in the current Cognistration browser session."
+            onSubmit={handleDeclarativeControlsSubmit}
+            className="space-y-5 border-t border-[#b6ddcc]/10 pt-5"
+          >
             <p className="text-sm font-medium text-white/70">Shape the session</p>
 
             <label className="block space-y-2">
@@ -1171,7 +1207,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
                 <span>Shared tone</span>
                 <span>{carrierFreq} Hz</span>
               </span>
-              <input aria-label="Shared tone" type="range" min="100" max="400" value={carrierFreq} onChange={(event) => setCarrierFreq(Number(event.target.value))} className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-emerald-200" />
+              <input name="carrierHz" aria-label="Shared tone" type="range" min="100" max="400" value={carrierFreq} onChange={(event) => setCarrierFreq(Number(event.target.value))} className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-emerald-200" />
               <span className="block text-xs leading-5 text-white/35">Choose the tone both channels receive.</span>
             </label>
 
@@ -1180,7 +1216,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
                 <span>Rhythm</span>
                 <span>{beatFreq.toFixed(1)} Hz</span>
               </span>
-              <input aria-label="Rhythm" type="range" min="0.5" max="40" step="0.5" value={beatFreq} onChange={(event) => setBeatFreq(Number(event.target.value))} className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-amber-200" />
+              <input name="beatHz" aria-label="Rhythm" type="range" min="0.5" max="40" step="0.5" value={beatFreq} onChange={(event) => setBeatFreq(Number(event.target.value))} className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-amber-200" />
               <span className="block text-xs leading-5 text-white/35">Adjust the pace independently from the directions below.</span>
             </label>
 
@@ -1189,9 +1225,9 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
                 <span>Volume</span>
                 <span>{volume}%</span>
               </span>
-              <input aria-label="Volume" type="range" min="0" max="100" value={volume} onChange={(event) => setVolume(Number(event.target.value))} className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-emerald-200" />
+              <input name="volume" aria-label="Volume" type="range" min="0" max="100" value={volume} onChange={(event) => setVolume(Number(event.target.value))} className="h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-emerald-200" />
             </label>
-          </div>
+          </form>
 
           <div className="glass-subpanel flex items-center gap-3 rounded-xl border border-[#b6ddcc]/10 p-4">
             <Pulse aria-hidden="true" className={`size-5 shrink-0 ${visual.accent}`} weight="light" />
@@ -1199,18 +1235,24 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
           </div>
         </div>
 
-        <div className="space-y-6 lg:col-span-5">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-white/70">Listen to the session</p>
-            <button
-              type="button"
-              onClick={togglePower}
-              className={`glass-action glass-action--primary flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-medium ${isPlaying ? 'is-active' : ''}`}
-            >
-              <Power aria-hidden="true" weight="light" className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
-              {isPlaying ? 'Pause preview' : 'Start preview'}
-            </button>
-          </div>
+          <div className="space-y-6 lg:col-span-5">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-white/70">Listen to the session</p>
+              <form
+                data-agent-action={isPlaying ? 'stop-preview' : 'start-preview'}
+                toolname={isPlaying ? 'cognistration_stop_preview' : 'cognistration_begin_preview'}
+                tooldescription={isPlaying ? 'Stop the local Cognistration audio preview in the visible machine.' : 'Start the local Cognistration audio preview after the listener explicitly confirms playback.'}
+                onSubmit={handleDeclarativePreviewSubmit}
+              >
+                <button
+                  type="submit"
+                  className={`glass-action glass-action--primary flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-medium ${isPlaying ? 'is-active' : ''}`}
+                >
+                  <Power aria-hidden="true" weight="light" className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
+                  {isPlaying ? 'Pause preview' : 'Start preview'}
+                </button>
+              </form>
+            </div>
 
           <div className="glass-subpanel select-none space-y-2 rounded-2xl border border-[#b6ddcc]/10 p-4">
             <div className="flex justify-between text-sm">
@@ -1234,20 +1276,27 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
               <p className="text-sm font-light leading-6 text-white/45">Choose a starting pattern, then use the controls to make the session feel like yours.</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <form
+              data-agent-action="set-session-direction"
+              toolname="cognistration_set_session_direction"
+              tooldescription="Select one published Cognistration listening direction in the visible machine without pausing existing audio."
+              onSubmit={handleDeclarativeDirectionSubmit}
+              className="grid grid-cols-2 gap-3"
+            >
               {STATE_OPTIONS.map((state) => (
                 <button
                   key={state.id}
-                  type="button"
+                  type="submit"
+                  name="targetState"
+                  value={state.id}
                   aria-pressed={targetState === state.id}
-                  onClick={() => handleStateSelect(state.id, state.hz)}
                   className={`glass-choice rounded-2xl p-4 text-left text-white/60 ${targetState === state.id ? 'is-selected text-white' : ''}`}
                 >
                   <p className="text-sm font-bold tracking-tight">{state.label}</p>
-                          <p className="mt-1 text-xs text-white/35">{state.range}</p>
+                  <p className="mt-1 text-xs text-white/35">{state.range}</p>
                 </button>
               ))}
-            </div>
+            </form>
 
             <div data-testid="session-recipe" className="glass-subpanel space-y-3 rounded-2xl border border-[#b6ddcc]/10 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">

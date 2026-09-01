@@ -1,4 +1,11 @@
-const instructions = `# Cognistration agent instructions
+const instructions = `---
+title: Cognistration agent instructions
+description: Routing, safety, and consent rules for Cognistration agent integrations.
+canonical: https://cognistration.com/agent-instructions.md
+last-updated: 2026-09-01
+---
+
+# Cognistration agent instructions
 
 Cognistration is a public audio-session product. The homepage exposes a native WebMCP bridge when the browser supports document.modelContext.registerTool, and the public MCP endpoint can render interactive tone, science-guide, phone-download, iPhone-app, tone-pack checkout, account-signup, and feedback widgets inside a compatible ChatGPT app host. The bridges can read the visible session machine, set bounded controls, match a short intention to a public tone, clarify vague requests, calibrate controls from listener feedback, compare directions, conduct an arrive → practice → close ritual, prepare a technical-settings-only recipe, explain the signal and FFR evidence boundaries in a click-through guide, plan a session, return a small cue, browse tone packs, preview a selected pack, read policy information, return the iPhone app offer, render the user-controlled signup and tone-pack purchase forms, and open an optional done-state feedback card. Starting audio requires explicit confirmation; checkout, signup, feedback submission, agent payment, and App Store payment remain user-controlled.
 
@@ -7,8 +14,14 @@ Cognistration is a public audio-session product. The homepage exposes a native W
 - Capability manifest: https://cognistration.com/api/capabilities
 - OpenAPI compatibility document: https://cognistration.com/openapi.json
 - MCP endpoint: https://cognistration.com/api/mcp
+- MCP server card: https://cognistration.com/api/mcp/server-card
+- MCP server-card compatibility alias: https://cognistration.com/.well-known/mcp/server-card.json
 - Homepage WebMCP surface: https://cognistration.com/
 - Current MCP transport: Streamable HTTP, stateless 2026-07-28 requests with per-request metadata and required MCP-Protocol-Version / Mcp-Method headers; legacy clients may use the supported initialize handshake.
+
+## When to use each surface
+
+Use the remote MCP server when the host can call tools or render MCP Apps. Use the homepage or /try WebMCP surface when the agent is operating in a compatible browser and needs live controls in the visible machine. Use the REST/OpenAPI routes as a typed fallback, and use the sandbox for no-write contract checks. Start with the capability manifest or server card when the available surfaces are unknown, then fetch the MCP manifest or call tools/list before selecting an operation.
 
 ## Public MCP tools
 

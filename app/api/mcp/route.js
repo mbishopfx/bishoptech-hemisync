@@ -864,11 +864,32 @@ export async function GET(req) {
     ? `${requestUrl.protocol}//${requestHost}`
     : requestUrl.origin;
   return NextResponse.json({
+    name: MCP_SERVER_NAME,
     service: MCP_SERVER_NAME,
     version: MCP_SERVER_VERSION,
     endpoint: `${advertisedOrigin}${requestUrl.pathname}`,
+    serverInfo: { name: MCP_SERVER_NAME, version: MCP_SERVER_VERSION },
+    protocolVersion: MCP_PROTOCOL_VERSION,
+    protocolVersions: [MCP_PROTOCOL_VERSION, ...MCP_SUPPORTED_LEGACY_VERSIONS],
     protocols: [MCP_PROTOCOL_VERSION, ...MCP_SUPPORTED_LEGACY_VERSIONS],
-    transport: 'Streamable HTTP with JSON responses over POST',
+    transport: {
+      type: 'streamable-http',
+      endpoint: `${advertisedOrigin}${requestUrl.pathname}`,
+      requestMethod: 'POST',
+      responseMode: 'json'
+    },
+    capabilities: {
+      tools: { listChanged: false },
+      resources: { subscribe: false, listChanged: false },
+      prompts: { listChanged: false }
+    },
+    tools: MCP_TOOLS,
+    resources: publicResources(),
+    prompts: publicPrompts(),
+    serverCard: `${advertisedOrigin}/api/mcp/server-card`,
+    wellKnownServerCard: `${advertisedOrigin}/.well-known/mcp/server-card.json`,
+    documentation: `${advertisedOrigin}/docs`,
+    instructions: `${advertisedOrigin}/agent-instructions.md`,
     note: 'POST JSON-RPC requests here. Public reads are bounded; checkout initiation and workshop-key revocation are explicit, narrow side effects.'
   }, { headers: protocolHeaders() });
 }

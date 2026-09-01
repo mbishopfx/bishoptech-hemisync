@@ -38,7 +38,11 @@ Allow: /
 Allow: /try
 Allow: /docs
 Allow: /api/mcp
+Allow: /api/mcp/server-card
 Allow: /api/capabilities
+Allow: /.well-known/mcp/server-card.json
+Allow: /.well-known/mcp.json
+Allow: /mcp.json
 Allow: /openapi.json
 Allow: /agent-instructions.md
 Disallow: /api/

@@ -49,7 +49,7 @@ const HTTP_SURFACES = [
   { method: 'GET', path: '/agent-instructions.md', label: 'Agent instructions', description: 'Human-readable routing guidance, safety rules, and the distinction between public and member surfaces.' },
   { method: 'GET', path: '/llms.txt', label: 'LLM discovery file', description: 'Canonical public product, policy, documentation, and agent-discovery links.' },
   { method: 'GET', path: '/.well-known/agent-card.json, /.well-known/ard.json', label: 'Agent discovery', description: 'A2A agent card and Agentic Resource Discovery manifest for compatible clients.' },
-  { method: 'GET', path: '/.well-known/api-catalog, /.well-known/mcp/server-card.json', label: 'API and MCP catalogs', description: 'RFC-style API Linkset and machine-readable MCP server card.' },
+  { method: 'GET', path: '/.well-known/api-catalog, /api/mcp/server-card, /.well-known/mcp/server-card.json', label: 'API and MCP catalogs', description: 'RFC-style API Linkset and standard MCP Server Card connection metadata.' },
   { method: 'GET', path: '/.well-known/agent-skills/index.json', label: 'Skills index', description: 'Five static, reusable operating skills with source and endpoint links.' },
   { method: 'GET + POST', path: '/api/docs-mcp', label: 'Documentation MCP', description: 'Read-only tools/list, resources/list, resources/read, and docs search/retrieval.' },
   { method: 'GET + POST', path: '/ask, /a2a', label: 'Agent compatibility', description: 'Bounded natural-language and stateless A2A compatibility surfaces.' },
@@ -264,7 +264,7 @@ export default function DocsPage() {
             </nav>
             <div className="mt-8 border-t border-white/10 pt-5 text-xs leading-5 text-white/35">
               <p>Schema source</p>
-              <a href="/api/capabilities" className="mt-1 block break-words text-[#b6ddcc] hover:text-white">/api/capabilities</a>
+              <Link href="/api/capabilities" className="mt-1 block break-words text-[#b6ddcc] hover:text-white">/api/capabilities</Link>
               <a href="/openapi.json" className="mt-1 block break-words text-[#b6ddcc] hover:text-white">/openapi.json</a>
             </div>
           </aside>

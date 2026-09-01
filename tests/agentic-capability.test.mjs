@@ -1025,6 +1025,7 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.doesNotMatch(page, /19 public WebMCP tools/);
   assert.doesNotMatch(page, /29 public MCP tools/);
   assert.match(cockpit, /data-testid="try-step-intention"/);
+  assert.match(cockpit, /toolname="cognistration_clarify_intention"/);
   assert.match(cockpit, /data-testid="try-step-comparison"/);
   assert.match(cockpit, /data-testid="try-step-plan"/);
   assert.match(cockpit, /data-testid="try-step-machine"/);
@@ -1036,6 +1037,11 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /glass-action/);
   assert.match(machine, /glass-panel/);
   assert.match(machine, /glass-action/);
+  assert.match(machine, /toolname="cognistration_set_session_controls"/);
+  assert.match(machine, /toolname="cognistration_set_session_direction"/);
+  assert.match(machine, /name="carrierHz"/);
+  assert.match(machine, /name="beatHz"/);
+  assert.match(machine, /name="volume"/);
   assert.match(machine, /await existingContext\.resume\(\)/);
   assert.match(machine, /ctx\.state !== 'running'/);
   assert.match(machine, /statechange/);

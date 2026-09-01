@@ -8,7 +8,7 @@ const siteUrl = 'https://cognistration.com';
 const aiCrawlerRules = [
   { userAgent: ['GPTBot', 'ChatGPT-User', 'OAI-SearchBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended', 'Applebot-Extended', 'ora-agent', 'DeepSeekBot'], allow: ['/'] },
   { userAgent: ['CCBot', 'ByteSpider'], disallow: ['/'] },
-  { userAgent: '*', allow: ['/', '/try', '/docs', '/api/mcp', '/api/capabilities', '/openapi.json', '/agent-instructions.md'], disallow: ['/api/', '/dashboard', '/generate', '/login', '/signup'] }
+  { userAgent: '*', allow: ['/', '/try', '/docs', '/api/mcp', '/api/mcp/server-card', '/api/capabilities', '/.well-known/mcp/server-card.json', '/.well-known/mcp.json', '/mcp.json', '/openapi.json', '/agent-instructions.md'], disallow: ['/api/', '/dashboard', '/generate', '/login', '/signup'] }
 ];
 
 export default function robots() {

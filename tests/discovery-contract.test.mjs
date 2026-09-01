@@ -7,6 +7,7 @@ import {
   ardManifest,
   authorizationServerMetadata,
   discoveryLinks,
+  mcpServerCard,
   pageMarkdown,
   publicAgentCard
 } from '../lib/agentic/discovery-contract.js';
@@ -15,10 +16,13 @@ import { DOCS_MCP_RESOURCES, DOCS_MCP_TOOLS } from '../lib/agentic/docs-mcp-cont
 import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { searchPublicTonePacksPage } from '../lib/agentic/pack-capability.js';
 import { GET as getRobotsAgentPolicy } from '../app/robots-agent-policy/route.js';
+import { GET as getMissingApiRoute } from '../app/api/[...path]/route.js';
 
 test('discovery manifests expose complete machine-readable entry points', () => {
   const links = discoveryLinks('https://example.test');
   const ard = ardManifest('https://example.test');
+  assert.equal(ard.specVersion, '1.0');
+  assert.equal(ard.host.identifier, 'cognistration.com');
   assert.equal(ard.entries.length, 4);
   for (const entry of ard.entries) {
     assert.ok(entry.identifier);
@@ -30,6 +34,7 @@ test('discovery manifests expose complete machine-readable entry points', () => 
   const catalog = apiCatalogLinkset('https://example.test');
   assert.equal(catalog.linkset[0].anchor, links.apiCatalog);
   assert.ok(catalog.linkset[0].item.some((item) => item.href === links.openapi));
+  assert.ok(catalog.linkset[0].item.some((item) => item.href === links.mcpServerCard));
   assert.ok(catalog.linkset[0].item.some((item) => item.href === links.docsMcp));
 
   const card = publicAgentCard('https://example.test');
@@ -38,8 +43,17 @@ test('discovery manifests expose complete machine-readable entry points', () => 
   assert.deepEqual(card.securityRequirements, []);
 
   const skills = agentSkillsIndex('https://example.test');
+  assert.equal(skills.$schema, 'https://schemas.agentskills.io/discovery/0.2.0/schema.json');
   assert.equal(skills.skills.length, 5);
   assert.ok(skills.skills.every((skill) => skill.source.startsWith('https://example.test/skills/')));
+  assert.ok(skills.skills.every((skill) => skill.type === 'skill-md' && skill.url.includes('/.well-known/agent-skills/') && /^sha256:[0-9a-f]{64}$/.test(skill.digest)));
+
+  const serverCard = mcpServerCard('https://example.test');
+  assert.equal(serverCard.$schema, 'https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json');
+  assert.equal(serverCard.name, 'com.cognistration/cognistration-agentic-platform');
+  assert.equal(serverCard.remotes[0].type, 'streamable-http');
+  assert.equal(serverCard.remotes[0].url, links.mcp);
+  assert.ok(!('tools' in serverCard));
 });
 
 test('public MCP descriptions are declarative and annotated for untrusted output', () => {
@@ -58,6 +72,7 @@ test('public MCP descriptions are declarative and annotated for untrusted output
 
 test('markdown, auth metadata, OpenAPI, and pagination remain honest and linked', () => {
   const docs = pageMarkdown('/docs', 'https://example.test');
+  assert.match(docs, /^---\n/);
   assert.match(docs, /https:\/\/example\.test\/\.well-known\/agent-card\.json/);
   assert.match(docs, /api\/sandbox/);
   assert.match(docs, /opaque cursor/);
@@ -98,4 +113,15 @@ test('developer manifests and no-write testing surfaces are present', async () =
   const robotsBody = await robots.text();
   assert.match(robotsBody, /Content-Signal: search=yes, ai-train=no/);
   assert.match(robotsBody, /schemamap: https:\/\/cognistration\.com\/\.well-known\/schemamap\.xml/);
+});
+
+test('unknown API routes return machine-readable JSON errors', async () => {
+  const response = getMissingApiRoute();
+  assert.equal(response.status, 404);
+  assert.match(response.headers.get('content-type'), /^application\/json/);
+  const body = await response.json();
+  assert.equal(body.ok, false);
+  assert.equal(body.error.code, 'API_ROUTE_NOT_FOUND');
+  assert.equal(body.error.retryable, false);
+  assert.match(body.error.resolution, /openapi/i);
 });

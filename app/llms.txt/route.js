@@ -1,6 +1,13 @@
 export const runtime = 'nodejs';
 
-const llmsText = `# Cognistration
+const llmsText = `---
+title: Cognistration agent index
+description: Canonical product, API, MCP, WebMCP, and safety discovery links for Cognistration.
+canonical: https://cognistration.com/llms.txt
+last-updated: 2026-09-01
+---
+
+# Cognistration
 
 Site: https://cognistration.com
 
@@ -12,6 +19,7 @@ Cognistration is a private audio-session product with public education, pricing,
 - [Agent instructions](https://cognistration.com/agent-instructions.md) — browser-agent workflow, public MCP boundary, and discovery links
 - [OpenAPI](https://cognistration.com/openapi.json) — REST compatibility contract derived from the public capability registry
 - [Product MCP](https://cognistration.com/api/mcp) — public MCP JSON-RPC tools and MCP Apps UI resources
+- [MCP Server Card](https://cognistration.com/api/mcp/server-card) — standard Streamable HTTP connection metadata
 - [Documentation MCP](https://cognistration.com/api/docs-mcp) — read-only documentation search and retrieval
 - [Source repository](https://github.com/mbishopfx/bishoptech-hemisync) — public agent configs, skills, plugin manifest, MCP configuration, and SDK source
 - [Agent Plugin manifest](https://github.com/mbishopfx/bishoptech-hemisync/blob/main/plugin.json) — portable Agent Plugins metadata

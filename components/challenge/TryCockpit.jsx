@@ -187,7 +187,7 @@ export function TryCockpit() {
         </aside>
 
         <div className="space-y-5">
-          <form data-testid="try-step-intention" onSubmit={handleClarify} className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
+          <form data-testid="try-step-intention" data-agent-action="clarify-intention" toolname="cognistration_clarify_intention" tooldescription="Turn the listener's short intention into bounded Cognistration listening directions without starting audio." onSubmit={handleClarify} className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">01 · Intent clarifier</p>
