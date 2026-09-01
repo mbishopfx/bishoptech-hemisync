@@ -123,6 +123,9 @@ test('developer manifests and no-write testing surfaces are present', async () =
   const robotsBody = await robots.text();
   assert.match(robotsBody, /Content-Signal: search=yes, ai-train=no/);
   assert.match(robotsBody, /schemamap: https:\/\/cognistration\.com\/\.well-known\/schemamap\.xml/);
+  const mcpManifestRoute = await readFile(new URL('../app/.well-known/mcp/manifest.json/route.js', import.meta.url), 'utf8');
+  assert.match(mcpManifestRoute, /handleMcpPost/);
+  assert.match(mcpManifestRoute, /export function POST/);
 });
 
 test('unknown API routes return machine-readable JSON errors', async () => {
