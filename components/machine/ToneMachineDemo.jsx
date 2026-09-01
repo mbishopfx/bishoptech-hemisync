@@ -262,7 +262,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     setBeatFreq(nextBeat);
     setVolume(nextVolume);
 
-    return {
+    const nextControls = {
       targetState: nextState,
       carrierHz: nextCarrier,
       beatHz: nextBeat,
@@ -270,6 +270,18 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       isPlaying: Boolean(currentControls.isPlaying),
       stateVersion: controlVersionRef.current
     };
+    // Keep agent reads coherent during the same turn as a tool mutation. React
+    // state is applied on the next render, but WebMCP agents can legitimately
+    // set controls and read them back immediately.
+    sessionStateRef.current = {
+      ...currentControls,
+      targetState: nextControls.targetState,
+      carrierHz: nextControls.carrierHz,
+      beatHz: nextControls.beatHz,
+      volume: nextControls.volume,
+      isPlaying: nextControls.isPlaying
+    };
+    return nextControls;
   }, []);
 
   const getSessionState = useCallback(() => ({

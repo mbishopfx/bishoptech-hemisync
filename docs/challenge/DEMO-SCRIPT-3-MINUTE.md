@@ -1,5 +1,10 @@
 # Cognistration — primary WebMCP challenge video script
 
+> The current captured sequence has its own time-aligned narration in
+> `DEMO-SCRIPT-RECORDED-TIMELINE.md`. This file remains the complete challenge
+> flow with the explicit $0.50 payment coda; use it when reshooting that
+> sequence rather than the shorter purchase/iPhone recording.
+
 Target runtime: about 3 minutes. The final action in the recording is the
 single, fixed $0.50 agent-to-agent preview. Do not click anything after the
 receipt appears.

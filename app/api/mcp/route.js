@@ -272,9 +272,11 @@ function validateModernRequest(req, request) {
   return null;
 }
 
+const MAX_TOOL_TEXT_LENGTH = 64 * 1024;
+
 function safeToolText(value) {
   const text = JSON.stringify(value);
-  return text.length <= 48 * 1024 ? text : JSON.stringify({ error: { code: 'OUTPUT_TOO_LARGE', safeMessage: 'The result was larger than the public output limit.' } });
+  return Buffer.byteLength(text, 'utf8') <= MAX_TOOL_TEXT_LENGTH ? text : JSON.stringify({ error: { code: 'OUTPUT_TOO_LARGE', safeMessage: 'The result was larger than the public output limit.' } });
 }
 
 function toolSuccess(data, meta = null) {
@@ -563,6 +565,7 @@ async function callTool(name, args, request) {
       ui: { resourceUri: ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI },
       'openai/outputTemplate': ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI,
       'openai/widgetAccessible': true,
+      untrustedContentHint: true,
       'openai/toolInvocation/invoking': 'Opening the account form…',
       'openai/toolInvocation/invoked': 'The account form is ready.'
     });
@@ -852,10 +855,18 @@ export async function GET(req) {
   }
 
   const requestUrl = new URL(req.url);
+  // Next's dev server can normalize a loopback request URL to `localhost`
+  // even when the caller connected to 127.0.0.1. Preserve the actual local
+  // host for an honest local capability check while retaining the public
+  // request origin everywhere else.
+  const requestHost = req.headers.get('host');
+  const advertisedOrigin = requestUrl.hostname === 'localhost' && requestHost
+    ? `${requestUrl.protocol}//${requestHost}`
+    : requestUrl.origin;
   return NextResponse.json({
     service: MCP_SERVER_NAME,
     version: MCP_SERVER_VERSION,
-    endpoint: `${requestUrl.origin}${requestUrl.pathname}`,
+    endpoint: `${advertisedOrigin}${requestUrl.pathname}`,
     protocols: [MCP_PROTOCOL_VERSION, ...MCP_SUPPORTED_LEGACY_VERSIONS],
     transport: 'Streamable HTTP with JSON responses over POST',
     note: 'POST JSON-RPC requests here. Public reads are bounded; checkout initiation and workshop-key revocation are explicit, narrow side effects.'

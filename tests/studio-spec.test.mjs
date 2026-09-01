@@ -8,7 +8,7 @@ import {
 } from '../lib/studio/spec.js';
 
 test('preset projects always produce an editable stage total matching duration', () => {
-  for (const durationSec of [5 * 60, 10 * 60, 15 * 60, 20 * 60]) {
+  for (const durationSec of [5 * 60, 10 * 60, 15 * 60, 20 * 60, 30 * 60, 45 * 60, 60 * 60]) {
     const spec = createStudioSpecFromPreset({ durationSec });
     assert.equal(spec.durationSec, durationSec);
     assert.equal(spec.stages.reduce((total, stage) => total + stage.durationSec, 0), durationSec);
@@ -16,9 +16,10 @@ test('preset projects always produce an editable stage total matching duration',
   }
 });
 
-test('Studio duration stays within the 5 to 20 minute product boundary', () => {
+test('Studio duration stays within the 5 to 60 minute product boundary', () => {
   assert.equal(createStudioSpecFromPreset({ durationSec: 1 }).durationSec, STUDIO_MIN_DURATION_SEC);
   assert.equal(createStudioSpecFromPreset({ durationSec: 99999 }).durationSec, STUDIO_MAX_DURATION_SEC);
+  assert.throws(() => validateStudioSpec({ ...createStudioSpecFromPreset({ durationSec: 60 * 60 }), durationSec: 60 * 60 + 1 }), /less than or equal to 3600/);
   assert.deepEqual(createStudioSpecFromPreset({ durationSec: 600 }).exportFormats, ['mp3']);
 });
 

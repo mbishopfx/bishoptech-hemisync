@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Check, CircleNotch, ShieldCheck, Sparkle } from '@phosphor-icons/react';
+import { ArrowRight, Check, CircleNotch, ShieldCheck, Target } from '@phosphor-icons/react';
 import { ToneMachineDemo } from '@/components/machine/ToneMachineDemo';
 
 const DEFAULT_INTENTION = 'I need a focused writing block';
@@ -193,7 +193,7 @@ export function TryCockpit() {
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">01 · Intent clarifier</p>
                 <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">What does the next moment need?</h2>
               </div>
-              <Sparkle className="size-6 text-[#b6ddcc]/60" weight="fill" aria-hidden="true" />
+              <Target className="size-6 text-[#b6ddcc]/60" weight="duotone" aria-hidden="true" />
             </div>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <input

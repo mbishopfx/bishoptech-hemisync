@@ -8,7 +8,7 @@ import { authedFetch, getAccessToken } from '@/lib/frontend/api';
 import { toBackendUrl } from '@/lib/frontend/backend-url';
 import { createStudioSpecFromPreset, STUDIO_MAX_DURATION_SEC, STUDIO_MIN_DURATION_SEC } from '@/lib/studio/spec';
 
-const DURATION_PRESETS = [5, 10, 15, 20];
+const DURATION_PRESETS = [15, 30, 45, 60];
 const STATE_OPTIONS = ['delta', 'theta', 'alpha', 'beta', 'gamma'];
 const ACTIVE_PHASES = new Set(['queued', 'rendering', 'uploading', 'validating']);
 const STUDIO_STEPS = [
@@ -39,11 +39,11 @@ function phaseLabel(phase) {
   })[phase] || 'Ready';
 }
 
-function normalizeClientSpec(input) {
+function normalizeClientSpec(input, defaultDurationSec = 20 * 60) {
   if (!input || input.durationSec > STUDIO_MAX_DURATION_SEC || input.durationSec < STUDIO_MIN_DURATION_SEC) {
     return createStudioSpecFromPreset({
       presetId: input?.journeyPresetId,
-      durationSec: clamp(input?.durationSec || 20 * 60, STUDIO_MIN_DURATION_SEC, STUDIO_MAX_DURATION_SEC)
+      durationSec: clamp(input?.durationSec || defaultDurationSec, STUDIO_MIN_DURATION_SEC, STUDIO_MAX_DURATION_SEC)
     });
   }
   return { ...input, exportFormats: ['mp3'] };
@@ -52,7 +52,7 @@ function normalizeClientSpec(input) {
 function StudioSlider({ label, value, min, max, step = 1, unit = '', onChange, tone = 'cyan', compact = false }) {
   const numericValue = Number(value);
   const progress = ((numericValue - min) / Math.max(1, max - min)) * 100;
-  const activeColor = tone === 'purple' ? '#a855f7' : '#22d3ee';
+  const activeColor = tone === 'purple' ? '#8b7898' : '#548477';
 
   return (
     <label className={`block ${compact ? 'space-y-1.5' : 'space-y-2.5'}`}>
@@ -122,10 +122,11 @@ function SignalVisualizer({ state = 'theta', active = false }) {
   );
 }
 
-export function StudioView({ initialProject = null, initialRender = null, onChanged, onOpenLibrary }) {
+export function StudioView({ initialProject = null, initialRender = null, onChanged, onOpenLibrary, mode = 'studio', seedTone = null }) {
   const [project, setProject] = useState(initialProject);
   const [name, setName] = useState(initialProject?.name || 'My Cognistration Session');
-  const [spec, setSpec] = useState(() => normalizeClientSpec(initialProject?.spec));
+  const workshopDefaultDuration = mode === 'workshop' ? STUDIO_MAX_DURATION_SEC : 20 * 60;
+  const [spec, setSpec] = useState(() => normalizeClientSpec(initialProject?.spec, workshopDefaultDuration));
   const [activeStep, setActiveStep] = useState(1);
   const [activeStageId, setActiveStageId] = useState(() => spec.stages[0]?.id || null);
   const [saving, setSaving] = useState(false);
@@ -144,14 +145,29 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
     if (!initialProject) return;
     setProject(initialProject);
     setName(initialProject.name);
-    const nextSpec = normalizeClientSpec(initialProject.spec);
+    const nextSpec = normalizeClientSpec(initialProject.spec, workshopDefaultDuration);
     setSpec(nextSpec);
     setActiveStageId(nextSpec.stages[0]?.id || null);
-  }, [initialProject]);
+  }, [initialProject, workshopDefaultDuration]);
 
   useEffect(() => {
     if (initialRender) setRender(initialRender);
   }, [initialRender]);
+
+  useEffect(() => {
+    if (!seedTone || project) return;
+    const baseFreqHz = Number(seedTone.baseFreqHz || seedTone.base_freq_hz || 220);
+    const targetState = seedTone.targetState || seedTone.target_state || seedTone.state;
+    if (!Number.isFinite(baseFreqHz) && !targetState) return;
+    setSpec((current) => ({
+      ...current,
+      ...(targetState ? { targetState } : {}),
+      stages: current.stages.map((stage) => ({
+        ...stage,
+        ...(Number.isFinite(baseFreqHz) ? { carrierHz: Math.min(2000, Math.max(50, baseFreqHz)) } : {})
+      }))
+    }));
+  }, [project, seedTone]);
 
   useEffect(() => {
     if (render?.phase !== 'completed' || downloads) return;
@@ -181,50 +197,59 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
     if (audioContextRef.current) audioContextRef.current.close().catch(() => {});
   }, [stopPreview]);
 
-  const previewStage = useCallback((stage) => {
+  const previewStage = useCallback(async (stage) => {
     stopPreview();
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) {
       setError('This browser does not support Web Audio preview.');
       return;
     }
-    const context = audioContextRef.current || new AudioContextClass();
-    audioContextRef.current = context;
-    void context.resume();
-    const duration = 20;
-    const carrier = Number(stage.carrierHz || 220);
-    const left = context.createOscillator();
-    const right = context.createOscillator();
-    const merger = context.createChannelMerger(2);
-    const gain = context.createGain();
-    left.type = 'sine';
-    right.type = 'sine';
-    left.frequency.setValueAtTime(carrier, context.currentTime);
-    right.frequency.setValueAtTime(carrier + stage.deltaHz.from, context.currentTime);
-    right.frequency.linearRampToValueAtTime(carrier + stage.deltaHz.to, context.currentTime + duration);
-    gain.gain.setValueAtTime(0, context.currentTime);
-    gain.gain.linearRampToValueAtTime(0.12, context.currentTime + 1);
-    gain.gain.setValueAtTime(0.12, context.currentTime + duration - 1);
-    gain.gain.linearRampToValueAtTime(0, context.currentTime + duration);
-    left.connect(merger, 0, 0);
-    right.connect(merger, 0, 1);
-    merger.connect(gain);
-    gain.connect(context.destination);
-    left.start();
-    right.start();
-    left.stop(context.currentTime + duration);
-    right.stop(context.currentTime + duration);
-    previewNodesRef.current = [left, right, merger, gain];
-    previewTimerRef.current = setTimeout(stopPreview, duration * 1000);
-    setPreviewingStageId(stage.id);
-    setError('');
+    try {
+      const context = audioContextRef.current || new AudioContextClass();
+      audioContextRef.current = context;
+      await context.resume();
+      if (context.state !== 'running') {
+        throw new Error('The browser did not allow the stage preview to start. Press the preview button again.');
+      }
+
+      const duration = 20;
+      const carrier = Number(stage.carrierHz || 220);
+      const left = context.createOscillator();
+      const right = context.createOscillator();
+      const merger = context.createChannelMerger(2);
+      const gain = context.createGain();
+      left.type = 'sine';
+      right.type = 'sine';
+      left.frequency.setValueAtTime(carrier, context.currentTime);
+      right.frequency.setValueAtTime(carrier + stage.deltaHz.from, context.currentTime);
+      right.frequency.linearRampToValueAtTime(carrier + stage.deltaHz.to, context.currentTime + duration);
+      gain.gain.setValueAtTime(0, context.currentTime);
+      gain.gain.linearRampToValueAtTime(0.12, context.currentTime + 1);
+      gain.gain.setValueAtTime(0.12, context.currentTime + duration - 1);
+      gain.gain.linearRampToValueAtTime(0, context.currentTime + duration);
+      left.connect(merger, 0, 0);
+      right.connect(merger, 0, 1);
+      merger.connect(gain);
+      gain.connect(context.destination);
+      left.start();
+      right.start();
+      left.stop(context.currentTime + duration);
+      right.stop(context.currentTime + duration);
+      previewNodesRef.current = [left, right, merger, gain];
+      previewTimerRef.current = setTimeout(stopPreview, duration * 1000);
+      setPreviewingStageId(stage.id);
+      setError('');
+    } catch (cause) {
+      stopPreview();
+      setError(cause.message || 'Stage preview could not start.');
+    }
   }, [stopPreview]);
 
   const previewSession = () => {
     const first = spec.stages[0];
     const last = spec.stages.at(-1) || first;
     if (!first) return;
-    previewStage({
+    void previewStage({
       ...first,
       id: 'session-preview',
       deltaHz: { from: first.deltaHz.from, to: last.deltaHz.to }
@@ -425,21 +450,21 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 pb-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">Private Production Workspace</p>
-          <h2 className="mt-2 text-4xl font-light tracking-tight text-white md:text-5xl">Cognistration Studio</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/45">Build your session one decision at a time. Every adjustment updates the frequency journey before a private master is created.</p>
+    <div className="workspace-studio mx-auto max-w-6xl space-y-6 pb-8">
+      <div className="studio-header grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+        <div className="min-w-0 max-w-3xl">
+          <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">{mode === 'workshop' ? '60-minute personal workshop' : 'Private production workspace'}</p>
+          <h2 className="mt-2 text-4xl font-light tracking-tight text-white md:text-5xl">{mode === 'workshop' ? 'Build your listening hour.' : 'Cognistration Studio'}</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/45">{mode === 'workshop' ? 'Start with a direction, shape the arc, and render one uninterrupted hour you can return to whenever the room gets noisy.' : 'Build your session one decision at a time. Every adjustment updates the frequency journey before a private master is created.'}</p>
         </div>
-        <button type="button" onClick={saveProject} disabled={saving || renderActive} className="self-start rounded-full border border-white/10 bg-white/[0.035] px-5 py-2.5 text-[10px] font-mono uppercase tracking-[0.2em] text-white/55 transition hover:border-cyan-500/25 hover:text-cyan-200 disabled:opacity-40">{saving ? 'Saving…' : project?.id ? 'Save draft' : 'Create draft'}</button>
+        <button type="button" onClick={saveProject} disabled={saving || renderActive} className="workspace-glass-button workspace-glass-button--quiet studio-header__action self-start whitespace-nowrap rounded-full px-5 py-3 text-[10px] font-mono uppercase tracking-[0.2em] transition disabled:opacity-40 lg:mt-1">{saving ? 'Saving…' : project?.id ? 'Save draft' : 'Create draft'}</button>
       </div>
 
-      <nav aria-label="Studio steps" className="grid grid-cols-2 gap-2 rounded-[1.75rem] border border-white/[0.06] bg-black/35 p-2 backdrop-blur-2xl md:grid-cols-4">
-        {STUDIO_STEPS.map((step) => <button key={step.id} type="button" onClick={() => setActiveStep(step.id)} className={`group flex items-center gap-3 rounded-2xl px-3 py-3 text-left transition ${activeStep === step.id ? 'bg-gradient-to-r from-cyan-500/15 to-purple-500/10 text-white shadow-[inset_0_0_0_1px_rgba(34,211,238,.18)]' : 'text-white/35 hover:bg-white/[0.035] hover:text-white/65'}`}><span className={`flex size-8 items-center justify-center rounded-full border font-mono text-[10px] ${activeStep === step.id ? 'border-cyan-400/35 bg-cyan-500/15 text-cyan-200' : 'border-white/10 text-white/30'}`}>{step.id}</span><span><span className="block text-[9px] font-mono uppercase tracking-[0.2em]">Step {step.id}</span><span className="mt-0.5 block text-xs">{step.label}</span></span></button>)}
+      <nav aria-label="Studio steps" className="studio-stepper grid grid-cols-2 gap-2 rounded-[1.75rem] border border-white/[0.06] bg-black/35 p-2 backdrop-blur-2xl md:grid-cols-4">
+        {STUDIO_STEPS.map((step) => <button key={step.id} type="button" data-active={activeStep === step.id} onClick={() => setActiveStep(step.id)} className={`studio-step group flex min-h-[4.25rem] min-w-0 items-start gap-3 rounded-2xl px-4 py-3.5 text-left transition ${activeStep === step.id ? 'bg-gradient-to-r from-cyan-500/15 to-purple-500/10 text-white shadow-[inset_0_0_0_1px_rgba(34,211,238,.18)]' : 'text-white/35 hover:bg-white/[0.035] hover:text-white/65'}`}><span className={`studio-step__number flex size-9 shrink-0 items-center justify-center rounded-full border font-mono text-[11px] ${activeStep === step.id ? 'border-cyan-400/35 bg-cyan-500/15 text-cyan-200' : 'border-white/10 text-white/30'}`}>{step.id}</span><span className="min-w-0 pt-0.5"><span className="block text-[9px] font-mono uppercase tracking-[0.2em]">Step {step.id}</span><span className="mt-0.5 block truncate text-xs">{step.label}</span></span></button>)}
       </nav>
 
-      <Card className="overflow-hidden rounded-[2.25rem] border-white/[0.07] bg-[radial-gradient(circle_at_12%_0%,rgba(34,211,238,.055),transparent_28%),radial-gradient(circle_at_90%_100%,rgba(168,85,247,.06),transparent_30%),rgba(24,24,27,.62)] p-0 backdrop-blur-3xl">
+      <Card className="workspace-glass-card overflow-hidden rounded-[2.25rem] border-white/[0.07] bg-[radial-gradient(circle_at_12%_0%,rgba(34,211,238,.055),transparent_28%),radial-gradient(circle_at_90%_100%,rgba(168,85,247,.06),transparent_30%),rgba(24,24,27,.62)] p-0 backdrop-blur-3xl">
         <div className="min-h-[560px] p-5 md:p-8">
           {activeStep === 1 && <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
             <section className="space-y-6">
@@ -447,7 +472,7 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
               <label className="block space-y-2"><span className="text-[9px] font-mono uppercase tracking-widest text-white/35">Project name</span><input value={name} onChange={(event) => setName(event.target.value)} className="w-full rounded-2xl border border-white/[0.08] bg-black/35 px-4 py-3.5 text-sm text-white outline-none transition focus:border-cyan-500/35" /></label>
               <div><p className="text-[9px] font-mono uppercase tracking-widest text-white/35">Intended state</p><div className="mt-2 grid grid-cols-5 gap-2">{STATE_OPTIONS.map((state) => <button key={state} type="button" onClick={() => setSpec((current) => ({ ...current, targetState: state }))} className={`rounded-2xl border px-2 py-3 text-[10px] font-mono uppercase transition ${spec.targetState === state ? 'border-cyan-400/30 bg-cyan-500/12 text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,.08)]' : 'border-white/[0.06] bg-black/20 text-white/35 hover:text-white/65'}`}>{state}</button>)}</div></div>
               <label className="block space-y-2"><span className="text-[9px] font-mono uppercase tracking-widest text-white/35">Guided journey</span><select value={spec.journeyPresetId} onChange={(event) => selectPreset(event.target.value)} className="w-full rounded-2xl border border-white/[0.08] bg-zinc-950 px-4 py-3.5 text-sm text-white outline-none focus:border-cyan-500/35">{JourneyPresetOptions.map((preset) => <option key={preset.id} value={preset.id}>{preset.name}</option>)}</select></label>
-              <div><div className="flex items-center justify-between"><span className="text-[9px] font-mono uppercase tracking-widest text-white/35">Session duration</span><span className="font-mono text-xs text-cyan-200">{formatDuration(totalDuration)}</span></div><div className="mt-3 flex flex-wrap gap-2">{DURATION_PRESETS.map((minutes) => <button key={minutes} type="button" onClick={() => setDurationMinutes(minutes)} className={`rounded-full border px-4 py-2 text-xs font-mono transition ${Math.round(totalDuration / 60) === minutes ? 'border-cyan-500/35 bg-cyan-500/15 text-cyan-100' : 'border-white/[0.07] bg-black/20 text-white/35 hover:text-white'}`}>{minutes} min</button>)}</div><div className="mt-4 rounded-2xl border border-white/[0.06] bg-black/25 p-4"><StudioSlider label="Custom duration" value={Math.round(totalDuration / 60)} min={5} max={20} unit=" min" onChange={setDurationMinutes} /></div><p className="mt-2 text-[10px] leading-5 text-white/25">Studio sessions are capped at 20 minutes while exports use the current Supabase storage tier.</p></div>
+              <div><div className="flex items-center justify-between"><span className="text-[9px] font-mono uppercase tracking-widest text-white/35">Session duration</span><span className="font-mono text-xs text-cyan-200">{formatDuration(totalDuration)}</span></div><div className="mt-3 flex flex-wrap gap-2">{DURATION_PRESETS.map((minutes) => <button key={minutes} type="button" onClick={() => setDurationMinutes(minutes)} className={`rounded-full border px-4 py-2 text-xs font-mono transition ${Math.round(totalDuration / 60) === minutes ? 'border-cyan-500/35 bg-cyan-500/15 text-cyan-100' : 'border-white/[0.07] bg-black/20 text-white/35 hover:text-white'}`}>{minutes} min</button>)}</div><div className="mt-4 rounded-2xl border border-white/[0.06] bg-black/25 p-4"><StudioSlider label="Custom duration" value={Math.round(totalDuration / 60)} min={5} max={60} unit=" min" onChange={setDurationMinutes} /></div><p className="mt-2 text-[10px] leading-5 text-white/25">Private sessions can run up to 60 minutes. MP3 exports are delivered to your account library.</p></div>
             </section>
             <section className="space-y-4"><SignalVisualizer state={spec.targetState} active={previewingStageId === 'session-preview'} /><div className="grid grid-cols-2 gap-3">{spec.stages.slice(0, 4).map((stage, index) => <div key={stage.id} className="rounded-2xl border border-white/[0.06] bg-black/25 p-4"><span className="font-mono text-[9px] text-cyan-300/70">0{index + 1}</span><p className="mt-2 text-sm text-white/75">{stage.name}</p><p className="mt-1 font-mono text-[9px] text-purple-300/70">{stage.deltaHz.from} → {stage.deltaHz.to} Hz</p></div>)}</div></section>
           </div>}
@@ -483,7 +508,7 @@ export function StudioView({ initialProject = null, initialRender = null, onChan
           {(error || message) && <div className={`mt-5 rounded-2xl border px-4 py-3 text-xs ${error ? 'border-red-500/20 bg-red-500/10 text-red-200' : 'border-emerald-500/15 bg-emerald-500/[0.08] text-emerald-200'}`} role={error ? 'alert' : 'status'}>{error || message}</div>}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-white/[0.07] bg-black/75 px-5 py-4 backdrop-blur-2xl md:px-8"><button type="button" onClick={() => setActiveStep((step) => Math.max(1, step - 1))} disabled={activeStep === 1} className="rounded-full border border-white/10 px-5 py-2.5 text-[10px] font-mono uppercase tracking-widest text-white/45 transition hover:text-white disabled:opacity-20">Back</button><span className="hidden text-[9px] font-mono uppercase tracking-[0.2em] text-white/25 sm:block">Step {activeStep} of 4 · {STUDIO_STEPS[activeStep - 1].label}</span>{activeStep < 4 ? <button type="button" onClick={advanceStep} disabled={saving} className="rounded-full bg-cyan-300 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black transition hover:bg-cyan-200 disabled:opacity-40">{activeStep === 1 && saving ? 'Saving…' : 'Continue'} <span aria-hidden>→</span></button> : <button type="button" onClick={render?.phase === 'queued' ? resumeQueuedRender : startRender} disabled={!durationValid || startingRender || (renderActive && render?.phase !== 'queued') || saving} className="rounded-full bg-cyan-300 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black shadow-[0_0_30px_rgba(34,211,238,.14)] transition hover:bg-cyan-200 disabled:opacity-35">{startingRender ? 'Starting Railway…' : render?.phase === 'queued' ? 'Start queued render' : renderActive ? phaseLabel(render.phase) : render?.phase === 'failed' ? 'Retry render' : 'Render session'}</button>}</div>
+        <div className="flex items-center justify-between gap-3 border-t border-white/[0.07] bg-black/75 px-5 py-4 backdrop-blur-2xl md:px-8"><button type="button" onClick={() => setActiveStep((step) => Math.max(1, step - 1))} disabled={activeStep === 1} className="workspace-glass-button workspace-glass-button--quiet rounded-full px-5 py-2.5 text-[10px] font-mono uppercase tracking-widest disabled:opacity-20">Back</button><span className="hidden text-[9px] font-mono uppercase tracking-[0.2em] text-white/25 sm:block">Step {activeStep} of 4 · {STUDIO_STEPS[activeStep - 1].label}</span>{activeStep < 4 ? <button type="button" onClick={advanceStep} disabled={saving} className="workspace-glass-button workspace-glass-button--primary rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] disabled:opacity-40">{activeStep === 1 && saving ? 'Saving…' : 'Continue'} <span aria-hidden>→</span></button> : <button type="button" onClick={render?.phase === 'queued' ? resumeQueuedRender : startRender} disabled={!durationValid || startingRender || (renderActive && render?.phase !== 'queued') || saving} className="workspace-glass-button workspace-glass-button--primary rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] disabled:opacity-35">{startingRender ? 'Starting Railway…' : render?.phase === 'queued' ? 'Start queued render' : renderActive ? phaseLabel(render.phase) : render?.phase === 'failed' ? 'Retry render' : 'Render session'}</button>}</div>
       </Card>
     </div>
   );

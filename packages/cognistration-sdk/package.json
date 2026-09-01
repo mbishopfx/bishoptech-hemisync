@@ -1,0 +1,14 @@
+{
+  "name": "@cognistration/sdk",
+  "version": "0.1.0",
+  "description": "Minimal TypeScript client for Cognistration's public MCP and REST surfaces.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "src", "README.md"],
+  "scripts": { "build": "tsc --declaration --outDir dist src/index.ts" },
+  "repository": { "type": "git", "url": "https://github.com/mbishopfx/bishoptech-hemisync.git", "directory": "packages/cognistration-sdk" },
+  "homepage": "https://cognistration.com/docs",
+  "license": "MIT"
+}

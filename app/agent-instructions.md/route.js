@@ -103,10 +103,30 @@ The signed-in dashboard progressively exposes private workspace tools. These too
 Never infer a member token, expose another user's records, submit payment, or start a render without the user's explicit confirmation.
 `;
 
-const publishedInstructions = instructions.replace(
+const publishedInstructions = `${instructions.replaceAll(
   'ui://cognistration/machine-generator/v2.html',
   'ui://cognistration/machine-generator/v3.html'
-);
+)}
+
+## Discovery and compatibility surfaces
+
+- Agent mode: https://cognistration.com/?mode=agent
+- Agent card: https://cognistration.com/.well-known/agent-card.json
+- Agentic Resource Discovery: https://cognistration.com/.well-known/ard.json
+- API catalog: https://cognistration.com/.well-known/api-catalog
+- Skills index: https://cognistration.com/.well-known/agent-skills/index.json
+- MCP server card: https://cognistration.com/.well-known/mcp/server-card.json
+- Documentation MCP: https://cognistration.com/api/docs-mcp
+- Natural-language endpoint: https://cognistration.com/ask
+- A2A compatibility endpoint: https://cognistration.com/a2a
+- Read-only batch endpoint: https://cognistration.com/api/batch
+- Deterministic sandbox: https://cognistration.com/api/sandbox
+- Async capability status: https://cognistration.com/api/jobs
+- Versioned API status: https://cognistration.com/api/v1
+- TypeScript, Python, Go, Ruby, and CLI package source: https://cognistration.com/developers/llms.txt
+
+The public REST surface returns structured JSON errors with \`code\`, \`message\`, \`retryable\`, and \`resolution\` fields where applicable. Collection responses use opaque cursors when pagination is needed. Respect \`RateLimit-*\` and \`Retry-After\` headers. The OAuth metadata is discovery-only unless \`authorization_server_status\` reports \`enabled\`; do not treat a published endpoint as permission to submit credentials.
+`;
 
 export async function GET() {
   return new Response(publishedInstructions, {

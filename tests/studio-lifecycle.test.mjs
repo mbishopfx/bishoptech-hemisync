@@ -23,9 +23,12 @@ test('delivery email records have a rapid-send cooldown', () => {
   assert.doesNotThrow(() => assertDeliveryCooldown({ delivery_email_sent_at: '2026-07-13T11:58:00.000Z' }, now));
 });
 
-test('dashboard navigation and data flow omit social surfaces while preserving Sync generation', async () => {
+test('dashboard navigation keeps member practice surfaces while preserving Sync generation', async () => {
   const source = await readFile(new URL('../app/dashboard/page.jsx', import.meta.url), 'utf8');
-  assert.doesNotMatch(source, /FeedView|JournalView|SettingsView|Broadcast Wave|\/api\/feed/);
+  assert.doesNotMatch(source, /FeedView|SettingsView|Broadcast Wave|\/api\/feed/);
+  assert.match(source, /DailyView/);
+  assert.match(source, /JournalView/);
+  assert.match(source, /mode="studio"/);
   assert.match(source, /fetch\('\/api\/agent'/);
   assert.match(source, /Save to Library/);
   assert.match(source, /id: 'studio', label: 'Studio'/);
@@ -48,4 +51,12 @@ test('Railway render endpoint accepts authenticated cross-origin starts', async 
   assert.match(source, /corsJson/);
   assert.match(corsSource, /DEFAULT_ALLOWED_HEADERS = 'Authorization,/);
   assert.match(corsSource, /\$\+\*\?\./);
+});
+
+test('long-form Workshop previews verify a running AudioContext before starting nodes', async () => {
+  const source = await readFile(new URL('../components/dashboard/StudioView.jsx', import.meta.url), 'utf8');
+  assert.match(source, /await context\.resume\(\)/);
+  assert.match(source, /context\.state !== 'running'/);
+  assert.match(source, /Stage preview could not start/);
+  assert.match(source, /mode === 'workshop' \? STUDIO_MAX_DURATION_SEC/);
 });

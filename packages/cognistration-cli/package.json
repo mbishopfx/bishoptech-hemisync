@@ -1,0 +1,11 @@
+{
+  "name": "@cognistration/cli",
+  "version": "0.1.0",
+  "description": "CLI discovery client for Cognistration's public agent surfaces.",
+  "type": "module",
+  "bin": { "cognistration": "./bin/cognistration.mjs" },
+  "files": ["bin", "README.md"],
+  "repository": { "type": "git", "url": "https://github.com/mbishopfx/bishoptech-hemisync.git", "directory": "packages/cognistration-cli" },
+  "homepage": "https://cognistration.com/docs",
+  "license": "MIT"
+}

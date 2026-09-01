@@ -11,6 +11,24 @@ export const DEFAULT_OCEAN_PARAMS = Object.freeze({
   timeScale: 1
 });
 
+const OCEAN_STATE_ANGLES = Object.freeze({
+  delta: 8,
+  theta: 34,
+  alpha: 96,
+  beta: 168,
+  gamma: 228,
+  custom: 300
+});
+
+function finiteNumber(value, fallback) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
 function hash32(value) {
   let next = value >>> 0;
   next ^= next >>> 16;
@@ -62,5 +80,34 @@ export function createOceanProfile(seed) {
     sunElevation: rounded(4 + unit(normalizedSeed, 8) * 28, 1),
     sunAzimuth: rounded(unit(normalizedSeed, 9) * 360),
     timeScale: rounded(0.6 + unit(normalizedSeed, 10) * 1.2, 2)
+  };
+}
+
+/**
+ * Map the live listening controls onto the visual simulation while keeping
+ * the seed-driven personality of each ocean run intact.
+ */
+export function createOceanProfileFromControls(seed, controls = {}) {
+  const base = createOceanProfile(seed);
+  const carrierHz = rounded(clamp(finiteNumber(controls.carrierFreq ?? controls.carrierHz, 200), 100, 400));
+  const beatHz = rounded(clamp(finiteNumber(controls.beatFreq ?? controls.beatHz, 6), 0.5, 30), 1);
+  const volume = rounded(clamp(finiteNumber(controls.volume, 80), 0, 100));
+  const brainState = String(controls.brainState ?? controls.state ?? 'theta').toLowerCase();
+  const carrierRatio = (carrierHz - 100) / 300;
+  const beatRatio = (beatHz - 0.5) / 29.5;
+  const energy = volume / 100;
+  const stateAngle = OCEAN_STATE_ANGLES[brainState] ?? OCEAN_STATE_ANGLES.custom;
+
+  return {
+    ...base,
+    windSpeed: rounded(clamp(14 + beatRatio * 22 + carrierRatio * 6, 12, 46), 1),
+    windAngle: rounded((base.windAngle + stateAngle + carrierRatio * 40) % 360),
+    amplitude: rounded(clamp(1.8 + energy * 6.4 + carrierRatio * 2.5, 1.5, 12), 1),
+    patchSize: rounded(clamp(210 + (1 - carrierRatio) * 80 - beatRatio * 20, 150, 480)),
+    heightScale: rounded(clamp(22 + energy * 24 + beatRatio * 10, 20, 62), 1),
+    choppyScale: rounded(clamp(8 + carrierRatio * 12 + beatRatio * 8, 7, 31), 1),
+    foamScale: rounded(clamp(0.85 - energy * 0.45 - beatRatio * 0.2, 0.2, 1), 2),
+    timeScale: rounded(clamp(0.58 + beatRatio * 1.18, 0.58, 1.8), 2),
+    sourceControls: { carrierHz, beatHz, volume, brainState }
   };
 }

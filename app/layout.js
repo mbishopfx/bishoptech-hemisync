@@ -7,7 +7,7 @@ import { CursorLight } from '@/components/visuals/CursorLight';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
 const siteName = 'Cognistration';
-const siteDescription = 'Cognistration turns a simple intention into a personal listening session for focus, rest, and intentional reset.';
+const siteDescription = 'Cognistration is a personal meditation and listening platform that creates controlled audio sessions for focus, rest, reflection, and intentional reset.';
 
 const displayFont = Manrope({
   subsets: ['latin'],
@@ -33,7 +33,7 @@ const websiteId = buildAbsoluteUrl('/#website');
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} — Personal audio sessions for focus, rest, and intentional reset`,
+    default: `${siteName} — A personal meditation and listening platform`,
     template: '%s — Cognistration'
   },
   description: siteDescription,
@@ -47,13 +47,16 @@ export const metadata = {
     'premium audio experience'
   ],
   alternates: {
-    canonical: '/'
+    canonical: '/',
+    types: {
+      'text/markdown': '/index.md'
+    }
   },
   openGraph: {
     type: 'website',
     url: siteUrl,
     siteName,
-    title: `${siteName} — Personal audio sessions for focus, rest, and intentional reset`,
+    title: `${siteName} — A personal meditation and listening platform`,
     description: siteDescription,
     images: [
       {
@@ -66,7 +69,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${siteName} by BishopTech — Premium audio sessions for focus, rest, and intentional reset`,
+    title: `${siteName} by BishopTech — A personal meditation and listening platform`,
     description: siteDescription,
     images: ['/images/og-preview.png']
   },
@@ -99,6 +102,16 @@ const organizationJsonLd = {
       alternateName: 'BishopTech',
       url: siteUrl,
       logo: `${siteUrl}/images/cognistration-mark.png`,
+      sameAs: [
+        'https://github.com/mbishopfx/bishoptech-hemisync',
+        'https://github.com/mbishopfx/cognistration-webmcp-challenge',
+        'https://bishoptech.dev'
+      ],
+      knowsAbout: [
+        'auditory attention cues',
+        'frequency-following response',
+        'user-controlled listening sessions'
+      ],
       contactPoint: [
         {
           '@type': 'ContactPoint',
@@ -117,6 +130,77 @@ const organizationJsonLd = {
       publisher: {
         '@id': organizationId
       }
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${siteUrl}/#application`,
+      name: siteName,
+      applicationCategory: 'LifestyleApplication',
+      operatingSystem: 'Web browser',
+      url: siteUrl,
+      description: 'A user-controlled listening platform for focus, rest, reflection, and intentional reset.',
+      offers: {
+        '@type': 'Offer',
+        price: '20.00',
+        priceCurrency: 'USD',
+        url: `${siteUrl}/pricing`,
+        category: 'Lifetime private workspace access'
+      },
+      publisher: { '@id': organizationId },
+      featureList: [
+        'Bounded public tone preview',
+        'Adjustable listening controls',
+        'Private saved sessions with lifetime access'
+      ]
+    },
+    {
+      '@type': 'Service',
+      '@id': `${siteUrl}/#machine-workshop`,
+      name: 'Cognistration Machine Workshop',
+      serviceType: 'User-controlled audio session workshop',
+      provider: { '@id': organizationId },
+      url: `${siteUrl}/machine`,
+      description: 'A bounded browser workshop where a listener can shape carrier, rhythm, state, volume, and duration before choosing whether to preview.'
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Does Cognistration force a brainwave state?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'No. Cognistration presents controllable audio cues and describes frequency-following research without promising or forcing a particular brainwave state.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Can listeners change the tone?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. The visible machine exposes bounded carrier, rhythm, volume, direction, layer, and duration choices so a listener can explore what feels useful and save a repeatable starting point in the private workspace.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Is Cognistration medical treatment?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'No. Cognistration is a general listening and reflection tool, not diagnosis, treatment, or a substitute for professional care.'
+          }
+        }
+      ]
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${siteUrl}/#breadcrumb`,
+      itemListElement: [{
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Cognistration',
+        item: siteUrl
+      }]
     }
   ]
 };
@@ -124,6 +208,11 @@ const organizationJsonLd = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="alternate" type="text/markdown" href="/index.md" />
+        <link rel="ard" href="/.well-known/ard.json" />
+        <link rel="api-catalog" href="/.well-known/api-catalog" />
+      </head>
       <body
         className={`${displayFont.variable} ${sansFont.variable} ${monoFont.variable} min-h-[100dvh] bg-background text-foreground font-sans selection:bg-emerald-700/20`}
       >

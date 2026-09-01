@@ -21,6 +21,7 @@ ENV FFMPEG_PATH=/app/bin/ffmpeg
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/audio ./audio
 COPY --from=deps /app/node_modules/ffmpeg-static/ffmpeg /app/bin/ffmpeg
 

@@ -1,40 +1,20 @@
 const siteUrl = 'https://cognistration.com';
 
-const publicRoutes = [
-  '/',
-  '/blog',
-  '/community',
-  '/pricing',
-  '/packs',
-  '/services',
-  '/tutorial',
-  '/tutorial/meditation-self-exploration',
-  '/tutorial/dreamwork-lucid-dreaming',
-  '/tutorial/astral-projection-out-of-body-experiences',
-  '/tutorial/remote-viewing-stargate-documents',
-  '/machine',
-  '/try',
-  '/privacy',
-  '/terms',
-  '/cookies',
-  '/contact',
-  '/health-warning',
-  '/ai-disclosure',
-  '/llms.txt',
-  '/agent-instructions.md',
-  '/openapi.json',
+// The generated robots response carries the same discovery intent as these
+// optional directives for crawlers that understand them:
+// Agentmap: https://cognistration.com/.well-known/ard.json
+// schemamap: https://cognistration.com/.well-known/schemamap.xml
+
+const aiCrawlerRules = [
+  { userAgent: ['GPTBot', 'ChatGPT-User', 'OAI-SearchBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended', 'Applebot-Extended', 'ora-agent', 'DeepSeekBot'], allow: ['/'] },
+  { userAgent: ['CCBot', 'ByteSpider'], disallow: ['/'] },
+  { userAgent: '*', allow: ['/', '/try', '/docs', '/api/mcp', '/api/capabilities', '/openapi.json', '/agent-instructions.md'], disallow: ['/api/', '/dashboard', '/generate', '/login', '/signup'] }
 ];
 
 export default function robots() {
   return {
-    rules: [
-      {
-        userAgent: '*',
-        allow: publicRoutes,
-        disallow: ['/api/', '/dashboard', '/generate', '/login', '/signup'],
-      }
-    ],
+    rules: aiCrawlerRules,
     sitemap: `${siteUrl}/sitemap.xml`,
-    host: siteUrl,
+    host: siteUrl
   };
 }

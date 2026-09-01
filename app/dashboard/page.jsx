@@ -12,8 +12,9 @@ import { LibraryPlayer } from '@/components/audio/LibraryPlayer';
 import { LibraryBrowser } from '@/components/dashboard/LibraryBrowser';
 import { WorkshopComposer } from '@/components/dashboard/WorkshopComposer';
 import { StudioView } from '@/components/dashboard/StudioView';
+import { DailyView } from '@/components/dashboard/DailyView';
+import { JournalView } from '@/components/dashboard/JournalView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
-import { toBackendUrl } from '@/lib/frontend/backend-url';
 import { getSubscriptionStatusLabel } from '@/lib/billing/entitlements';
 import { MemberWebMcpBridge } from '@/components/agent/MemberWebMcpBridge';
 
@@ -40,15 +41,16 @@ async function readApiResponse(response, fallbackMessage = 'Request failed') {
 }
 
 const navItems = [
+  { id: 'today', label: 'Today', icon: 'calendar_today' },
+  { id: 'journal', label: 'Journal', icon: 'edit_note' },
   { id: 'agent', label: 'Sync', icon: 'psychology' },
-  { id: 'workshop', label: 'Workshop', icon: 'architecture' },
   { id: 'studio', label: 'Studio', icon: 'graphic_eq' },
   { id: 'library', label: 'Library', icon: 'library_music' }
 ];
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('workshop');
+  const [activeTab, setActiveTab] = useState('today');
   const [profile, setProfile] = useState(null);
   const [library, setLibrary] = useState([]);
   const [studioProjects, setStudioProjects] = useState([]);
@@ -64,12 +66,6 @@ export default function DashboardPage() {
 
   const [savingTrack, setSavingTrack] = useState(false);
 
-  // Parent-managed Background Workshop Generation States
-  const [workshopStatus, setWorkshopStatus] = useState('idle'); // 'idle' | 'rendering' | 'saving' | 'completed' | 'failed'
-  const [workshopProgress, setWorkshopProgress] = useState('');
-  const [workshopError, setWorkshopError] = useState('');
-  const [workshopResult, setWorkshopResult] = useState(null);
-  const [workshopSavedTone, setWorkshopSavedTone] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
 
@@ -140,7 +136,8 @@ export default function DashboardPage() {
       const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
       const requestedTab = params?.get('tab');
       const requestedRender = params?.get('render');
-      if (requestedTab && navItems.some((item) => item.id === requestedTab)) setActiveTab(requestedTab);
+      const resolvedTab = requestedTab === 'workshop' ? 'studio' : requestedTab;
+      if (resolvedTab && navItems.some((item) => item.id === resolvedTab)) setActiveTab(resolvedTab);
       if (requestedRender) {
         const matched = workspace?.renders?.find((item) => item.id === requestedRender);
         if (matched) {
@@ -243,103 +240,37 @@ export default function DashboardPage() {
       setSavingTrack(false);
     }
   };
-  const handleWorkshopGenerate = async (composerPayload) => {
-    setWorkshopStatus('rendering');
-    setWorkshopProgress(composerPayload.isWeave ? 'Building a layered listening session...' : 'Preparing your listening session...');
-    setWorkshopError('');
-    setWorkshopResult(null);
-    setWorkshopSavedTone(null);
-
-    try {
-      if (composerPayload.isWeave) {
-        const response = await fetch(toBackendUrl('/api/audio/chain'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(composerPayload.weavePayload)
-        });
-        const data = await readApiResponse(response, 'Layered session build failed');
-
-        if (!response.ok) {
-          throw new Error(data?.error || 'Layered session build failed');
-        }
-
-        setWorkshopResult(data);
-        setWorkshopSavedTone(data.tone);
-        setWorkshopStatus('completed');
-        setWorkshopProgress('');
-        await refreshWorkspace();
-        return;
-      }
-
-      const { audioPayload, metadata } = composerPayload;
-
-      // 1. Call standard generate endpoint
-      const response = await fetch(toBackendUrl('/api/audio/generate'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(audioPayload)
-      });
-      const data = await readApiResponse(response, 'Generation failed');
-
-      if (!response.ok) {
-        throw new Error(data?.error || 'Generation failed');
-      }
-
-      setWorkshopResult(data);
-      setWorkshopStatus('saving');
-      setWorkshopProgress('Saving your custom listening session to your library...');
-
-      // 2. Save tone in database
-      const savePayload = {
-        name: metadata.name.trim() || `${metadata.brainStateLabel} Workshop`,
-        description: metadata.description.trim() || `Custom ${metadata.brainStateLabel} session built from the workshop generator.`,
-        target_state: audioPayload.targetState,
-        duration_sec: data.journey?.totalLengthSec || audioPayload.lengthSec,
-        base_freq_hz: audioPayload.baseFreqHz,
-        delta_path: data.journey?.deltaHzPath || metadata.deltaHzPath,
-        wav_url: data.assets?.wav?.url || data.wav || null,
-        mp3_url: data.assets?.webm?.url || data.webm || data.assets?.mp3?.url || data.mp3 || null,
-        artifact_id: data.artifactId || null,
-        visibility: metadata.visibility,
-        source_session_id: data.journey?.id || audioPayload.journeyPresetId,
-        render_id: data.artifactId || null,
-        frequency_plan: {
-          ...data.journey,
-          selectedPresetId: audioPayload.journeyPresetId,
-          targetState: audioPayload.targetState,
-          focusLevel: audioPayload.focusLevel,
-          breathEnabled: !!audioPayload.breathGuide,
-          breathPattern: audioPayload.breathGuide?.pattern || 'coherent-5.5',
-          backgroundMode: metadata.backgroundMode
-        }
-      };
-
-      const saveResponse = await fetch('/api/library/tones', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(savePayload)
-      });
-      const saveData = await readApiResponse(saveResponse, 'Tone rendered, but saving to the library failed');
-
-      if (!saveResponse.ok) {
-        throw new Error(saveData?.error || 'Tone rendered, but saving to the library failed');
-      }
-
-      setWorkshopSavedTone(saveData.tone);
-      setWorkshopStatus('completed');
-      setWorkshopProgress('');
-      await refreshWorkspace();
-    } catch (err) {
-      console.error('Workshop background generate error:', err);
-      setWorkshopStatus('failed');
-      setWorkshopError(err.message || 'Background generation failed');
-    }
-  };
-
   const handleSignOut = async () => {
     const supabase = getSupabaseBrowserClient();
     await supabase.auth.signOut();
     router.push('/login');
+  };
+
+  const openStudioFromReflection = ({ state = 'theta', notes = '', snippet = '' } = {}) => {
+    const baseByState = { delta: 216, theta: 228, alpha: 238, beta: 246, gamma: 252 };
+    const targetByState = { delta: 3, theta: 6, alpha: 10, beta: 18, gamma: 32 };
+    setSelectedSeedTone({
+      state,
+      target_state: state,
+      baseFreqHz: baseByState[state] || baseByState.theta,
+      targetHz: targetByState[state] || targetByState.theta,
+      notes: notes || snippet
+    });
+    setSelectedStudioProject(null);
+    setSelectedStudioRender(null);
+    setActiveTab('studio');
+  };
+
+  const openFreshStudio = () => {
+    setSelectedSeedTone(null);
+    setSelectedStudioProject(null);
+    setSelectedStudioRender(null);
+    setActiveTab('studio');
+  };
+
+  const handleTabChange = (tab) => {
+    if (tab === 'studio') openFreshStudio();
+    else setActiveTab(tab);
   };
 
 
@@ -375,7 +306,7 @@ export default function DashboardPage() {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleTabChange(item.id)}
                 className={`w-full flex items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-all ${
                   isActive ? 'border-[#b8cbc0] bg-white text-[#1d302c] font-medium shadow-[0_8px_20px_rgba(45,65,59,0.05)]' : 'border-transparent text-[#7a8983] hover:bg-white/70 hover:text-[#315e55]'
                 }`}
@@ -393,18 +324,18 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => setIsAccountMenuOpen((open) => !open)}
-            className="flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/70"
+            className="flex w-full items-center gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors hover:bg-white/70"
             aria-expanded={isAccountMenuOpen}
           >
-            <Avatar className="size-10 border border-[#cbd6cf]">
+            <Avatar className="h-11 w-11 shrink-0 border border-[#cbd6cf]">
               <AvatarImage src={profile?.avatar_url} />
               <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 overflow-hidden">
-              <p className="text-sm font-medium truncate">{profile?.display_name || 'Member'}</p>
-              <p className="truncate text-xs text-[#87968f]">{profile?.email || profile?.username || 'Account'}</p>
+            <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
+              <p className="truncate text-sm font-medium leading-tight">{profile?.display_name || 'Member'}</p>
+              <p className="truncate text-xs leading-tight text-[#87968f]">{profile?.email || profile?.username || 'Account'}</p>
             </div>
-            <span className="material-symbols-outlined text-lg text-[#87968f]">expand_more</span>
+            <span className="material-symbols-outlined shrink-0 text-lg text-[#87968f]" aria-hidden="true">expand_more</span>
           </button>
 
           <AnimatePresence>
@@ -437,9 +368,6 @@ export default function DashboardPage() {
       <main className="relative min-h-[100dvh] w-full flex-1 overflow-x-hidden bg-gradient-to-b from-[#eef1ee] via-[#f7f8f5] to-[#e6eee8]">
         <div className="sr-only" aria-live="polite">
           Private workspace controls are available when supported.
-        </div>
-        <div className="absolute right-6 top-24 z-30 hidden max-w-xs lg:block">
-          <MemberWebMcpBridge />
         </div>
         <div className="pointer-events-none absolute right-0 top-0 h-[400px] w-[800px] bg-[#dbece2]/55 blur-[120px]" />
         
@@ -496,7 +424,7 @@ export default function DashboardPage() {
                           <button
                             key={item.id}
                             onClick={() => {
-                              setActiveTab(item.id);
+                              handleTabChange(item.id);
                               setIsMobileMenuOpen(false);
                             }}
                             className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-left ${
@@ -514,13 +442,13 @@ export default function DashboardPage() {
 
                     <div className="border-t border-[#dbe2dd] pt-4">
                       <div className="flex items-center gap-3 px-2">
-                        <Avatar className="size-8 border border-[#cbd6cf]">
+                        <Avatar className="h-9 w-9 shrink-0 border border-[#cbd6cf]">
                           <AvatarImage src={profile?.avatar_url} />
                           <AvatarFallback>{profile?.display_name?.[0] || 'M'}</AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 overflow-hidden">
-                          <p className="text-xs font-medium truncate">{profile?.display_name || 'Member'}</p>
-                          <p className="truncate text-xs text-[#87968f]">{profile?.email || profile?.username || 'Account'}</p>
+                        <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
+                          <p className="truncate text-xs font-medium leading-tight">{profile?.display_name || 'Member'}</p>
+                          <p className="truncate text-xs leading-tight text-[#87968f]">{profile?.email || profile?.username || 'Account'}</p>
                         </div>
                       </div>
                       <div className="mt-3 space-y-1">
@@ -544,52 +472,16 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* Global Background Generation Banner */}
-        {['rendering', 'saving'].includes(workshopStatus) && (
-          <div className="mx-5 mt-6 flex items-center justify-between gap-4 rounded-2xl border border-[#a8c7b8] bg-[#e5f1e9] px-4 py-3 shadow-[0_10px_28px_rgba(45,65,59,0.06)] animate-pulse md:mx-10">
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#548477] text-lg animate-spin">sync</span>
-              <span className="text-sm text-[#315e55]">
-                Building your session: {workshopProgress || 'Preparing your listening session...'}
-              </span>
-            </div>
-            <button 
-              onClick={() => setActiveTab('workshop')}
-              className="rounded-full border border-[#9db9aa] px-3 py-1 text-xs font-medium text-[#315e55] transition-colors hover:bg-white"
-            >
-              Open Workshop
-            </button>
-          </div>
-        )}
-
-        {/* Global Background Complete Success Banner */}
-        {workshopStatus === 'completed' && workshopSavedTone && (
-          <div className="mx-5 mt-6 flex items-center justify-between gap-4 rounded-2xl border border-[#a8c7b8] bg-[#e5f1e9] px-4 py-3 shadow-[0_10px_28px_rgba(45,65,59,0.06)] animate-bounce md:mx-10" style={{ animationDuration: '3s' }}>
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#548477] text-lg">check_circle</span>
-              <span className="text-sm text-[#315e55]">
-                Saved: Custom tone &quot;{workshopSavedTone.name}&quot; is in your library.
-              </span>
-            </div>
-            <button 
-              onClick={() => {
-                setWorkshopStatus('idle');
-                setActiveTab('library');
-              }}
-              className="rounded-full border border-[#9db9aa] px-3 py-1 text-xs font-medium text-[#315e55] transition-colors hover:bg-white"
-            >
-              View Library
-            </button>
-          </div>
-        )}
-
         {workspaceError && (
           <div className="mx-5 mt-6 rounded-2xl border border-[#caa778]/45 bg-[#fbf5eb] px-4 py-3 text-sm text-[#8b6038] md:mx-10">
             {workspaceError}
           </div>
         )}
 
-        <div className="mx-auto w-full max-w-6xl p-5 md:p-10">
+        <div className="mx-auto w-full max-w-6xl px-5 pb-5 pt-4 md:px-10 md:pb-10 md:pt-6">
+          <div className="mb-5 flex w-full justify-end md:mb-6">
+            <MemberWebMcpBridge />
+          </div>
           <AnimatePresence mode="wait">
             {activeTab === 'agent' && (
               <motion.div
@@ -649,9 +541,11 @@ export default function DashboardPage() {
                   tones={library}
                   projects={studioProjects}
                   renders={studioRenders}
-                  onUseInWorkshop={(tone) => {
+                  onUseInStudio={(tone) => {
                     setSelectedSeedTone(tone);
-                    setActiveTab('workshop');
+                    setSelectedStudioProject(null);
+                    setSelectedStudioRender(null);
+                    setActiveTab('studio');
                   }}
                   onEditProject={(project) => {
                     setSelectedStudioProject(project);
@@ -662,27 +556,27 @@ export default function DashboardPage() {
               </motion.div>
             )}
 
-            {activeTab === 'workshop' && (
+            {activeTab === 'today' && (
               <motion.div
-                key="workshop"
+                key="today"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="space-y-8"
+                exit={{ opacity: 0, y: -20 }}
               >
-                <WorkshopComposer
-                  seedTone={selectedSeedTone}
-                  onGenerated={(tone) => {
-                    setSelectedSeedTone(tone);
-                    refreshWorkspace();
-                  }}
-                  generatingStatus={workshopStatus}
-                  generatingError={workshopError}
-                  generatingProgress={workshopProgress}
-                  generatingResult={workshopResult}
-                  generatingSavedTone={workshopSavedTone}
-                  onStartGenerate={handleWorkshopGenerate}
-                  profile={profile}
-                  library={library}
+                <DailyView onOpenStudio={openFreshStudio} />
+              </motion.div>
+            )}
+
+            {activeTab === 'journal' && (
+              <motion.div
+                key="journal"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <JournalView
+                  onDirectGenerate={openStudioFromReflection}
+                  onInjectToStudio={openStudioFromReflection}
                 />
               </motion.div>
             )}
@@ -694,12 +588,21 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <StudioView
-                  initialProject={selectedStudioProject}
-                  initialRender={selectedStudioRender}
-                  onChanged={refreshWorkspace}
-                  onOpenLibrary={() => setActiveTab('library')}
-                />
+                <div className="space-y-10">
+                  <div className="max-w-2xl"><p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#548477]">Live control deck</p><h2 className="mt-2 text-3xl font-medium tracking-[-0.05em] text-[#1d302c] md:text-4xl">Tune a session in real time.</h2><p className="mt-3 text-sm leading-6 text-[#60716b]">Adjust carrier, rhythm, and volume while the preview is running. When the tone feels right, open Immersive mode and let the ocean follow the same settings.</p></div>
+                  <WorkshopComposer seedTone={selectedSeedTone} profile={profile} library={library} />
+                  <div className="border-t border-[#dbe2dd] pt-10">
+                    <div className="mb-6 max-w-2xl"><p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#548477]">Long-form Studio</p><h3 className="mt-2 text-3xl font-medium tracking-[-0.05em] text-[#1d302c]">Build a private listening session.</h3><p className="mt-3 text-sm leading-6 text-[#60716b]">Shape a staged session, save a draft, or render a high-quality master when you are ready.</p></div>
+                    <StudioView
+                      mode="studio"
+                      seedTone={selectedSeedTone}
+                      initialProject={selectedStudioProject}
+                      initialRender={selectedStudioRender}
+                      onChanged={refreshWorkspace}
+                      onOpenLibrary={() => setActiveTab('library')}
+                    />
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

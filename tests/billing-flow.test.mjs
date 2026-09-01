@@ -19,6 +19,16 @@ test('public pricing exposes one $20 lifetime payment and no public monthly plan
   assert.doesNotMatch(pricing, /7-Day|Free Trial/);
 });
 
+test('pricing featured previews normalize persisted track fields and expose playback failures', async () => {
+  const pricing = await source('app/pricing/page.js');
+  assert.match(pricing, /tone\?\.track_name/);
+  assert.match(pricing, /tone\?\.metadata\?\.sourceToneName/);
+  assert.match(pricing, /tone\?\.metadata\?\.sourceToneSummary/);
+  assert.match(pricing, /audio\.load\(\)/);
+  assert.match(pricing, /aria-pressed=\{isTonePlaying\}/);
+  assert.match(pricing, /This preview could not be loaded/);
+});
+
 test('signup always continues to Stripe and login checks entitlement before dashboard access', async () => {
   const signup = await source('app/signup/SignupClient.jsx');
   const login = await source('app/login/LoginClient.jsx');

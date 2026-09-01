@@ -3,7 +3,7 @@ import { orbitControls, perspectiveCamera } from 'vgpu/scene';
 import { buildOcean, OCEAN_CAMERA } from './scene';
 import { createOceanProfile } from './ocean-profile';
 
-export function createRenderer({ canvas, seed, onReady, onProfileChange, onError }) {
+export function createRenderer({ canvas, seed, profile: initialProfile = null, onReady, onProfileChange, onError }) {
   let disposed = false;
   let gpu;
   let output;
@@ -14,7 +14,7 @@ export function createRenderer({ canvas, seed, onReady, onProfileChange, onError
   let unsubscribeResize;
   let motionQuery;
   let motionListener;
-  const profile = createOceanProfile(seed);
+  let profile = initialProfile ? { ...initialProfile } : createOceanProfile(seed);
   onProfileChange?.(profile);
 
   const stopLoop = () => {
@@ -34,6 +34,20 @@ export function createRenderer({ canvas, seed, onReady, onProfileChange, onError
     controls?.dispose();
     scene?.destroy();
     gpu?.dispose();
+  };
+
+  const updateProfile = (nextProfile) => {
+    if (disposed || !nextProfile) return;
+    profile = { ...profile, ...nextProfile };
+    if (scene) {
+      try {
+        scene.rebuildSpectrum(profile);
+      } catch (error) {
+        onError?.(error);
+        return;
+      }
+    }
+    onProfileChange?.(profile);
   };
 
   const render = (currentFrame, time) => {
@@ -100,5 +114,12 @@ export function createRenderer({ canvas, seed, onReady, onProfileChange, onError
     }
   });
 
-  return { ready, dispose, profile };
+  return {
+    ready,
+    dispose,
+    updateProfile,
+    get profile() {
+      return profile;
+    }
+  };
 }

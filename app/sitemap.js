@@ -12,6 +12,7 @@ const staticRoutes = [
   '/',
   '/blog',
   '/community',
+  '/about',
   '/pricing',
   '/packs',
   '/tutorial',
@@ -30,6 +31,12 @@ const staticRoutes = [
   '/ai-disclosure',
   '/llms.txt',
   '/agent-instructions.md',
+  '/index.md',
+  '/pricing.md',
+  '/docs.md',
+  '/auth.md',
+  '/ask',
+  '/agent-mode',
 ];
 
 export default async function sitemap() {

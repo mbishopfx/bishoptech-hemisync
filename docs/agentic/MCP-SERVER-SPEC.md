@@ -147,7 +147,7 @@ hosts refresh the control bridge.
 
 ## Authenticated member bridge
 
-The public `/api/mcp` endpoint intentionally keeps tool arguments read-only; its signup and feedback render tools mount first-party forms whose submissions are explicit user actions. The signed-in `/dashboard` progressively registers a separate browser bridge with five member tools. The bridge sends the current Supabase bearer token to same-origin member routes and existing Studio render routes; server-side ownership checks are authoritative. Planning is side-effect free. Creating a private session/render record and starting the expensive render each require `confirmed: true`. Generation accepts an idempotency key and never returns another member's records.
+The public `/api/mcp` endpoint intentionally keeps tool arguments read-only; its signup and feedback render tools mount first-party forms whose submissions are explicit user actions. The signed-in `/dashboard` progressively registers a separate browser bridge with eleven member tools. The bridge sends the current Supabase bearer token to same-origin member routes and existing Studio render routes; server-side ownership checks are authoritative. Planning is side-effect free. Creating a private session/render record and starting the expensive render each require `confirmed: true`. Generation accepts an idempotency key and never returns another member's records.
 
 ## Security and governance
 
@@ -166,7 +166,7 @@ The route must pass:
 1. Modern `server/discover` with `MCP-Protocol-Version: 2026-07-28` and `Mcp-Method: server/discover`.
 2. Modern `tools/list`, `resources/list`, and `prompts/list` with matching body metadata and standard headers.
 3. Modern `resources/read` and `prompts/get` with matching `Mcp-Name` headers.
-4. Valid modern `tools/call` for all twenty-nine public tools with matching `Mcp-Name` headers, including the science-guide, tone-pack checkout, signup, and feedback render tools.
+4. Valid modern `tools/call` for all thirty-seven public tools with matching `Mcp-Name` headers, including the science-guide, tone-pack checkout, signup, and feedback render tools.
 5. `initialize` and subsequent calls with a supported legacy version.
 6. Missing or mismatched modern headers, malformed JSON, oversized body, invalid schema, unknown tool, and write-shaped request denial.
 7. Valid pack, policy, account, signup render, feedback render, and skills calls, including skill resource digests.

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "cognistration",
+  "description": "A bounded, user-controlled listening platform with intention guidance, live tone controls, science education, and explicit-consent product flows.",
+  "version": "0.13.0",
+  "author": {
+    "name": "BishopTech",
+    "email": "matt@bishoptech.dev",
+    "url": "https://bishoptech.dev"
+  },
+  "homepage": "https://cognistration.com",
+  "repository": "https://github.com/mbishopfx/bishoptech-hemisync",
+  "license": "MIT",
+  "keywords": ["cognistration", "listening", "mcp", "webmcp", "agent-skills"],
+  "extensions": {
+    "dev.bishoptech.cognistration": {
+      "documentation": "https://cognistration.com/docs",
+      "mcp": {
+        "server_url": "https://cognistration.com/api/mcp",
+        "transport": "streamable-http",
+        "protocol_version": "2026-07-28"
+      },
+      "documentation_mcp": {
+        "server_url": "https://cognistration.com/api/docs-mcp",
+        "read_only": true
+      },
+      "auth": {
+        "public_discovery": "anonymous",
+        "private_workspace": "user-controlled-first-party-session",
+        "payment_credentials_in_tools": false
+      },
+      "resources": {
+        "agent_card": "https://cognistration.com/.well-known/agent-card.json",
+        "ard": "https://cognistration.com/.well-known/ard.json",
+        "skills": "https://cognistration.com/.well-known/agent-skills/index.json",
+        "openapi": "https://cognistration.com/openapi.json"
+      }
+    }
+  }
+}

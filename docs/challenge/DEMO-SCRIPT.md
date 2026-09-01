@@ -2,10 +2,11 @@
 
 Target length: 2 minutes 30 seconds or less. Record a public YouTube video with system audio enabled.
 
-> Recording companion files: use `DEMO-SCRIPT-3-MINUTE.md` for the complete
-> face-intro cut, `DEMO-SCRIPT-90-SECOND.md` for a strict time limit, and
-> `DEMO-SCRIPT-BACKUP.md` for reshoots. The final action should be the one
-> explicitly approved $0.50 preview; end on its verified receipt.
+> Recording companion files: use `DEMO-SCRIPT-RECORDED-TIMELINE.md` for the
+> current screen-recording voiceover, `DEMO-SCRIPT-RECORDED-TIMELINE-SHORT.md`
+> for compact pickups, `DEMO-SCRIPT-3-MINUTE.md` for the complete challenge
+> flow, `DEMO-SCRIPT-90-SECOND.md` for a strict time limit, and
+> `DEMO-SCRIPT-BACKUP.md` for reshoots.
 
 ## 0:00–0:15 — The problem
 

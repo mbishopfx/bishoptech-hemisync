@@ -8,25 +8,30 @@ Site: https://cognistration.com
 Cognistration is a private audio-session product with public education, pricing, safety, and policy references. BishopTech is the parent brand.
 
 ## Canonical public surfaces
-- / — homepage and product entry point
-- /agent-instructions.md — browser-agent workflow, public MCP boundary, and discovery links
-- /openapi.json — REST compatibility contract derived from the public capability registry
-- /api/mcp — public MCP JSON-RPC tools, including the iPhone app offer, interactive machine, science-guide, and tone-pack checkout UI resources, plus payment discovery lanes for compatible ChatGPT app hosts
-- /docs — SDK-style reference for MCP/WebMCP tools, protocol commands, resources, skills, prompts, routes, and safety boundaries
-- /api/agent/account — machine-readable preview, workspace, and signup boundaries
-- /api/agent/policy?topic=safety — machine-readable canonical policy summary and URL
-- /api/packs?agent=1 — safe agent-compatible tone-pack catalog and preview links
-- /tutorial — safe product setup, listening, and reflection guide
-- /tutorial/meditation-self-exploration — grounded sound-supported meditation and reflection
-- /tutorial/dreamwork-lucid-dreaming — sleep-respecting dream recall and lucid-dream evidence
-- /tutorial/astral-projection-out-of-body-experiences — OBE terminology, interpretation, evidence, and grounding
-- /tutorial/remote-viewing-stargate-documents — primary-source history of remote viewing and the STAR GATE archive
-- /pricing — current membership and purchase information
-- /packs — one-time tone-pack catalog and purchase information
-- /machine — product and workflow overview
-- /blog — essays, guides, and product notes
-- /community — public profiles and community surfaces
-- /services — BishopTech studio services for iOS apps, web apps, branded websites, workflows, and voice agents
+- [Homepage](https://cognistration.com/) — homepage and product entry point
+- [Agent instructions](https://cognistration.com/agent-instructions.md) — browser-agent workflow, public MCP boundary, and discovery links
+- [OpenAPI](https://cognistration.com/openapi.json) — REST compatibility contract derived from the public capability registry
+- [Product MCP](https://cognistration.com/api/mcp) — public MCP JSON-RPC tools and MCP Apps UI resources
+- [Documentation MCP](https://cognistration.com/api/docs-mcp) — read-only documentation search and retrieval
+- [Source repository](https://github.com/mbishopfx/bishoptech-hemisync) — public agent configs, skills, plugin manifest, MCP configuration, and SDK source
+- [Agent Plugin manifest](https://github.com/mbishopfx/bishoptech-hemisync/blob/main/plugin.json) — portable Agent Plugins metadata
+- [Agent Plugin MCP configuration](https://github.com/mbishopfx/bishoptech-hemisync/blob/main/mcp.json) — product and documentation MCP server entries
+- [SDK and CLI packages](https://github.com/mbishopfx/bishoptech-hemisync/tree/main/packages) — TypeScript, Python, Go, Ruby, and CLI source packages
+- [Developer docs](https://cognistration.com/docs) — SDK-style reference for tools, protocol commands, resources, skills, prompts, routes, and safety boundaries
+- [Capability manifest](https://cognistration.com/api/capabilities) — machine-readable platform boundaries
+- [Account options](https://cognistration.com/api/agent/account) — public preview, private workspace, and user-controlled signup boundaries
+- [Safety policy](https://cognistration.com/api/agent/policy?topic=safety) — machine-readable canonical safety summary and URL
+- [Tone-pack catalog](https://cognistration.com/api/packs?agent=1) — safe agent-compatible tone-pack metadata and preview links
+- [Natural-language endpoint](https://cognistration.com/ask) — bounded /ask query surface
+- [A2A endpoint](https://cognistration.com/a2a) — stateless JSON compatibility surface
+- [Deterministic sandbox](https://cognistration.com/api/sandbox) — no-write integration test surface
+- [Tutorial](https://cognistration.com/tutorial) — safe product setup, listening, and reflection guide
+- [Pricing](https://cognistration.com/pricing) — current membership and purchase information
+- [Tone packs](https://cognistration.com/packs) — one-time tone-pack catalog and purchase information
+- [Machine](https://cognistration.com/machine) — product and workflow overview
+- [Blog](https://cognistration.com/blog) — essays, guides, and product notes
+- [Community](https://cognistration.com/community) — public profiles and community surfaces
+- [BishopTech services](https://cognistration.com/services) — studio services for iOS apps, web apps, branded websites, workflows, and voice agents
 
 ## Trust and policy pages
 - /privacy — privacy policy
@@ -73,7 +78,7 @@ Cognistration is a private audio-session product with public education, pricing,
 export async function GET() {
   return new Response(llmsText, {
     headers: {
-      'content-type': 'text/plain; charset=utf-8',
+      'content-type': 'text/markdown; charset=utf-8',
       'cache-control': 'public, max-age=0, must-revalidate'
     }
   });

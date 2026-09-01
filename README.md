@@ -12,9 +12,11 @@ Cognistration is a human-first audio-session platform with progressive WebMCP an
 - Human-facing ChatGPT connection address: https://cognistration.com/connect
 - REST/OpenAPI compatibility document: https://cognistration.com/openapi.json
 - ChatGPT machine render tool: `open_machine_generator` via https://cognistration.com/connect
-- Public MCP tools: 21 bounded catalog, guidance, hosted-commerce, and machine capabilities
-- Homepage WebMCP tools: 13 progressive browser tools, including relative carrier adjustment and session guidance
+- Public MCP tools: the typed, bounded catalog published by `https://cognistration.com/api/capabilities`
+- Homepage WebMCP tools: the progressive browser contract published by `https://cognistration.com/api/capabilities`
 - iPhone app offer tool: `get_ios_app_offer` returns the public App Store listing, current $2.99 one-time price, and the on-device explanation for the lower cost
+
+Agent discovery is available from `/.well-known/agent-card.json`, `/.well-known/ard.json`, `/.well-known/api-catalog`, `/.well-known/mcp/server-card.json`, `/.well-known/agent-skills/index.json`, and `/.well-known/schemamap.xml`. Markdown documentation is available from `/index.md`, `/docs.md`, and `/auth.md`; the read-only documentation MCP server is `/api/docs-mcp`.
 
 ## Operating loops
 
@@ -53,6 +55,7 @@ Copy `.env.example` to `.env.local` and fill in the values you already use:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_PROJECT_ID` (the same project reference encoded in the Supabase URL)
 - `AI_GATEWAY_API_KEY`
 - `NEXT_PUBLIC_DEMO_USER_ID`
 
@@ -65,6 +68,8 @@ Optional for persistent render storage:
 
 If this is unset locally, artifacts are stored under `.cache/audio-renders`.
 In Railway, the app defaults to `/app/data/audio-renders`, which should be backed by a mounted volume.
+
+For schema verification and migrations, also set `SUPABASE_DATABASE_URL` to a database connection for the same Supabase project. Run `npm run verify:supabase` before reviewing a `supabase db push --linked --dry-run`; do not apply migrations until the project URL, JWT references, and database reference all agree.
 
 For the Vercel frontend, set:
 
@@ -112,15 +117,16 @@ The Railway backend should be configured with:
 ## Maintenance snapshot
 
 <!-- maintenance-scan:start -->
-Git: dirty: M README.md, M antigravity_loops/bidirectional-ffr/build_video.py, M antigravity_loops/bidirectional-ffr/copy_downloads.py, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_01.mp4, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_01.png, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_02.png, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_03.png, M antigravity_loops/bidirectional-ffr/output_2026_06_22/frame_04.mp4
-Railway status: Project: Cognistration
-Railway deployments: da504159-9d37-49fd-9b09-4bdaeeaf7683 | SUCCESS | 2026-05-13 19:58:05 -05:00 | 31db0d0a-3ee9-4a70-844c-b0fca0bc92fb | FAILED | 2026-05-13 19:57:31 -05:00 | dad19fd7-24b7-4411-853f-30aeb7b1c968 | REMOVED | 2026-05-13 19:26:46 -05:00
-Railway logs: no recent output
-Vercel latest: https://bishoptech-cognistration-mpis7hu6s-bishoptech.vercel.app
+Git: dirty: D "../../Desktop/BishopTech HemiSync iOS/BishopTechHemiSync.xcodeproj/project.pbxproj", D "../../Desktop/BishopTech HemiSync iOS/Resources/BishopTechHemiSync.plist", D "../../Desktop/BishopTech HemiSync iOS/Sources/HemiSyncAuthView.swift", D "../../Desktop/BishopTech HemiSync iOS/project.yml", ?? ../../.CFUserTextEncoding, ?? ../../.DS_Store, ?? ../../.Trash/, ?? ../../.adal/
+Blog target: ERROR fetching origin/main (fatal: 'origin' does not appear to be a git repository)
+Railway status: Project: HEMISYNC
+Railway deployments: 2bffb488-4587-4b57-8cbc-44e16a8239a5 | SUCCESS | 2026-07-14 00:01:32 -05:00 | d258d820-c633-4014-905f-7a8ad3dbe419 | FAILED | 2026-07-14 00:01:19 -05:00 | a38a7d58-4925-4462-ac68-afa7363a03a1 | FAILED | 2026-07-13 23:59:27 -05:00
+Railway logs: Starting Container
+Vercel latest: https://bishoptech-cognistration-muilay0mc-bishoptech.vercel.app
 Vercel logs: Ready
-YouTube channel: Cognistration | subs 4 | views 322 | videos 17
+YouTube channel: Cognistration | subs 216 | views 12950 | videos 50
 YouTube channel published: 2026-06-13T09:31:50.427333Z
-YouTube analytics (last 7 completed days): views 256 | minutes 95.0 | avg_view_sec 38 | subs +4 / -0
+YouTube analytics (last 7 completed days): views 3533 | minutes 4456.0 | avg_view_sec 135 | subs +53 / -2
 <!-- maintenance-scan:end -->
 
 ## Main routes
@@ -131,6 +137,11 @@ YouTube analytics (last 7 completed days): views 256 | minutes 95.0 | avg_view_s
 - `POST /api/audio/overlay`
 - `GET /api/health`
 - `POST /api/mcp` — public MCP JSON-RPC tools and MCP Apps resource
+- `POST /api/docs-mcp` — read-only documentation search and retrieval over JSON-RPC
+- `POST /ask` — bounded natural-language JSON or SSE compatibility surface
+- `POST /a2a` — stateless agent-to-agent compatibility surface
+- `POST /api/batch` — bounded read-only grouped catalog requests
+- `GET /api/sandbox` — deterministic integration-test capabilities without account, audio, checkout, or persistence side effects
 
 ## Notes
 

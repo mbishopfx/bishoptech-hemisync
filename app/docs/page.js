@@ -48,6 +48,13 @@ const HTTP_SURFACES = [
   { method: 'GET', path: '/openapi.json', label: 'REST compatibility contract', description: 'OpenAPI description of the public HTTP adapters and their request/response shapes.' },
   { method: 'GET', path: '/agent-instructions.md', label: 'Agent instructions', description: 'Human-readable routing guidance, safety rules, and the distinction between public and member surfaces.' },
   { method: 'GET', path: '/llms.txt', label: 'LLM discovery file', description: 'Canonical public product, policy, documentation, and agent-discovery links.' },
+  { method: 'GET', path: '/.well-known/agent-card.json, /.well-known/ard.json', label: 'Agent discovery', description: 'A2A agent card and Agentic Resource Discovery manifest for compatible clients.' },
+  { method: 'GET', path: '/.well-known/api-catalog, /.well-known/mcp/server-card.json', label: 'API and MCP catalogs', description: 'RFC-style API Linkset and machine-readable MCP server card.' },
+  { method: 'GET', path: '/.well-known/agent-skills/index.json', label: 'Skills index', description: 'Five static, reusable operating skills with source and endpoint links.' },
+  { method: 'GET + POST', path: '/api/docs-mcp', label: 'Documentation MCP', description: 'Read-only tools/list, resources/list, resources/read, and docs search/retrieval.' },
+  { method: 'GET + POST', path: '/ask, /a2a', label: 'Agent compatibility', description: 'Bounded natural-language and stateless A2A compatibility surfaces.' },
+  { method: 'GET + POST', path: '/api/sandbox, /api/batch', label: 'Testing helpers', description: 'Deterministic no-write sandbox and bounded read-only batch operations.' },
+  { method: 'GET + POST', path: '/api/jobs, /api/v1', label: 'Lifecycle and version status', description: 'Explicit asynchronous-job status and the current versioned API namespace.' },
   { method: 'GET', path: '/try', label: 'Challenge cockpit', description: 'A judge-friendly browser route for the public WebMCP flow and its visible safety boundaries.' },
   { method: 'GET', path: '/.well-known/ucp', label: 'UCP discovery', description: 'Public commerce discovery for the optional Universal Commerce Protocol surface; it is separate from the Cognistration MCP tool registry.' }
 ];
@@ -348,7 +355,7 @@ export default function DocsPage() {
 
             <section id="routes" className="scroll-mt-28">
               <SectionIntro eyebrow="08 · HTTP map" title="Public routes around the contract">These are the supported discovery and compatibility routes that surround MCP. Internal audio, database, and admin routes are intentionally not presented as public agent commands.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{HTTP_SURFACES.map((route) => <RouteRow key={route.path} route={route} />)}</div>
+              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{HTTP_SURFACES.map((route) => <RouteRow key={`${route.method}-${route.path}`} route={route} />)}</div>
               <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]"><div className="border-b border-white/10 px-4 py-3"><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/35">supporting compatibility families</span></div>{SUPPORTING_ROUTE_FAMILIES.map((route) => <RouteRow key={route.path} route={{ ...route, label: 'Supporting adapter' }} />)}</div>
             </section>
 

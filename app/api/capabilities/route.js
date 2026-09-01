@@ -6,6 +6,7 @@ import { publicTonePackCatalogSummary } from '@/lib/agentic/pack-capability';
 import { policyCatalogSummary } from '@/lib/agentic/policy-capability';
 import { publicAccountOptions } from '@/lib/agentic/account-capability';
 import { skillCatalogSummary } from '@/lib/agentic/skill-capability';
+import { discoveryLinks } from '@/lib/agentic/discovery-contract';
 
 export const dynamic = 'force-static';
 
@@ -23,6 +24,15 @@ export async function GET() {
     webmcp: {
       ...manifest.webmcp,
       tools: webMcpManifestTools()
+    },
+    discovery: {
+      ...discoveryLinks(canonicalOrigin),
+      markdown: {
+        home: `${canonicalOrigin}/index.md`,
+        pricing: `${canonicalOrigin}/pricing.md`,
+        docs: `${canonicalOrigin}/docs.md`,
+        auth: `${canonicalOrigin}/auth.md`
+      }
     }
   }, {
     headers: {

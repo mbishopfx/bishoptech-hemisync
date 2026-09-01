@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cognistration"
+version = "0.1.0"
+description = "Minimal Python client for Cognistration's public agent surfaces"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+[project.urls]
+Homepage = "https://cognistration.com"
+Documentation = "https://cognistration.com/docs"
+Repository = "https://github.com/mbishopfx/bishoptech-hemisync/tree/main/packages/python/cognistration"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -42,12 +42,49 @@ function toneId(tone) {
   return tone?.track_id || tone?.trackId || tone?.id || trackUrl(tone);
 }
 
+const STATE_LABELS = {
+  delta: 'Delta',
+  theta: 'Theta',
+  alpha: 'Alpha',
+  beta: 'Beta',
+  gamma: 'Gamma'
+};
+
+function previewTrackName(tone) {
+  return tone?.name
+    || tone?.track_name
+    || tone?.trackName
+    || tone?.short_label
+    || tone?.shortLabel
+    || tone?.metadata?.sourceToneName
+    || 'Featured tone preview';
+}
+
+function previewTrackSummary(tone) {
+  return tone?.summary
+    || tone?.description
+    || tone?.metadata?.sourceToneSummary
+    || 'A finished listening session from the Cognistration library.';
+}
+
+function previewTrackMeta(tone) {
+  const state = String(tone?.state || tone?.target_state || tone?.targetState || '').trim().toLowerCase();
+  const targetHz = Number(tone?.target_hz ?? tone?.targetHz);
+  const previewSeconds = Number(tone?.preview_seconds ?? tone?.previewSeconds ?? 30);
+  const meta = [];
+  if (STATE_LABELS[state]) meta.push(STATE_LABELS[state]);
+  if (Number.isFinite(targetHz) && targetHz > 0) meta.push(`${targetHz} Hz beat`);
+  if (Number.isFinite(previewSeconds) && previewSeconds > 0) meta.push(`${previewSeconds}-second sample`);
+  return meta.join(' · ') || '30-second sample';
+}
+
 export default function PricingPage() {
   const [previewTracks, setPreviewTracks] = useState(() => TONE_PACKS[0]?.tracks?.slice(0, 6) || []);
   const [activePreviewTone, setActivePreviewTone] = useState(null);
   const [loadingPreviewTracks, setLoadingPreviewTracks] = useState(true);
   const [playingToneId, setPlayingToneId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [previewError, setPreviewError] = useState('');
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [workshopEmail, setWorkshopEmail] = useState('');
   const [workshopCheckoutLoading, setWorkshopCheckoutLoading] = useState(false);
@@ -60,21 +97,28 @@ export default function PricingPage() {
   const handlePlayTone = useCallback((tone) => {
     const url = trackUrl(tone);
     const audio = audioRef.current;
-    if (!url || !audio) return;
+    if (!url || !audio) {
+      setPreviewError(`${previewTrackName(tone)} is not available for preview yet.`);
+      return;
+    }
 
     const id = toneId(tone);
     if (playingToneId === id && isPlaying) {
       audio.pause();
+      setPreviewError('');
       return;
     }
 
     audio.pause();
     audio.src = url;
     audio.currentTime = 0;
+    audio.load();
+    setPreviewError('');
     setPlayingToneId(id);
     audio.play().then(() => setIsPlaying(true)).catch(() => {
       setIsPlaying(false);
       setPlayingToneId(null);
+      setPreviewError('This preview could not be played in the current browser.');
     });
   }, [isPlaying, playingToneId]);
 
@@ -239,17 +283,19 @@ export default function PricingPage() {
                 ) : <p className="mt-8 text-sm leading-6 text-[#7a8983]">Try an intention on the homepage and your selected session will appear here.</p>}
               </div>
 
-              <div className="rounded-[1.75rem] border border-[#cbd6cf] bg-white/75 p-6">
+              <div className="rounded-[1.75rem] border border-[#cbd6cf]/80 bg-white/55 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_16px_40px_rgba(45,65,59,0.05)] backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-4">
                   <p className="text-sm font-medium text-[#315e55]">Featured library</p>
                   <span className="text-xs text-[#7a8983]">30-second samples</span>
                 </div>
-                <div className="mt-6 space-y-3">
+                <div className="mt-5 space-y-1">
                   {loadingPreviewTracks ? <div className="h-12 animate-pulse rounded-xl bg-[#e5ece7]" /> : previewTracks.slice(0, 4).map((tone) => {
                     const id = toneId(tone);
-                    return <div key={id} className="flex items-center gap-3 border-b border-[#e1e8e2] pb-3 last:border-b-0 last:pb-0"><button type="button" onClick={() => handlePlayTone(tone)} className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[#bfcfc5] text-[#315e55] transition hover:border-[#6b9587] hover:bg-[#edf4ef]" aria-label={`${playingToneId === id && isPlaying ? 'Pause' : 'Play'} ${tone.name}`}><span>{playingToneId === id && isPlaying ? <Pause className="size-4" weight="fill" aria-hidden="true" /> : <Play className="size-4" weight="fill" aria-hidden="true" />}</span></button><div className="min-w-0"><p className="truncate text-sm font-medium text-[#31443e]">{tone.name}</p><p className="truncate text-xs text-[#7a8983]">{tone.summary || tone.description}</p></div></div>;
+                    const isTonePlaying = playingToneId === id && isPlaying;
+                    return <div key={id} className="flex min-h-[4.25rem] items-center gap-3 border-b border-[#e1e8e2] py-3 last:border-b-0"><button type="button" onClick={() => handlePlayTone(tone)} className="flex size-10 shrink-0 items-center justify-center rounded-full border border-[#bfcfc5] bg-white/55 text-[#315e55] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] transition hover:-translate-y-px hover:border-[#6b9587] hover:bg-[#edf4ef] active:translate-y-px active:scale-[0.98]" aria-label={`${isTonePlaying ? 'Pause' : 'Play'} ${previewTrackName(tone)}`} aria-pressed={isTonePlaying}><span>{isTonePlaying ? <Pause className="size-4" weight="fill" aria-hidden="true" /> : <Play className="size-4" weight="fill" aria-hidden="true" />}</span></button><div className="min-w-0 flex-1"><div className="flex min-w-0 items-center gap-2"><p className="truncate text-sm font-medium text-[#31443e]">{previewTrackName(tone)}</p><span className="shrink-0 text-[10px] uppercase tracking-[0.12em] text-[#8a9992]">{String(tone?.state || tone?.target_state || tone?.targetState || 'preview')}</span></div><p className="truncate text-xs leading-5 text-[#7a8983]">{previewTrackSummary(tone)}</p><p className="mt-0.5 truncate text-[10px] uppercase tracking-[0.12em] text-[#91a099]">{previewTrackMeta(tone)}</p></div></div>;
                   })}
                 </div>
+                {previewError && <p className="mt-4 text-xs leading-5 text-[#a55e48]" role="status">{previewError}</p>}
               </div>
             </div>
           </div>
@@ -273,7 +319,7 @@ export default function PricingPage() {
         </section>
       </main>
 
-      <audio ref={audioRef} preload="none" onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setPlayingToneId(null); }} aria-label="Cognistration tone preview" />
+      <audio ref={audioRef} preload="none" onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setPlayingToneId(null); }} onError={() => { setIsPlaying(false); setPlayingToneId(null); setPreviewError('This preview could not be loaded. Please try another sample.'); }} aria-label="Cognistration tone preview" />
       <PublicTrustFooter />
     </div>
   );

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "cognistration": {
+      "type": "streamable-http",
+      "url": "https://cognistration.com/api/mcp"
+    },
+    "cognistration-documentation": {
+      "type": "streamable-http",
+      "url": "https://cognistration.com/api/docs-mcp"
+    }
+  }
+}

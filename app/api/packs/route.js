@@ -9,7 +9,7 @@ import {
   TonePackSearchInputSchema,
   TonePackSlugInputSchema,
   getPublicTonePack,
-  searchPublicTonePacks
+  searchPublicTonePacksPage
 } from '@/lib/agentic/pack-capability';
 
 export const dynamic = 'force-dynamic';
@@ -45,14 +45,20 @@ function agentCatalogResponse(requestUrl) {
   const input = {
     ...(requestUrl.searchParams.has('query') ? { query: requestUrl.searchParams.get('query') } : {}),
     ...(requestUrl.searchParams.has('state') ? { state: requestUrl.searchParams.get('state') } : {}),
-    ...(requestUrl.searchParams.has('limit') ? { limit: requestUrl.searchParams.get('limit') } : {})
+    ...(requestUrl.searchParams.has('limit') ? { limit: requestUrl.searchParams.get('limit') } : {}),
+    ...(requestUrl.searchParams.has('cursor') ? { cursor: requestUrl.searchParams.get('cursor') } : {})
   };
   const parsed = TonePackSearchInputSchema.safeParse(input);
-  if (!parsed.success) {
+  if (!parsed.success && !Object.hasOwn(input, 'cursor')) {
     return NextResponse.json({ ok: false, code: 'INVALID_INPUT', error: 'Use a short query, a published tone state, and a limit from 1 to 20.' }, { status: 400, headers: agentHeaders() });
   }
 
-  return NextResponse.json({ ok: true, packs: searchPublicTonePacks(parsed.data), source: 'agentic-public' }, { headers: agentHeaders() });
+  try {
+    const page = searchPublicTonePacksPage(input);
+    return NextResponse.json({ ok: true, ...page, source: 'agentic-public' }, { headers: agentHeaders() });
+  } catch {
+    return NextResponse.json({ ok: false, code: 'INVALID_INPUT', error: 'The tone-pack cursor or search bounds are invalid.' }, { status: 400, headers: agentHeaders() });
+  }
 }
 
 export async function GET(request) {

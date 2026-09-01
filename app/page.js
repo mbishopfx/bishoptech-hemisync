@@ -18,12 +18,12 @@ import { OrchestratorMachineIllustration } from '@/components/visuals/Orchestrat
 import { YouTubeEmbed } from '@/components/media/YouTubeEmbed';
 
 const siteUrl = 'https://cognistration.com';
-const siteDescription = 'Cognistration turns a simple intention into a personal listening session for focus, rest, and intentional reset.';
+const siteDescription = 'Cognistration is a personal meditation and listening platform that creates controlled audio sessions for focus, rest, reflection, and intentional reset.';
 const homepageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   '@id': `${siteUrl}/#webpage`,
-  name: 'Cognistration — Personal audio sessions for focus, rest, and intentional reset',
+  name: 'Cognistration — A personal meditation and listening platform',
   url: siteUrl,
   description: siteDescription,
   isPartOf: { '@id': `${siteUrl}/#website` },
@@ -31,9 +31,9 @@ const homepageJsonLd = {
 };
 
 const intentRows = [
-  ['01', 'Name the moment', 'Start with one sentence about what you want from the next hour. The platform gives you a clear place to begin.'],
-  ['02', 'Choose a direction', 'Move toward focus, rest, creative space, reflection, or a transition between tasks.'],
-  ['03', 'Make it yours', 'Adjust the sound, pacing, layers, and return point until the session fits your actual day.']
+  ['01', 'Name the noise', 'Start with what is pulling at your attention—from a busy room to a busy mind. The platform gives you a clear place to begin.'],
+  ['02', 'Choose a clean cue', 'Move toward focus, rest, creative space, reflection, or a transition between tasks with one deliberate listening direction.'],
+  ['03', 'Build the hour', 'Adjust the sound, pacing, layers, and return point until the session fits your actual day.']
 ];
 
 const audienceRows = [
@@ -45,9 +45,9 @@ const audienceRows = [
 
 const boundaries = [
   'It does not diagnose, treat, or replace professional care.',
+  'It does not cancel HVAC, radio, power-line, EV, or other environmental energy; it creates a controlled auditory cue to follow.',
   'It does not promise a specific brainwave state or guaranteed result.',
-  'It does not force a mood or override your judgment.',
-  'It does not keep you scrolling; the session is the destination.'
+  'It does not force a mood or override your judgment.'
 ];
 
 export default function LandingPage() {
@@ -99,15 +99,18 @@ export default function LandingPage() {
 
           <div className="relative z-10 mx-auto grid min-h-[100dvh] max-w-[1400px] grid-cols-1 gap-12 px-5 pb-14 pt-32 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-16 lg:px-12 lg:pb-20 lg:pt-40">
             <div className="max-w-2xl self-center">
+              <motion.span initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-5 block text-xs font-medium uppercase tracking-[0.24em] text-[#b6ddcc]">
+                Personal meditation for noisy days
+              </motion.span>
               <motion.h1 id="hero-title" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-[17ch] text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-7xl lg:max-w-[18ch] lg:text-[clamp(4.1rem,5.8vw,6.25rem)]">
-                A clearer way to enter the next moment.
+                A quieter lane for a noisy world.
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="mt-7 max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
                 When everything around you competes for attention, Cognistration gives you one steady sound to return to—so you can focus, rest, create, or reset on your own terms.
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="mt-9 flex flex-wrap gap-3">
-                <a href="#session" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Try a session <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
-                <a href="#platform" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-3.5 text-sm text-white transition hover:border-white/55 hover:bg-white/[0.08]">Explore the platform</a>
+                <a href="#session" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Build a listening session <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
+                <a href="#platform" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-3.5 text-sm text-white transition hover:border-white/55 hover:bg-white/[0.08]">See how it works</a>
               </motion.div>
               <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/45"><span>Focus</span><span>Rest</span><span>Creative space</span><span>Intentional reset</span></div>
             </div>
@@ -131,7 +134,7 @@ export default function LandingPage() {
 
         <section id="platform" aria-labelledby="platform-title" className="bg-[#eef1ee] py-24 sm:py-32">
           <div className="mx-auto grid max-w-[1400px] gap-16 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-28 lg:px-12">
-            <div className="max-w-xl"><ScrollRevealHeading id="platform-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">Built around intention, not playlists.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-[#5f706b] sm:text-lg">Most audio apps ask you to browse until something feels close. Cognistration starts with the moment in front of you and turns it into a session you can understand, adjust, and return to.</p></div>
+            <div className="max-w-xl"><ScrollRevealHeading id="platform-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">A personal meditation platform for noisy days.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-[#5f706b] sm:text-lg">Most audio apps ask you to browse until something feels close. Cognistration starts with the moment in front of you and gives your attention one consistent auditory lane—something you can understand, adjust, and return to.</p></div>
             <div className="border-t border-[#cbd6cf]">{intentRows.map(([number, title, copy]) => <article key={number} className="grid gap-5 border-b border-[#cbd6cf] py-7 sm:grid-cols-[52px_1fr] sm:gap-8"><span className="text-xs font-medium tracking-[0.16em] text-[#779187]">{number}</span><div><h3 className="text-2xl font-medium tracking-[-0.035em]">{title}</h3><p className="mt-3 max-w-xl text-sm leading-7 text-[#63736e] sm:text-base">{copy}</p></div></article>)}</div>
           </div>
         </section>
@@ -140,7 +143,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
             <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
             <div className="order-2 lg:order-1"><OrchestratorMachineIllustration /></div>
-            <div className="order-1 max-w-xl lg:order-2"><ScrollRevealHeading id="machine-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">A machine you can tune to the moment.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-white/65 sm:text-lg">The orchestrator is the reason Cognistration feels different from a fixed meditation catalog. You can choose the direction, adjust the underlying tone and rhythm, add texture, set the duration, and decide how you want the session to return you to the day.</p><div className="mt-9 space-y-4 text-sm text-white/75"><div className="flex items-center gap-3"><SlidersHorizontal className="size-5 text-[#b6ddcc]" aria-hidden="true" /> Adjustable controls for state, sound, pacing, and duration.</div><div className="flex items-center gap-3"><Headphones className="size-5 text-[#b6ddcc]" aria-hidden="true" /> A browser preview before you commit to a full session.</div></div><div className="mt-10 flex flex-wrap gap-5"><Link href="/machine" className="inline-flex items-center gap-2 text-sm font-medium text-[#d7eadf] underline decoration-white/20 underline-offset-8 transition hover:text-white">See the machine <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link><Link href="/try" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 underline decoration-white/15 underline-offset-8 transition hover:text-white">Run the agent demo <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link></div></div>
+            <div className="order-1 max-w-xl lg:order-2"><ScrollRevealHeading id="machine-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">Build a 60-minute workshop around the moment.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-white/65 sm:text-lg">The machine is the reason Cognistration feels different from a fixed meditation catalog. Choose a direction, shape the underlying tone and rhythm, add texture, set the duration, and create one uninterrupted listening hour you can return to.</p><div className="mt-9 space-y-4 text-sm text-white/75"><div className="flex items-center gap-3"><SlidersHorizontal className="size-5 text-[#b6ddcc]" aria-hidden="true" /> Adjustable controls for sound, pacing, layers, and duration.</div><div className="flex items-center gap-3"><Headphones className="size-5 text-[#b6ddcc]" aria-hidden="true" /> Preview a stage before you commit to a full private master.</div></div><div className="mt-10 flex flex-wrap gap-5"><Link href="/machine" className="inline-flex items-center gap-2 text-sm font-medium text-[#d7eadf] underline decoration-white/20 underline-offset-8 transition hover:text-white">See the machine <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link><Link href="/try" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 underline decoration-white/15 underline-offset-8 transition hover:text-white">Run the agent demo <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link></div></div>
             </div>
             <div className="mt-16"><ToneMachineDemo agentTone={agentTone} /></div>
           </div>
@@ -154,7 +157,7 @@ export default function LandingPage() {
         </section>
 
         <section id="for-you" aria-labelledby="audience-title" className="bg-gradient-to-b from-[#eef1ee] to-[#e1eae4] py-24 sm:py-32">
-          <div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-28 lg:px-12"><div className="max-w-xl"><ScrollRevealHeading id="audience-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">For people who want a deliberate transition.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-[#60716b] sm:text-lg">You do not need another feed of content. You need a way to make the next step feel chosen.</p></div><div className="border-t border-[#c4d3c8]">{audienceRows.map(([title, copy]) => <article key={title} className="grid gap-4 border-b border-[#c4d3c8] py-6 sm:grid-cols-[minmax(180px,0.7fr)_1.3fr] sm:gap-8"><h3 className="text-lg font-medium tracking-[-0.02em]">{title}</h3><p className="text-sm leading-7 text-[#64756e] sm:text-base">{copy}</p></article>)}</div></div>
+          <div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-28 lg:px-12"><div className="max-w-xl"><ScrollRevealHeading id="audience-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">For moments when the room is louder than your intention.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-[#60716b] sm:text-lg">You do not need another feed of content. You need a way to make the next step feel chosen.</p></div><div className="border-t border-[#c4d3c8]">{audienceRows.map(([title, copy]) => <article key={title} className="grid gap-4 border-b border-[#c4d3c8] py-6 sm:grid-cols-[minmax(180px,0.7fr)_1.3fr] sm:gap-8"><h3 className="text-lg font-medium tracking-[-0.02em]">{title}</h3><p className="text-sm leading-7 text-[#64756e] sm:text-base">{copy}</p></article>)}</div></div>
         </section>
 
         <section aria-labelledby="boundaries-title" className="bg-[#f7f8f5] py-24 sm:py-32"><div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-28 lg:px-12"><div className="max-w-xl"><ScrollRevealHeading id="boundaries-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">A useful tool knows its limits.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-[#60716b] sm:text-lg">Cognistration is built to support attention and personal ritual. It should never ask you to hand over your agency or treat a listening session as a diagnosis.</p></div><div className="border-t border-[#cbd6cf]">{boundaries.map((boundary, index) => <div key={boundary} className="flex gap-5 border-b border-[#cbd6cf] py-6 text-base leading-7 text-[#4e625b] sm:text-lg"><Check className="mt-1 size-5 shrink-0 text-[#548477]" weight="bold" aria-hidden="true" /><span>{boundary}</span></div>)}</div></div></section>
@@ -165,7 +168,7 @@ export default function LandingPage() {
 
         <IosAppCarousel />
 
-        <section id="access" aria-labelledby="access-title" className="bg-[#202b28] py-24 text-white sm:py-32"><div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_0.75fr] lg:items-center lg:gap-24 lg:px-12"><div className="max-w-2xl"><ScrollRevealHeading id="access-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">Your listening practice, with room to grow.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-white/65 sm:text-lg">Unlock the private workspace for a one-time $20 platform payment. Build, adjust, save, and download the sessions that fit your life. Tone packs are available separately when you want a finished library to start from.</p><div className="mt-8 space-y-3 text-sm text-white/75"><div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Sync, Workshop, and Studio access</div><div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Private projects and exports</div><div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Controls you can revisit and refine</div></div><div className="mt-10 flex flex-wrap items-center gap-4"><Link href="/signup" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Create your account <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link><Link href="/pricing" className="text-sm text-white/60 underline decoration-white/20 underline-offset-8 transition hover:text-white">See pricing</Link></div></div><div className="rounded-[2rem] bg-white/[0.05] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_24px_90px_rgba(0,0,0,0.18)] sm:p-9"><p className="text-sm text-[#b6ddcc]">Cognistration platform</p><div className="mt-6 flex items-end gap-3"><span className="text-7xl font-medium leading-none tracking-[-0.08em]">$20</span><span className="pb-2 text-sm text-white/45">one time</span></div><div className="mt-7 border-t border-white/10 pt-6 text-sm leading-7 text-white/55"><p>Start with a preview, then keep the tools that become part of your practice.</p><p className="mt-4 text-white/35">Secure checkout is handled by Stripe.</p></div></div></div></section>
+        <section id="access" aria-labelledby="access-title" className="bg-[#202b28] py-24 text-white sm:py-32"><div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_0.75fr] lg:items-center lg:gap-24 lg:px-12"><div className="max-w-2xl"><ScrollRevealHeading id="access-title" className="text-4xl font-medium leading-[1.02] tracking-[-0.055em] sm:text-6xl">Your listening practice, with room to grow.</ScrollRevealHeading><p className="mt-7 text-base leading-8 text-white/65 sm:text-lg">Unlock the private workspace for a one-time $20 platform payment. Build a 60-minute Workshop, adjust each stage, save a private master, and return to the practice whenever you need a cleaner lane.</p><div className="mt-8 space-y-3 text-sm text-white/75"><div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Sync, Workshop, and Studio access</div><div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Private projects and 60-minute MP3 exports</div><div className="flex items-center gap-3"><Check className="size-4 text-[#b6ddcc]" weight="bold" aria-hidden="true" /> Daily practice and private reflection tools</div></div><div className="mt-10 flex flex-wrap items-center gap-4"><Link href="/signup" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Create your account <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link><Link href="/pricing" className="text-sm text-white/60 underline decoration-white/20 underline-offset-8 transition hover:text-white">See pricing</Link></div></div><div className="rounded-[2rem] bg-white/[0.05] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_24px_90px_rgba(0,0,0,0.18)] sm:p-9"><p className="text-sm text-[#b6ddcc]">Cognistration platform</p><div className="mt-6 flex items-end gap-3"><span className="text-7xl font-medium leading-none tracking-[-0.08em]">$20</span><span className="pb-2 text-sm text-white/45">one time</span></div><div className="mt-7 border-t border-white/10 pt-6 text-sm leading-7 text-white/55"><p>Start with a preview, then keep the tools that become part of your practice.</p><p className="mt-4 text-white/35">Secure checkout is handled by Stripe.</p></div></div></div></section>
       </main>
 
       <PublicTrustFooter />

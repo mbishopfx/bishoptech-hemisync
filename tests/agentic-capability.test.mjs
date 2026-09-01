@@ -68,9 +68,10 @@ import {
   ACCOUNT_SIGNUP_LEGACY_WIDGET_RESOURCE_URI,
   ACCOUNT_SIGNUP_PREVIOUS_WIDGET_RESOURCE_URI,
   ACCOUNT_SIGNUP_WIDGET_HTML,
+  ACCOUNT_SIGNUP_WIDGET_RESOURCE_META,
   ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI
 } from '../lib/agentic/account-widget.js';
-import { FEEDBACK_WIDGET_HTML, FEEDBACK_WIDGET_RESOURCE_URI } from '../lib/agentic/feedback-widget.js';
+import { FEEDBACK_WIDGET_HTML, FEEDBACK_WIDGET_RESOURCE_META, FEEDBACK_WIDGET_RESOURCE_URI } from '../lib/agentic/feedback-widget.js';
 import {
   TONE_PACK_CHECKOUT_WIDGET_HTML,
   TONE_PACK_CHECKOUT_WIDGET_RESOURCE_META,
@@ -397,8 +398,12 @@ test('policy and account routes have source links and preserve user-controlled s
 test('account and feedback MCP widgets keep sensitive submission outside tool arguments', async () => {
   assert.equal(accountSignupState().credentialsSubmitted, false);
   assert.equal(accountSignupState().paymentSubmitted, false);
+  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_META.ui.prefersBorder, false);
+  assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
   assert.doesNotThrow(() => FeedbackOpenInputSchema.parse({}));
   assert.equal(feedbackOpenState().persisted, false);
+  assert.equal(FEEDBACK_WIDGET_RESOURCE_META.ui.prefersBorder, false);
+  assert.equal(FEEDBACK_WIDGET_RESOURCE_META['openai/widgetPrefersBorder'], false);
 
   assert.equal(ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v3.html');
   assert.equal(ACCOUNT_SIGNUP_PREVIOUS_WIDGET_RESOURCE_URI, 'ui://cognistration/account-signup/v2.html');
@@ -543,6 +548,10 @@ test('phone download options preserve the fixed preview boundary and separate iP
   assert.equal(options.capabilityId, PHONE_DOWNLOAD_CAPABILITY_ID);
   assert.equal(options.version, PHONE_DOWNLOAD_CAPABILITY_VERSION);
   assert.equal(options.resourceUri, PHONE_DOWNLOAD_WIDGET_RESOURCE_URI);
+  assert.equal(options.seededBy, 'listener-input');
+  const phoneTool = MCP_TOOLS.find((tool) => tool.name === 'open_phone_download_options');
+  assert.equal(phoneTool.outputSchema.properties.seededBy.enum.join(','), 'listener-input,balanced-start');
+  assert.ok(phoneTool.outputSchema.required.includes('seededBy'));
   assert.equal(options.phonePreview.amountCents, 50);
   assert.equal(options.phonePreview.price, '$0.50');
   assert.equal(options.phonePreview.requiresAccount, false);
@@ -568,8 +577,10 @@ test('homepage visual treatment keeps the hero wide, glassy, and free of hard pa
   const omnibar = await readFile(new URL('../components/agent/Omnibar.jsx', import.meta.url), 'utf8');
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
   const styles = await readFile(new URL('../app/globals.css', import.meta.url), 'utf8');
+  assert.match(homepage, /Personal meditation for noisy days/);
   assert.match(homepage, /When everything around you competes for attention/);
   assert.match(homepage, /one steady sound to return to/);
+  assert.match(homepage, /does not cancel HVAC, radio, power-line, EV/);
   assert.match(homepage, /lg:max-w-\[18ch\]/);
   assert.match(homepage, /hero-session-shell/);
   assert.match(omnibar, /omnibar-glass-shell/);
@@ -592,6 +603,41 @@ test('the ChatGPT connection helper copies a setup prompt and opens the main cha
   assert.match(header, /not a Git repository/);
   assert.doesNotMatch(header, /chatgpt\.com\/plugins/);
   assert.doesNotMatch(header, /Copy address/);
+});
+
+test('the ChatGPT setup modal locks page scroll and shows plugin guidance on open', async () => {
+  const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
+  assert.match(header, /useState\(true\)/);
+  assert.match(header, /setShowPluginInstructions\(true\)/);
+  assert.match(header, /body\.style\.overflow = 'hidden'/);
+  assert.match(header, /documentElement\.style\.overflow = 'hidden'/);
+  assert.match(header, /documentElement\.style\.overscrollBehavior = 'none'/);
+  assert.match(header, /overflow-hidden overscroll-none/);
+  assert.match(header, /!overflow-y-auto overscroll-contain/);
+  assert.match(header, /aria-expanded=\{showPluginInstructions\}/);
+});
+
+test('the public header keeps navigation and verified MCP hosts inside the left menu', async () => {
+  const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
+  assert.match(header, /aria-controls="site-menu"/);
+  assert.match(header, /Add to ChatGPT/);
+  assert.match(header, /MCP-ready hosts|MCP ready/);
+  for (const host of ['ChatGPT', 'Claude', 'Antigravity', 'Cursor', 'Gemini CLI', 'Codex']) {
+    assert.match(header, new RegExp(host));
+  }
+  assert.match(header, /https:\/\/www\.antigravity\.google\/docs\/mcp/);
+  assert.match(header, /https:\/\/developers\.openai\.com\/codex\/mcp\//);
+  assert.match(header, /\/images\/ai-logos\/openai\.svg/);
+  assert.match(header, /\/images\/ai-logos\/claude-color\.svg/);
+  assert.match(header, /\/images\/ai-logos\/cursor\.svg/);
+  assert.match(header, /\/images\/ai-logos\/geminicli-color\.svg/);
+  assert.match(header, /\/images\/ai-logos\/codex-color\.svg/);
+  assert.doesNotMatch(header, /<Sparkle/);
+
+  for (const asset of ['openai.svg', 'claude-color.svg', 'cursor.svg', 'geminicli-color.svg', 'codex-color.svg']) {
+    const svg = await readFile(new URL(`../public/images/ai-logos/${asset}`, import.meta.url), 'utf8');
+    assert.match(svg, /^<svg/);
+  }
 });
 
 test('MCP skill catalog is paginated, addressable, and digestable', () => {
@@ -886,6 +932,8 @@ test('commerce fulfillment fails closed after revocation and keeps sensitive pro
   assert.match(downloadRoute, /safeCommerceError/);
   assert.match(downloadRoute, /cache-control.*no-store|no-store.*cache-control/);
   assert.match(mcpRoute, /MCP_COMMERCE_LIMITS/);
+  assert.match(mcpRoute, /MAX_TOOL_TEXT_LENGTH = 64 \* 1024/);
+  assert.doesNotMatch(mcpRoute, /48 \* 1024/);
   assert.match(ucpCreateRoute, /requireAgentProfile: true/);
   assert.match(ucpCompleteRoute, /requireAgentProfile: true/);
   assert.match(workshopRevokeRoute, /CONFIRMATION_REQUIRED/);
@@ -973,6 +1021,8 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   const robots = await readFile(new URL('../app/robots.js', import.meta.url), 'utf8');
   assert.match(page, /WebMCP challenge cockpit/);
   assert.match(page, /MCP_TOOL_COUNT/);
+  assert.match(page, /WEBMCP_TOOL_DEFINITIONS/);
+  assert.doesNotMatch(page, /19 public WebMCP tools/);
   assert.doesNotMatch(page, /29 public MCP tools/);
   assert.match(cockpit, /data-testid="try-step-intention"/);
   assert.match(cockpit, /data-testid="try-step-comparison"/);

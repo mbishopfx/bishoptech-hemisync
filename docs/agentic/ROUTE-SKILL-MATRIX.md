@@ -45,18 +45,31 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `open_science_guide` — render the seven-slide educational signal guide with a self-contained animated ocean surface and browser PDF fallback
 - `open_feedback` — render one optional done-state feedback card without returning history
 
-### Homepage WebMCP tools
+### Homepage WebMCP tools (23)
 
 - `cognistration_get_session_state`
 - `cognistration_set_session_controls`
+- `cognistration_adjust_session_control`
+- `cognistration_set_session_direction`
+- `cognistration_nudge_carrier`
 - `cognistration_generate_tone`
+- `cognistration_clarify_intention`
+- `cognistration_calibrate_tone`
+- `cognistration_compare_tone_directions`
+- `cognistration_plan_listening_session`
+- `cognistration_get_session_cue`
+- `cognistration_begin_ritual`
+- `cognistration_advance_ritual`
+- `cognistration_prepare_session_recipe`
+- `cognistration_open_science_guide`
 - `cognistration_search_tone_packs`
 - `cognistration_preview_tone_pack`
 - `cognistration_get_policy_info`
 - `cognistration_get_account_options`
 - `cognistration_begin_preview`
+- `cognistration_stop_preview`
+- `cognistration_open_fullscreen`
 - `cognistration_open_account_signup`
-- `cognistration_open_science_guide`
 
 ### REST fallbacks
 

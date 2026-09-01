@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Activity, Power, Zap } from 'lucide-react';
+import { ImmersiveOceanMode } from '@/components/dashboard/ImmersiveOceanMode';
+import { normalizeOceanSeed } from '@/components/science/vgpu-ocean/ocean-profile';
 
 export function WorkshopComposer({ 
   seedTone, 
@@ -19,6 +21,9 @@ export function WorkshopComposer({
   const [beatFreq, setBeatFreq] = useState(6);
   const [volume, setVolume] = useState(80);
   const [time, setTime] = useState(0);
+  const [audioError, setAudioError] = useState('');
+  const [isImmersiveOpen, setIsImmersiveOpen] = useState(false);
+  const [immersiveSeed, setImmersiveSeed] = useState(null);
 
   // Session access & countdown
   const maxDurationSec = 3600; // 1 hour for all signed-in users
@@ -29,6 +34,7 @@ export function WorkshopComposer({
   const leftOscRef = useRef(null);
   const rightOscRef = useRef(null);
   const masterGainRef = useRef(null);
+  const stopTimerRef = useRef(null);
 
   // Time ticker loop for smooth vector wave animations
   useEffect(() => {
@@ -71,8 +77,14 @@ export function WorkshopComposer({
 
   const activeBrainState = getBrainStateFromHz(beatFreq);
 
+  const openImmersive = () => {
+    setImmersiveSeed(normalizeOceanSeed());
+    setIsImmersiveOpen(true);
+  };
+  const closeImmersive = useCallback(() => setIsImmersiveOpen(false), []);
+
   // Stop active audio nodes cleanly
-  const stopAudioNodes = () => {
+  const stopAudioNodes = useCallback(() => {
     if (leftOscRef.current) {
       try { leftOscRef.current.stop(); } catch (err) {}
       try { leftOscRef.current.disconnect(); } catch (err) {}
@@ -87,22 +99,28 @@ export function WorkshopComposer({
       try { masterGainRef.current.disconnect(); } catch (err) {}
       masterGainRef.current = null;
     }
-  };
+  }, []);
 
   // Launch live stereophonic Audio nodes
-  const startAudio = () => {
+  const startAudio = async () => {
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) {
-        alert("Web Audio API is not supported in this browser.");
+        setAudioError('Web Audio is not supported in this browser.');
         return;
       }
 
-      const ctx = audioCtxRef.current || new AudioContextClass();
+      if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
+      const ctx = audioCtxRef.current && audioCtxRef.current.state !== 'closed'
+        ? audioCtxRef.current
+        : new AudioContextClass();
       audioCtxRef.current = ctx;
 
       if (ctx.state === 'suspended') {
-        ctx.resume();
+        await ctx.resume();
+      }
+      if (ctx.state !== 'running') {
+        throw new Error('The browser did not allow the audio context to start. Press Start preview again.');
       }
 
       stopAudioNodes();
@@ -134,14 +152,17 @@ export function WorkshopComposer({
       rightOscRef.current = rightOsc;
       masterGainRef.current = masterGain;
 
+      setAudioError('');
       setIsPlaying(true);
     } catch (e) {
       console.error("Failed to start sound synth:", e);
+      setIsPlaying(false);
+      setAudioError(e.message || 'Preview could not start.');
     }
   };
 
   // Shut down synthesis engine cleanly with fade out
-  const stopAudio = () => {
+  const stopAudio = useCallback(() => {
     if (audioCtxRef.current && masterGainRef.current) {
       const ctx = audioCtxRef.current;
       const now = ctx.currentTime;
@@ -150,11 +171,12 @@ export function WorkshopComposer({
         masterGainRef.current.gain.linearRampToValueAtTime(0, now + 0.15);
       } catch (err) {}
     }
-    setTimeout(() => {
+    stopTimerRef.current = setTimeout(() => {
       stopAudioNodes();
       setIsPlaying(false);
+      stopTimerRef.current = null;
     }, 200);
-  };
+  }, [stopAudioNodes]);
 
   const togglePower = () => {
     if (isPlaying) {
@@ -186,7 +208,7 @@ export function WorkshopComposer({
       setShowLimitModal(true);
       setSessionTime(0);
     }
-  }, [sessionTime, maxDurationSec]);
+  }, [sessionTime, maxDurationSec, stopAudio]);
 
   // Keep oscillators dynamically tuned to slider values in real-time
   useEffect(() => {
@@ -210,12 +232,13 @@ export function WorkshopComposer({
   // Make sure we stop everything on component unmount
   useEffect(() => {
     return () => {
+      if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
       stopAudioNodes();
       if (audioCtxRef.current) {
         try { audioCtxRef.current.close(); } catch (e) {}
       }
     };
-  }, []);
+  }, [stopAudioNodes]);
 
   // Format time (MM:SS) helper
   const formatTime = (seconds) => {
@@ -251,13 +274,13 @@ export function WorkshopComposer({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="workspace-live-controls space-y-6">
       {/* Tab Header Section */}
       <div className="space-y-2">
-        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Listening Workshop</p>
-        <h2 className="text-3xl font-light text-white tracking-tight">Cognistration Workshop</h2>
+        <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Live control deck</p>
+        <h2 className="text-3xl font-light text-white tracking-tight">Tune the moment in real time.</h2>
         <p className="max-w-3xl text-xs leading-relaxed text-zinc-400 font-light font-sans">
-          Shape the left and right tones, set a comfortable rhythm, and build a listening session that fits the moment. Headphones recommended.
+          Adjust the carrier, rhythm, and volume while the preview is running. Changes are applied continuously, so the listening cue does not need to pause.
         </p>
       </div>
 
@@ -391,7 +414,7 @@ export function WorkshopComposer({
             <div className="space-y-2">
               <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.4em]">Preview</p>
               <button
-                onClick={togglePower}
+                onClick={() => void togglePower()}
                 className={`w-full py-3.5 px-6 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-bold border transition-all flex items-center justify-center gap-3 ${
                   isPlaying
                     ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:bg-cyan-500/20'
@@ -400,6 +423,21 @@ export function WorkshopComposer({
               >
                 <Power className={`size-4 ${isPlaying ? 'animate-pulse' : ''}`} />
                 <span>{isPlaying ? 'Stop preview' : 'Start preview'}</span>
+              </button>
+              {audioError && <p className="mt-2 rounded-xl border border-[#d7b6a8] bg-[#fbf1ed] px-3 py-2 text-xs text-[#8a5f4b]" role="alert">{audioError}</p>}
+            </div>
+
+            <div className="workspace-glass-card rounded-2xl p-4">
+              <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Change the scene</p>
+              <p className="mt-2 text-xs leading-5 text-white/55">Open a seeded ocean that follows these controls while your tone keeps playing.</p>
+              <button
+                type="button"
+                onClick={openImmersive}
+                data-testid="immersive-mode-button"
+                className="workspace-glass-button workspace-glass-button--primary mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-medium"
+              >
+                <span className="material-symbols-outlined text-base" aria-hidden="true">waves</span>
+                Immersive mode
               </button>
             </div>
 
@@ -490,6 +528,13 @@ export function WorkshopComposer({
       </Card>
       </div>
       )}
+
+      <ImmersiveOceanMode
+        open={isImmersiveOpen}
+        seed={immersiveSeed}
+        controls={{ carrierFreq, beatFreq, volume, brainState: activeBrainState }}
+        onClose={closeImmersive}
+      />
     </div>
   );
 }

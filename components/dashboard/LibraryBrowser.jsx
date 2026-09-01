@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { BRAIN_STATE_ORDER, getBrainStateMeta, groupLibraryTonesByState, normalizeLibraryTone, resolveBrainState } from '@/lib/audio/library-groups';
 import { authedFetch } from '@/lib/frontend/api';
 
-function ToneCard({ tone, onUseInWorkshop }) {
+function ToneCard({ tone, onUseInStudio }) {
   const meta = getBrainStateMeta(resolveBrainState(tone));
   const sourceLabel = tone.sourceType === 'generated-pack'
     ? 'Generated pack'
@@ -15,12 +15,12 @@ function ToneCard({ tone, onUseInWorkshop }) {
         : 'Saved tone';
 
   return (
-    <Card className="bg-zinc-900/40 border-white/5 backdrop-blur-xl p-5 rounded-3xl group hover:border-cyan-500/30 transition-all">
+    <Card className="workspace-library-card group rounded-[2rem] p-5 transition-all">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">{meta.label}</span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-white/55">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400">{meta.label}</span>
+            <span className="workspace-library-inset rounded-full border px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-white/55">
               {sourceLabel}
             </span>
           </div>
@@ -29,19 +29,19 @@ function ToneCard({ tone, onUseInWorkshop }) {
         </div>
         <button
           type="button"
-          className="size-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform shrink-0"
+          className="workspace-glass-button workspace-glass-button--primary workspace-library-play flex size-10 shrink-0 items-center justify-center rounded-full"
           aria-label={`Play ${tone.name}`}
         >
-          <span className="material-symbols-outlined text-black font-bold">play_arrow</span>
+          <span className="material-symbols-outlined font-bold text-white">play_arrow</span>
         </button>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-white/40">
-        <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+        <div className="workspace-library-inset rounded-2xl border p-3">
           <p className="font-mono uppercase tracking-widest text-[10px] text-white/25">Duration</p>
           <p className="mt-1 text-white/70">{Math.round((tone.durationSec || tone.duration_sec || 0) / 60)} min</p>
         </div>
-        <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-3">
+        <div className="workspace-library-inset rounded-2xl border p-3">
           <p className="font-mono uppercase tracking-widest text-[10px] text-white/25">Base</p>
           <p className="mt-1 text-white/70">{tone.baseFreqHz || tone.base_freq_hz || '—'} Hz</p>
         </div>
@@ -51,10 +51,10 @@ function ToneCard({ tone, onUseInWorkshop }) {
         <Button
           type="button"
           variant="secondary"
-          className="flex-1"
-          onClick={() => onUseInWorkshop?.(tone)}
+          className="workspace-glass-button workspace-glass-button--quiet flex-1"
+          onClick={() => onUseInStudio?.(tone)}
         >
-          Use in Workshop
+          Use in Studio
           <span className="material-symbols-outlined text-sm ml-2 font-semibold">arrow_forward</span>
         </Button>
       </div>
@@ -69,12 +69,12 @@ function ToneCard({ tone, onUseInWorkshop }) {
 function ProjectCard({ project, onEdit }) {
   const duration = Math.round((project.spec?.durationSec || 0) / 60);
   return (
-    <Card className="rounded-3xl border-white/5 bg-zinc-900/40 p-5 backdrop-blur-xl">
+    <Card className="workspace-library-card rounded-[2rem] p-5">
       <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400">Private project · v{project.version}</p>
       <h3 className="mt-2 text-lg font-medium text-white">{project.name}</h3>
       <p className="mt-2 text-sm leading-6 text-white/45">{project.spec?.description || 'Editable staged Cognistration session.'}</p>
       <div className="mt-4 flex items-center justify-between text-[10px] font-mono uppercase text-white/30"><span>{duration} min</span><span>{project.spec?.stages?.length || 0} stages</span></div>
-      <button type="button" onClick={() => onEdit?.(project)} className="mt-4 w-full rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-4 py-2.5 text-xs font-mono uppercase text-cyan-200 hover:bg-cyan-500/20">Open in Studio</button>
+      <button type="button" onClick={() => onEdit?.(project)} className="workspace-glass-button workspace-library-action mt-4 w-full rounded-xl px-4 py-2.5 text-xs font-mono uppercase">Open in Studio</button>
     </Card>
   );
 }
@@ -113,17 +113,17 @@ function RenderCard({ render, onEditProject }) {
     }
   };
   return (
-    <Card className="rounded-3xl border-white/5 bg-zinc-900/40 p-5 backdrop-blur-xl">
+    <Card className="workspace-library-card rounded-[2rem] p-5">
       <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-mono uppercase tracking-[0.25em] text-purple-300">Private export</p><h3 className="mt-2 text-lg font-medium text-white">{project?.name || 'Studio Render'}</h3></div><span className={`rounded-full border px-2.5 py-1 text-[9px] font-mono uppercase ${render.phase === 'completed' ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300' : render.phase === 'failed' ? 'border-red-500/25 bg-red-500/10 text-red-300' : 'border-cyan-500/25 bg-cyan-500/10 text-cyan-300'}`}>{render.phase}</span></div>
-      <div className="mt-4 grid grid-cols-2 gap-2 text-[10px] font-mono uppercase text-white/30"><div className="rounded-xl border border-white/5 p-3">Duration<p className="mt-1 text-white/65">{Math.round((render.metadata?.durationSec || project?.spec?.durationSec || 0) / 60)} min</p></div><div className="rounded-xl border border-white/5 p-3">Quality<p className="mt-1 text-white/65">192 kbps / 48 kHz</p></div></div>
-      {render.phase === 'completed' && <div className="mt-4 grid grid-cols-2 gap-2">{render.wav_path && <button type="button" onClick={() => download('wav')} disabled={busy} className="rounded-xl border border-white/10 px-3 py-2 text-[10px] font-mono uppercase text-white/60">{busy === 'wav' ? 'Opening…' : 'Legacy WAV'}</button>}{render.mp3_path && <button type="button" onClick={() => download('mp3')} disabled={busy} className={`${render.wav_path ? '' : 'col-span-2'} rounded-xl border border-white/10 px-3 py-2 text-[10px] font-mono uppercase text-white/60`}>{busy === 'mp3' ? 'Opening…' : 'Download MP3'}</button>}<button type="button" onClick={email} disabled={busy} className="col-span-2 rounded-xl border border-purple-500/20 bg-purple-500/10 px-3 py-2 text-[10px] font-mono uppercase text-purple-200">{busy === 'email' ? 'Sending…' : 'Email Me a Copy'}</button></div>}
+      <div className="mt-4 grid grid-cols-2 gap-2 text-[10px] font-mono uppercase text-white/30"><div className="workspace-library-inset rounded-xl border p-3">Duration<p className="mt-1 text-white/65">{Math.round((render.metadata?.durationSec || project?.spec?.durationSec || 0) / 60)} min</p></div><div className="workspace-library-inset rounded-xl border p-3">Quality<p className="mt-1 text-white/65">192 kbps / 48 kHz</p></div></div>
+      {render.phase === 'completed' && <div className="mt-4 grid grid-cols-2 gap-2">{render.wav_path && <button type="button" onClick={() => download('wav')} disabled={busy} className="workspace-glass-button workspace-library-action rounded-xl px-3 py-2 text-[10px] font-mono uppercase">{busy === 'wav' ? 'Opening…' : 'Legacy WAV'}</button>}{render.mp3_path && <button type="button" onClick={() => download('mp3')} disabled={busy} className={`${render.wav_path ? '' : 'col-span-2'} workspace-glass-button workspace-library-action rounded-xl px-3 py-2 text-[10px] font-mono uppercase`}>{busy === 'mp3' ? 'Opening…' : 'Download MP3'}</button>}<button type="button" onClick={email} disabled={busy} className="workspace-glass-button workspace-library-action col-span-2 rounded-xl px-3 py-2 text-[10px] font-mono uppercase">{busy === 'email' ? 'Sending…' : 'Email Me a Copy'}</button></div>}
       {project && <button type="button" onClick={() => onEditProject?.(project)} className="mt-3 w-full text-[10px] font-mono uppercase tracking-widest text-cyan-300/70">Open project →</button>}
       {notice && <p className="mt-3 text-xs text-white/45">{notice}</p>}
     </Card>
   );
 }
 
-export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseInWorkshop, onEditProject }) {
+export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseInStudio, onEditProject }) {
   const [query, setQuery] = useState('');
   const [activeState, setActiveState] = useState('all');
   const [section, setSection] = useState('catalog');
@@ -164,17 +164,17 @@ export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseI
   const totalVisible = Object.values(filteredGroups).reduce((sum, list) => sum + list.length, 0);
 
   return (
-    <div className="space-y-8">
+    <div className="workspace-library space-y-8">
       <div className="space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="section-label">Private Audio Library</p>
             <h2 className="section-title mt-2 text-4xl text-[var(--text-primary)]">Projects, exports, and curated tones</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">
-              Reopen editable Studio projects, retrieve private masters, or choose a curated tone for the Workshop.
+              Reopen editable Studio projects, retrieve private masters, or choose a curated tone for Studio.
             </p>
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 p-2">
+          <div className="workspace-library-search flex items-center gap-2 rounded-full border p-2">
             <span className="material-symbols-outlined text-white/35 text-base ml-2">search</span>
             <input
               value={query}
@@ -186,14 +186,15 @@ export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseI
         </div>
 
         <div className="flex flex-wrap gap-2 border-b border-white/5 pb-4">
-          {[['catalog', 'Curated Tones'], ['projects', `My Projects (${projects.length})`], ['exports', `My Exports (${renders.length})`]].map(([id, label]) => <button type="button" key={id} onClick={() => setSection(id)} className={`rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.18em] ${section === id ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' : 'border-white/10 bg-white/5 text-white/45 hover:text-white'}`}>{label}</button>)}
+          {[['catalog', 'Curated Tones'], ['projects', `My Projects (${projects.length})`], ['exports', `My Exports (${renders.length})`]].map(([id, label]) => <button type="button" key={id} data-active={section === id} onClick={() => setSection(id)} className="workspace-library-tab rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.18em]">{label}</button>)}
         </div>
 
         {section === 'catalog' && <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActiveState('all')}
-            className={`rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.2em] transition-all ${activeState === 'all' ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' : 'border-white/10 bg-white/5 text-white/50 hover:text-white'}`}
+            data-active={activeState === 'all'}
+            className="workspace-library-tab rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.2em]"
           >
             All
           </button>
@@ -204,7 +205,8 @@ export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseI
                 type="button"
                 key={state}
                 onClick={() => setActiveState(state)}
-                className={`rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.2em] transition-all ${activeState === state ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300' : 'border-white/10 bg-white/5 text-white/50 hover:text-white'}`}
+                data-active={activeState === state}
+                className="workspace-library-tab rounded-full border px-4 py-2 text-xs font-mono uppercase tracking-[0.2em]"
               >
                 {meta.label}
               </button>
@@ -213,12 +215,12 @@ export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseI
         </div>}
       </div>
 
-      {section === 'projects' && (projects.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{projects.map((item) => <ProjectCard key={item.id} project={item} onEdit={onEditProject} />)}</div> : <Card className="border-white/5 bg-zinc-900/40 p-10 text-center"><h3 className="text-xl font-light text-white/70">No Studio projects yet</h3><p className="mt-2 text-sm text-white/35">Create your first private session in Cognistration Studio.</p></Card>)}
+      {section === 'projects' && (projects.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{projects.map((item) => <ProjectCard key={item.id} project={item} onEdit={onEditProject} />)}</div> : <Card className="workspace-library-card p-10 text-center"><h3 className="text-xl font-light text-white/70">No Studio projects yet</h3><p className="mt-2 text-sm text-white/35">Create your first private session in Cognistration Studio.</p></Card>)}
 
-      {section === 'exports' && (renders.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{renders.map((item) => <RenderCard key={item.id} render={item} onEditProject={onEditProject} />)}</div> : <Card className="border-white/5 bg-zinc-900/40 p-10 text-center"><h3 className="text-xl font-light text-white/70">No exports yet</h3><p className="mt-2 text-sm text-white/35">Completed Railway renders will appear here.</p></Card>)}
+      {section === 'exports' && (renders.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{renders.map((item) => <RenderCard key={item.id} render={item} onEditProject={onEditProject} />)}</div> : <Card className="workspace-library-card p-10 text-center"><h3 className="text-xl font-light text-white/70">No exports yet</h3><p className="mt-2 text-sm text-white/35">Completed Railway renders will appear here.</p></Card>)}
 
       {section === 'catalog' && (totalVisible === 0 ? (
-        <Card className="border-white/5 bg-zinc-900/40 p-10 text-center">
+        <Card className="workspace-library-card p-10 text-center">
           <span className="material-symbols-outlined text-white/15 text-5xl mx-auto block mb-2">library_music</span>
           <h3 className="mt-4 text-xl font-light text-white/70">No tones found</h3>
           <p className="mt-2 text-sm text-white/35">Try another brain state or clear the search term.</p>
@@ -245,7 +247,7 @@ export function LibraryBrowser({ tones = [], projects = [], renders = [], onUseI
 
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {tonesInState.map((tone) => (
-                    <ToneCard key={tone.id} tone={tone} onUseInWorkshop={onUseInWorkshop} />
+                    <ToneCard key={tone.id} tone={tone} onUseInStudio={onUseInStudio} />
                   ))}
                 </div>
               </section>

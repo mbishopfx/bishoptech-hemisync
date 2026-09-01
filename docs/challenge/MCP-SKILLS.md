@@ -15,6 +15,7 @@ unrestricted writes.
 - Skills extension: `io.modelcontextprotocol/skills`
 - Current MCP transport: Streamable HTTP with JSON responses over POST
 - Current protocol metadata: `MCP-Protocol-Version: 2026-07-28`
+- Current public registry: 37 remote MCP tools, 17 resources, 23 public WebMCP tools, 11 authenticated member WebMCP tools, and 5 skills
 
 The five public skill URIs are:
 
@@ -155,6 +156,20 @@ COGNISTRATION_MCP_ENDPOINT=https://cognistration-mcp-edge.cognistration.workers.
 COGNISTRATION_MCP_ORIGIN=https://cognistration.com \
 npm run test:mcp:live
 ```
+
+For the full release audit, including every public MCP tool, every resource and
+skill, protocol failure cases, REST/OpenAPI/UCP fallbacks, schema checks, and
+optional browser WebMCP registration:
+
+```bash
+npm run audit:mcp
+npm run audit:mcp:browser
+```
+
+The audit uses synthetic `.invalid` inputs and never submits credentials,
+feedback, a confirmed checkout, payment authorization, or audio playback. It
+writes a redacted report to `output/audits/mcp-audit-latest.json`; see
+`docs/agentic/MCP-AUDIT-SYSTEM.md` for coverage and release-gate details.
 
 For a manual discovery request:
 

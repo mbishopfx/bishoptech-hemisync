@@ -160,7 +160,7 @@ export function MemberWebMcpBridge() {
   }, []);
 
   return (
-    <div data-testid="member-webmcp-bridge" data-member-webmcp-status={status} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs text-white/45">
+    <div data-testid="member-webmcp-bridge" data-member-webmcp-status={status} className="workspace-member-bridge rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs text-white/45">
       {status === 'ready' ? 'Workspace controls are available in this browser.' : 'Workspace controls are available when supported.'}
     </div>
   );

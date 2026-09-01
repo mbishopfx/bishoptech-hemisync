@@ -1,24 +1,83 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowRight,
+  BookmarkSimple,
+  CaretDown,
+  Check,
+  Funnel,
+  LockKey,
+  MagnifyingGlass,
+  PencilSimple,
+  Star,
+  Tag,
+  X
+} from '@phosphor-icons/react';
 import { authedFetch } from '@/lib/frontend/api';
 
-export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
+const DRAFT_KEY = 'cognistration-journal-draft-v2';
+const MOODS = [
+  { value: 'clear', label: 'Clear' },
+  { value: 'steady', label: 'Steady' },
+  { value: 'overloaded', label: 'Overloaded' },
+  { value: 'tender', label: 'Tender' },
+  { value: 'energized', label: 'Energized' },
+  { value: 'restless', label: 'Restless' }
+];
+const FOCUS_AREAS = ['Work', 'Rest', 'Meditation', 'Creative', 'Relationships', 'General'];
+const PROMPTS = [
+  'What is asking for my attention right now?',
+  'What would make the next hour feel chosen?',
+  'What can I set down before I begin?'
+];
+
+function intentMeta(intent = '') {
+  const value = intent.toLowerCase();
+  if (value.includes('sleep')) return { label: 'Sleepward', state: 'delta', tone: 'plum' };
+  if (value.includes('relax') || value.includes('calm')) return { label: 'Settle', state: 'alpha', tone: 'sage' };
+  if (value.includes('focus') || value.includes('alert')) return { label: 'Focus', state: 'beta', tone: 'blue' };
+  return { label: 'Reflect', state: 'theta', tone: 'sand' };
+}
+function formatEntryDate(value) {
+  if (!value) return 'Recently';
+  return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(value));
+}
+
+function insightText(value) {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) return value.join(' · ');
+  return value.note || value.summary || '';
+}
+
+const EMPTY_FORM = {
+  title: '',
+  text: '',
+  mood: '',
+  energy: 3,
+  focusArea: '',
+  tags: ''
+};
+
+export function JournalView({ onInjectToStudio, onDirectGenerate }) {
   const [entries, setEntries] = useState([]);
-  const [text, setText] = useState('');
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [analyzing, setAnalyzing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState('');
+  const [savedMessage, setSavedMessage] = useState('');
 
   const fetchEntries = async () => {
     try {
-      const data = await authedFetch('/api/journal');
+      setError('');
+      const data = await authedFetch('/api/journal?limit=100');
       setEntries(data.entries || []);
-    } catch (err) {
-      console.error('Failed to fetch journal entries:', err);
+    } catch (cause) {
+      setError(cause.message || 'Your private journal could not be loaded.');
     } finally {
       setLoading(false);
     }
@@ -26,268 +85,176 @@ export function JournalView({ onInjectToWorkshop, onDirectGenerate }) {
 
   useEffect(() => {
     fetchEntries();
+    try {
+      const draft = window.localStorage.getItem(DRAFT_KEY);
+      if (draft) setForm({ ...EMPTY_FORM, ...JSON.parse(draft) });
+    } catch {}
   }, []);
 
-  const handleSubmitJournal = async (e, shouldGenerateBeat = false) => {
-    if (e) e.preventDefault();
-    if (!text.trim()) return;
+  useEffect(() => {
+    try {
+      if (form.text || form.title) window.localStorage.setItem(DRAFT_KEY, JSON.stringify(form));
+      else window.localStorage.removeItem(DRAFT_KEY);
+    } catch {}
+  }, [form]);
 
-    setAnalyzing(true);
+  const filteredEntries = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    return entries.filter((entry) => {
+      const meta = intentMeta(entry.intent);
+      const matchesFilter = filter === 'all' || meta.state === filter || (filter === 'saved' && entry.is_favorite);
+      if (!matchesFilter) return false;
+      if (!needle) return true;
+      return [entry.title, entry.text, entry.summary, entry.intent, entry.focus_area, ...(entry.tags || [])]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(needle);
+    });
+  }, [entries, filter, query]);
+
+  const updateField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+
+  const submitJournal = async (event, analyze) => {
+    event?.preventDefault();
+    if (!form.text.trim()) return;
+    setSaving(true);
     setError('');
+    setSavedMessage('');
     try {
       const data = await authedFetch('/api/journal', {
         method: 'POST',
-        body: JSON.stringify({ text: text.trim() })
+        body: JSON.stringify({
+          ...form,
+          text: form.text.trim(),
+          title: form.title.trim() || undefined,
+          mood: form.mood || undefined,
+          focusArea: form.focusArea || undefined,
+          tags: form.tags.split(',').map((tag) => tag.trim()).filter(Boolean),
+          analyze
+        })
       });
-      
       const savedEntry = data.journal_entry;
-      const originalText = text.trim();
-      setText('');
-      await fetchEntries();
-
-      if (shouldGenerateBeat && savedEntry) {
-        const intentMeta = getIntentBadgeMeta(savedEntry.intent);
-        if (onDirectGenerate) {
-          onDirectGenerate({
-            state: intentMeta.state,
-            snippet: originalText.slice(0, 60)
-          });
-        }
+      setEntries((current) => [savedEntry, ...current.filter((entry) => entry.id !== savedEntry.id)]);
+      setForm(EMPTY_FORM);
+      setSavedMessage(analyze ? 'Saved with a listening-direction suggestion.' : 'Saved privately. No reflection text was sent for analysis.');
+      if (analyze && savedEntry) {
+        const meta = intentMeta(savedEntry.intent);
+        onDirectGenerate?.({ state: meta.state, snippet: savedEntry.text.slice(0, 80), notes: savedEntry.summary || savedEntry.text });
       }
-    } catch (err) {
-      setError(err.message || 'Analysis failed');
+    } catch (cause) {
+      setError(cause.message || 'The reflection could not be saved.');
     } finally {
-      setAnalyzing(false);
+      setSaving(false);
     }
   };
 
-  // Helper to get intent color mapping for badges
-  const getIntentBadgeMeta = (intent = '') => {
-    const raw = intent.toLowerCase();
-    if (raw.includes('sleep')) return { label: 'Delta / Sleep Prep', color: 'border-indigo-500/20 bg-indigo-500/10 text-indigo-300', state: 'delta' };
-    if (raw.includes('relax') || raw.includes('calm')) return { label: 'Alpha / Calm Flow', color: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300', state: 'alpha' };
-    if (raw.includes('focus') || raw.includes('alert')) return { label: 'Beta / Task Focus', color: 'border-cyan-500/20 bg-cyan-500/10 text-cyan-300', state: 'beta' };
-    return { label: 'Theta / Meditation', color: 'border-purple-500/20 bg-purple-500/10 text-purple-300', state: 'theta' };
+  const toggleFavorite = async (entry) => {
+    setUpdatingId(entry.id);
+    try {
+      const data = await authedFetch('/api/journal', {
+        method: 'PATCH',
+        body: JSON.stringify({ id: entry.id, isFavorite: !entry.is_favorite })
+      });
+      setEntries((current) => current.map((item) => item.id === entry.id ? data.journal_entry : item));
+    } catch (cause) {
+      setError(cause.message || 'That reflection could not be updated.');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   return (
-    <div className="space-y-10 pb-12">
-      {/* Journal Reflection Editor */}
-      <Card className="bg-zinc-900/40 border border-white/5 backdrop-blur-3xl p-6 rounded-3xl relative overflow-hidden group hover:border-cyan-500/20 transition-all">
-        <div className="absolute top-0 right-0 w-[450px] h-[150px] bg-cyan-500/[0.03] blur-[60px] pointer-events-none" />
-        
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">Reflection Terminal</p>
-            <h3 className="text-xl font-light text-white mt-1">Record Consciousness State</h3>
-          </div>
-          <span className="material-symbols-outlined text-cyan-500 text-2xl">edit_note</span>
+    <div className="workspace-journal space-y-8 pb-10">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl">
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-[#548477]"><PencilSimple size={16} weight="duotone" aria-hidden="true" /> Private journal</div>
+          <h2 className="mt-3 text-4xl font-medium tracking-[-0.055em] text-[#1d302c] md:text-5xl">Make the inside of the day visible.</h2>
+          <p className="mt-4 max-w-xl text-base leading-7 text-[#60716b]">A calm place to name what is present, save what you notice, and optionally turn a reflection into a Studio starting point.</p>
         </div>
-
-        <div className="space-y-4">
-          <Textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            disabled={analyzing}
-            placeholder="Write down your current feelings, mental focus, meditation insights, or physical sensations. The deconstruction node will automatically synthesize the optimal brain state frequency..."
-            className="w-full bg-black/20 border-white/10 focus:border-cyan-500/30 rounded-2xl p-4 text-sm text-white placeholder:text-white/20 outline-none resize-none focus:ring-0 min-h-[140px] leading-relaxed font-light"
-          />
-
-          {error && (
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-              {error}
-            </div>
-          )}
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-white/5">
-            <span className="text-[10px] font-mono text-white/30 tracking-wider">Supports real-time neuro-intent analysis</span>
-            <div className="flex flex-wrap items-center gap-3">
-              <Button
-                type="button"
-                onClick={(e) => handleSubmitJournal(e, false)}
-                disabled={analyzing || !text.trim()}
-                variant="ghost"
-                className="rounded-full text-white/60 hover:text-white border border-white/5 hover:bg-white/5"
-              >
-                Save Reflection Only
-              </Button>
-              
-              <Button
-                type="button"
-                onClick={(e) => handleSubmitJournal(e, true)}
-                disabled={analyzing || !text.trim()}
-                className="rounded-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold px-6 transition-all flex items-center gap-2"
-              >
-                {analyzing ? (
-                  <>
-                    <span className="material-symbols-outlined animate-spin text-sm">sync</span>
-                    Analyzing Intent...
-                  </>
-                ) : (
-                  <>
-                    <span className="material-symbols-outlined text-sm">sensors</span>
-                    Analyze & Generate Beat
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Cyber-neon laser scanning overlay during analysis */}
-        {analyzing && (
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center space-y-4 z-50">
-            {/* Pulsing circular scanner */}
-            <div className="relative size-20 rounded-full border border-cyan-500 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border-2 border-cyan-400/30 animate-ping" />
-              <div className="absolute inset-1 rounded-full border border-dashed border-cyan-300 animate-spin" style={{ animationDuration: '6s' }} />
-              <span className="material-symbols-outlined text-cyan-400 text-2xl animate-pulse">psychology</span>
-            </div>
-            
-            {/* Scanning line animation */}
-            <div className="absolute left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent top-0 animate-[bounce_2s_infinite]" />
-
-            <div className="text-center">
-              <p className="text-sm font-mono tracking-widest text-cyan-300 uppercase animate-pulse">Deconstructing Neuro-Intent...</p>
-              <p className="text-[10px] text-white/30 mt-1 uppercase tracking-widest">Generating resonance parameters</p>
-            </div>
-          </div>
-        )}
-      </Card>
-
-      {/* Timeline of past Journal Entries */}
-      <div className="space-y-6">
-        <div className="border-b border-white/5 pb-4">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40">Chronicle Timeline</p>
-          <h3 className="text-2xl font-light text-white mt-1">Consciousness Archive</h3>
-        </div>
-
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <span className="material-symbols-outlined animate-spin text-cyan-500 text-3xl">sync</span>
-            <p className="text-xs text-white/35 font-mono uppercase tracking-widest mt-4">Accessing Archive...</p>
-          </div>
-        ) : entries.length === 0 ? (
-          <Card className="border-white/5 bg-zinc-900/40 p-16 text-center rounded-3xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.01] to-transparent pointer-events-none" />
-            <span className="material-symbols-outlined text-white/10 text-5xl mb-4">border_color</span>
-            <h4 className="text-lg font-light text-white/70">Archive is currently blank</h4>
-            <p className="text-sm text-white/30 mt-2 max-w-md mx-auto leading-relaxed">
-              No entries committed yet. Begin journaling to log your mental focus sessions, meditation paths, and synthesize custom Cognistration files.
-            </p>
-          </Card>
-        ) : (
-          <div className="space-y-6">
-            {entries.map((entry) => {
-              const intentMeta = getIntentBadgeMeta(entry.intent);
-
-              return (
-                <Card key={entry.id} className="bg-zinc-900/40 border-white/5 backdrop-blur-3xl p-6 rounded-3xl hover:border-white/10 transition-all relative overflow-hidden group">
-                  {/* Subtle hover background glow matching intent */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-cyan-500/[0.01] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="flex-1 space-y-4">
-                      {/* Top Header */}
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                          <span className={`rounded-full border px-3 py-1 text-[10px] font-mono uppercase tracking-widest ${intentMeta.color}`}>
-                            {intentMeta.label}
-                          </span>
-                          {entry.sentiment && (
-                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-white/60">
-                              {entry.sentiment}
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-xs text-white/30 font-mono">
-                          {new Date(entry.created_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
-                        </span>
-                      </div>
-
-                      {/* Original Reflection */}
-                      <div className="space-y-1">
-                        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">Original Entry</p>
-                        <p className="text-sm text-white/80 leading-relaxed font-light italic">&quot;{entry.text}&quot;</p>
-                      </div>
-
-                      {/* AI Summary */}
-                      {entry.summary && (
-                        <div className="space-y-1">
-                          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20">Resonance Analysis</p>
-                          <p className="text-sm text-cyan-100/70 leading-relaxed font-light">{entry.summary}</p>
-                        </div>
-                      )}
-
-                      {/* Shifts and Insights */}
-                      <div className="grid gap-4 sm:grid-cols-2 pt-2">
-                        {entry.cognitive_shifts && (
-                          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-cyan-400">Cognitive Shifts</p>
-                            <p className="text-xs text-white/60 leading-relaxed mt-2">{entry.cognitive_shifts}</p>
-                          </div>
-                        )}
-                        {entry.ai_insights && (
-                          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-purple-400">Neural Insights</p>
-                            <p className="text-xs text-white/60 leading-relaxed mt-2">
-                              {typeof entry.ai_insights === 'string' 
-                                ? entry.ai_insights 
-                                : Array.isArray(entry.ai_insights)
-                                  ? entry.ai_insights.join(', ')
-                                  : JSON.stringify(entry.ai_insights)}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Mapped Cognistration CTA card */}
-                    <div className="md:w-72 flex flex-col justify-between p-5 bg-cyan-500/[0.02] border border-cyan-500/10 rounded-2xl shrink-0 relative overflow-hidden group/cta hover:border-cyan-500/30 transition-all">
-                      <div className="absolute top-0 right-0 w-[150px] h-[80px] bg-cyan-500/5 blur-[30px] pointer-events-none" />
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2 text-cyan-400">
-                          <span className="material-symbols-outlined text-lg animate-pulse">radio</span>
-                          <span className="text-[10px] font-mono uppercase tracking-[0.2em]">Binaural Synthesis</span>
-                        </div>
-                        <h4 className="text-base font-semibold text-white">Inject Matched Plan</h4>
-                        <p className="text-xs text-white/55 leading-relaxed">
-                          Automatically configure the audio workshop with target parameters matched to this reflection&apos;s intent.
-                        </p>
-                      </div>
-
-                      <div className="mt-6 space-y-2">
-                        <Button
-                          onClick={() => onDirectGenerate?.({
-                            state: intentMeta.state,
-                            snippet: entry.text.slice(0, 60)
-                          })}
-                          className="w-full rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold tracking-wider text-[10px] font-mono uppercase transition-all py-2.5 flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(6,182,212,0.2)]"
-                        >
-                          Generate Now
-                          <span className="material-symbols-outlined text-xs">bolt</span>
-                        </Button>
-                        <Button
-                          onClick={() => onInjectToWorkshop?.({
-                            state: intentMeta.state,
-                            notes: entry.summary || entry.text
-                          })}
-                          variant="ghost"
-                          className="w-full rounded-full border border-white/5 text-white/60 hover:text-white text-[10px] font-mono uppercase transition-all py-2.5 flex items-center justify-center gap-2"
-                        >
-                          Load in Composer
-                          <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        )}
+        <div className="flex items-center gap-2 rounded-full border border-[#dbe2dd] bg-white/45 px-4 py-2 text-xs text-[#60716b]"><LockKey size={15} weight="duotone" className="text-[#548477]" aria-hidden="true" /> Private to your account</div>
       </div>
+
+      {error && <div className="workspace-alert workspace-alert--error" role="alert">{error}</div>}
+      {savedMessage && <div className="workspace-alert workspace-alert--success" role="status"><Check size={16} weight="bold" aria-hidden="true" /> {savedMessage}</div>}
+
+      <section className="workspace-glass-card overflow-hidden rounded-[2rem] p-5 sm:p-7 lg:p-9">
+        <div className="flex flex-wrap items-start justify-between gap-5 border-b border-[#e1e8e3] pb-6">
+          <div>
+            <p className="workspace-kicker">New reflection</p>
+            <h3 className="mt-2 text-2xl font-medium tracking-[-0.04em] text-[#1d302c]">Write from the moment</h3>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-[#87968f]"><BookmarkSimple size={16} weight="duotone" aria-hidden="true" /> Drafts stay in this browser until you save.</div>
+        </div>
+
+        <form onSubmit={(event) => submitJournal(event, true)} className="mt-7 grid gap-8 lg:grid-cols-[1.2fr_.8fr]">
+          <div className="space-y-5">
+            <label className="block space-y-2"><span className="workspace-field-label">Title <span className="font-normal normal-case tracking-normal text-[#a3afa8]">(optional)</span></span><input value={form.title} onChange={(event) => updateField('title', event.target.value)} placeholder="A note for this moment" className="workspace-text-input text-lg" maxLength={120} /></label>
+            <div className="space-y-3">
+              <span className="workspace-field-label">Begin with a prompt</span>
+              <div className="flex flex-wrap gap-2">{PROMPTS.map((prompt) => <button key={prompt} type="button" onClick={() => updateField('text', form.text ? `${form.text}\n\n${prompt} ` : `${prompt} `)} className="rounded-full border border-[#dbe2dd] bg-white/35 px-3 py-2 text-left text-xs text-[#60716b] transition hover:-translate-y-0.5 hover:border-[#b8cbc0] hover:bg-white/70">{prompt}</button>)}</div>
+            </div>
+            <label className="block space-y-2"><span className="workspace-field-label">Reflection</span><textarea value={form.text} onChange={(event) => updateField('text', event.target.value)} placeholder="What is here right now? You do not need to solve it before you name it." className="workspace-textarea min-h-[210px]" maxLength={5000} /><span className="block text-right text-[11px] text-[#a0aca5]">{form.text.length}/5000</span></label>
+          </div>
+
+          <aside className="space-y-6 rounded-[1.5rem] border border-[#e1e8e3] bg-white/35 p-5 sm:p-6">
+            <div><p className="workspace-field-label">How are you arriving?</p><div className="mt-3 flex flex-wrap gap-2">{MOODS.map((mood) => <button key={mood.value} type="button" onClick={() => updateField('mood', mood.value)} className={`rounded-full border px-3 py-2 text-xs transition ${form.mood === mood.value ? 'border-[#9fbdad] bg-[#dcece3] text-[#315e55]' : 'border-[#dbe2dd] bg-white/35 text-[#60716b] hover:border-[#b8cbc0] hover:bg-white/70'}`}>{mood.label}</button>)}</div></div>
+            <label className="block space-y-3"><span className="flex items-center justify-between workspace-field-label"><span>Energy</span><output className="rounded-full bg-[#edf6f0] px-2.5 py-1 text-xs font-medium normal-case tracking-normal text-[#548477]">{form.energy}/5</output></span><input type="range" min="1" max="5" step="1" value={form.energy} onChange={(event) => updateField('energy', Number(event.target.value))} className="workspace-range w-full" aria-label="Energy level" /><span className="flex justify-between text-[11px] text-[#a0aca5]"><span>Low</span><span>Full</span></span></label>
+            <div><p className="workspace-field-label">What is this for?</p><div className="mt-3 grid grid-cols-2 gap-2">{FOCUS_AREAS.map((area) => <button key={area} type="button" onClick={() => updateField('focusArea', area)} className={`rounded-xl border px-3 py-2.5 text-left text-xs transition ${form.focusArea === area ? 'border-[#9fbdad] bg-[#edf6f0] font-medium text-[#315e55]' : 'border-[#e1e8e3] bg-white/35 text-[#60716b] hover:border-[#b8cbc0] hover:bg-white/70'}`}>{area}</button>)}</div></div>
+            <label className="block space-y-2"><span className="workspace-field-label">Tags <span className="font-normal normal-case tracking-normal text-[#a3afa8]">(comma separated)</span></span><div className="relative"><Tag size={16} className="absolute left-3 top-3.5 text-[#87968f]" aria-hidden="true" /><input value={form.tags} onChange={(event) => updateField('tags', event.target.value)} placeholder="evening, reset" className="workspace-text-input pl-9 text-sm" /></div></label>
+          </aside>
+
+          <div className="flex flex-col gap-4 border-t border-[#e1e8e3] pt-6 sm:flex-row sm:items-center sm:justify-between lg:col-span-2">
+            <p className="max-w-md text-xs leading-5 text-[#87968f]">Save privately to keep the original wording. Shape a session sends the reflection to the optional assistant only to suggest a direction.</p>
+            <div className="flex flex-wrap gap-3">
+              <button type="button" onClick={(event) => submitJournal(event, false)} disabled={saving || !form.text.trim()} className="workspace-glass-button workspace-glass-button--quiet rounded-full px-4 py-2.5 text-sm font-medium">{saving ? 'Saving…' : 'Save privately'}</button>
+              <button type="submit" disabled={saving || !form.text.trim()} className="workspace-glass-button workspace-glass-button--primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium">{saving ? 'Saving…' : 'Shape a session'} <ArrowRight size={16} weight="bold" aria-hidden="true" /></button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div><p className="workspace-kicker">Your archive</p><h3 className="mt-2 text-2xl font-medium tracking-[-0.04em] text-[#1d302c]">Reflections worth returning to</h3></div>
+        <div className="journal-archive-controls grid w-full gap-3 sm:w-auto sm:grid-cols-[minmax(18rem,1fr)_minmax(12rem,auto)]">
+          <label className="workspace-control-field relative block">
+            <MagnifyingGlass size={16} className="workspace-control-icon absolute left-4 top-1/2 -translate-y-1/2 text-[#87968f]" aria-hidden="true" />
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search reflections" className="workspace-text-input workspace-leading-input text-sm" />
+            <button type="button" onClick={() => setQuery('')} className={`absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-[#87968f] transition hover:bg-[#eef1ee] ${query ? '' : 'pointer-events-none opacity-0'}`} aria-label="Clear search"><X size={14} /></button>
+          </label>
+          <label className="workspace-control-field relative block">
+            <Funnel size={15} className="workspace-control-icon absolute left-4 top-1/2 -translate-y-1/2 text-[#87968f]" aria-hidden="true" />
+            <select value={filter} onChange={(event) => setFilter(event.target.value)} className="workspace-select workspace-leading-select text-sm"><option value="all">All reflections</option><option value="theta">Reflect</option><option value="alpha">Settle</option><option value="beta">Focus</option><option value="delta">Sleepward</option><option value="saved">Starred</option></select>
+            <CaretDown size={14} className="workspace-control-caret absolute right-4 top-1/2 -translate-y-1/2 text-[#87968f]" aria-hidden="true" />
+          </label>
+        </div>
+      </section>
+
+      {loading ? (
+        <div className="space-y-4" aria-label="Loading journal"><div className="h-48 animate-pulse rounded-[2rem] bg-[#e5ebe6]" /><div className="h-40 animate-pulse rounded-[2rem] bg-[#e5ebe6]" /></div>
+      ) : filteredEntries.length === 0 ? (
+        <div className="workspace-glass-card rounded-[2rem] px-6 py-16 text-center"><PencilSimple size={34} weight="duotone" className="mx-auto text-[#9fbdad]" aria-hidden="true" /><h4 className="mt-4 text-xl font-medium text-[#1d302c]">{entries.length ? 'Nothing matches this view.' : 'Your first reflection can start here.'}</h4><p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#60716b]">{entries.length ? 'Try another search or filter.' : 'There is no right length or tone. A single honest sentence is enough.'}</p>{entries.length > 0 && <button type="button" onClick={() => { setQuery(''); setFilter('all'); }} className="mt-5 text-sm font-medium text-[#548477] underline underline-offset-4">Clear filters</button>}</div>
+      ) : (
+        <div className="space-y-5">
+          {filteredEntries.map((entry) => {
+            const meta = intentMeta(entry.intent);
+            const insight = insightText(entry.ai_insights);
+            return (
+              <article key={entry.id} className={`workspace-glass-card journal-entry-card journal-entry-card--${meta.tone} rounded-[2rem] p-5 sm:p-7`}>
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2"><span className="journal-intent-pill">{meta.label}</span>{entry.focus_area && <span className="rounded-full border border-[#e1e8e3] bg-white/35 px-3 py-1 text-xs text-[#60716b]">{entry.focus_area}</span>}<span className="text-xs text-[#a0aca5]">{formatEntryDate(entry.created_at)}</span></div>
+                    <div className="mt-4 flex items-start justify-between gap-4"><div><h4 className="text-xl font-medium tracking-[-0.03em] text-[#1d302c]">{entry.title || 'Reflection'}</h4><p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[#526e64]">{entry.text}</p></div><button type="button" onClick={() => toggleFavorite(entry)} disabled={updatingId === entry.id} className={`shrink-0 rounded-full p-2.5 transition hover:-translate-y-0.5 ${entry.is_favorite ? 'bg-[#edf6f0] text-[#a77d62]' : 'bg-[#f3f6f3] text-[#a0aca5] hover:bg-[#e8f0ea] hover:text-[#548477]'}`} aria-label={entry.is_favorite ? 'Remove star' : 'Star reflection'}>{entry.is_favorite ? <Star size={18} weight="fill" /> : <Star size={18} />}</button></div>
+                    {(entry.summary || insight) && <div className="mt-5 grid gap-3 md:grid-cols-2"><div className="rounded-2xl border border-[#e1e8e3] bg-white/35 p-4"><p className="workspace-field-label">A short mirror</p><p className="mt-2 text-sm leading-6 text-[#60716b]">{entry.summary || 'No summary was requested for this entry.'}</p></div>{insight && <div className="rounded-2xl border border-[#e1e8e3] bg-white/35 p-4"><p className="workspace-field-label">Session note</p><p className="mt-2 text-sm leading-6 text-[#60716b]">{insight}</p></div>}</div>}
+                    {(entry.tags || []).length > 0 && <div className="mt-4 flex flex-wrap gap-2">{entry.tags.map((tag) => <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-[#eef1ee] px-2.5 py-1 text-[11px] text-[#87968f]"><Tag size={12} aria-hidden="true" />{tag}</span>)}</div>}
+                  </div>
+                  <div className="flex w-full shrink-0 flex-col gap-2 rounded-[1.5rem] border border-[#e1e8e3] bg-white/35 p-4 lg:w-56"><p className="workspace-field-label">Use this reflection</p><button type="button" onClick={() => onDirectGenerate?.({ state: meta.state, snippet: entry.text.slice(0, 80), notes: entry.summary || entry.text })} className="workspace-glass-button workspace-glass-button--primary inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-xs font-medium">Shape a session <ArrowRight size={14} weight="bold" aria-hidden="true" /></button><button type="button" onClick={() => onInjectToStudio?.({ state: meta.state, notes: entry.summary || entry.text })} className="workspace-glass-button workspace-glass-button--quiet rounded-xl px-3 py-2.5 text-xs font-medium">Load into Studio</button></div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
