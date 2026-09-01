@@ -88,7 +88,9 @@ test('markdown, auth metadata, OpenAPI, and pagination remain honest and linked'
   assert.match(docs, /https:\/\/example\.test\/\.well-known\/agent-card\.json/);
   assert.match(docs, /api\/sandbox/);
   assert.match(docs, /opaque cursor/);
-  assert.match(pageMarkdown('/auth.md', 'https://example.test'), /# Auth\.md/);
+  const authMarkdown = pageMarkdown('/auth.md', 'https://example.test');
+  assert.match(authMarkdown, /# Auth\.md/);
+  assert.match(authMarkdown, /"agent_auth":/);
 
   const auth = authorizationServerMetadata('https://example.test');
   assert.equal(auth.authorization_server_status, 'discovery_only');
@@ -101,6 +103,13 @@ test('markdown, auth metadata, OpenAPI, and pagination remain honest and linked'
   const previousSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://project.supabase.co';
   try {
+    const delegatedAuth = authorizationServerMetadata('https://example.test');
+    assert.equal(delegatedAuth.issuer, 'https://project.supabase.co/auth/v1');
+    assert.equal(delegatedAuth.authorization_server_status, 'provider_delegated');
+    assert.equal(delegatedAuth.authorization_endpoint, 'https://project.supabase.co/auth/v1/oauth/authorize');
+    assert.deepEqual(delegatedAuth.grant_types_supported, ['authorization_code', 'refresh_token']);
+    assert.equal(delegatedAuth.agent_auth.status, 'discovery_only');
+
     const protectedResource = protectedResourceMetadata('https://example.test');
     assert.equal(protectedResource.resource, 'https://example.test');
     assert.deepEqual(protectedResource.authorization_servers, ['https://project.supabase.co/auth/v1']);
