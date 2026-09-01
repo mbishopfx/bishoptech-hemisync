@@ -109,6 +109,7 @@ const SCIENCE_GUIDE_OCEAN_MODULE = await readFile(
   'utf8'
 );
 const DOCS_PAGE_SOURCE = await readFile(new URL('../app/docs/page.js', import.meta.url), 'utf8');
+const MCP_ROUTE_SOURCE = await readFile(new URL('../app/api/mcp/route.js', import.meta.url), 'utf8');
 const NEXT_CONFIG_SOURCE = await readFile(new URL('../next.config.js', import.meta.url), 'utf8');
 const SCIENCE_GUIDE_PDF_ROUTE = await readFile(new URL('../app/api/science-guide/pdf/route.js', import.meta.url), 'utf8');
 const SCIENCE_GUIDE_LESSON_SOURCE = await readFile(new URL('../components/science/ToneScienceLesson.jsx', import.meta.url), 'utf8');
@@ -737,6 +738,7 @@ test('payment passports are fixed, expiring, signed intents and never credential
 });
 
 test('MCP and WebMCP contracts expose only approved bounded tools', () => {
+  assert.match(MCP_ROUTE_SOURCE, /https:\/\/ora\.ai/);
   assert.equal(MCP_PROTOCOL_VERSION, '2026-07-28');
   assert.deepEqual(MCP_TOOLS.map((tool) => tool.name), [
     'get_agentic_capabilities',

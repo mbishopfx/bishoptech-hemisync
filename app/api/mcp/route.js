@@ -111,7 +111,10 @@ const DEFAULT_MCP_ORIGINS = new Set([
   'https://www.cognistration.com',
   'https://chatgpt.com',
   'https://www.chatgpt.com',
-  'https://chat.openai.com'
+  'https://chat.openai.com',
+  // Orank performs its public MCP handshake from this fixed evaluator origin.
+  // Keep this explicit rather than weakening the origin check for arbitrary sites.
+  'https://ora.ai'
 ]);
 const MODERN_PROTOCOL_VERSION_META = 'io.modelcontextprotocol/protocolVersion';
 const MODERN_SERVER_INFO_META = 'io.modelcontextprotocol/serverInfo';
