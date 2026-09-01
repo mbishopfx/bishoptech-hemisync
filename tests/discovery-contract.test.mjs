@@ -88,6 +88,7 @@ test('markdown, auth metadata, OpenAPI, and pagination remain honest and linked'
   assert.match(docs, /https:\/\/example\.test\/\.well-known\/agent-card\.json/);
   assert.match(docs, /api\/sandbox/);
   assert.match(docs, /opaque cursor/);
+  assert.match(pageMarkdown('/auth.md', 'https://example.test'), /# Auth\.md/);
 
   const auth = authorizationServerMetadata('https://example.test');
   assert.equal(auth.authorization_server_status, 'discovery_only');
