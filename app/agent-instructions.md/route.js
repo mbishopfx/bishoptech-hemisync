@@ -139,7 +139,7 @@ const publishedInstructions = `${instructions.replaceAll(
 - Versioned API status: https://cognistration.com/api/v1
 - TypeScript, Python, Go, Ruby, and CLI package source: https://cognistration.com/developers/llms.txt
 
-The public REST surface returns structured JSON errors with \`code\`, \`message\`, \`retryable\`, and \`resolution\` fields where applicable. Collection responses use opaque cursors when pagination is needed. Respect \`RateLimit-*\` and \`Retry-After\` headers. The OAuth metadata is discovery-only unless \`authorization_server_status\` reports \`enabled\`; do not treat a published endpoint as permission to submit credentials.
+The public REST surface returns structured JSON errors with \`code\`, \`message\`, \`retryable\`, and \`resolution\` fields where applicable. Collection responses use opaque cursors when pagination is needed. Respect \`RateLimit-*\` and \`Retry-After\` headers. Cognistration’s local OAuth metadata and agent-auth ceremony routes currently report \`discovery_only\`; the configured Supabase OIDC issuer is the user-controlled sign-in provider. Do not treat a published endpoint as permission to submit credentials.
 `;
 
 export async function GET() {

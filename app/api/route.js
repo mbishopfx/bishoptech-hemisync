@@ -12,7 +12,7 @@ export function GET() {
     status: 401,
     headers: {
       'cache-control': 'no-store',
-      'www-authenticate': 'Bearer resource_metadata="https://cognistration.com/.well-known/oauth-protected-resource", scope="member.read member.write"'
+      'www-authenticate': 'Bearer resource_metadata="https://cognistration.com/.well-known/oauth-protected-resource", scope="openid profile email"'
     }
   });
 }

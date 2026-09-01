@@ -10,12 +10,14 @@ import {
   mcpCompatibilityManifest,
   mcpServerCard,
   pageMarkdown,
+  protectedResourceMetadata,
   publicAgentCard
 } from '../lib/agentic/discovery-contract.js';
 import { MCP_TOOLS } from '../lib/agentic/mcp-contract.js';
 import { DOCS_MCP_RESOURCES, DOCS_MCP_TOOLS } from '../lib/agentic/docs-mcp-contract.js';
 import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { searchPublicTonePacksPage } from '../lib/agentic/pack-capability.js';
+import { validate as validateMppDiscovery } from 'mppx/discovery';
 import { GET as getRobotsAgentPolicy } from '../app/robots-agent-policy/route.js';
 import { GET as getMissingApiRoute } from '../app/api/[...path]/route.js';
 
@@ -90,11 +92,49 @@ test('markdown, auth metadata, OpenAPI, and pagination remain honest and linked'
   const auth = authorizationServerMetadata('https://example.test');
   assert.equal(auth.authorization_server_status, 'discovery_only');
   assert.deepEqual(auth.grant_types_supported, []);
+  assert.equal(auth.agent_auth.status, 'discovery_only');
+  assert.equal(auth.agent_auth.register_uri, 'https://example.test/signup');
+  assert.deepEqual(auth.agent_auth.identity_types_supported, []);
+  assert.deepEqual(auth.agent_auth.credential_types_supported, ['bearer']);
+
+  const previousSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://project.supabase.co';
+  try {
+    const protectedResource = protectedResourceMetadata('https://example.test');
+    assert.equal(protectedResource.resource, 'https://example.test');
+    assert.deepEqual(protectedResource.authorization_servers, ['https://project.supabase.co/auth/v1']);
+    assert.deepEqual(protectedResource.scopes_supported, ['openid', 'profile', 'email']);
+    assert.deepEqual(protectedResource.bearer_methods_supported, ['header']);
+  } finally {
+    if (previousSupabaseUrl === undefined) delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+    else process.env.NEXT_PUBLIC_SUPABASE_URL = previousSupabaseUrl;
+  }
 
   const document = publicOpenApiDocument('https://example.test');
   for (const path of ['/ask', '/a2a', '/api/batch', '/api/docs-mcp', '/api/jobs', '/api/sandbox']) assert.ok(document.paths[path]);
   assert.ok(document.components.securitySchemes.bearerAuth);
   assert.ok(document.paths['/api/packs'].get.parameters.some((parameter) => parameter.name === 'cursor'));
+  assert.deepEqual(document['x-service-info'].categories, ['audio', 'commerce']);
+
+  const paymentExpectations = [
+    ['/api/machine-payments/session', '50'],
+    ['/api/machine-payments/tone', '50'],
+    ['/api/machine-payments/tone-pack', '599']
+  ];
+  for (const [path, amount] of paymentExpectations) {
+    const operation = document.paths[path].post;
+    const offer = operation['x-payment-info'].offers[0];
+    assert.equal(operation['x-payment-info'].offers.length, 1);
+    assert.deepEqual({ intent: offer.intent, method: offer.method, amount: offer.amount, currency: offer.currency }, {
+      intent: 'charge',
+      method: 'stripe',
+      amount,
+      currency: 'usd'
+    });
+    assert.match(offer.description, /runtime 402 challenge is authoritative/);
+    assert.ok(operation.responses['402']);
+  }
+  assert.deepEqual(validateMppDiscovery(document), []);
 
   const first = searchPublicTonePacksPage({ query: '', limit: 1 });
   if (first.nextCursor) {
@@ -117,6 +157,8 @@ test('developer manifests and no-write testing surfaces are present', async () =
     'app/api/sandbox/route.js',
     'app/api/jobs/route.js'
   ]) assert.ok((await readFile(new URL(`../${path}`, import.meta.url), 'utf8')).length > 0, path);
+  const middlewareSource = await readFile(new URL('../middleware.js', import.meta.url), 'utf8');
+  assert.match(middlewareSource, /'\/auth\.md'/);
   const robotsSource = await readFile(new URL('../app/robots-agent-policy/route.js', import.meta.url), 'utf8');
   assert.match(robotsSource, /Content-Signal: search=yes, ai-train=no/);
   const robots = await getRobotsAgentPolicy();

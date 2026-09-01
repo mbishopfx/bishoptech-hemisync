@@ -22,7 +22,7 @@ const AI_AGENT_USER_AGENT = /GPTBot|ClaudeBot|ChatGPT-User|PerplexityBot|OAI-Sea
 const KNOWN_MARKDOWN_PATHS = new Set([
   '/', '/about', '/pricing', '/packs', '/machine', '/try', '/docs', '/tutorial', '/contact', '/privacy', '/terms', '/cookies', '/health-warning', '/ai-disclosure',
   '/index.md', '/about.md', '/pricing.md', '/packs.md', '/machine.md', '/try.md', '/docs.md', '/tutorial.md', '/contact.md', '/privacy.md', '/terms.md', '/cookies.md', '/health-warning.md', '/ai-disclosure.md',
-  '/login', '/signup', '/dashboard', '/generate', '/blog', '/community', '/services', '/api', '/openapi.json', '/llms.txt', '/agent-instructions.md', '/connect', '/ask', '/a2a'
+  '/login', '/signup', '/dashboard', '/generate', '/blog', '/community', '/services', '/api', '/openapi.json', '/llms.txt', '/agent-instructions.md', '/auth.md', '/connect', '/ask', '/a2a'
 ]);
 
 function appendVary(response, ...values) {
