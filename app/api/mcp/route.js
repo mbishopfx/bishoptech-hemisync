@@ -938,8 +938,11 @@ export async function POST(req) {
   }
 
   const requestedProtocol = request.method === 'initialize' ? request.params?.protocolVersion : headerProtocol;
+  const negotiatedProtocol = requestedProtocol === MCP_PROTOCOL_VERSION || MCP_SUPPORTED_LEGACY_VERSIONS.includes(requestedProtocol)
+    ? requestedProtocol
+    : MCP_LEGACY_PROTOCOL_VERSION;
   const responseProtocol = request.method === 'initialize'
-    ? (MCP_SUPPORTED_LEGACY_VERSIONS.includes(requestedProtocol) ? requestedProtocol : MCP_LEGACY_PROTOCOL_VERSION)
+    ? negotiatedProtocol
     : (modern ? MCP_PROTOCOL_VERSION : (MCP_SUPPORTED_LEGACY_VERSIONS.includes(headerProtocol) ? headerProtocol : MCP_LEGACY_PROTOCOL_VERSION));
 
   if (request.method.startsWith('notifications/')) {
