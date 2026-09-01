@@ -7,6 +7,7 @@ import {
   ardManifest,
   authorizationServerMetadata,
   discoveryLinks,
+  mcpCompatibilityManifest,
   mcpServerCard,
   pageMarkdown,
   publicAgentCard
@@ -54,6 +55,13 @@ test('discovery manifests expose complete machine-readable entry points', () => 
   assert.equal(serverCard.remotes[0].type, 'streamable-http');
   assert.equal(serverCard.remotes[0].url, links.mcp);
   assert.ok(!('tools' in serverCard));
+
+  const compatibilityManifest = mcpCompatibilityManifest('https://example.test');
+  assert.equal(compatibilityManifest.serverUrl, links.mcp);
+  assert.equal(compatibilityManifest.tools.length, MCP_TOOLS.length);
+  assert.equal(compatibilityManifest.resources.length, 17);
+  assert.equal(compatibilityManifest.prompts.length, 1);
+  assert.ok(compatibilityManifest.tools.every((tool) => tool.description.length >= 20 && tool.inputSchema?.type === 'object'));
 });
 
 test('public MCP descriptions are declarative and annotated for untrusted output', () => {
