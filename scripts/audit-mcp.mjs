@@ -1077,7 +1077,7 @@ async function auditBrowser() {
       const snapshot = await page.evaluate(() => ({
         names: window.__cognistrationAuditWebMcpTools.map((tool) => tool.name),
         schemas: window.__cognistrationAuditWebMcpTools.map((tool) => tool.inputSchema),
-        hasCockpit: document.body.innerText.includes('Agentic Session Score')
+        hasCockpit: (document.body?.innerText || document.body?.textContent || '').includes('Agentic Session Score')
       }));
       assert(stable(snapshot.names) === stable(WEBMCP_TOOL_DEFINITIONS.map((tool) => tool.name)), '/try WebMCP names differ from the public contract.');
       assert(snapshot.hasCockpit, '/try score cockpit did not render during the WebMCP check.');
