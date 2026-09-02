@@ -96,7 +96,9 @@ that advertises a UI template. The six machine action tools
 `open_machine_fullscreen`) are model/app-visible but template-free. Their
 structured results are delivered to the View that is already mounted, so a
 model-issued tone change does not create a second machine iframe. The widget
-renders from the concise `structuredContent` snapshot, uses the portable
+runs the MCP Apps `ui/initialize` / `ui/notifications/initialized` handshake
+before accepting host notifications, then renders from the concise
+`structuredContent` snapshot. It uses the portable
 `tools/call` bridge for recommendation, browsing, exact control, relative
 adjustment, direction, playback, and display requests, and keeps
 `window.openai` as a compatibility enhancement. `ui/update-model-context`

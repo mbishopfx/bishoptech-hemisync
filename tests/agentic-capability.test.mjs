@@ -284,7 +284,12 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.equal(defaultMachine.controls.carrierHz, 200);
   assert.match(MACHINE_WIDGET_HTML, /AudioContext/);
   assert.match(MACHINE_WIDGET_HTML, /visuals\/aurora-current\.html\?obs=1/);
+  assert.match(MACHINE_WIDGET_HTML, /ui\/initialize/);
+  assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/initialized/);
   assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/tool-result/);
+  assert.match(MACHINE_WIDGET_HTML, /openai\/widget-output/);
+  assert.match(MACHINE_WIDGET_HTML, /openai:set_globals/);
+  assert.match(MACHINE_WIDGET_HTML, /params\.arguments/);
   assert.match(MACHINE_WIDGET_HTML, /window\.openai\.callTool/);
   assert.match(MACHINE_WIDGET_HTML, /class="frequency-stage"/);
   assert.match(MACHINE_WIDGET_HTML, /getEntrainmentPath/);
