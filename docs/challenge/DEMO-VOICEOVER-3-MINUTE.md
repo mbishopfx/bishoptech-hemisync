@@ -1,124 +1,32 @@
-# Cognistration — voiceover-first WebMCP demo
+# Cognistration — conversational three-minute WebMCP demo
 
-Target runtime: about three minutes at 145–150 words per minute. This is the
-narration only; the line breaks are intentional TTS snippet boundaries. Keep
-the visual edit flexible and let the voiceover lead.
+Target runtime: about three minutes at a natural speaking pace. This version
+is written for Matthew to deliver directly, not for a synthetic voice. Treat it
+as a guide; leave room for eye contact, pauses, and your own emphasis.
 
-If the TTS engine mispronounces `WebMCP`, render it as “web M C P.”
+## Voiceover script
 
-## TTS copy
+Let me show you what happens when an audio tool stops treating you like someone browsing a menu.
 
-Most sound machines give you a menu.
+With most sound machines, I have to pick a preset and hope it fits. Cognistration lets me start with a plain-English request. So I might say, “I need a focused writing session, but I want it to ease me in and bring me back down gently.”
 
-Cognistration gives you a conversation.
+Now watch the difference. The agent doesn’t just recommend a tone and disappear. It builds a session I can see. I get an arrival stage, a work stage, and a closing stage. I can open any stage, see the settings, and change one part without throwing away the rest.
 
-You describe the state you want.
+The range is much wider than a fixed preset library. Each stage can use a constant carrier anywhere from fifty to two thousand Hertz. The differential can move from zero point one to forty Hertz. A longer score can hold up to twelve stages.
 
-An agent composes the path to get there.
+Here’s the part I find most interesting. I can shape the behavior, not just the label. I can ask for binaural, monaural, or isochronic modes, or combine them. I can add a five-and-a-half breathing pace, four-seven-eight, or box breathing. I can set a fade and choose an approved ambience layer. In this browser preview, that ambience choice stays metadata. It isn’t secretly playing behind the signal.
 
-And you can see every decision before anything plays.
+Now let’s refine it the way a person actually would. “Make the middle stage a little more energetic, but keep the timing.” The agent changes that stage and leaves the duration and order alone. I don’t rebuild the whole session, and I can still see exactly what changed.
 
-That distinction matters.
+That visibility matters. The agent is helping me compose, not pretending to be the authority on my experience.
 
-A fixed preset can be useful.
+The safety boundary works the same way. Nothing is saved here. No diary text is stored. No account is created. Audio doesn’t start just because the agent suggests it. I confirm the preview, the browser reports that audio is ready, and the preview is capped at one hundred twenty seconds.
 
-But it cannot understand a changing session: arrive, focus, breathe, and then come back down.
+When the score feels right, I can export the technical recipe. It carries the stage settings, but not my private intention. I keep the structure without turning a personal thought into a database record.
 
-Cognistration turns that entire arc into an inspectable score.
+That is the difference I wanted to demonstrate. This is not a chatbot pointing me toward a button, and it is not a preset pretending to understand me. It is a shared workspace. I say where I want to go. The agent builds a path I can inspect. I revise it in plain language. And I decide when anything plays.
 
-Here is the request.
-
-I need a focused writing block, with a gentle landing.
-
-The agent does not invent a mystery track.
-
-It calls the public WebMCP Session Score tool.
-
-Then it builds a visible timeline with stages I can inspect, refine, and export.
-
-The first stage helps me arrive.
-
-The middle stage supports the work.
-
-The final stage brings the session down smoothly.
-
-Every stage keeps a constant carrier, from fifty to two thousand Hertz.
-
-Its differential can move from zero point one to forty Hertz.
-
-And a score can contain up to twelve stages.
-
-But this is where Cognistration moves beyond a preset library.
-
-The agent can shape how the sound behaves.
-
-Binaural.
-
-Monaural.
-
-Isochronic.
-
-I can combine modes, instead of choosing one locked recipe.
-
-I can add a coherent five point five breathing guide, four seven eight, or box breathing.
-
-I can set fades.
-
-I can choose approved ambience metadata.
-
-The interface tells me exactly what the browser is doing, and what it is not doing.
-
-Now I can refine the session in plain language.
-
-Make the middle stage more energetic, but keep the timing.
-
-The agent updates that stage without rebuilding the whole score.
-
-Duration stays fixed.
-
-Order stays fixed.
-
-The timeline remains understandable.
-
-The agent is not taking control away.
-
-It is making its work visible.
-
-And the safety boundary is just as important as the composition.
-
-Nothing is saved here.
-
-No diary text is stored.
-
-No audio starts because an agent asked for it.
-
-The preview requires explicit confirmation, a visible audio-ready state, and a maximum of one hundred twenty seconds.
-
-Only then does local browser audio begin.
-
-If I want to keep the design, I can export a technical score.
-
-It contains the sound settings and stage instructions, without private intention data.
-
-That gives the listener a portable recipe, not a hidden black box.
-
-This is what agentic audio should feel like.
-
-Not a chatbot pointing at a button.
-
-Not a preset pretending to understand you.
-
-A shared workspace where intention becomes a score.
-
-The score becomes a visible interface.
-
-And the final decision stays with the listener.
-
-That is our WebMCP entry.
-
-Cognistration does not just choose a tone.
-
-It helps you compose a session.
+That is Cognistration’s WebMCP entry: an agent doesn’t just choose a tone. It helps me compose a session.
 
 ## Non-spoken edit map
 
@@ -133,6 +41,7 @@ It helps you compose a session.
 
 ## Delivery notes
 
-Start intimate and curious. Build energy through the mode reveal. Slow down on
-“Nothing is saved here” and “the final decision stays with the listener.” Leave
-short pauses between the single-word mode names so the edit can land each one.
+Start curious and personal, as if you are showing one smart feature to a
+friend. Build energy through the mode reveal. Slow down on “Nothing is saved
+here” and “I decide when anything plays.” Do not rush the technical ranges; let
+the visuals carry them while you explain why they matter.
