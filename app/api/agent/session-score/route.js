@@ -15,7 +15,7 @@ export async function POST(request) {
     return NextResponse.json({
       ok: false,
       code: invalid ? 'INVALID_INPUT' : 'SESSION_SCORE_UNAVAILABLE',
-      error: invalid ? 'Use 1–6 stages, exact duration totals, and the published frequency bounds.' : 'The public score composer could not complete that request.',
+      error: invalid ? 'Use 1–12 stages, exact duration totals, 50–2,000 Hz carriers, 0.1–40 Hz differentials, and the published sound-profile bounds.' : 'The public score composer could not complete that request.',
       retryable: !invalid
     }, { status: invalid ? 400 : 503, headers: { 'cache-control': 'no-store' } });
   }

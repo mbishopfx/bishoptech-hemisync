@@ -25,6 +25,7 @@ Use this skill to select the smallest truthful route for a user outcome and to k
 - When the listener signals that they are done, offer one optional closing check-in and call `open_feedback` if they accept. Keep the rating and note inside the feedback widget; never put them in an MCP argument.
 - For visible controls, read `cognistration_get_session_state` before changing a control that depends on current state. Set an absolute bounded value with `cognistration_set_session_controls`.
 - For a relative request such as “make the carrier smaller,” read the current carrier, choose a lower value within 100–400 Hz, and then use `cognistration_nudge_carrier` in the page or set the returned absolute value with `cognistration_set_session_controls`. Do not invent an unbounded relative control.
+- For a staged score, use `cognistration_compose_session_score` on `/try` or `compose_session_score` over MCP. Score stages accept a constant 50–2,000 Hz carrier and a 0.1–40 Hz differential path; the score can also carry signal-mode, approved-ambience, breath-guide, and fade settings. Keep the score browser-local and confirmation-gated.
 
 ## Contract rules
 

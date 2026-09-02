@@ -39,11 +39,14 @@ navigation and lets the person print or save the guide as a PDF.
 It never starts audio, stores a record, or receives diary content.
 
 The `/try` cockpit also registers five browser-local Agentic Session Score
-actions: compose a one-to-six-stage score, refine a visible stage, undo a
-revision, select a stage, and preview only after explicit confirmation. The
-score is technical and ephemeral; its carrier stays constant within each
-stage, its beat may follow a linear start/end path, and it never persists or
-renders a private session.
+actions: compose up to twelve full-spectrum stages, refine a visible stage or
+sound profile, undo a revision, select a stage, and preview only after explicit
+confirmation. Each stage keeps a constant 50–2,000 Hz carrier while its
+0.1–40 Hz differential may follow a linear start/end path. The score can carry
+selectable binaural/monaural/isochronic modes, approved ambience metadata,
+breath pacing, and fades. It is technical and ephemeral; ambience stays
+metadata-only in the browser and the score never persists or renders a
+private session.
 
 When a listener asks to move the current or generated tone to a phone, call
 `open_phone_download_options`. It renders a frosted card with the fixed `$0.50`

@@ -32,9 +32,9 @@ use the supported `initialize` handshake.
 | Browser WebMCP | visible machine controls and explicit local preview | hidden navigation side effects, silent audio, silent credential/payment submission |
 | Agentic Session Score | visible browser-local compose/refine/undo/select/export and confirmed stage preview; read-only remote MCP composition | public persistence/rendering, arbitrary assets, raw intention echo, unconfirmed or unverified audio |
 
-### Agentic Session Score v1
+### Agentic Session Score v2
 
-`compose_session_score` accepts either a complete strict score or a bounded direction/intention and duration. Scores contain 1–6 stages totaling 60–3600 seconds exactly; every stage is at least 15 seconds, carrier is an integer 100–400 Hz and constant inside the stage, beat start/end are 0.5–40 Hz in 0.5 Hz increments with a linear browser preview, and volume is 0–100. Remote MCP and REST only return technical output. `/try` owns ephemeral visible revisions and retains the 120-second preview cap.
+`compose_session_score` accepts either a complete strict score or a bounded direction/intention and duration. Scores contain 1–12 stages totaling 60–3600 seconds exactly; every stage is at least 15 seconds, carrier is an integer 50–2,000 Hz and constant inside the stage, differential start/end are 0.1–40 Hz in 0.1 Hz increments with a linear browser preview, and volume is 0–100. The score sound profile can enable binaural, monaural, and/or isochronic signal modes, choose approved ambience metadata, add bounded breath pacing, and set bounded fades. Remote MCP and REST only return technical output. `/try` owns ephemeral visible revisions, keeps ambience metadata-only in the browser, and retains the 120-second preview cap.
 | Authenticated dashboard bridge | private planning, owned session/render records, and render status | public access, cross-member reads, silent rendering |
 
 ## Resource registry

@@ -12,7 +12,7 @@ const stepCopy = [
   ['01', 'Name the moment', 'Give the public agent a short intention.'],
   ['02', 'Compare directions', 'See the practical tradeoffs before choosing.'],
   ['03', 'Stage the ritual', 'Build arrive, practice, and close.'],
-  ['04', 'Co-compose a score', 'Inspect, refine, select, undo, and export the technical timeline.'],
+  ['04', 'Co-compose the signal', 'Shape every stage frequency plus binaural, monaural, isochronic, breath, and fade controls.'],
   ['05', 'Preview with consent', 'The browser stays quiet until you explicitly confirm it.']
 ];
 

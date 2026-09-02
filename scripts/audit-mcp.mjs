@@ -378,7 +378,16 @@ function localFixtureMap() {
   const fakeKey = 'audit_fake_workshop_key_000000000000';
   return {
     get_agentic_capabilities: {},
-    compose_session_score: { direction: 'focus', durationSec: 600 },
+    compose_session_score: {
+      direction: 'focus',
+      durationSec: 600,
+      sound: {
+        entrainmentModes: { binaural: true, monaural: true, isochronic: true },
+        background: { type: 'ocean', mixDb: -24 },
+        breathGuide: { enabled: true, pattern: 'box', bpm: 4 },
+        fades: { inSec: 5, outSec: 8 }
+      }
+    },
     search_public_tones: { query: 'focus', state: 'theta', limit: 3 },
     get_public_tone: { id: toneId },
     recommend_tone: { intention: 'a calm reset before writing' },
@@ -685,6 +694,12 @@ async function auditTools() {
       if (tool.name === 'get_machine_payment_options') assert(payload.amountCents === 50 && payload.acceptsPaymentDetails === false, 'machine payment contract is not fixed/header-only.');
       if (tool.name === 'open_machine_generator') assert(payload.controls?.isPlaying === false, 'machine generator opened while playing.');
       if (tool.name === 'open_phone_download_options') assert(payload.phonePreview?.amountCents === 50 && payload.phonePreview?.requiresExplicitConfirmation === true, 'phone handoff payment boundary is missing.');
+      if (tool.name === 'compose_session_score') {
+        assert(payload.engine === 'browser-signal-score', 'full-spectrum score engine marker is missing.');
+        assert(payload.sound?.entrainmentModes?.monaural === true && payload.sound?.entrainmentModes?.isochronic === true, 'full-spectrum mode routing did not survive MCP composition.');
+        assert(payload.sound?.breathGuide?.enabled === true && payload.sound?.background?.type === 'ocean', 'full-spectrum sound profile did not survive MCP composition.');
+        assert(payload.stages?.every((stage) => stage.carrierHz >= 50 && stage.carrierHz <= 2000), 'full-spectrum carrier bounds were not returned.');
+      }
       if (envelope._meta?.ui?.resourceUri) assert(envelope._meta.ui.resourceUri === tool._meta?.ui?.resourceUri, `${tool.name} UI metadata is not bound to its published tool resource.`);
       return observed[tool.name];
     });
@@ -1078,9 +1093,18 @@ async function auditBrowser() {
       const stateAfter = await execute('cognistration_get_session_state', {});
       const confirmation = await execute('cognistration_begin_preview', { confirmed: false });
       const guide = await execute('cognistration_open_science_guide', { targetState: 'gamma', carrierHz: 246, beatHz: 6, volume: 64 });
-      const composed = await execute('cognistration_compose_session_score', { direction: 'focus', durationSec: 600 });
+      const composed = await execute('cognistration_compose_session_score', {
+        direction: 'focus',
+        durationSec: 600,
+        sound: {
+          entrainmentModes: { binaural: true, monaural: true, isochronic: true },
+          background: { type: 'ocean', mixDb: -24 },
+          breathGuide: { enabled: true, pattern: 'box', bpm: 4 },
+          fades: { inSec: 5, outSec: 8 }
+        }
+      });
       const selected = await execute('cognistration_select_session_score_stage', { stageId: 'stage-2' });
-      const refined = await execute('cognistration_refine_session_score_stage', { stageId: 'stage-2', carrierHz: 222, beatFromHz: 10, beatToHz: 14, volume: 61 });
+      const refined = await execute('cognistration_refine_session_score_stage', { stageId: 'stage-2', carrierHz: 222, beatFromHz: 10, beatToHz: 14, volume: 61, soundPatch: { fades: { inSec: 3 }, breathGuide: { enabled: false } } });
       const undone = await execute('cognistration_undo_session_score', { steps: 1 });
       const scoreConfirmation = await execute('cognistration_preview_session_score', { confirmed: false, stageId: 'stage-2' });
       assert(stateBefore?.state || stateBefore?.status === 'completed', 'WebMCP state read returned no state.');
@@ -1088,8 +1112,10 @@ async function auditBrowser() {
       assert(confirmation?.status === 'needs_input' && confirmation.error?.code === 'CONFIRMATION_REQUIRED', 'WebMCP audio confirmation boundary failed.');
       assert(guide?.status === 'completed', 'WebMCP science guide action failed.');
       assert(composed?.status === 'completed' && composed.stages?.length === 3, 'WebMCP score composition failed.');
+      assert(composed?.sound?.entrainmentModes?.isochronic === true && composed?.sound?.breathGuide?.pattern === 'box', 'WebMCP full-spectrum options did not route.');
       assert(selected?.selectedStageId === 'stage-2', 'WebMCP score selection failed.');
       assert(refined?.stages?.find((stage) => stage.id === 'stage-2')?.carrierHz === 222, 'WebMCP score refinement failed.');
+      assert(refined?.sound?.fades?.inSec === 3 && refined?.sound?.breathGuide?.enabled === false, 'WebMCP sound-profile refinement failed.');
       assert(undone?.stages?.find((stage) => stage.id === 'stage-2')?.carrierHz !== 222, 'WebMCP score undo failed.');
       assert(scoreConfirmation?.status === 'needs_input' && scoreConfirmation.error?.code === 'CONFIRMATION_REQUIRED', 'WebMCP score confirmation boundary failed.');
       return { registered: snapshot.names.length, changedCarrier: stateAfter.state.carrierHz, confirmation: confirmation.error.code, scoreConfirmation: scoreConfirmation.error.code, guide: guide.status };

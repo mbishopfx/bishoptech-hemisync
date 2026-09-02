@@ -13,7 +13,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 | Test a relaxation tone pack | `search_public_tone_packs` or `cognistration_search_tone_packs` | `get_public_tone_pack`, then confirm `cognistration_preview_tone_pack` | Published slug, listed preview track, explicit confirmation |
 | Buy a complete tone pack | `open_tone_pack_checkout` | Select the pack, enter the delivery email, confirm `$5.99`, then use hosted Checkout; compatible agents may use `get_tone_pack_payment_options` and the fixed MPP route | Server-verified payment, browser download button, and email fallback |
 | Gamma with a 246 Hz carrier | `cognistration_set_session_controls` | `cognistration_get_session_state` | State `gamma`, carrier `246` |
-| Make the carrier smaller | `cognistration_get_session_state` | Lower absolute value with `cognistration_set_session_controls` | New carrier is lower and remains within 100–400 Hz |
+| Make the carrier smaller | `cognistration_get_session_state` | Lower absolute value with `cognistration_set_session_controls` | New carrier is lower and remains within 100–400 Hz on the live machine; full-spectrum score stages accept 50–2,000 Hz |
 | Free trial account with an email | `get_account_options` | `open_account_signup` | In-platform user-controlled form; credentials never enter MCP and checkout is separate |
 | Finished interaction feedback | `open_feedback` | In-platform rating card | Explicit user submission persists only a sanitized anonymous record; no history |
 | Safety, terms, privacy, or AI questions | `get_policy_info` | Return canonical URL | Topic, source URL, concise summary |
@@ -21,7 +21,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 | Download the current tone to a phone | `open_phone_download_options` | Choose the fixed $0.50 agent-preview handoff or the full iPhone app; require explicit confirmation before MPP payment | Current bounded tone/settings, exact payment challenge, explicit approval, and server-verified release |
 | Open the machine inside ChatGPT | `open_machine_generator` | Use the widget to match an intention, tune controls, browse packs, or request a larger view | Versioned UI resource renders; audio remains off until explicit play |
 | Understand the generated signal | `open_science_guide` | Click through the two-channel signal, FFR, descriptive bands, evidence limits, and safety notes; print/save the guide as PDF | Versioned science-guide UI renders with a self-contained animated ocean surface; audio and diary content remain off |
-| Compose a multi-stage score | `cognistration_compose_session_score` | Select and refine visible stages, undo a revision, export technical settings, then confirm a capped preview | Exact stage total, constant per-stage carrier, linear beat path, and explicit `audioReady` boundary |
+| Compose a multi-stage score | `cognistration_compose_session_score` | Select and refine visible stages or the full-spectrum sound profile, undo a revision, export technical settings, then confirm a capped preview | Exact stage total, constant 50–2,000 Hz per-stage carrier, 0.1–40 Hz differential path, selectable signal modes, and explicit `audioReady` boundary |
 
 ## Public surface
 

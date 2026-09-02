@@ -14,7 +14,7 @@ const challengeJsonLd = {
   '@type': 'WebPage',
   name: 'Cognistration WebMCP challenge cockpit',
   url: 'https://cognistration.com/try',
-  description: 'A public, bounded path through Cognistration intention clarification, visible multi-stage Agentic Session Score composition, truthful binaural preview, and technical export.'
+  description: 'A public, bounded path through Cognistration intention clarification, full-spectrum Agentic Session Score composition, multi-mode browser preview, and technical export.'
 };
 
 export default function TryPage() {
@@ -30,7 +30,7 @@ export default function TryPage() {
             <div className="max-w-3xl">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#b6ddcc]">WebMCP challenge cockpit</p>
               <h1 className="mt-6 max-w-3xl text-5xl font-medium leading-[0.98] tracking-[-0.07em] sm:text-7xl">From an intention to a session you can actually try.</h1>
-              <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">Co-compose a visible multi-stage frequency score with an agent: inspect every carrier step and linear beat path, refine or undo a stage, export the technical recipe, and keep preview audio under human control.</p>
+              <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">Co-compose a visible full-spectrum frequency score with an agent: route 50–2,000 Hz carriers, 0.1–40 Hz differentials, signal modes, breath pacing, ambience metadata, and fades into a technical recipe while keeping preview audio under human control.</p>
               <div className="mt-8 flex flex-wrap gap-4 text-sm">
                 <a href="#cockpit" className="glass-action glass-action--primary inline-flex items-center gap-2 rounded-full px-5 py-3.5 font-medium">Run the flow <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>
                 <Link href="/agent-instructions.md" className="glass-action glass-action--secondary inline-flex items-center gap-2 rounded-full px-5 py-3.5">Agent instructions</Link>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowCounterClockwise, DownloadSimple, Play, SlidersHorizontal, Stop } from '@phosphor-icons/react';
+import { AmbientAssetOptions } from '@/lib/audio/assets';
 import {
   SESSION_SCORE_CAPABILITY_ID,
   SESSION_SCORE_CAPABILITY_VERSION,
@@ -20,8 +21,19 @@ const SCORE_TOOL_NAMES = new Set([
   'cognistration_preview_session_score'
 ]);
 
+const DEFAULT_SOUND = {
+  entrainmentModes: { binaural: true, monaural: false, isochronic: false },
+  background: { type: 'none' },
+  breathGuide: { enabled: false, pattern: 'coherent-5.5', bpm: 5.5 },
+  fades: { inSec: 8, outSec: 12 }
+};
+
 function scoreData(result) {
-  return { durationSec: result.durationSec, stages: result.stages.map(({ carrierBehavior, beatBehavior, ...stage }) => stage) };
+  return {
+    durationSec: result.durationSec,
+    stages: result.stages.map(({ carrierBehavior, beatBehavior, ...stage }) => stage),
+    sound: result.sound || DEFAULT_SOUND
+  };
 }
 
 function toolResult(status, data = {}) {
@@ -84,8 +96,9 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
   const stopPreview = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
-      try { audio.left.stop(); } catch {}
-      try { audio.right.stop(); } catch {}
+      for (const node of audio.nodes || []) {
+        try { node.stop?.(); } catch {}
+      }
       window.clearTimeout(audio.timeout);
       audio.context.close().catch(() => {});
       audioRef.current = null;
@@ -103,8 +116,7 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
 
     stopPreview();
     let context = null;
-    let left = null;
-    let right = null;
+    const nodes = [];
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) throw new Error('AudioContext is unavailable.');
@@ -115,36 +127,118 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
         return toolResult('failed', { error: { code: 'AUDIO_NOT_READY', safeMessage: 'The browser requires a visible playback gesture.', retryable: true }, audioReady: false });
       }
       const merger = context.createChannelMerger(2);
-      const gain = context.createGain();
-      left = context.createOscillator();
-      right = context.createOscillator();
+      const leftBus = context.createGain();
+      const rightBus = context.createGain();
+      leftBus.gain.setValueAtTime(0.54, context.currentTime);
+      rightBus.gain.setValueAtTime(0.54, context.currentTime);
       const durationSec = Math.min(stage.durationSec, SESSION_SCORE_PREVIEW_CAP_SEC);
       const now = context.currentTime;
-      const leftFrom = stage.carrierHz - stage.beatHz.from / 2;
-      const rightFrom = stage.carrierHz + stage.beatHz.from / 2;
-      const leftTo = stage.carrierHz - stage.beatHz.to / 2;
-      const rightTo = stage.carrierHz + stage.beatHz.to / 2;
-      left.frequency.setValueAtTime(leftFrom, now);
-      right.frequency.setValueAtTime(rightFrom, now);
-      left.frequency.linearRampToValueAtTime(leftTo, now + durationSec);
-      right.frequency.linearRampToValueAtTime(rightTo, now + durationSec);
-      gain.gain.setValueAtTime(Math.min(0.18, stage.volume / 100 * 0.18), now);
-      left.connect(merger, 0, 0);
-      right.connect(merger, 0, 1);
-      merger.connect(gain).connect(context.destination);
-      left.start();
-      right.start();
+      const from = Number(stage.beatHz.from);
+      const to = Number(stage.beatHz.to);
+      const carrier = Number(stage.carrierHz);
+      const frequencyPath = (start, end, bus) => {
+        const oscillator = context.createOscillator();
+        oscillator.frequency.setValueAtTime(start, now);
+        oscillator.frequency.linearRampToValueAtTime(end, now + durationSec);
+        oscillator.connect(bus);
+        oscillator.start(now);
+        nodes.push(oscillator);
+        return oscillator;
+      };
+      const modes = scoreRef.current.sound?.entrainmentModes || DEFAULT_SOUND.entrainmentModes;
+      if (modes.binaural) {
+        frequencyPath(carrier - from / 2, carrier - to / 2, leftBus);
+        frequencyPath(carrier + from / 2, carrier + to / 2, rightBus);
+      }
+      if (modes.monaural) {
+        const monoBus = context.createGain();
+        monoBus.gain.setValueAtTime(0.34, now);
+        frequencyPath(carrier - from / 2, carrier - to / 2, monoBus);
+        frequencyPath(carrier + from / 2, carrier + to / 2, monoBus);
+        monoBus.connect(leftBus);
+        monoBus.connect(rightBus);
+      }
+      if (!modes.binaural && !modes.monaural) {
+        frequencyPath(carrier, carrier, leftBus);
+        frequencyPath(carrier, carrier, rightBus);
+      }
+
+      let leftOutput = leftBus;
+      let rightOutput = rightBus;
+      if (modes.isochronic) {
+        const isoLeft = context.createGain();
+        const isoRight = context.createGain();
+        isoLeft.gain.setValueAtTime(0.72, now);
+        isoRight.gain.setValueAtTime(0.72, now);
+        leftBus.connect(isoLeft);
+        rightBus.connect(isoRight);
+        const pulse = context.createOscillator();
+        const pulseDepth = context.createGain();
+        pulse.frequency.setValueAtTime(from, now);
+        pulse.frequency.linearRampToValueAtTime(to, now + durationSec);
+        pulseDepth.gain.setValueAtTime(0.28, now);
+        pulse.connect(pulseDepth);
+        pulseDepth.connect(isoLeft.gain);
+        pulseDepth.connect(isoRight.gain);
+        pulse.start(now);
+        nodes.push(pulse);
+        leftOutput = isoLeft;
+        rightOutput = isoRight;
+      }
+
+      leftOutput.connect(merger, 0, 0);
+      rightOutput.connect(merger, 0, 1);
+      const breathGain = context.createGain();
+      let finalSignal = breathGain;
+      const breath = scoreRef.current.sound?.breathGuide || DEFAULT_SOUND.breathGuide;
+      if (breath.enabled) {
+        const breathLfo = context.createOscillator();
+        const breathDepth = context.createGain();
+        const breathHz = breath.pattern === '4-7-8' ? 1 / 19 : breath.pattern === 'box' ? 1 / 16 : Number(breath.bpm || 5.5) / 60;
+        breathGain.gain.setValueAtTime(0.9, now);
+        breathLfo.frequency.setValueAtTime(Math.max(0.01, breathHz), now);
+        breathDepth.gain.setValueAtTime(0.1, now);
+        breathLfo.connect(breathDepth).connect(breathGain.gain);
+        breathLfo.start(now);
+        nodes.push(breathLfo);
+      } else {
+        breathGain.gain.setValueAtTime(1, now);
+      }
+      merger.connect(finalSignal);
+
+      const gain = context.createGain();
+      const targetGain = Math.min(0.18, Math.max(0, Number(stage.volume) / 100) * 0.18);
+      const fades = scoreRef.current.sound?.fades || DEFAULT_SOUND.fades;
+      const fadeIn = Math.min(Number(fades.inSec) || 0, durationSec);
+      const fadeOut = Math.min(Number(fades.outSec) || 0, durationSec);
+      gain.gain.setValueAtTime(fadeIn > 0 ? 0 : targetGain, now);
+      if (fadeIn > 0) gain.gain.linearRampToValueAtTime(targetGain, now + fadeIn);
+      if (fadeOut > 0) {
+        const fadeOutStart = Math.max(now + fadeIn, now + durationSec - fadeOut);
+        gain.gain.setValueAtTime(targetGain, fadeOutStart);
+        gain.gain.linearRampToValueAtTime(0, now + durationSec);
+      }
+      finalSignal.connect(gain).connect(context.destination);
       const timeout = window.setTimeout(() => stopPreview(), durationSec * 1000);
-      audioRef.current = { context, left, right, timeout };
+      audioRef.current = { context, nodes, timeout };
       setAudioReady(true);
       setIsPreviewing(true);
       setSelectedStageId(stage.id);
       selectedRef.current = stage.id;
       setActivity(`${stage.label} preview is ready and playing for up to ${durationSec} seconds.`);
-      return toolResult('completed', { selectedStageId: stage.id, audioReady: true, audioStarted: true, previewDurationSec: durationSec, fullScoreRendered: false });
+      return toolResult('completed', {
+        selectedStageId: stage.id,
+        audioReady: true,
+        audioStarted: true,
+        previewDurationSec: durationSec,
+        fullScoreRendered: false,
+        previewModes: modes,
+        backgroundApplied: false
+      });
     } catch {
-      try { left?.stop(); } catch {}
-      try { right?.stop(); } catch {}
+      for (const node of nodes) {
+        try { node.stop?.(); } catch {}
+      }
       try { await context?.close(); } catch {}
       setAudioReady(false);
       setIsPreviewing(false);
@@ -166,10 +260,11 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
         return toolResult('failed', { error: { code: 'INVALID_SCORE', safeMessage: 'Use the published stage, duration, and frequency bounds.', retryable: false } });
       }
     },
-    cognistration_refine_session_score_stage: async ({ stageId, ...patch } = {}) => {
+    cognistration_refine_session_score_stage: async ({ stageId, soundPatch, ...patch } = {}) => {
       try {
-        const next = refineSessionScore({ score: scoreData(scoreRef.current), stageId, patch });
-        replaceScore(next, `The ${next.stages.find((stage) => stage.id === stageId)?.label || 'selected'} stage was refined. Audio remains off.`);
+        const next = refineSessionScore({ score: scoreData(scoreRef.current), stageId, patch: { ...patch, ...(soundPatch ? { soundPatch } : {}) } });
+        const label = next.stages.find((stage) => stage.id === stageId)?.label || 'selected';
+        replaceScore(next, soundPatch ? `The ${label} stage sound profile was refined. Audio remains off.` : `The ${label} stage was refined. Audio remains off.`);
         return next;
       } catch (error) {
         setActivity(error?.code === 'STAGE_NOT_FOUND' ? 'Select a visible stage before refining it.' : 'Use bounded technical settings for the selected stage.');
@@ -243,13 +338,23 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
     });
   };
 
+  const updateSound = (soundPatch) => {
+    handlersRef.current.cognistration_refine_session_score_stage({ stageId: selected.id, soundPatch });
+  };
+
+  const sound = score.sound || DEFAULT_SOUND;
+  const modes = sound.entrainmentModes || DEFAULT_SOUND.entrainmentModes;
+  const background = sound.background || DEFAULT_SOUND.background;
+  const breath = sound.breathGuide || DEFAULT_SOUND.breathGuide;
+  const fades = sound.fades || DEFAULT_SOUND.fades;
+
   return (
     <section data-testid="session-score-conductor" data-webmcp-status={webmcpStatus} className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">Agentic Session Score · browser local</p>
           <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">A score both you and the agent can inspect.</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">Carrier stays constant inside each stage. The beat moves linearly from its start to end value. Nothing is saved or rendered.</p>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">Carrier stays constant inside each stage while the differential can move linearly. Choose the Studio signal modes, breath pace, ambience metadata, and fades; nothing is saved or rendered.</p>
         </div>
         <span className="glass-pill rounded-full px-3 py-2 text-xs text-white/50">{formatTime(score.durationSec)} planned · {SESSION_SCORE_PREVIEW_CAP_SEC}s preview cap</span>
       </div>
@@ -278,12 +383,40 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
         </div>
       </div>
       <form key={selected.id} onSubmit={refineSelected} data-testid="session-score-refine-form" className="mt-4 grid gap-3 rounded-2xl border border-white/10 bg-black/10 p-4 sm:grid-cols-5">
-        <label className="text-[10px] uppercase tracking-wider text-white/35">Carrier Hz<input name="carrierHz" type="number" min="100" max="400" step="1" defaultValue={selected.carrierHz} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
-        <label className="text-[10px] uppercase tracking-wider text-white/35">Beat from<input name="beatFromHz" type="number" min="0.5" max="40" step="0.5" defaultValue={selected.beatHz.from} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
-        <label className="text-[10px] uppercase tracking-wider text-white/35">Beat to<input name="beatToHz" type="number" min="0.5" max="40" step="0.5" defaultValue={selected.beatHz.to} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
+        <label className="text-[10px] uppercase tracking-wider text-white/35">Carrier Hz<input name="carrierHz" type="number" min="50" max="2000" step="1" defaultValue={selected.carrierHz} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
+        <label className="text-[10px] uppercase tracking-wider text-white/35">Differential from<input name="beatFromHz" type="number" min="0.1" max="40" step="0.1" defaultValue={selected.beatHz.from} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
+        <label className="text-[10px] uppercase tracking-wider text-white/35">Differential to<input name="beatToHz" type="number" min="0.1" max="40" step="0.1" defaultValue={selected.beatHz.to} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
         <label className="text-[10px] uppercase tracking-wider text-white/35">Volume %<input name="volume" type="number" min="0" max="100" step="1" defaultValue={selected.volume} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-sm text-white" /></label>
         <button type="submit" className="glass-action glass-action--secondary self-end rounded-lg px-3 py-2.5 text-xs">Refine selected stage</button>
       </form>
+      <div data-testid="session-score-sound-controls" className="mt-4 grid gap-4 rounded-2xl border border-[#b6ddcc]/15 bg-black/10 p-4 lg:grid-cols-[1.2fr_1fr_1fr]">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">Full-spectrum modes</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {Object.entries(modes).map(([mode, enabled]) => (
+              <button key={mode} type="button" aria-pressed={enabled} disabled={enabled && Object.values(modes).filter(Boolean).length === 1} onClick={() => updateSound({ entrainmentModes: { [mode]: !enabled } })} className={`rounded-full border px-3 py-2 text-xs capitalize transition disabled:cursor-not-allowed disabled:opacity-45 ${enabled ? 'border-[#b6ddcc]/35 bg-[#b6ddcc]/15 text-[#d7eadf]' : 'border-white/10 text-white/35 hover:text-white/65'}`}>{mode}</button>
+            ))}
+          </div>
+          <p className="mt-2 text-[10px] leading-5 text-white/35">Carrier: 50–2,000 Hz · differential: 0.1–40 Hz. At least one mode stays enabled.</p>
+        </div>
+        <label className="text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">Ambience
+          <select value={background.type === 'asset' ? background.assetId : background.type} onChange={(event) => { const value = event.target.value; updateSound({ background: value === 'none' ? { type: 'none' } : value === 'ocean' ? { type: 'ocean', mixDb: -24 } : { type: 'asset', assetId: value, mixDb: -25, crossfadeSec: 2.5 } }); }} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-xs text-white"><option value="none">None</option><option value="ocean">Synthesized ocean</option>{AmbientAssetOptions.map((asset) => <option key={asset.id} value={asset.id}>{asset.name}</option>)}</select>
+          {background.type !== 'none' && <>
+            <span className="mt-2 block text-[10px] normal-case tracking-normal text-white/35">{background.mixDb} dB mix{background.type === 'asset' ? ` · ${background.crossfadeSec}s crossfade` : ''}</span>
+            <input aria-label="Ambience mix" type="range" min="-60" max="-6" step="1" value={background.mixDb} onChange={(event) => updateSound({ background: { ...background, mixDb: Number(event.target.value) } })} className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-[#b6ddcc]" />
+          </>}
+        </label>
+        <div>
+          <label className="flex items-center justify-between gap-3 text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]/70">Breath guide <input type="checkbox" checked={breath.enabled} onChange={(event) => updateSound({ breathGuide: { enabled: event.target.checked } })} className="accent-[#b6ddcc]" /></label>
+          {breath.enabled && <select value={breath.pattern} onChange={(event) => updateSound({ breathGuide: { pattern: event.target.value } })} className="glass-input mt-2 w-full rounded-lg px-3 py-2 text-xs text-white"><option value="coherent-5.5">Coherent 5.5</option><option value="4-7-8">4–7–8</option><option value="box">Box</option></select>}
+          {breath.enabled && breath.pattern === 'coherent-5.5' && <input aria-label="Breath guide pace" type="range" min="2" max="12" step="0.5" value={breath.bpm} onChange={(event) => updateSound({ breathGuide: { bpm: Number(event.target.value) } })} className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-[#b6ddcc]" />}
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <label className="text-[9px] normal-case tracking-normal text-white/35">Fade in {fades.inSec}s<input aria-label="Fade in" type="range" min="0" max="60" step="1" value={fades.inSec} onChange={(event) => updateSound({ fades: { inSec: Number(event.target.value) } })} className="mt-1 h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-[#b6ddcc]" /></label>
+            <label className="text-[9px] normal-case tracking-normal text-white/35">Fade out {fades.outSec}s<input aria-label="Fade out" type="range" min="0" max="60" step="1" value={fades.outSec} onChange={(event) => updateSound({ fades: { outSec: Number(event.target.value) } })} className="mt-1 h-1 w-full cursor-pointer appearance-none rounded-lg bg-white/10 accent-[#b6ddcc]" /></label>
+          </div>
+          <p className="mt-3 text-[10px] leading-5 text-white/35">Ambience stays metadata-only in this browser preview; a later private render can honor the approved asset.</p>
+        </div>
+      </div>
       <p data-testid="session-score-activity" data-audio-ready={String(audioReady)} aria-live="polite" className="mt-4 flex items-center gap-2 text-xs text-white/45"><SlidersHorizontal className="size-4 text-[#b6ddcc]" /> {activity}</p>
     </section>
   );

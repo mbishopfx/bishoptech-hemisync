@@ -17,6 +17,7 @@ Build a short, composable route from the listener's words to a visible, reversib
 - “Compare a few directions for writing” → call `compare_tone_directions` with the short intention and present the ranked fit/tradeoff options before changing the machine.
 - “Build me a 20-minute session for journaling” → call `plan_listening_session`; present the arrive, practice, and close phases, then offer the visible machine as the next step. Planning does not start audio or save a record.
 - “Give me a cue before I begin” → call `get_session_cue`; return the short prompt and suggested starting direction without asking for diary content.
+- “Build a sound-designable multi-stage score” → call `compose_session_score` over MCP or `cognistration_compose_session_score` on `/try`, then refine visible stages or the sound profile. Use the score's 50–2,000 Hz carrier, 0.1–40 Hz differential, signal-mode, approved-ambience, breath, and fade bounds; preview only after explicit confirmation.
 
 ## Reliable sequences
 
@@ -42,6 +43,13 @@ Build a short, composable route from the listener's words to a visible, reversib
 2. Set only the fields needed. Accepted bounds are carrier 100–400 Hz, beat 0.5–40 Hz, and volume 0–100 percent.
 3. Keep target state in `delta`, `theta`, `alpha`, `beta`, or `gamma`.
 4. Treat a repeat of an absolute set as safe; do not repeat a relative adjustment after an uncertain response without reading state again.
+
+### Full-spectrum score controls
+
+1. Keep each score stage's carrier constant; only its differential `from` → `to` path may be linear.
+2. Enable at least one of the score's `binaural`, `monaural`, or `isochronic` modes.
+3. Restrict ambience to `none`, `ocean`, or an approved public asset ID. Browser preview reports ambience as metadata-only; do not claim that it is audible until a private render proves it.
+4. Breath patterns are descriptive pacing guides (`coherent-5.5`, `4-7-8`, or `box`), not medical instructions or promised outcomes.
 
 ### Session orchestration
 

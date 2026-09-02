@@ -4,7 +4,7 @@ Public BishopTech product site for Cognistration, built with Next.js and deploye
 
 ## WebMCP Challenge build
 
-Cognistration is a human-first audio-session platform with progressive WebMCP and MCP Apps layers. On `/try`, an agent and listener can co-compose a visible, browser-local Agentic Session Score with one to six stages, constant per-stage carriers, truthful linear beat paths, targeted refinement, undo, selection, and technical export. Preview remains capped at 120 seconds and requires explicit confirmation plus browser audio readiness. Public MCP can compose or validate the same score without persistence, rendering, or audio side effects. The regular human interface remains complete without either agent bridge.
+Cognistration is a human-first audio-session platform with progressive WebMCP and MCP Apps layers. On `/try`, an agent and listener can co-compose a visible, browser-local Agentic Session Score with up to twelve stages, constant 50–2,000 Hz per-stage carriers, truthful 0.1–40 Hz differential paths, selectable binaural/monaural/isochronic modes, breath pacing, approved ambience metadata, targeted refinement, undo, selection, and technical export. Preview remains capped at 120 seconds and requires explicit confirmation plus browser audio readiness. Public MCP can compose or validate the same score without persistence, rendering, or audio side effects. The regular human interface remains complete without either agent bridge.
 
 - Live app: https://cognistration.com
 - Challenge brief: `docs/challenge/WEBMCP-SUBMISSION.md`

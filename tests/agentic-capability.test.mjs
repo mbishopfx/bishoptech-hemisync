@@ -192,9 +192,11 @@ test('Agentic Session Score composes and validates truthful bounded stages', () 
   assert.equal(result.durationSec, 601);
   assert.equal(result.stages.length, 3);
   assert.equal(result.stages.reduce((sum, stage) => sum + stage.durationSec, 0), 601);
-  assert.ok(result.stages.every((stage) => stage.carrierHz >= 100 && stage.carrierHz <= 400));
+  assert.ok(result.stages.every((stage) => stage.carrierHz >= 50 && stage.carrierHz <= 2000));
   assert.ok(result.stages.every((stage) => stage.carrierBehavior === 'constant-within-stage'));
   assert.ok(result.stages.some((stage) => stage.beatBehavior === 'linear-within-stage'));
+  assert.equal(result.sound.entrainmentModes.binaural, true);
+  assert.equal(result.sound.background.type, 'none');
   assert.equal(result.preview.maxDurationSec, SESSION_SCORE_PREVIEW_CAP_SEC);
   assert.equal(result.boundaries.persisted, false);
   assert.equal(result.boundaries.rendered, false);
@@ -203,25 +205,47 @@ test('Agentic Session Score composes and validates truthful bounded stages', () 
   const score = { durationSec: result.durationSec, stages: result.stages.map(({ carrierBehavior, beatBehavior, ...stage }) => stage) };
   assert.doesNotThrow(() => SessionScoreSchema.parse(score));
   assert.throws(() => SessionScoreSchema.parse({ ...score, durationSec: 600 }));
-  assert.throws(() => SessionScoreSchema.parse({ ...score, stages: score.stages.map((stage, index) => index ? stage : { ...stage, carrierHz: 401 }) }));
+  assert.throws(() => SessionScoreSchema.parse({ ...score, stages: score.stages.map((stage, index) => index ? stage : { ...stage, carrierHz: 2001 }) }));
   assert.throws(() => SessionScoreSchema.parse({ ...score, stages: score.stages.map((stage, index) => index ? stage : { ...stage, beatHz: { from: 7.25, to: 8 } }) }));
   assert.throws(() => SessionScoreComposeInputSchema.parse({ durationSec: 59 }));
+
+  const fullSpectrum = composeSessionScore({
+    direction: 'focus',
+    durationSec: 600,
+    sound: {
+      entrainmentModes: { binaural: true, monaural: true, isochronic: true },
+      background: { type: 'asset', assetId: 'lumina', mixDb: -24, crossfadeSec: 2.5 },
+      breathGuide: { enabled: true, pattern: 'box', bpm: 4 },
+      fades: { inSec: 4, outSec: 6 }
+    }
+  });
+  assert.deepEqual(fullSpectrum.sound.entrainmentModes, { binaural: true, monaural: true, isochronic: true });
+  assert.equal(fullSpectrum.sound.background.assetId, 'lumina');
+  assert.equal(fullSpectrum.sound.breathGuide.pattern, 'box');
+  assert.equal(fullSpectrum.sound.fades.outSec, 6);
+  const custom = composeSessionScore({ score: { durationSec: 300, stages: [{ id: 'custom', label: 'Custom', state: 'gamma', durationSec: 300, carrierHz: 2000, beatHz: { from: 0.1, to: 39.9 }, volume: 48 }] } });
+  assert.equal(custom.stages[0].carrierHz, 2000);
+  assert.deepEqual(custom.stages[0].beatHz, { from: 0.1, to: 39.9 });
 });
 
 test('Agentic Session Score refinement and export remain technical-only and ephemeral', () => {
   const composed = composeSessionScore({ direction: 'reflect', durationSec: 600 });
   const score = { durationSec: composed.durationSec, stages: composed.stages.map(({ carrierBehavior, beatBehavior, ...stage }) => stage) };
-  const refined = refineSessionScore({ score, stageId: 'stage-2', patch: { carrierHz: 222, beatFromHz: 5.5, beatToHz: 7, volume: 61 } });
+  const refined = refineSessionScore({ score, stageId: 'stage-2', patch: { state: 'gamma', carrierHz: 222, beatFromHz: 5.5, beatToHz: 7, volume: 61 } });
   const stage = refined.stages.find((candidate) => candidate.id === 'stage-2');
+  assert.equal(stage.state, 'gamma');
   assert.equal(stage.carrierHz, 222);
   assert.deepEqual(stage.beatHz, { from: 5.5, to: 7 });
   assert.equal(stage.durationSec, score.stages[1].durationSec);
   assert.throws(() => refineSessionScore({ score, stageId: 'missing', patch: { volume: 40 } }));
   const exported = sessionScoreTechnicalExport(score);
-  assert.equal(exported.format, 'cognistration-session-score-v1');
+  assert.equal(exported.format, 'cognistration-session-score-v2');
   assert.equal(exported.persisted, false);
   assert.equal(exported.rendered, false);
   assert.equal(refined.boundaries.audioStarted, false);
+  const soundRefined = refineSessionScore({ score, stageId: 'stage-2', patch: { soundPatch: { entrainmentModes: { monaural: true }, breathGuide: { enabled: true } } } });
+  assert.equal(soundRefined.sound.entrainmentModes.monaural, true);
+  assert.equal(soundRefined.sound.breathGuide.enabled, true);
 });
 
 test('Agentic Session Score routes safety before composition and declares all visible agent actions', () => {
@@ -1104,7 +1128,7 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /data-testid="try-step-payment"/);
   assert.match(cockpit, /No charge was submitted by this page/);
   assert.match(cockpit, /Start preview is still a human click/);
-  assert.match(cockpit, /Co-compose a score/);
+  assert.match(cockpit, /Co-compose the signal/);
   assert.match(cockpit, /SessionScoreConductor/);
   assert.match(cockpit, /glass-step-number/);
   assert.match(cockpit, /glass-action/);
