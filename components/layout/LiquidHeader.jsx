@@ -83,14 +83,14 @@ After the connection is saved, verify it with Cognistration's public capability 
 function HostMark({ host, isLight }) {
   if (host.logo) {
     return (
-      <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl border ${isLight ? 'border-[#d7e2da] bg-white/80' : 'border-[#b6ddcc]/15 bg-white/[0.08]'}`}>
-        <Image src={host.logo} alt="" width={19} height={19} className="size-[19px] object-contain" />
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${isLight ? 'border-[#d7e2da] bg-white/80' : 'border-[#b6ddcc]/15 bg-white/[0.08]'}`}>
+        <Image src={host.logo} alt="" width={19} height={19} className="h-[19px] w-[19px] object-contain" />
       </span>
     );
   }
 
   return (
-    <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl border text-[10px] font-semibold tracking-[0.12em] ${isLight ? 'border-[#c8d8ce] bg-[#e4eee8] text-[#315e55]' : 'border-[#b6ddcc]/20 bg-[#b6ddcc]/10 text-[#b6ddcc]'}`} aria-hidden="true">
+    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border text-[10px] font-semibold tracking-[0.12em] ${isLight ? 'border-[#c8d8ce] bg-[#e4eee8] text-[#315e55]' : 'border-[#b6ddcc]/20 bg-[#b6ddcc]/10 text-[#b6ddcc]'}`} aria-hidden="true">
       AG
     </span>
   );
@@ -224,12 +224,12 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
-          className={`z-50 flex size-10 shrink-0 items-center justify-center rounded-full border transition active:scale-95 ${actionSurface}`}
+          className={`z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition active:scale-95 ${actionSurface}`}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-controls="site-menu"
           aria-expanded={menuOpen}
         >
-          {menuOpen ? <X className="size-5" aria-hidden="true" /> : <span className="flex flex-col gap-1.5" aria-hidden="true"><span className="h-px w-4 bg-current" /><span className="h-px w-4 bg-current" /><span className="h-px w-4 bg-current" /></span>}
+          {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <span className="flex flex-col gap-1.5" aria-hidden="true"><span className="h-px w-4 bg-current" /><span className="h-px w-4 bg-current" /><span className="h-px w-4 bg-current" /></span>}
         </button>
         <Link href="/" className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80">
           <Image
@@ -237,7 +237,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
             alt="Cognistration Logo"
             width={36}
             height={36}
-            className="size-8 object-contain brightness-110 contrast-125 md:size-9"
+            className="h-8 w-8 object-contain brightness-110 contrast-125 md:h-9 md:w-9"
             priority
           />
           <span className={`truncate text-lg font-medium tracking-tight ${isLight ? 'text-[#1d302c]' : 'text-white'}`}>Cognistration</span>
@@ -251,11 +251,11 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
         <button
           type="button"
           onClick={openAccount}
-          className={`flex size-10 items-center justify-center rounded-full border transition ${actionSurface}`}
+          className={`flex h-10 w-10 items-center justify-center rounded-full border transition ${actionSurface}`}
           aria-label="Account"
           title="Account / Sign In"
         >
-          <svg className="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+          <svg className="h-5 w-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="12" cy="8" r="4" />
             <path d="M20 21a8 8 0 0 0-16 0" />
           </svg>
@@ -287,7 +287,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
               className={`group flex items-center justify-between rounded-2xl px-3 py-2.5 text-sm transition-[background-color,color,transform] duration-200 hover:translate-x-0.5 ${index === 0 ? (isLight ? 'bg-[#dce8e0]/60 text-[#1d302c]' : 'bg-white/[0.06] text-white') : menuItemSurface}`}
             >
               {link.label}
-              <ArrowRight className="size-4 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-70" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-70" aria-hidden="true" />
             </Link>
           ))}
         </nav>
@@ -312,7 +312,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
                   <span className="flex items-center gap-2 text-sm font-medium">Add to ChatGPT <span className={`rounded-full px-1.5 py-0.5 text-[9px] uppercase tracking-[0.12em] ${isLight ? 'bg-[#dce8e0] text-[#548477]' : 'bg-[#b6ddcc]/10 text-[#b6ddcc]'}`}>Guided</span></span>
                   <span className={`mt-0.5 block truncate text-xs ${menuCopy}`}>{host.detail}</span>
                 </span>
-                <ArrowRight className="size-4 shrink-0 opacity-50 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4 shrink-0 opacity-50 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
               </button>
             ))}
           </div>
@@ -329,7 +329,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
         <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden overscroll-none bg-[#0e1614]/80 p-5 backdrop-blur-md pointer-events-auto" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setConnectOpen(false); }}>
           <div role="dialog" aria-modal="true" aria-labelledby="connect-chatgpt-title" className="glass-panel relative max-h-[calc(100dvh-2rem)] min-h-0 w-full max-w-lg overflow-hidden rounded-[2rem] border border-[#b6ddcc]/10 bg-[#1d2926] text-white shadow-2xl">
             <button type="button" onClick={() => setConnectOpen(false)} className="!absolute right-5 top-5 !z-10 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white" aria-label="Close connection instructions">
-              <X className="size-5" aria-hidden="true" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
             <div data-testid="chatgpt-connect-scroll" className="max-h-[calc(100dvh-2rem)] !overflow-y-auto overscroll-contain p-7 sm:p-9">
             <div className="max-w-sm">
@@ -348,12 +348,12 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
               <button type="button" onClick={copySetupPrompt} className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3 text-sm font-medium text-[#17332e] transition hover:bg-white">
-                {copied ? <Check className="size-4" weight="bold" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}
+                {copied ? <Check className="h-4 w-4" weight="bold" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
                 {copied ? 'Copied' : 'Copy setup prompt'}
               </button>
               <a href={CHATGPT_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#b6ddcc]/20 bg-[#13201d]/45 px-5 py-3 text-sm text-white transition hover:border-[#b6ddcc]/42 hover:bg-[#b6ddcc]/[0.1]">
                 Open ChatGPT chat
-                <ArrowSquareOut className="size-4" aria-hidden="true" />
+                <ArrowSquareOut className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
             <button type="button" onClick={() => setShowPluginInstructions((open) => !open)} aria-expanded={showPluginInstructions} className="mt-6 text-left text-xs text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4 transition hover:text-white">
