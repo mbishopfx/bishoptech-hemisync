@@ -286,6 +286,8 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /visuals\/aurora-current\.html\?obs=1/);
   assert.match(MACHINE_WIDGET_HTML, /ui\/initialize/);
   assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/initialized/);
+  assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/size-changed/);
+  assert.match(MACHINE_WIDGET_HTML, /ResizeObserver/);
   assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/tool-result/);
   assert.match(MACHINE_WIDGET_HTML, /openai\/widget-output/);
   assert.match(MACHINE_WIDGET_HTML, /openai:set_globals/);
@@ -889,6 +891,8 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://session-guides'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === 'cognistration://interaction-patterns'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === MACHINE_WIDGET_RESOURCE_URI && resource.mimeType === MACHINE_WIDGET_RESOURCE_MIME_TYPE));
+  const machineResource = MCP_RESOURCES.find((resource) => resource.uri === MACHINE_WIDGET_RESOURCE_URI);
+  assert.equal(machineResource._meta.ui.visibility, undefined);
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === ACCOUNT_SIGNUP_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === FEEDBACK_WIDGET_RESOURCE_URI && resource.mimeType === 'text/html;profile=mcp-app'));
   assert.ok(MCP_RESOURCES.some((resource) => resource.uri === TONE_PACK_CHECKOUT_WIDGET_RESOURCE_URI && resource.mimeType === TONE_PACK_CHECKOUT_WIDGET_RESOURCE_MIME_TYPE));
