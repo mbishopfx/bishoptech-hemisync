@@ -1107,6 +1107,9 @@ async function auditBrowser() {
       const refined = await execute('cognistration_refine_session_score_stage', { stageId: 'stage-2', carrierHz: 222, beatFromHz: 10, beatToHz: 14, volume: 61, soundPatch: { fades: { inSec: 3 }, breathGuide: { enabled: false } } });
       const undone = await execute('cognistration_undo_session_score', { steps: 1 });
       const scoreConfirmation = await execute('cognistration_preview_session_score', { confirmed: false, stageId: 'stage-2' });
+      const ritual = await execute('cognistration_begin_ritual', { intention: 'a focused writing session with a gentle landing', durationMin: 20, mode: 'focus' });
+      const ritualPractice = await execute('cognistration_advance_ritual', { phase: 'practice' });
+      const ritualClose = await execute('cognistration_advance_ritual', { phase: 'close' });
       assert(stateBefore?.state || stateBefore?.status === 'completed', 'WebMCP state read returned no state.');
       assert(exact?.status === 'completed' && stateAfter?.state?.carrierHz === 246, 'WebMCP exact controls did not update the visible state.');
       assert(confirmation?.status === 'needs_input' && confirmation.error?.code === 'CONFIRMATION_REQUIRED', 'WebMCP audio confirmation boundary failed.');
@@ -1118,7 +1121,11 @@ async function auditBrowser() {
       assert(refined?.sound?.fades?.inSec === 3 && refined?.sound?.breathGuide?.enabled === false, 'WebMCP sound-profile refinement failed.');
       assert(undone?.stages?.find((stage) => stage.id === 'stage-2')?.carrierHz !== 222, 'WebMCP score undo failed.');
       assert(scoreConfirmation?.status === 'needs_input' && scoreConfirmation.error?.code === 'CONFIRMATION_REQUIRED', 'WebMCP score confirmation boundary failed.');
-      return { registered: snapshot.names.length, changedCarrier: stateAfter.state.carrierHz, confirmation: confirmation.error.code, scoreConfirmation: scoreConfirmation.error.code, guide: guide.status };
+      assert(ritual?.status === 'completed' && ritual.plan?.phases?.map((phase) => phase.id).join(',') === 'arrive,practice,close', 'WebMCP ritual composition failed.');
+      assert(ritual?.activePhase === 'arrive' && ritual?.manualTransition === true && ritual?.controls?.isPlaying === false, 'WebMCP ritual did not stage arrive safely.');
+      assert(ritualPractice?.activePhase === 'practice' && ritualPractice?.phase?.id === 'practice' && ritualPractice?.controls?.isPlaying === false, 'WebMCP ritual practice transition failed.');
+      assert(ritualClose?.activePhase === 'close' && ritualClose?.phase?.id === 'close' && ritualClose?.controls?.isPlaying === false, 'WebMCP ritual close transition failed.');
+      return { registered: snapshot.names.length, changedCarrier: stateAfter.state.carrierHz, confirmation: confirmation.error.code, scoreConfirmation: scoreConfirmation.error.code, guide: guide.status, ritualPhases: ritual.plan.phases.map((phase) => phase.id), ritualClose: ritualClose.activePhase };
     });
   } finally {
     if (browser) await browser.close();

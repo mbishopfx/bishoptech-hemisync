@@ -186,11 +186,12 @@ test('public session orchestration stays bounded, useful, and free of diary stor
 });
 
 test('Agentic Session Score composes and validates truthful bounded stages', () => {
-  const result = composeSessionScore({ intention: 'private exact diary wording for a focused writing block', durationSec: 601 });
+  const result = composeSessionScore({ intention: 'private exact writing block', durationSec: 601 });
   assert.equal(result.status, 'completed');
   assert.match(result.correlationId, /^[0-9a-f-]{36}$/i);
   assert.equal(result.durationSec, 601);
   assert.equal(result.stages.length, 3);
+  assert.deepEqual(result.stages.map((stage) => stage.label), ['Arrive', 'Practice', 'Close']);
   assert.equal(result.stages.reduce((sum, stage) => sum + stage.durationSec, 0), 601);
   assert.ok(result.stages.every((stage) => stage.carrierHz >= 50 && stage.carrierHz <= 2000));
   assert.ok(result.stages.every((stage) => stage.carrierBehavior === 'constant-within-stage'));
@@ -1142,6 +1143,9 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(machine, /await existingContext\.resume\(\)/);
   assert.match(machine, /ctx\.state !== 'running'/);
   assert.match(machine, /statechange/);
+  assert.match(machine, /cognistration_begin_ritual/);
+  assert.match(machine, /cognistration_advance_ritual/);
+  assert.match(SESSION_SCORE_CONDUCTOR_SOURCE, /key=\{`\$\{selected\.id\}-\$\{score\.correlationId\}`\}/);
   assert.match(page, /glass-action/);
   assert.doesNotMatch(cockpit, /border-white/);
   assert.doesNotMatch(machine, /border-white/);
