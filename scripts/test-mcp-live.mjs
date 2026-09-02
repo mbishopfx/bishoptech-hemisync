@@ -96,7 +96,11 @@ async function main() {
   assert(machineWidget?.mimeType === 'text/html;profile=mcp-app', 'machine widget MIME type is unexpected');
   assert(/class="frequency-stage"/.test(machineWidget.text || ''), 'machine widget frequency-wave stage is missing');
   assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
+  assert(/ui\/initialize/.test(machineWidget.text || ''), 'machine widget MCP Apps initialize handshake is missing');
+  assert(/ui\/notifications\/initialized/.test(machineWidget.text || ''), 'machine widget initialized notification is missing');
   assert(/ui\/update-model-context/.test(machineWidget.text || ''), 'machine widget model context bridge is missing');
+  assert(/openai:set_globals/.test(machineWidget.text || ''), 'machine widget ChatGPT globals fallback is missing');
+  assert(/openai\/widget-output/.test(machineWidget.text || ''), 'machine widget typed result fallback is missing');
   assert(/adjust_machine_controls/.test(machineWidget.text || ''), 'machine widget relative control bridge is missing');
   assert(/resumeAudioContext/.test(machineWidget.text || ''), 'machine widget audio resume verification is missing');
   assert(/audioReady/.test(machineWidget.text || ''), 'machine widget audio readiness state is missing');
