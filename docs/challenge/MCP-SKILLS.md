@@ -15,7 +15,7 @@ unrestricted writes.
 - Skills extension: `io.modelcontextprotocol/skills`
 - Current MCP transport: Streamable HTTP with JSON responses over POST
 - Current protocol metadata: `MCP-Protocol-Version: 2026-07-28`
-- Current public registry: 37 remote MCP tools, 17 resources, 23 public WebMCP tools, 11 authenticated member WebMCP tools, and 5 skills
+- Current public registry: 38 remote MCP tools, 17 resources, 28 public WebMCP tools, 11 authenticated member WebMCP tools, and 5 skills
 
 The five public skill URIs are:
 
@@ -37,6 +37,13 @@ the FFT ocean-surface page remains a quiet visual reference at
 `https://vgpu.sh/examples/fft-ocean-surface`. It supports local previous/next
 navigation and lets the person print or save the guide as a PDF.
 It never starts audio, stores a record, or receives diary content.
+
+The `/try` cockpit also registers five browser-local Agentic Session Score
+actions: compose a one-to-six-stage score, refine a visible stage, undo a
+revision, select a stage, and preview only after explicit confirmation. The
+score is technical and ephemeral; its carrier stays constant within each
+stage, its beat may follow a linear start/end path, and it never persists or
+renders a private session.
 
 When a listener asks to move the current or generated tone to a phone, call
 `open_phone_download_options`. It renders a frosted card with the fixed `$0.50`

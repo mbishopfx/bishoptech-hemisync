@@ -21,6 +21,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 | Download the current tone to a phone | `open_phone_download_options` | Choose the fixed $0.50 agent-preview handoff or the full iPhone app; require explicit confirmation before MPP payment | Current bounded tone/settings, exact payment challenge, explicit approval, and server-verified release |
 | Open the machine inside ChatGPT | `open_machine_generator` | Use the widget to match an intention, tune controls, browse packs, or request a larger view | Versioned UI resource renders; audio remains off until explicit play |
 | Understand the generated signal | `open_science_guide` | Click through the two-channel signal, FFR, descriptive bands, evidence limits, and safety notes; print/save the guide as PDF | Versioned science-guide UI renders with a self-contained animated ocean surface; audio and diary content remain off |
+| Compose a multi-stage score | `cognistration_compose_session_score` | Select and refine visible stages, undo a revision, export technical settings, then confirm a capped preview | Exact stage total, constant per-stage carrier, linear beat path, and explicit `audioReady` boundary |
 
 ## Public surface
 
@@ -45,7 +46,7 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `open_science_guide` — render the seven-slide educational signal guide with a self-contained animated ocean surface and browser PDF fallback
 - `open_feedback` — render one optional done-state feedback card without returning history
 
-### Homepage WebMCP tools (23)
+### Public WebMCP tools (28; 23 homepage + 5 `/try` score tools)
 
 - `cognistration_get_session_state`
 - `cognistration_set_session_controls`
@@ -70,6 +71,14 @@ This is the implementation map for the public Cognistration agent surface. Each 
 - `cognistration_stop_preview`
 - `cognistration_open_fullscreen`
 - `cognistration_open_account_signup`
+
+The `/try` cockpit adds these score-specific tools to the 23 homepage tools:
+
+- `cognistration_compose_session_score`
+- `cognistration_refine_session_score_stage`
+- `cognistration_undo_session_score`
+- `cognistration_select_session_score_stage`
+- `cognistration_preview_session_score`
 
 ### REST fallbacks
 
