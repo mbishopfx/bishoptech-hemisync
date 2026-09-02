@@ -1,47 +1,34 @@
-# Cognistration — conversational three-minute WebMCP demo
+# Cognistration — under-three-minute conversational WebMCP demo
 
-Target runtime: about three minutes at a natural speaking pace. This version
-is written for Matthew to deliver directly, not for a synthetic voice. Treat it
-as a guide; leave room for eye contact, pauses, and your own emphasis.
+Target runtime: about two minutes and twenty seconds at a natural speaking
+pace. This version is written for Matthew to deliver directly, in one flowing
+read rather than as separate lines. Leave room for eye contact and a few small
+pauses, but let the visuals carry the technical detail.
 
 ## Voiceover script
 
-Let me show you what happens when an audio tool stops treating you like someone browsing a menu.
+Let me show you what changes when an audio tool can understand what I’m trying to do, instead of asking me to hunt through a menu. In Cognistration, I can say, in plain English, “I want a focused writing session that eases me in and brings me back down gently.” The agent turns that intention into a session I can inspect: an arrival stage, a practice stage, and a close. I can open each stage, see the settings, and adjust one part without rebuilding everything.
 
-With most sound machines, I have to pick a preset and hope it fits. Cognistration lets me start with a plain-English request. So I might say, “I need a focused writing session, but I want it to ease me in and bring me back down gently.”
+That matters because this is more than a preset list. Every stage can use a constant carrier from fifty to two thousand Hertz and a differential from zero point one to forty Hertz, with up to twelve stages in one score. I can choose binaural, monaural, or isochronic modes, combine them, add five-and-a-half, four-seven-eight, or box breathing, set fades, and attach approved ambience. In the browser, ambience is metadata; it is not secretly playing behind the signal.
 
-Now watch the difference. The agent doesn’t just recommend a tone and disappear. It builds a session I can see. I get an arrival stage, a work stage, and a closing stage. I can open any stage, see the settings, and change one part without throwing away the rest.
+Then I can refine it as I would with a collaborator: “Make the middle stage a little more energetic, but keep the timing.” The agent updates that stage, preserves duration and order, and shows me the change. I stay in the loop; it helps me compose without pretending to know what the experience means for me.
 
-The range is much wider than a fixed preset library. Each stage can use a constant carrier anywhere from fifty to two thousand Hertz. The differential can move from zero point one to forty Hertz. A longer score can hold up to twelve stages.
+The boundary is just as important. Nothing is saved in this demo: no diary text, no account, and no audio starting because an agent suggested it. I confirm the preview, the browser reports that audio is ready, and playback is capped at one hundred twenty seconds. When the score feels right, I can export the technical recipe—settings and structure, but not the private intention that started it.
 
-Here’s the part I find most interesting. I can shape the behavior, not just the label. I can ask for binaural, monaural, or isochronic modes, or combine them. I can add a five-and-a-half breathing pace, four-seven-eight, or box breathing. I can set a fade and choose an approved ambience layer. In this browser preview, that ambience choice stays metadata. It isn’t secretly playing behind the signal.
-
-Now let’s refine it the way a person actually would. “Make the middle stage a little more energetic, but keep the timing.” The agent changes that stage and leaves the duration and order alone. I don’t rebuild the whole session, and I can still see exactly what changed.
-
-That visibility matters. The agent is helping me compose, not pretending to be the authority on my experience.
-
-The safety boundary works the same way. Nothing is saved here. No diary text is stored. No account is created. Audio doesn’t start just because the agent suggests it. I confirm the preview, the browser reports that audio is ready, and the preview is capped at one hundred twenty seconds.
-
-When the score feels right, I can export the technical recipe. It carries the stage settings, but not my private intention. I keep the structure without turning a personal thought into a database record.
-
-That is the difference I wanted to demonstrate. This is not a chatbot pointing me toward a button, and it is not a preset pretending to understand me. It is a shared workspace. I say where I want to go. The agent builds a path I can inspect. I revise it in plain language. And I decide when anything plays.
-
-That is Cognistration’s WebMCP entry: an agent doesn’t just choose a tone. It helps me compose a session.
+That is the WebMCP idea: not a chatbot pointing me to a button, and not a preset pretending to understand me. It is a shared workspace. I say where I want to go, the agent builds a path I can inspect, I revise it in plain language, and I decide when anything plays. Cognistration does not just choose a tone. It helps me compose a session.
 
 ## Non-spoken edit map
 
-- **0:00–0:20:** Open on a quiet, cinematic close-up of the empty machine, then reveal the Cognistration wordmark.
-- **0:20–0:45:** Show the `/try` cockpit and the intention becoming a three-stage timeline.
-- **0:45–1:15:** Animate the stage cards and frequency values; linger on the wide carrier and differential ranges.
-- **1:15–1:45:** Reveal the mode toggles, breathing choices, fades, and ambience metadata as clean overlays.
-- **1:45–2:10:** Show an agent refinement changing the middle stage while the timeline stays stable.
-- **2:10–2:35:** Show the confirmation boundary, audio paused state, then one deliberate local preview.
-- **2:35–2:50:** Export the technical JSON and briefly highlight that intention text is absent.
-- **2:50–3:00:** End on the composed score, the listener-controlled preview button, and `cognistration.com/try`.
+- **0:00–0:18:** Open on a quiet, cinematic close-up of the empty machine, then reveal the Cognistration wordmark.
+- **0:18–0:42:** Show the `/try` cockpit and the plain-English intention becoming an arrival, practice, and close timeline.
+- **0:42–1:12:** Animate the stage cards, frequency ranges, modes, breathing choices, fades, and ambience metadata.
+- **1:12–1:38:** Show the agent refining the middle stage while the timeline, duration, and order stay stable.
+- **1:38–2:10:** Show the confirmation boundary, audio-ready state, and one deliberate local preview capped at one hundred twenty seconds.
+- **2:10–2:30:** Export the technical JSON, highlight that intention text is absent, and end on `cognistration.com/try`.
 
 ## Delivery notes
 
-Start curious and personal, as if you are showing one smart feature to a
-friend. Build energy through the mode reveal. Slow down on “Nothing is saved
-here” and “I decide when anything plays.” Do not rush the technical ranges; let
-the visuals carry them while you explain why they matter.
+Read it as one continuous thought, like you are showing a smart feature to a
+friend. Let the energy build through the mode reveal, then slow down briefly on
+“Nothing is saved in this demo” and “I decide when anything plays.” Let the
+visuals carry the numbers while you explain why the flexibility matters.
