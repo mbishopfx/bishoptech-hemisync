@@ -89,7 +89,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-[100dvh] overflow-x-hidden bg-[#eef1ee] text-[#1d302c] selection:bg-[#b6ddcc]/60">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageJsonLd) }} />
-      <LiquidHeader onOpenAuth={() => setIsAuthModalOpen(true)} scrollAware />
+      <LiquidHeader onOpenAuth={() => setIsAuthModalOpen(true)} />
 
       <main>
         <section id="hero" aria-labelledby="hero-title" className="relative isolate min-h-[100dvh] overflow-hidden bg-[#13201d] text-white">

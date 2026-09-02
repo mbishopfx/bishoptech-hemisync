@@ -24,3 +24,16 @@ test('the published header uses the MCP menu and protects the ChatGPT setup moda
     assert.match(svg, /^<svg/);
   }
 });
+
+test('the menu spotlights ChatGPT without removing other connector metadata', async () => {
+  const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
+
+  assert.match(header, /const MCP_HOSTS = \[/);
+  assert.match(header, /const FEATURED_MCP_HOST_IDS = \['chatgpt'\]/);
+  assert.match(header, /data-visible-mcp-hosts=\{FEATURED_MCP_HOST_IDS\.join\(','\)\}/);
+  assert.match(header, /data-testid=\{`mcp-host-\$\{host\.id\}`\}/);
+  assert.doesNotMatch(header, /MCP_HOSTS\.slice\(1\)/);
+  assert.match(header, /Other MCP hosts remain supported by the connector registry/);
+  assert.match(header, /className=\{`site-header fixed/);
+  assert.doesNotMatch(header, /hasScrolled|window\.addEventListener\('scroll'/);
+});

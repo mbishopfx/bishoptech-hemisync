@@ -30,7 +30,7 @@ export default function MachinePage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#eef1ee] text-[#1d302c] selection:bg-[#b6ddcc]/60">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(machineJsonLd) }} />
-      <LiquidHeader onOpenAuth={() => setIsAuthModalOpen(true)} scrollAware />
+      <LiquidHeader onOpenAuth={() => setIsAuthModalOpen(true)} />
 
       <main>
         <section className="bg-[#13201d] px-5 pb-20 pt-36 text-white sm:px-8 sm:pb-28 sm:pt-44 lg:px-12">

@@ -18,6 +18,9 @@ const MENU_LINKS = [
   { href: '/docs', label: 'MCP Docs' }
 ];
 
+// Keep the complete host registry available for direct/agent setup. The public
+// menu intentionally features only ChatGPT for the OpenAI challenge; hiding a
+// host here must not remove its connector metadata from the platform.
 const MCP_HOSTS = [
   {
     id: 'chatgpt',
@@ -62,6 +65,9 @@ const MCP_HOSTS = [
   }
 ];
 
+const FEATURED_MCP_HOST_IDS = ['chatgpt'];
+const FEATURED_MCP_HOSTS = MCP_HOSTS.filter(({ id }) => FEATURED_MCP_HOST_IDS.includes(id));
+
 const CHATGPT_SETUP_PROMPT = `Help me connect Cognistration to this ChatGPT account as a remote app.
 
 Use this remote app server URL: ${MCP_SERVER_URL}
@@ -90,21 +96,11 @@ function HostMark({ host, isLight }) {
   );
 }
 
-export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }) {
+export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [connectOpen, setConnectOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showPluginInstructions, setShowPluginInstructions] = useState(true);
-  const [hasScrolled, setHasScrolled] = useState(false);
-
-  useEffect(() => {
-    if (!scrollAware) return undefined;
-
-    const updateScrollState = () => setHasScrolled(window.scrollY > 24);
-    updateScrollState();
-    window.addEventListener('scroll', updateScrollState, { passive: true });
-    return () => window.removeEventListener('scroll', updateScrollState);
-  }, [scrollAware]);
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -151,11 +147,14 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [connectOpen]);
 
-  const isLight = (scrollAware && hasScrolled) || theme === 'light';
+  // Header appearance is a page preference, not a scroll state. Keeping this
+  // value stable prevents the brand, controls, and menu from changing contrast
+  // while a person is reading or recording the /try flow.
+  const isLight = theme === 'light';
 
   const headerSurface = isLight
     ? 'border-b border-[#d7e0d9]/80 bg-[#eef1ee]/90 text-[#1d302c] shadow-[0_10px_30px_rgba(45,65,59,0.06)] backdrop-blur-xl'
-    : 'text-white';
+    : 'border-b border-[#b6ddcc]/10 bg-[#13201d]/90 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_12px_30px_rgba(0,0,0,0.16)] backdrop-blur-xl';
   const actionSurface = isLight
     ? 'border-[#b8cbc0] bg-white/60 text-[#315e55] hover:border-[#7fa594] hover:bg-white'
     : 'border-[#b6ddcc]/20 bg-[#13201d]/55 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_24px_rgba(0,0,0,0.1)] hover:border-[#b6ddcc]/42 hover:bg-[#b6ddcc]/[0.1]';
@@ -220,7 +219,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 pb-4 pt-4 pointer-events-none transition-colors duration-300 sm:px-8 sm:pb-5 sm:pt-5 lg:px-12 ${headerSurface}`}>
+    <header className={`site-header fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 pb-4 pt-4 pointer-events-none sm:px-8 sm:pb-5 sm:pt-5 lg:px-12 ${headerSurface}`}>
       <div className="pointer-events-auto flex min-w-0 items-center gap-2 sm:gap-3">
         <button
           type="button"
@@ -267,7 +266,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
 
       <div
         id="site-menu"
-        className={`site-menu-panel fixed left-5 top-[5.25rem] z-40 max-h-[calc(100dvh-6.5rem)] w-[min(31rem,calc(100vw-2.5rem))] origin-top-left overflow-y-auto rounded-[1.75rem] border p-4 pointer-events-auto backdrop-blur-2xl transition-all duration-200 sm:left-8 lg:left-12 ${menuSurface} ${menuOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
+        className={`site-menu-panel liquid-glass fixed left-5 top-[5.25rem] z-40 max-h-[calc(100dvh-6.5rem)] w-[min(31rem,calc(100vw-2.5rem))] origin-top-left overflow-y-auto rounded-[1.75rem] border p-4 pointer-events-auto backdrop-blur-2xl transition-[opacity,transform] duration-200 sm:left-8 lg:left-12 ${menuSurface} ${menuOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0'}`}
         aria-hidden={!menuOpen}
         inert={!menuOpen}
       >
@@ -296,42 +295,28 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark', scrollAware = false }
         <section aria-labelledby="mcp-hosts-title" className={`mt-4 border-t pt-4 ${menuDivider}`}>
           <div className="px-2">
             <h2 id="mcp-hosts-title" className={`text-sm font-medium ${isLight ? 'text-[#1d302c]' : 'text-white'}`}>Connect through your AI host</h2>
-            <p className={`mt-1 text-xs leading-5 ${menuCopy}`}>Use Cognistration wherever you already work with MCP.</p>
+            <p className={`mt-1 text-xs leading-5 ${menuCopy}`}>Add Cognistration to ChatGPT with one guided remote-app step.</p>
           </div>
 
-          <button
-            type="button"
-            onClick={openConnect}
-            className={`group mt-3 flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-[background-color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px ${isLight ? 'border-[#b9d0c1] bg-white/65 text-[#1d302c] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(45,65,59,0.06)] hover:border-[#7fa594] hover:bg-white/85' : 'border-[#b6ddcc]/20 bg-white/[0.055] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] hover:border-[#b6ddcc]/40 hover:bg-white/[0.09]'}`}
-          >
-            <HostMark host={MCP_HOSTS[0]} isLight={isLight} />
-            <span className="min-w-0 flex-1">
-              <span className="flex items-center gap-2 text-sm font-medium">Add to ChatGPT <span className={`rounded-full px-1.5 py-0.5 text-[9px] uppercase tracking-[0.12em] ${isLight ? 'bg-[#dce8e0] text-[#548477]' : 'bg-[#b6ddcc]/10 text-[#b6ddcc]'}`}>Guided</span></span>
-              <span className={`mt-0.5 block truncate text-xs ${menuCopy}`}>Connect Cognistration as a remote MCP app</span>
-            </span>
-            <ArrowRight className="size-4 shrink-0 opacity-50 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
-          </button>
-
-          <div className="mt-2 grid gap-2 sm:grid-cols-2">
-            {MCP_HOSTS.slice(1).map((host) => (
-              <a
+          <div className="mt-3 grid gap-2" data-visible-mcp-hosts={FEATURED_MCP_HOST_IDS.join(',')}>
+            {FEATURED_MCP_HOSTS.map((host) => (
+              <button
                 key={host.id}
-                href={host.href}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setMenuOpen(false)}
-                className={`group flex min-w-0 items-center gap-2.5 rounded-2xl border p-2.5 transition-[background-color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px ${isLight ? 'border-[#d2ded6] bg-white/45 text-[#31443e] hover:border-[#9ebdaf] hover:bg-white/75 hover:shadow-[0_8px_18px_rgba(45,65,59,0.06)]' : 'border-[#b6ddcc]/10 bg-white/[0.035] text-white/85 hover:border-[#b6ddcc]/30 hover:bg-white/[0.07]'}`}
+                type="button"
+                onClick={openConnect}
+                data-testid={`mcp-host-${host.id}`}
+                className={`liquid-glass group flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-[background-color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px ${isLight ? 'border-[#b9d0c1] bg-white/65 text-[#1d302c] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(45,65,59,0.06)] hover:border-[#7fa594] hover:bg-white/85' : 'border-[#b6ddcc]/20 bg-white/[0.055] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] hover:border-[#b6ddcc]/40 hover:bg-white/[0.09]'}`}
               >
                 <HostMark host={host} isLight={isLight} />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-medium">{host.label}</span>
-                  <span className={`mt-0.5 block truncate text-[11px] ${menuCopy}`}>{host.detail}</span>
+                  <span className="flex items-center gap-2 text-sm font-medium">Add to ChatGPT <span className={`rounded-full px-1.5 py-0.5 text-[9px] uppercase tracking-[0.12em] ${isLight ? 'bg-[#dce8e0] text-[#548477]' : 'bg-[#b6ddcc]/10 text-[#b6ddcc]'}`}>Guided</span></span>
+                  <span className={`mt-0.5 block truncate text-xs ${menuCopy}`}>{host.detail}</span>
                 </span>
-                <ArrowSquareOut className="size-3.5 shrink-0 opacity-35 transition-opacity duration-200 group-hover:opacity-75" aria-hidden="true" />
-              </a>
+                <ArrowRight className="size-4 shrink-0 opacity-50 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+              </button>
             ))}
           </div>
-          <p className={`px-2 pt-3 text-[11px] leading-5 ${menuCopy}`}>Each host opens its own MCP setup surface. Availability and permissions depend on the host and plan.</p>
+          <p className={`px-2 pt-3 text-[11px] leading-5 ${menuCopy}`}>Other MCP hosts remain supported by the connector registry and direct agent setup paths.</p>
         </section>
 
         <div className={`mt-4 flex items-center gap-2 border-t pt-4 md:hidden ${menuDivider}`}>

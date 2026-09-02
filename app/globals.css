@@ -397,6 +397,14 @@ main section[id] {
   pointer-events: none;
 }
 
+.site-header {
+  transition: none;
+}
+
+.site-menu-panel {
+  overflow-y: auto;
+}
+
 .hero-session-shell {
   position: relative;
   overflow: hidden;
@@ -721,6 +729,134 @@ main section[id] {
   width: 1px;
   background: linear-gradient(180deg, rgba(182, 221, 204, 0.32), rgba(255, 255, 255, 0.04));
   content: '';
+}
+
+/* The challenge cockpit uses the same liquid-glass language as the machine,
+ * but needs a little more separation between its reading surface, controls,
+ * and stage cards. Keep the treatment scoped so the rest of the site can keep
+ * its own surface rhythm. */
+.try-page {
+  --try-glass-edge: rgba(182, 221, 204, 0.18);
+  --try-glass-highlight: rgba(255, 255, 255, 0.12);
+  --try-glass-shadow: rgba(3, 12, 10, 0.28);
+}
+
+.try-hero-shell {
+  background:
+    radial-gradient(circle at 14% 0%, rgba(182, 221, 204, 0.12), transparent 30%),
+    radial-gradient(circle at 92% 8%, rgba(215, 199, 170, 0.09), transparent 27%),
+    linear-gradient(145deg, #13201d 0%, #10201b 52%, #13201d 100%);
+}
+
+.try-cockpit-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(182, 221, 204, 0.11), transparent 28%),
+    radial-gradient(circle at 96% 72%, rgba(215, 199, 170, 0.07), transparent 31%),
+    linear-gradient(145deg, #182723 0%, #14221f 54%, #182723 100%);
+}
+
+.try-cockpit-shell::before,
+.try-cockpit-shell::after {
+  position: absolute;
+  pointer-events: none;
+  content: '';
+}
+
+.try-cockpit-shell::before {
+  inset: 0;
+  background: linear-gradient(112deg, rgba(255, 255, 255, 0.035), transparent 34%, transparent 68%, rgba(182, 221, 204, 0.035));
+}
+
+.try-cockpit-shell::after {
+  z-index: 0;
+  right: 8%;
+  bottom: -15rem;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 50%;
+  background: rgba(182, 221, 204, 0.055);
+  filter: blur(5rem);
+}
+
+.try-cockpit-shell > .mx-auto {
+  position: relative;
+  z-index: 1;
+}
+
+.try-cockpit {
+  position: relative;
+  z-index: 1;
+}
+
+.try-trust-panel {
+  border-color: rgba(182, 221, 204, 0.16);
+  background:
+    radial-gradient(circle at 5% 0%, rgba(215, 234, 223, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(8, 22, 18, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -16px 30px rgba(3, 12, 10, 0.18),
+    0 18px 42px rgba(3, 12, 10, 0.12);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+.try-cockpit .glass-subpanel,
+.try-cockpit .glass-panel,
+.try-cockpit .glass-step-card {
+  border-color: var(--try-glass-edge);
+  box-shadow:
+    inset 0 1px 0 var(--try-glass-highlight),
+    inset 0 -22px 38px var(--try-glass-shadow),
+    0 20px 48px rgba(3, 12, 10, 0.14);
+}
+
+.try-cockpit .glass-subpanel {
+  background:
+    radial-gradient(circle at 9% 0%, rgba(215, 234, 223, 0.1), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(8, 22, 18, 0.52);
+  backdrop-filter: blur(28px) saturate(145%);
+  -webkit-backdrop-filter: blur(28px) saturate(145%);
+}
+
+.try-cockpit .glass-panel {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(215, 234, 223, 0.13), transparent 34%),
+    linear-gradient(145deg, rgba(40, 65, 57, 0.78), rgba(10, 24, 21, 0.72));
+  backdrop-filter: blur(34px) saturate(150%);
+  -webkit-backdrop-filter: blur(34px) saturate(150%);
+}
+
+.try-cockpit .glass-step-card {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(215, 234, 223, 0.12), transparent 40%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.018)),
+    rgba(8, 22, 18, 0.48);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+.try-cockpit .glass-step-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -22px 38px rgba(3, 12, 10, 0.2),
+    0 24px 56px rgba(3, 12, 10, 0.2);
+}
+
+.try-cockpit .try-step-rail {
+  align-items: stretch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .try-cockpit-shell::after {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

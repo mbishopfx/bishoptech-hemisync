@@ -1147,6 +1147,7 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /SessionScoreConductor/);
   assert.match(cockpit, /glass-step-number/);
   assert.match(cockpit, /glass-action/);
+  assert.match(cockpit, /className="try-cockpit space-y-8"/);
   assert.match(machine, /glass-panel/);
   assert.match(machine, /glass-action/);
   assert.match(machine, /toolname="cognistration_set_session_controls"/);
@@ -1170,6 +1171,11 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(styles, /\.glass-panel/);
   assert.match(styles, /\.glass-action/);
   assert.match(styles, /\.glass-step-number/);
+  assert.match(styles, /\.try-cockpit-shell/);
+  assert.match(styles, /\.try-cockpit \.glass-subpanel/);
+  assert.match(styles, /backdrop-filter: blur\(28px\) saturate\(145%\)/);
+  assert.match(page, /try-page/);
+  assert.match(page, /try-hero-shell/);
   assert.match(machine, /ToneScienceLesson/);
   assert.match(machine, /cognistration_open_science_guide/);
   assert.match(scienceLesson, /OceanSurfaceCanvas/);

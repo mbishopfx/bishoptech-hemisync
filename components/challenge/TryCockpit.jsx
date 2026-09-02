@@ -156,8 +156,8 @@ export function TryCockpit() {
   };
 
   return (
-    <div data-testid="try-cockpit" className="space-y-8">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+    <div data-testid="try-cockpit" className="try-cockpit space-y-8">
+      <div className="try-step-rail grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {stepCopy.map(([number, title, copy]) => (
           <div key={number} className="glass-step-card rounded-2xl p-4">
             <span className="glass-step-number" aria-hidden="true">{number}</span>

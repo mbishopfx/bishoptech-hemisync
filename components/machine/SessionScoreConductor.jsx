@@ -349,7 +349,7 @@ export function SessionScoreConductor({ intention = 'I need a focused writing bl
   const fades = sound.fades || DEFAULT_SOUND.fades;
 
   return (
-    <section data-testid="session-score-conductor" data-webmcp-status={webmcpStatus} className="glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
+    <section data-testid="session-score-conductor" data-webmcp-status={webmcpStatus} className="try-score-surface glass-subpanel rounded-[1.75rem] border border-[#b6ddcc]/10 p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">Agentic Session Score · browser local</p>

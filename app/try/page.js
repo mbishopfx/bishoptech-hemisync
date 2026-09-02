@@ -19,11 +19,11 @@ const challengeJsonLd = {
 
 export default function TryPage() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#13201d] text-white selection:bg-[#b6ddcc]/40">
+    <div className="try-page min-h-screen overflow-x-hidden bg-[#13201d] text-white selection:bg-[#b6ddcc]/40">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(challengeJsonLd) }} />
       <LiquidHeader theme="dark" />
       <main>
-        <section className="relative overflow-hidden bg-[#13201d] px-5 pb-16 pt-36 sm:px-8 sm:pb-24 sm:pt-44 lg:px-12">
+        <section className="try-hero-shell relative overflow-hidden bg-[#13201d] px-5 pb-16 pt-36 sm:px-8 sm:pb-24 sm:pt-44 lg:px-12">
           <div className="pointer-events-none absolute -left-24 top-20 size-96 rounded-full bg-[#b6ddcc]/10 blur-3xl" aria-hidden="true" />
           <div className="pointer-events-none absolute right-0 top-0 size-[28rem] rounded-full bg-[#d7c7aa]/[0.08] blur-3xl" aria-hidden="true" />
           <div className="relative mx-auto max-w-[1400px]">
@@ -40,9 +40,9 @@ export default function TryPage() {
           </div>
         </section>
 
-        <section id="cockpit" className="bg-[#182723] px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
+        <section id="cockpit" className="try-cockpit-shell bg-[#182723] px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
           <div className="mx-auto max-w-[1400px]">
-            <div className="glass-subpanel mb-8 flex flex-col gap-4 rounded-2xl border border-[#b6ddcc]/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="try-trust-panel liquid-glass glass-subpanel mb-8 flex flex-col gap-4 rounded-2xl border border-[#b6ddcc]/10 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
               <div className="flex gap-3"><ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#b6ddcc]" aria-hidden="true" /><p className="max-w-3xl text-sm leading-6 text-white/60">The public route is deliberately bounded: tools can return choices and stage visible controls, but they do not save diary content or start audio without an explicit preview action.</p></div>
               <Link href="/health-warning" className="shrink-0 text-xs text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4">Safety boundaries ↗</Link>
             </div>
