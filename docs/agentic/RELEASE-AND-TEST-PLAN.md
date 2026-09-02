@@ -7,21 +7,21 @@
 - Deployment: Vercel team `bishoptech`, project `bishoptech-cognistration`
 - Environment: Vercel production deployment with canonical-route verification
 - Canonical domain: `https://cognistration.com`
-- Production deployment proof: Vercel `dpl_GJUU1fEMP66sTtbGQYnWz9qD3JJA` is `READY` with the `cognistration.com` alias and commit `77ff9ae`; verified 2026-08-29
+- Production deployment proof: Vercel `dpl_DjCSjYzSgqRixGyYf2jsJJFKNwhL` is `READY` with the `cognistration.com` alias and commit `5b420bc`; verified 2026-09-01
 - Authorized production actions: user requested full implementation control and reported authenticated Vercel/Supabase CLIs; record exact deploy/DB actions when performed
-- Test marker: `AGENTIC-20260829-01`
+- Test marker: `AGENTIC-20260901-02`
 
 ## Repository checks
 
 | Check | Command | Result |
 |---|---|---|
 | diff whitespace | `git diff --check` | pass |
-| agentic fixtures | `npm run test:agentic` | pass; 55 tests |
+| agentic fixtures | `npm run test:agentic` | pass; 61 tests |
 | existing billing fixtures | `npm run test:billing` | pass; 6 tests |
-| existing Studio fixtures | `npm run test:studio` | pass; 13 tests |
+| existing Studio fixtures | `npm run test:studio` | 12 pass; 2 existing ffmpeg-dependent tests unavailable because this checkout has no ffmpeg binary |
 | scoped agentic lint | `npx eslint scripts/audit-mcp.mjs components/machine/ToneMachineDemo.jsx app/api/mcp/route.js app/try/page.js lib/agentic/phone-download.js lib/agentic/account-widget.js lib/agentic/feedback-widget.js tests/agentic-capability.test.mjs` | pass; 0 errors |
-| full repository lint | `npm run lint` | existing generated `antigravity_loops/**/build/*.js` artifacts fail with unavailable plugin-rule references; outside the MCP/app scope |
-| build | `npm run build` + Vercel production build | pass remotely for `dpl_GJUU1fEMP66sTtbGQYnWz9qD3JJA`; local production builds remain intentionally disabled by `GEMINI.md` |
+| full repository lint | `npm run lint` | pass |
+| build | `npm run build` + Vercel production build | pass remotely for `dpl_DjCSjYzSgqRixGyYf2jsJJFKNwhL`; local production builds remain intentionally disabled by `GEMINI.md` |
 
 ## Agent and UX tests
 
@@ -36,6 +36,7 @@
 - [x] Policy and account reads return canonical links, public preview pricing, and the user-submission boundary.
 - [x] Five hashed operating skills are discoverable through the MCP skills extension and readable by their `skill://` resources.
 - [x] Prompt-injection text is bounded and never echoed into the safe rationale.
+- [x] Agentic Session Score composes up to twelve stages with 50–2,000 Hz carriers, 0.1–40 Hz differentials, selectable binaural/monaural/isochronic modes, breath pacing, approved ambience metadata, and fades; refinement preserves duration/order and preview remains explicitly confirmed and capped.
 - [x] Member planning is bounded, tenant-scoped, and does not echo raw intention text.
 - [x] Member creation and render start require explicit confirmation and use an idempotency key when supplied.
 - [x] Local MCP Apps widget contract renders a versioned machine UI resource with bridge calls, exact CSP metadata, supplied Aurora visual, and explicit local audio start.
@@ -56,18 +57,18 @@
 - [x] Response and request limits are observed.
 - [x] Production `/connect` accepts standards-compliant modern stateless Streamable HTTP requests, validates header/body agreement, returns `405` for unsupported SSE GET negotiation, returns `202` for notifications, and rejects untrusted origins.
 - [x] The expanded production MCP verifier covers the science guide tool/resource, seven-slide payload, ocean visual reference, PDF action, audio/diary boundaries, frosted tone-pack widget, enabled fixed 50-cent lane, and enabled fixed 599-cent tone-pack payment options without submitting a charge.
-- [ ] Full release audit: `npm run audit:mcp` must pass against the canonical production alias after the current contract changes are deployed; the optional `npm run audit:mcp:browser` adds native WebMCP registration proof.
+- [x] Full release audit: `npm run audit:mcp -- --pace-ms 5 --timeout 20000` passes against the canonical production alias with 126 checks and one optional browser-registration skip because Playwright is unavailable in this checkout; the audit remains read-only and reports no server writes attempted.
 
 ## Production route proof
 
 | Route/operation | Status | Post-condition |
 |---|---:|---|
 | `https://cognistration.com/` | pass | homepage is 200, shows the human platform story, contains one hero Aurora background, has the available-now iPhone offer with the canonical App Store CTA and on-device pricing explanation, uses the refined hero/chat presentation, and exposes the live fan carousel |
-| `https://cognistration.com/api/capabilities` | pending T009 | release must return 28 public WebMCP tools, 11 authenticated member tools, 38 public MCP tools, 17 MCP resources, and the Agentic Session Score REST/MCP fallback |
-| `https://cognistration.com/openapi.json` | pending T009 | generated REST compatibility document must mirror the approved 38-tool public registry, include `/api/agent/session-score` and `/api/machine-payments/tone-pack`, and expose no write credentials |
+| `https://cognistration.com/api/capabilities` | pass | returns 28 public WebMCP tools, 11 authenticated member tools, 38 public MCP tools, 17 MCP resources, and the full-spectrum Agentic Session Score REST/MCP fallback |
+| `https://cognistration.com/openapi.json` | pass | generated REST compatibility document mirrors the approved registry, includes `/api/agent/session-score` with the expanded score sound schema and `/api/machine-payments/tone-pack`, and exposes no write credentials |
 | `https://cognistration.com/agent-instructions.md` | pass | public instructions include the public browser bridge, pack preview confirmation, $5.99 tone-pack checkout/MPP delivery flow, policy reads, and authenticated member workflow |
-| `https://cognistration.com/api/mcp` | pending T009 | live discovery and `compose_session_score` must return 38 public tools and a valid no-side-effect score whose stages sum exactly |
-| `https://cognistration.com/try` connection helper | pending T009 | production browser flow must expose the copyable remote-app setup prompt, frosted step cards, current 38-tool count, visible Agentic Session Score, and expanded Plugins-tab guidance; no URL is sent to a Git installer |
+| `https://cognistration.com/api/mcp` | pass | live discovery and `compose_session_score` return 38 public tools and a valid no-side-effect full-spectrum score whose stages sum exactly |
+| `https://cognistration.com/try` connection helper | pass | production flow exposes the copyable remote-app setup prompt, frosted step cards, current 38-tool count, visible full-spectrum Agentic Session Score controls, and expanded Plugins-tab guidance; no URL is sent to a Git installer |
 | `POST /api/mcp` `open_machine_generator` + `resources/read` | pass | production render returns Gamma/246 Hz with `isPlaying: false`; the widget resource is `text/html;profile=mcp-app`, loads the canonical Aurora visual, and advertises exact connect/resource/frame domains |
 | `POST /api/mcp` `open_science_guide` + `resources/read` | pass | production render returns a seven-slide `text/html;profile=mcp-app` guide with a self-contained animated ocean surface, a quiet FFT visual reference link, print/save-to-PDF controls, a false host-border preference, and false audio/diary/medical boundaries |
 | `POST /api/mcp` `open_tone_pack_checkout` + `resources/read` | pass | production render returns the frosted `text/html;profile=mcp-app` pack card with pack selection, delivery email, explicit `$5.99` confirmation, hosted-checkout handoff, and an in-card verified download state |
@@ -92,7 +93,7 @@
 
 ## Release state
 
-T008 local state adds Agentic Session Score v1 to the existing verified platform. The checked-in contract now covers 38 MCP tools, 17 resources, and 28 public WebMCP tools, including five `/try` score actions. T009 must supply Vercel build and canonical route/browser proof; the previous live counts remain historical until that deployment.
+The checked-in release adds Agentic Session Score v2 to the existing verified platform. The contract covers 38 MCP tools, 17 resources, and 28 public WebMCP tools, including five `/try` score actions. Production deployment `dpl_DjCSjYzSgqRixGyYf2jsJJFKNwhL` is Ready on `cognistration.com`; canonical REST/MCP smoke tests and the full read-only audit pass. Native browser-registration proof remains an optional skipped check because Playwright is unavailable in this checkout.
 
 ## Challenge handoff
 
