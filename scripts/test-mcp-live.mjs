@@ -69,6 +69,15 @@ async function main() {
   for (const name of ['get_machine_control_contract', 'set_machine_controls', 'adjust_machine_controls', 'set_machine_direction', 'start_machine_preview', 'stop_machine_preview', 'open_machine_fullscreen']) {
     assert(tools.some((tool) => tool.name === name), `${name} is missing`);
   }
+  const machineRenderTool = tools.find((tool) => tool.name === 'open_machine_generator');
+  assert(machineRenderTool?._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine render tool is not bound to the current widget resource');
+  assert(machineRenderTool?._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v3.html', 'machine render tool compatibility template is missing');
+  for (const name of ['set_machine_controls', 'adjust_machine_controls', 'set_machine_direction', 'start_machine_preview', 'stop_machine_preview', 'open_machine_fullscreen']) {
+    const tool = tools.find((candidate) => candidate.name === name);
+    assert(tool?._meta?.ui?.resourceUri === undefined, `${name} still advertises a UI resource and may remount the machine`);
+    assert(tool?._meta?.['openai/outputTemplate'] === undefined, `${name} still advertises a compatibility output template and may remount the machine`);
+    assert(tool?._meta?.ui?.visibility?.join(',') === 'model,app', `${name} does not advertise model/app visibility`);
+  }
 
   const skillsResult = await rpc('skills/list');
   const skills = skillsResult.skills || [];
@@ -260,9 +269,10 @@ async function main() {
   const setMachineData = structured(setMachine);
   assert(setMachineData.controlPatch?.carrierHz === 246, 'machine absolute control patch is missing');
   assert(setMachineData.playbackPreserved === true, 'machine absolute control patch must preserve playback');
-  assert(setMachine._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine control result is not bound to the widget');
+  assert(setMachine._meta?.ui?.resourceUri === undefined, 'machine control result must not ask the host to render a new widget');
+  assert(setMachine._meta?.['openai/outputTemplate'] === undefined, 'machine control result must not carry a compatibility output template');
 
-  const adjustMachine = structured(await rpc('tools/call', {
+  const adjustMachineEnvelope = await rpc('tools/call', {
     name: 'adjust_machine_controls',
     arguments: {
       control: 'rhythm',
@@ -270,37 +280,52 @@ async function main() {
       step: 1,
       currentControls: { targetState: 'gamma', carrierHz: 246, beatHz: 18, volume: 64 }
     }
-  }, 'adjust_machine_controls'));
+  }, 'adjust_machine_controls');
+  const adjustMachine = structured(adjustMachineEnvelope);
   assert(adjustMachine.adjustment?.delta === 1, 'machine relative rhythm adjustment is missing');
   assert(adjustMachine.controls?.beatHz === 19, 'machine relative adjustment did not resolve from current controls');
   assert(adjustMachine.playbackPreserved === true, 'machine relative adjustment must preserve playback');
+  assert(adjustMachineEnvelope._meta?.ui?.resourceUri === undefined, 'machine relative result must not ask the host to render a new widget');
+  assert(adjustMachineEnvelope._meta?.['openai/outputTemplate'] === undefined, 'machine relative result must not carry a compatibility output template');
 
-  const directionMachine = structured(await rpc('tools/call', {
+  const directionMachineEnvelope = await rpc('tools/call', {
     name: 'set_machine_direction',
     arguments: { targetState: 'alpha' }
-  }, 'set_machine_direction'));
+  }, 'set_machine_direction');
+  const directionMachine = structured(directionMachineEnvelope);
   assert(directionMachine.controlPatch?.targetState === 'alpha', 'machine direction patch is missing');
   assert(directionMachine.controlPatch?.beatHz === 10, 'machine direction did not apply its published default rhythm');
+  assert(directionMachineEnvelope._meta?.ui?.resourceUri === undefined, 'machine direction result must not ask the host to render a new widget');
+  assert(directionMachineEnvelope._meta?.['openai/outputTemplate'] === undefined, 'machine direction result must not carry a compatibility output template');
 
-  const startMachine = structured(await rpc('tools/call', {
+  const startMachineEnvelope = await rpc('tools/call', {
     name: 'start_machine_preview',
     arguments: { confirmed: true }
-  }, 'start_machine_preview'));
+  }, 'start_machine_preview');
+  const startMachine = structured(startMachineEnvelope);
   assert(startMachine.status === 'requested', 'machine start should be an explicit request');
   assert(startMachine.audioAction === 'start', 'machine start audio action is missing');
   assert(startMachine.requiresUserGesture === true, 'machine start browser gesture boundary is missing');
   assert(startMachine.audioReady === false, 'machine start must not claim audible playback before browser verification');
   assert(startMachine.audioVerification === 'pending', 'machine start audio verification state is missing');
-  const stopMachine = structured(await rpc('tools/call', {
+  assert(startMachineEnvelope._meta?.ui?.resourceUri === undefined, 'machine start result must not ask the host to render a new widget');
+  assert(startMachineEnvelope._meta?.['openai/outputTemplate'] === undefined, 'machine start result must not carry a compatibility output template');
+  const stopMachineEnvelope = await rpc('tools/call', {
     name: 'stop_machine_preview',
     arguments: {}
-  }, 'stop_machine_preview'));
+  }, 'stop_machine_preview');
+  const stopMachine = structured(stopMachineEnvelope);
   assert(stopMachine.audioAction === 'stop', 'machine stop audio action is missing');
-  const fullscreenMachine = structured(await rpc('tools/call', {
+  assert(stopMachineEnvelope._meta?.ui?.resourceUri === undefined, 'machine stop result must not ask the host to render a new widget');
+  assert(stopMachineEnvelope._meta?.['openai/outputTemplate'] === undefined, 'machine stop result must not carry a compatibility output template');
+  const fullscreenMachineEnvelope = await rpc('tools/call', {
     name: 'open_machine_fullscreen',
     arguments: {}
-  }, 'open_machine_fullscreen'));
+  }, 'open_machine_fullscreen');
+  const fullscreenMachine = structured(fullscreenMachineEnvelope);
   assert(fullscreenMachine.displayAction === 'fullscreen', 'machine fullscreen action is missing');
+  assert(fullscreenMachineEnvelope._meta?.ui?.resourceUri === undefined, 'machine fullscreen result must not ask the host to render a new widget');
+  assert(fullscreenMachineEnvelope._meta?.['openai/outputTemplate'] === undefined, 'machine fullscreen result must not carry a compatibility output template');
 
   const clarifyResult = structured(await rpc('tools/call', {
     name: 'clarify_intention',

@@ -658,6 +658,14 @@ async function callPublicTool(name, args, toolDefinition) {
 
 async function auditTools() {
   const fixtures = localFixtureMap();
+  const machineActionNames = new Set([
+    'set_machine_controls',
+    'adjust_machine_controls',
+    'set_machine_direction',
+    'start_machine_preview',
+    'stop_machine_preview',
+    'open_machine_fullscreen'
+  ]);
   const expectedDenied = new Map([
     ['create_tone_pack_checkout', 'CONFIRMATION_REQUIRED'],
     ['get_tone_pack_delivery', null],
@@ -699,6 +707,18 @@ async function auditTools() {
         assert(payload.sound?.entrainmentModes?.monaural === true && payload.sound?.entrainmentModes?.isochronic === true, 'full-spectrum mode routing did not survive MCP composition.');
         assert(payload.sound?.breathGuide?.enabled === true && payload.sound?.background?.type === 'ocean', 'full-spectrum sound profile did not survive MCP composition.');
         assert(payload.stages?.every((stage) => stage.carrierHz >= 50 && stage.carrierHz <= 2000), 'full-spectrum carrier bounds were not returned.');
+      }
+      if (tool.name === 'open_machine_generator') {
+        assert(tool._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine render tool is not bound to the current widget resource.');
+        assert(tool._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v3.html', 'machine render tool compatibility template is missing.');
+        assert(envelope._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine render result is missing its widget resource.');
+      }
+      if (machineActionNames.has(tool.name)) {
+        assert(tool._meta?.ui?.resourceUri === undefined, `${tool.name} advertises a UI resource and may remount the machine.`);
+        assert(tool._meta?.['openai/outputTemplate'] === undefined, `${tool.name} advertises a compatibility output template and may remount the machine.`);
+        assert(tool._meta?.ui?.visibility?.join(',') === 'model,app', `${tool.name} is not visible to both the model and active app.`);
+        assert(envelope._meta?.ui?.resourceUri === undefined, `${tool.name} result asks the host to render a new widget.`);
+        assert(envelope._meta?.['openai/outputTemplate'] === undefined, `${tool.name} result carries a compatibility output template.`);
       }
       if (envelope._meta?.ui?.resourceUri) assert(envelope._meta.ui.resourceUri === tool._meta?.ui?.resourceUri, `${tool.name} UI metadata is not bound to its published tool resource.`);
       return observed[tool.name];

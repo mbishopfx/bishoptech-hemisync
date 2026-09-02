@@ -89,16 +89,23 @@ use the supported `initialize` handshake.
 | `open_feedback` | `public_read` render | widget submission only | empty object; rating and note never enter MCP |
 
 The `open_machine_generator` render tool links `_meta.ui.resourceUri` to
-`ui://cognistration/machine-generator/v3.html`. The widget renders from the
-concise `structuredContent` snapshot, uses the portable `tools/call` bridge for
-recommendation, browsing, exact control, relative adjustment, direction,
-playback, and display requests, and keeps `window.openai` as a compatibility
-enhancement. `ui/update-model-context` publishes the current controls and
-playback state back to the model. Exact setters and relative adjustments update
-the existing oscillator and gain nodes without pausing playback. Its Aurora
-background is the public `/visuals/aurora-current.html` visual, and its Web
-Audio preview remains off until the listener explicitly confirms playback;
-browser autoplay may still require a visible user gesture.
+`ui://cognistration/machine-generator/v3.html`. It is the only machine tool
+that advertises a UI template. The six machine action tools
+(`set_machine_controls`, `adjust_machine_controls`, `set_machine_direction`,
+`start_machine_preview`, `stop_machine_preview`, and
+`open_machine_fullscreen`) are model/app-visible but template-free. Their
+structured results are delivered to the View that is already mounted, so a
+model-issued tone change does not create a second machine iframe. The widget
+renders from the concise `structuredContent` snapshot, uses the portable
+`tools/call` bridge for recommendation, browsing, exact control, relative
+adjustment, direction, playback, and display requests, and keeps
+`window.openai` as a compatibility enhancement. `ui/update-model-context`
+publishes the current controls and playback state back to the model. Exact
+setters and relative adjustments update the existing oscillator and gain nodes
+without pausing playback. Its Aurora background is the public
+`/visuals/aurora-current.html` visual, and its Web Audio preview remains off
+until the listener explicitly confirms playback; browser autoplay may still
+require a visible user gesture.
 
 The `open_science_guide` render tool links `_meta.ui.resourceUri` to
 `ui://cognistration/science-guide/v2.html`. The widget is a seven-slide,

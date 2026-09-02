@@ -114,7 +114,7 @@ No public MCP tool accepts credentials, payment data, arbitrary SQL, code execut
 - Output limit: bounded JSON; public MCP result payloads are capped
 - Fallback: static approved catalog and deterministic matching
 - Handoff: explain the limitation in the current surface and use the in-platform signup or feedback widget when applicable; only provide a canonical page when the user explicitly asks for navigation, and never submit credentials/payment silently
-- ChatGPT render surface: one versioned MCP Apps resource; repeated widget actions stay mounted and call data tools directly
+- ChatGPT render surface: one versioned MCP Apps resource; only `open_machine_generator` carries its template, while repeated control/playback actions stay mounted and deliver template-free data to the existing View
 - Member generation: default to a five-minute bounded render, require a member bearer token, keep output tenant-scoped, and use a caller idempotency key when available
 - Logging: stable correlation IDs; no intention text or secret/provider payload in public response logs
 
