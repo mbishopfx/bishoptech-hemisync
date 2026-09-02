@@ -1,0 +1,12 @@
+# Generated media and local agent artifacts are not part of the Next.js deploy.
+antigravity_loops/
+output/
+.playwright-cli/
+.claude/
+/.agents/
+/agent/
+docs/goals/
+newhomepage.md
+text_youtube*.json
+research.txt
+skills-lock.json
