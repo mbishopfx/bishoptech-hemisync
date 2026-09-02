@@ -70,8 +70,8 @@ async function main() {
     assert(tools.some((tool) => tool.name === name), `${name} is missing`);
   }
   const machineRenderTool = tools.find((tool) => tool.name === 'open_machine_generator');
-  assert(machineRenderTool?._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine render tool is not bound to the current widget resource');
-  assert(machineRenderTool?._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v3.html', 'machine render tool compatibility template is missing');
+  assert(machineRenderTool?._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v4.html', 'machine render tool is not bound to the current widget resource');
+  assert(machineRenderTool?._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v4.html', 'machine render tool compatibility template is missing');
   for (const name of ['set_machine_controls', 'adjust_machine_controls', 'set_machine_direction', 'start_machine_preview', 'stop_machine_preview', 'open_machine_fullscreen']) {
     const tool = tools.find((candidate) => candidate.name === name);
     assert(tool?._meta?.ui?.resourceUri === undefined, `${name} still advertises a UI resource and may remount the machine`);
@@ -91,13 +91,14 @@ async function main() {
   const interaction = JSON.parse(interactionText);
   assert(interaction.safetyRouting?.route === '/health-warning', 'safety routing resource is missing');
 
-  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v3.html' }, 'ui://cognistration/machine-generator/v3.html');
+  const machineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v4.html' }, 'ui://cognistration/machine-generator/v4.html');
   const machineWidget = machineWidgetResult.contents?.[0];
   assert(machineWidget?.mimeType === 'text/html;profile=mcp-app', 'machine widget MIME type is unexpected');
   assert(/class="frequency-stage"/.test(machineWidget.text || ''), 'machine widget frequency-wave stage is missing');
   assert(/getEntrainmentPath/.test(machineWidget.text || ''), 'machine widget entrainment path renderer is missing');
   assert(/ui\/initialize/.test(machineWidget.text || ''), 'machine widget MCP Apps initialize handshake is missing');
   assert(/ui\/notifications\/initialized/.test(machineWidget.text || ''), 'machine widget initialized notification is missing');
+  assert(/ui\/notifications\/size-changed/.test(machineWidget.text || ''), 'machine widget size notification is missing');
   assert(/ui\/update-model-context/.test(machineWidget.text || ''), 'machine widget model context bridge is missing');
   assert(/openai:set_globals/.test(machineWidget.text || ''), 'machine widget ChatGPT globals fallback is missing');
   assert(/openai\/widget-output/.test(machineWidget.text || ''), 'machine widget typed result fallback is missing');
@@ -106,6 +107,8 @@ async function main() {
   assert(/audioReady/.test(machineWidget.text || ''), 'machine widget audio readiness state is missing');
   assert(!/repeating-linear-gradient/.test(machineWidget.text || ''), 'machine widget still contains the old signal-bar visual');
 
+  const previousMachineWidgetResultV3 = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v3.html' }, 'ui://cognistration/machine-generator/v3.html');
+  assert(previousMachineWidgetResultV3.contents?.[0]?.uri === 'ui://cognistration/machine-generator/v3.html', 'previous machine v3 resource alias was not preserved');
   const previousMachineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v2.html' }, 'ui://cognistration/machine-generator/v2.html');
   assert(previousMachineWidgetResult.contents?.[0]?.uri === 'ui://cognistration/machine-generator/v2.html', 'previous machine resource alias was not preserved');
   const legacyMachineWidgetResult = await rpc('resources/read', { uri: 'ui://cognistration/machine-generator/v1.html' }, 'ui://cognistration/machine-generator/v1.html');

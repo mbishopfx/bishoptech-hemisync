@@ -93,7 +93,7 @@ The `/try` cockpit adds these score-specific tools to the 23 homepage tools:
 
 ### ChatGPT app surface
 
-- Resource: `ui://cognistration/machine-generator/v3.html`
+- Resource: `ui://cognistration/machine-generator/v4.html`
 - Resource: `ui://cognistration/science-guide/v2.html`
 - Resource: `ui://cognistration/ios-app/v1.html`
 - Resource: `ui://cognistration/phone-download/v1.html`

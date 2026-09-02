@@ -590,6 +590,7 @@ async function auditResources() {
   }
 
   const compatibilityUris = [
+    'ui://cognistration/machine-generator/v3.html',
     'ui://cognistration/machine-generator/v2.html',
     'ui://cognistration/machine-generator/v1.html',
     'ui://cognistration/science-guide/v1.html',
@@ -709,9 +710,9 @@ async function auditTools() {
         assert(payload.stages?.every((stage) => stage.carrierHz >= 50 && stage.carrierHz <= 2000), 'full-spectrum carrier bounds were not returned.');
       }
       if (tool.name === 'open_machine_generator') {
-        assert(tool._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine render tool is not bound to the current widget resource.');
-        assert(tool._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v3.html', 'machine render tool compatibility template is missing.');
-        assert(envelope._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v3.html', 'machine render result is missing its widget resource.');
+        assert(tool._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v4.html', 'machine render tool is not bound to the current widget resource.');
+        assert(tool._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v4.html', 'machine render tool compatibility template is missing.');
+        assert(envelope._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v4.html', 'machine render result is missing its widget resource.');
       }
       if (machineActionNames.has(tool.name)) {
         assert(tool._meta?.ui?.resourceUri === undefined, `${tool.name} advertises a UI resource and may remount the machine.`);
@@ -857,8 +858,9 @@ async function auditRestAndDocumentation() {
     const record = await http('/agent-instructions.md', { headers: { accept: 'text/markdown' } });
     assert(record.response.ok && /text\/markdown/.test(record.response.headers.get('content-type') || ''), 'agent instructions are not served as Markdown.');
     for (const tool of MCP_TOOLS) assert(record.text.includes(tool.name), `agent instructions omit ${tool.name}.`);
-    assert(record.text.includes('ui://cognistration/machine-generator/v3.html'), 'agent instructions omit the current machine widget URI.');
+    assert(record.text.includes('ui://cognistration/machine-generator/v4.html'), 'agent instructions omit the current machine widget URI.');
     assert(!record.text.includes('ui://cognistration/machine-generator/v2.html'), 'agent instructions publish a retired machine widget URI.');
+    assert(!record.text.includes('ui://cognistration/machine-generator/v3.html'), 'agent instructions publish a retired machine widget URI.');
     assert(/(?:credentials are (?:entered and )?submitted (?:by the user )?directly|submits credentials directly)/i.test(record.text), 'agent instructions omit the user-controlled credential boundary.');
     assertNoSecretLeak(record.text, '/agent-instructions.md');
     return { bytes: Buffer.byteLength(record.text), toolsMentioned: MCP_TOOLS.length };

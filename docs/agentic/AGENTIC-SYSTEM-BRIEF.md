@@ -50,7 +50,7 @@ Priority audiences:
 | Account and entitlement state | Supabase Auth and `profiles` | no | Existing authenticated routes remain authoritative |
 | Private saved tones and sessions | Supabase tables with existing ownership policies | no | Never exposed by public MCP |
 | Audio preview | Browser Web Audio in `ToneMachineDemo` | local | No account record; two-minute visible preview limit |
-| ChatGPT machine UI | `open_machine_generator` + `ui://cognistration/machine-generator/v3.html` | public render | The widget owns ephemeral controls and starts local audio only after an explicit click |
+| ChatGPT machine UI | `open_machine_generator` + `ui://cognistration/machine-generator/v4.html` | public render | The widget owns ephemeral controls and starts local audio only after an explicit click |
 | iPhone app offer | `get_ios_app_offer` + `cognistration://ios-app` | public | App Store handoff only; no payment is processed by the agent |
 | Current price | Existing pricing/checkout source | public | `$20` one-time membership; do not invent a monthly offer |
 
