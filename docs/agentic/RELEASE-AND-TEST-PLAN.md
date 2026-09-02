@@ -63,11 +63,11 @@
 | Route/operation | Status | Post-condition |
 |---|---:|---|
 | `https://cognistration.com/` | pass | homepage is 200, shows the human platform story, contains one hero Aurora background, has the available-now iPhone offer with the canonical App Store CTA and on-device pricing explanation, uses the refined hero/chat presentation, and exposes the live fan carousel |
-| `https://cognistration.com/api/capabilities` | pass | production manifest returns 23 homepage WebMCP tools, 11 authenticated member tools, 37 public MCP tools, 17 MCP resources, and the science-guide, phone-download, iPhone-app, and tone-pack commerce capabilities |
-| `https://cognistration.com/openapi.json` | pass | generated REST compatibility document mirrors the approved 37-tool public registry, includes `/api/machine-payments/tone-pack`, and exposes no write credentials |
+| `https://cognistration.com/api/capabilities` | pending T009 | release must return 28 public WebMCP tools, 11 authenticated member tools, 38 public MCP tools, 17 MCP resources, and the Agentic Session Score REST/MCP fallback |
+| `https://cognistration.com/openapi.json` | pending T009 | generated REST compatibility document must mirror the approved 38-tool public registry, include `/api/agent/session-score` and `/api/machine-payments/tone-pack`, and expose no write credentials |
 | `https://cognistration.com/agent-instructions.md` | pass | public instructions include the public browser bridge, pack preview confirmation, $5.99 tone-pack checkout/MPP delivery flow, policy reads, and authenticated member workflow |
-| `https://cognistration.com/api/mcp` | pass | live discovery and tool/resource checks return 37 public tools, 17 resources, the skills extension, the science guide, phone-download, iPhone-app, and tone-pack checkout resources |
-| `https://cognistration.com/try` connection helper | pass | production browser flow exposes the copyable remote-app setup prompt, frosted step cards, current 37-tool count, and expanded Plugins-tab guidance; no URL is sent to a Git installer |
+| `https://cognistration.com/api/mcp` | pending T009 | live discovery and `compose_session_score` must return 38 public tools and a valid no-side-effect score whose stages sum exactly |
+| `https://cognistration.com/try` connection helper | pending T009 | production browser flow must expose the copyable remote-app setup prompt, frosted step cards, current 38-tool count, visible Agentic Session Score, and expanded Plugins-tab guidance; no URL is sent to a Git installer |
 | `POST /api/mcp` `open_machine_generator` + `resources/read` | pass | production render returns Gamma/246 Hz with `isPlaying: false`; the widget resource is `text/html;profile=mcp-app`, loads the canonical Aurora visual, and advertises exact connect/resource/frame domains |
 | `POST /api/mcp` `open_science_guide` + `resources/read` | pass | production render returns a seven-slide `text/html;profile=mcp-app` guide with a self-contained animated ocean surface, a quiet FFT visual reference link, print/save-to-PDF controls, a false host-border preference, and false audio/diary/medical boundaries |
 | `POST /api/mcp` `open_tone_pack_checkout` + `resources/read` | pass | production render returns the frosted `text/html;profile=mcp-app` pack card with pack selection, delivery email, explicit `$5.99` confirmation, hosted-checkout handoff, and an in-card verified download state |
@@ -92,7 +92,7 @@
 
 ## Release state
 
-Current state after the MCP Apps machine, frequency-wave visual, iPhone offer, ChatGPT connection helper, homepage presentation, five-skill catalog, in-platform account capture, in-platform done-state feedback, frosted cockpit polish, production science guide, phone-download handoff, and tone-pack commerce card: `production-public-authenticated-member-native-webmcp-mcpapps-ios-offer-chatgpt-setup-helper-homepage-polish-frequency-wave-science-guide-canvas-phone-download-ios-offer-tone-pack-checkout-mpp-verified`. The checked-in contract now covers 37 MCP tools, 17 resources, and 23 homepage WebMCP tools. The next release proof is the full JSON audit against the canonical alias after deploying the current contract changes; no real payment is initiated by that audit.
+T008 local state adds Agentic Session Score v1 to the existing verified platform. The checked-in contract now covers 38 MCP tools, 17 resources, and 28 public WebMCP tools, including five `/try` score actions. T009 must supply Vercel build and canonical route/browser proof; the previous live counts remain historical until that deployment.
 
 ## Challenge handoff
 

@@ -94,6 +94,14 @@ import { publicOpenApiDocument } from '../lib/agentic/openapi-contract.js';
 import { calibrateTone, clarifyIntention } from '../lib/agentic/intent-capability.js';
 import { buildSessionRecipe, SessionRecipeInputSchema } from '../lib/agentic/recipe-capability.js';
 import { safetyCategoryForIntention, safetyRedirectForIntention } from '../lib/agentic/safety-capability.js';
+import {
+  SESSION_SCORE_PREVIEW_CAP_SEC,
+  SessionScoreComposeInputSchema,
+  SessionScoreSchema,
+  composeSessionScore,
+  refineSessionScore,
+  sessionScoreTechnicalExport
+} from '../lib/agentic/session-score-capability.js';
 import { buildScienceGuidePdf, normalizeScienceGuidePdfInput, scienceGuidePdfFilename } from '../lib/agentic/science-pdf.js';
 import { autonomousPaymentOptions } from '../lib/commerce/ap2.mjs';
 import { MACHINE_PAYMENT_AMOUNT, MACHINE_PAYMENT_TONE_SCOPE_PREFIX, machinePaymentOptions } from '../lib/commerce/machine-payments.mjs';
@@ -113,6 +121,7 @@ const MCP_ROUTE_SOURCE = await readFile(new URL('../app/api/mcp/route.js', impor
 const NEXT_CONFIG_SOURCE = await readFile(new URL('../next.config.js', import.meta.url), 'utf8');
 const SCIENCE_GUIDE_PDF_ROUTE = await readFile(new URL('../app/api/science-guide/pdf/route.js', import.meta.url), 'utf8');
 const SCIENCE_GUIDE_LESSON_SOURCE = await readFile(new URL('../components/science/ToneScienceLesson.jsx', import.meta.url), 'utf8');
+const SESSION_SCORE_CONDUCTOR_SOURCE = await readFile(new URL('../components/machine/SessionScoreConductor.jsx', import.meta.url), 'utf8');
 
 test('the public tone catalog is bounded and contains only stable public fields', () => {
   assert.ok(PUBLIC_TONE_CATALOG.length >= 10);
@@ -174,6 +183,61 @@ test('public session orchestration stays bounded, useful, and free of diary stor
   assert.throws(() => SessionPlanInputSchema.parse({ intention: 'valid', durationMin: 4 }));
   assert.throws(() => ToneComparisonInputSchema.parse({ intention: 'valid', limit: 5 }));
   assert.doesNotThrow(() => SessionCueInputSchema.parse({}));
+});
+
+test('Agentic Session Score composes and validates truthful bounded stages', () => {
+  const result = composeSessionScore({ intention: 'private exact diary wording for a focused writing block', durationSec: 601 });
+  assert.equal(result.status, 'completed');
+  assert.match(result.correlationId, /^[0-9a-f-]{36}$/i);
+  assert.equal(result.durationSec, 601);
+  assert.equal(result.stages.length, 3);
+  assert.equal(result.stages.reduce((sum, stage) => sum + stage.durationSec, 0), 601);
+  assert.ok(result.stages.every((stage) => stage.carrierHz >= 100 && stage.carrierHz <= 400));
+  assert.ok(result.stages.every((stage) => stage.carrierBehavior === 'constant-within-stage'));
+  assert.ok(result.stages.some((stage) => stage.beatBehavior === 'linear-within-stage'));
+  assert.equal(result.preview.maxDurationSec, SESSION_SCORE_PREVIEW_CAP_SEC);
+  assert.equal(result.boundaries.persisted, false);
+  assert.equal(result.boundaries.rendered, false);
+  assert.doesNotMatch(JSON.stringify(result), /private exact diary wording/i);
+
+  const score = { durationSec: result.durationSec, stages: result.stages.map(({ carrierBehavior, beatBehavior, ...stage }) => stage) };
+  assert.doesNotThrow(() => SessionScoreSchema.parse(score));
+  assert.throws(() => SessionScoreSchema.parse({ ...score, durationSec: 600 }));
+  assert.throws(() => SessionScoreSchema.parse({ ...score, stages: score.stages.map((stage, index) => index ? stage : { ...stage, carrierHz: 401 }) }));
+  assert.throws(() => SessionScoreSchema.parse({ ...score, stages: score.stages.map((stage, index) => index ? stage : { ...stage, beatHz: { from: 7.25, to: 8 } }) }));
+  assert.throws(() => SessionScoreComposeInputSchema.parse({ durationSec: 59 }));
+});
+
+test('Agentic Session Score refinement and export remain technical-only and ephemeral', () => {
+  const composed = composeSessionScore({ direction: 'reflect', durationSec: 600 });
+  const score = { durationSec: composed.durationSec, stages: composed.stages.map(({ carrierBehavior, beatBehavior, ...stage }) => stage) };
+  const refined = refineSessionScore({ score, stageId: 'stage-2', patch: { carrierHz: 222, beatFromHz: 5.5, beatToHz: 7, volume: 61 } });
+  const stage = refined.stages.find((candidate) => candidate.id === 'stage-2');
+  assert.equal(stage.carrierHz, 222);
+  assert.deepEqual(stage.beatHz, { from: 5.5, to: 7 });
+  assert.equal(stage.durationSec, score.stages[1].durationSec);
+  assert.throws(() => refineSessionScore({ score, stageId: 'missing', patch: { volume: 40 } }));
+  const exported = sessionScoreTechnicalExport(score);
+  assert.equal(exported.format, 'cognistration-session-score-v1');
+  assert.equal(exported.persisted, false);
+  assert.equal(exported.rendered, false);
+  assert.equal(refined.boundaries.audioStarted, false);
+});
+
+test('Agentic Session Score routes safety before composition and declares all visible agent actions', () => {
+  const redirect = composeSessionScore({ intention: 'treat my anxiety with a frequency', durationSec: 600 });
+  assert.equal(redirect.status, 'safety_redirect');
+  assert.equal(redirect.boundaries.audioStarted, false);
+  assert.equal(redirect.boundaries.recordSaved, false);
+  for (const name of ['cognistration_compose_session_score', 'cognistration_refine_session_score_stage', 'cognistration_undo_session_score', 'cognistration_select_session_score_stage', 'cognistration_preview_session_score']) {
+    assert.ok(WEBMCP_TOOL_DEFINITIONS.some((tool) => tool.name === name), `${name} should be declared`);
+    assert.match(SESSION_SCORE_CONDUCTOR_SOURCE, new RegExp(name));
+  }
+  assert.match(SESSION_SCORE_CONDUCTOR_SOURCE, /confirmed !== true/);
+  assert.match(SESSION_SCORE_CONDUCTOR_SOURCE, /context\.state !== 'running'/);
+  assert.match(SESSION_SCORE_CONDUCTOR_SOURCE, /linearRampToValueAtTime/);
+  assert.ok(MCP_TOOLS.some((tool) => tool.name === 'compose_session_score' && tool.annotations.readOnlyHint === true));
+  assert.match(MCP_ROUTE_SOURCE, /composeSessionScore\(args \|\| \{\}\)/);
 });
 
 test('machine generator render state stays bounded and seeds direct user controls', async () => {
@@ -745,6 +809,7 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(MCP_PROTOCOL_VERSION, '2026-07-28');
   assert.deepEqual(MCP_TOOLS.map((tool) => tool.name), [
     'get_agentic_capabilities',
+    'compose_session_score',
     'search_public_tones',
     'get_public_tone',
     'recommend_tone',
@@ -996,6 +1061,8 @@ test('OpenAPI fallback is derived from the same public registry', () => {
   assert.ok(document.paths['/api/agent/session-plan'].post);
   assert.ok(document.paths['/api/agent/session-cue'].post);
   assert.ok(document.paths['/api/agent/session-recipe'].post);
+  assert.ok(document.paths['/api/agent/session-score'].post);
+  assert.ok(document.components.schemas.SessionScore);
   assert.ok(document.components.schemas.SessionRecipe);
   assert.ok(document.components.schemas.SafetyDetails);
   assert.deepEqual(document.components.schemas.ToneRecommendation.properties.track.anyOf[1], { type: 'null' });
@@ -1037,7 +1104,8 @@ test('the challenge cockpit is discoverable and keeps the human preview boundary
   assert.match(cockpit, /data-testid="try-step-payment"/);
   assert.match(cockpit, /No charge was submitted by this page/);
   assert.match(cockpit, /Start preview is still a human click/);
-  assert.match(cockpit, /Open & understand/);
+  assert.match(cockpit, /Co-compose a score/);
+  assert.match(cockpit, /SessionScoreConductor/);
   assert.match(cockpit, /glass-step-number/);
   assert.match(cockpit, /glass-action/);
   assert.match(machine, /glass-panel/);

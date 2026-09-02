@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Check, CircleNotch, ShieldCheck, Target } from '@phosphor-icons/react';
 import { ToneMachineDemo } from '@/components/machine/ToneMachineDemo';
+import { SessionScoreConductor } from '@/components/machine/SessionScoreConductor';
 
 const DEFAULT_INTENTION = 'I need a focused writing block';
 
@@ -11,8 +12,8 @@ const stepCopy = [
   ['01', 'Name the moment', 'Give the public agent a short intention.'],
   ['02', 'Compare directions', 'See the practical tradeoffs before choosing.'],
   ['03', 'Stage the ritual', 'Build arrive, practice, and close.'],
-  ['04', 'Open & understand', 'Inspect the machine, then click through the signal guide.'],
-  ['05', 'Preview with consent', 'The browser machine stays quiet until you start it.']
+  ['04', 'Co-compose a score', 'Inspect, refine, select, undo, and export the technical timeline.'],
+  ['05', 'Preview with consent', 'The browser stays quiet until you explicitly confirm it.']
 ];
 
 function errorMessage(data, fallback) {
@@ -272,10 +273,12 @@ export function TryCockpit() {
         </div>
       </div>
 
+      {!safetyRedirect && <SessionScoreConductor intention={intention} />}
+
       <section data-testid="try-step-machine" className="glass-panel rounded-[2rem] border border-[#b6ddcc]/10 p-3 sm:p-5 lg:p-7">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4 px-2 sm:px-3">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">04 · Machine widget</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#b6ddcc]/70">05 · Machine widget</p>
             <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">Make the direction visible</h2>
           </div>
           <p className="max-w-md text-xs leading-5 text-white/40">{selectedTone ? `${selectedTone.name} is staged. Start preview is still a human click.` : 'Choose a direction above to seed the machine.'}</p>

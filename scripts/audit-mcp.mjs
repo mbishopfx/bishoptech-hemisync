@@ -378,6 +378,7 @@ function localFixtureMap() {
   const fakeKey = 'audit_fake_workshop_key_000000000000';
   return {
     get_agentic_capabilities: {},
+    compose_session_score: { direction: 'focus', durationSec: 600 },
     search_public_tones: { query: 'focus', state: 'theta', limit: 3 },
     get_public_tone: { id: toneId },
     recommend_tone: { intention: 'a calm reset before writing' },
@@ -425,9 +426,9 @@ async function auditLocalContracts() {
     requireUnique(WEBMCP_TOOL_DEFINITIONS, 'public WebMCP tools');
     requireUnique(MEMBER_WEBMCP_TOOL_DEFINITIONS, 'member WebMCP tools');
     requireUnique(UCP_MCP_TOOLS, 'UCP tools');
-    assert(MCP_TOOLS.length === 37, `local MCP tool count is ${MCP_TOOLS.length}, expected 37.`);
+    assert(MCP_TOOLS.length === 38, `local MCP tool count is ${MCP_TOOLS.length}, expected 38.`);
     assert(MCP_RESOURCES.length === 17, `local MCP resource count is ${MCP_RESOURCES.length}, expected 17.`);
-    assert(WEBMCP_TOOL_DEFINITIONS.length === 23, `local public WebMCP tool count is ${WEBMCP_TOOL_DEFINITIONS.length}, expected 23.`);
+    assert(WEBMCP_TOOL_DEFINITIONS.length === 28, `local public WebMCP tool count is ${WEBMCP_TOOL_DEFINITIONS.length}, expected 28.`);
     assert(MEMBER_WEBMCP_TOOL_DEFINITIONS.length === 11, `local member WebMCP tool count is ${MEMBER_WEBMCP_TOOL_DEFINITIONS.length}, expected 11.`);
     assert(MCP_PROTOCOL_VERSION === '2026-07-28', 'current MCP protocol version drifted.');
     assert(MCP_SUPPORTED_LEGACY_VERSIONS.includes(MCP_LEGACY_PROTOCOL_VERSION), 'legacy MCP version is not in the supported list.');
@@ -809,7 +810,7 @@ async function auditRestAndDocumentation() {
     const record = await restJson('/openapi.json');
     assert(record.response.ok && record.json.openapi === '3.1.0', 'OpenAPI document is missing or not 3.1.0.');
     assert(stable(record.json['x-cognistration']?.publicTools?.map((tool) => tool.name)) === stable(MCP_TOOLS.map((tool) => tool.name)), 'OpenAPI public tool registry drifted.');
-    for (const path of ['/api/agent', '/api/agent/intent-guidance', '/api/agent/tone-calibrate', '/api/agent/tone-compare', '/api/agent/session-plan', '/api/agent/session-cue', '/api/agent/session-recipe', '/api/packs', '/api/agent/policy', '/api/agent/account', '/api/agent/commerce/tone-pack-checkout', '/api/agent/commerce/tone-pack-delivery', '/api/machine-payments/tone-pack', '/api/ucp/checkout-sessions', '/api/mcp']) {
+    for (const path of ['/api/agent', '/api/agent/intent-guidance', '/api/agent/tone-calibrate', '/api/agent/tone-compare', '/api/agent/session-plan', '/api/agent/session-cue', '/api/agent/session-recipe', '/api/agent/session-score', '/api/packs', '/api/agent/policy', '/api/agent/account', '/api/agent/commerce/tone-pack-checkout', '/api/agent/commerce/tone-pack-delivery', '/api/machine-payments/tone-pack', '/api/ucp/checkout-sessions', '/api/mcp']) {
       assert(record.json.paths?.[path], `OpenAPI is missing ${path}.`);
     }
     const serialized = JSON.stringify(record.json);
@@ -894,6 +895,7 @@ async function auditRestAndDocumentation() {
       { path: '/api/agent/session-plan', record: await restJson('/api/agent/session-plan', { method: 'POST', headers: { 'content-type': 'application/json', Origin: siteOrigin }, body: JSON.stringify({ intention: 'a calm reset before writing', durationMin: 20 }) }), check: (json) => json.ok && json.plan },
       { path: '/api/agent/session-cue', record: await restJson('/api/agent/session-cue', { method: 'POST', headers: { 'content-type': 'application/json', Origin: siteOrigin }, body: JSON.stringify({ intention: 'a calm reset before writing', mode: 'reflect' }) }), check: (json) => json.ok && json.cue },
       { path: '/api/agent/session-recipe', record: await restJson('/api/agent/session-recipe', { method: 'POST', headers: { 'content-type': 'application/json', Origin: siteOrigin }, body: JSON.stringify({ targetState: 'theta', carrierHz: 200, beatHz: 6, volume: 72, durationSec: 120, intentionLabel: 'reflect' }) }), check: (json) => json.ok && json.privacy?.diaryContentIncluded === false },
+      { path: '/api/agent/session-score', record: await restJson('/api/agent/session-score', { method: 'POST', headers: { 'content-type': 'application/json', Origin: siteOrigin }, body: JSON.stringify({ direction: 'focus', durationSec: 600 }) }), check: (json) => json.ok && json.score?.status === 'completed' && json.score?.boundaries?.persisted === false && json.score?.boundaries?.rendered === false && json.score?.stages?.reduce((sum, stage) => sum + stage.durationSec, 0) === 600 },
       { path: '/api/agent', record: await restJson('/api/agent', { method: 'POST', headers: { 'content-type': 'application/json', Origin: siteOrigin }, body: JSON.stringify({ intention: 'a calm reset before writing' }) }), check: (json) => json.ok && json.track?.id && ['delta', 'theta', 'alpha', 'beta', 'gamma'].includes(json.track?.state) }
     ];
     for (const item of cases) {
@@ -1054,17 +1056,17 @@ async function auditBrowser() {
           }
         });
       });
-      await page.goto(siteOrigin, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+      await page.goto(new URL('/try', siteOrigin).toString(), { waitUntil: 'domcontentloaded', timeout: timeoutMs });
       await page.waitForFunction((expected) => window.__cognistrationAuditWebMcpTools?.length === expected, WEBMCP_TOOL_DEFINITIONS.length, { timeout: timeoutMs });
 
       const snapshot = await page.evaluate(() => ({
         names: window.__cognistrationAuditWebMcpTools.map((tool) => tool.name),
         schemas: window.__cognistrationAuditWebMcpTools.map((tool) => tool.inputSchema),
-        hasHomepage: document.body.innerText.includes('A quieter lane for a noisy world.') || document.body.innerText.includes('A clearer way to enter the next moment.')
+        hasCockpit: document.body.innerText.includes('Agentic Session Score')
       }));
-      assert(stable(snapshot.names) === stable(WEBMCP_TOOL_DEFINITIONS.map((tool) => tool.name)), 'homepage WebMCP names differ from the public contract.');
-      assert(snapshot.hasHomepage, 'homepage did not render during the WebMCP check.');
-      for (const schema of snapshot.schemas) assert(schema.additionalProperties === false, 'homepage WebMCP published a non-strict input schema.');
+      assert(stable(snapshot.names) === stable(WEBMCP_TOOL_DEFINITIONS.map((tool) => tool.name)), '/try WebMCP names differ from the public contract.');
+      assert(snapshot.hasCockpit, '/try score cockpit did not render during the WebMCP check.');
+      for (const schema of snapshot.schemas) assert(schema.additionalProperties === false, '/try WebMCP published a non-strict input schema.');
 
       const execute = async (name, input) => page.evaluate(async ({ toolName, toolInput }) => {
         const tool = window.__cognistrationAuditWebMcpTools.find((candidate) => candidate.name === toolName);
@@ -1076,11 +1078,21 @@ async function auditBrowser() {
       const stateAfter = await execute('cognistration_get_session_state', {});
       const confirmation = await execute('cognistration_begin_preview', { confirmed: false });
       const guide = await execute('cognistration_open_science_guide', { targetState: 'gamma', carrierHz: 246, beatHz: 6, volume: 64 });
+      const composed = await execute('cognistration_compose_session_score', { direction: 'focus', durationSec: 600 });
+      const selected = await execute('cognistration_select_session_score_stage', { stageId: 'stage-2' });
+      const refined = await execute('cognistration_refine_session_score_stage', { stageId: 'stage-2', carrierHz: 222, beatFromHz: 10, beatToHz: 14, volume: 61 });
+      const undone = await execute('cognistration_undo_session_score', { steps: 1 });
+      const scoreConfirmation = await execute('cognistration_preview_session_score', { confirmed: false, stageId: 'stage-2' });
       assert(stateBefore?.state || stateBefore?.status === 'completed', 'WebMCP state read returned no state.');
       assert(exact?.status === 'completed' && stateAfter?.state?.carrierHz === 246, 'WebMCP exact controls did not update the visible state.');
       assert(confirmation?.status === 'needs_input' && confirmation.error?.code === 'CONFIRMATION_REQUIRED', 'WebMCP audio confirmation boundary failed.');
       assert(guide?.status === 'completed', 'WebMCP science guide action failed.');
-      return { registered: snapshot.names.length, changedCarrier: stateAfter.state.carrierHz, confirmation: confirmation.error.code, guide: guide.status };
+      assert(composed?.status === 'completed' && composed.stages?.length === 3, 'WebMCP score composition failed.');
+      assert(selected?.selectedStageId === 'stage-2', 'WebMCP score selection failed.');
+      assert(refined?.stages?.find((stage) => stage.id === 'stage-2')?.carrierHz === 222, 'WebMCP score refinement failed.');
+      assert(undone?.stages?.find((stage) => stage.id === 'stage-2')?.carrierHz !== 222, 'WebMCP score undo failed.');
+      assert(scoreConfirmation?.status === 'needs_input' && scoreConfirmation.error?.code === 'CONFIRMATION_REQUIRED', 'WebMCP score confirmation boundary failed.');
+      return { registered: snapshot.names.length, changedCarrier: stateAfter.state.carrierHz, confirmation: confirmation.error.code, scoreConfirmation: scoreConfirmation.error.code, guide: guide.status };
     });
   } finally {
     if (browser) await browser.close();

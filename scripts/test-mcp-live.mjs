@@ -57,6 +57,7 @@ async function main() {
   const tools = toolsResult.tools || [];
   assert(tools.length >= 20, `expected the public MCP catalog, received ${tools.length} tools`);
   assert(tools.some((tool) => tool.name === 'prepare_session_recipe'), 'prepare_session_recipe is missing');
+  assert(tools.some((tool) => tool.name === 'compose_session_score'), 'compose_session_score is missing');
   assert(tools.some((tool) => tool.name === 'get_machine_payment_options'), 'get_machine_payment_options is missing');
   assert(tools.some((tool) => tool.name === 'get_tone_pack_payment_options'), 'get_tone_pack_payment_options is missing');
   assert(tools.some((tool) => tool.name === 'open_science_guide'), 'open_science_guide is missing');
@@ -314,6 +315,15 @@ async function main() {
   assert(recipeResult.privacy?.diaryContentIncluded === false, 'recipe privacy boundary is missing');
   assert(recipeResult.recipe?.recipeVersion === 'cognistration-session-recipe-v1', 'recipe version is unexpected');
 
+  const scoreResult = structured(await rpc('tools/call', {
+    name: 'compose_session_score',
+    arguments: { direction: 'focus', durationSec: 600 }
+  }, 'compose_session_score'));
+  assert(scoreResult.status === 'completed', 'score composition did not complete');
+  assert(scoreResult.stages?.length === 3, 'score composition did not return the expected stages');
+  assert(scoreResult.stages.reduce((sum, stage) => sum + stage.durationSec, 0) === 600, 'score stage durations do not sum exactly');
+  assert(scoreResult.boundaries?.persisted === false && scoreResult.boundaries?.rendered === false, 'score public authority boundary is missing');
+
   const paymentResult = structured(await rpc('tools/call', {
     name: 'get_machine_payment_options',
     arguments: {}
@@ -334,7 +344,8 @@ async function main() {
   const tryText = await tryResponse.text();
   const normalizedTryText = tryText.replace(/<!-- -->/g, '');
   assert(tryResponse.ok, `/try returned HTTP ${tryResponse.status}`);
-  assert(/37 public MCP tools/.test(normalizedTryText), '/try does not show the current MCP tool count');
+  assert(/38 public MCP tools/.test(normalizedTryText), '/try does not show the current MCP tool count');
+  assert(/Agentic Session Score/.test(normalizedTryText), '/try does not render the score conductor');
   assert(!/30 public MCP tools/.test(normalizedTryText), '/try still shows the retired MCP tool count');
   assert(!/29 public MCP tools/.test(normalizedTryText), '/try still shows the retired MCP tool count');
   assert(!/27 public MCP tools/.test(tryText), '/try contains the retired MCP tool count');

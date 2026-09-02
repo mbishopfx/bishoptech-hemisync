@@ -977,7 +977,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     }
 
     const controller = new AbortController();
-    const nativeTools = WEBMCP_TOOL_DEFINITIONS.map((definition) => nativeWebMcpTool(
+    const nativeTools = WEBMCP_TOOL_DEFINITIONS.filter((definition) => typeof toolHandlersRef.current[definition.name] === 'function').map((definition) => nativeWebMcpTool(
       definition,
       (input, context) => toolHandlersRef.current[definition.name]?.(input, context)
     ));

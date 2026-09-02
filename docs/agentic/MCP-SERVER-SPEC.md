@@ -6,7 +6,7 @@
 - Transport: Streamable HTTP JSON-RPC over HTTP POST; dual-era public adapter
 - Current discovery protocol: `2026-07-28` `server/discover`
 - Legacy initialize compatibility: `2025-11-25`, `2025-06-18`, `2025-03-26`
-- Server name/version: `cognistration-agentic-platform` / `0.13.0`
+- Server name/version: `cognistration-agentic-platform` / `0.14.0`
 - Manifest: `https://cognistration.com/api/capabilities`
 - REST/OpenAPI fallback: `https://cognistration.com/openapi.json`
 - Human/agent instructions: `https://cognistration.com/agent-instructions.md`
@@ -30,6 +30,11 @@ use the supported `initialize` handshake.
 | Tools | bounded tone/pack search, lookup, deterministic recommendation, policy/account reads, machine rendering, checkout preparation, and payment discovery | arbitrary SQL, code execution, file access, unrestricted web search |
 | Visitor writes | first-party signup/feedback widget submission and server-verified hosted/MPP commerce flows only after explicit user action or provider authorization | credentials, payment credentials, or feedback in MCP arguments; arbitrary email/library writes |
 | Browser WebMCP | visible machine controls and explicit local preview | hidden navigation side effects, silent audio, silent credential/payment submission |
+| Agentic Session Score | visible browser-local compose/refine/undo/select/export and confirmed stage preview; read-only remote MCP composition | public persistence/rendering, arbitrary assets, raw intention echo, unconfirmed or unverified audio |
+
+### Agentic Session Score v1
+
+`compose_session_score` accepts either a complete strict score or a bounded direction/intention and duration. Scores contain 1–6 stages totaling 60–3600 seconds exactly; every stage is at least 15 seconds, carrier is an integer 100–400 Hz and constant inside the stage, beat start/end are 0.5–40 Hz in 0.5 Hz increments with a linear browser preview, and volume is 0–100. Remote MCP and REST only return technical output. `/try` owns ephemeral visible revisions and retains the 120-second preview cap.
 | Authenticated dashboard bridge | private planning, owned session/render records, and render status | public access, cross-member reads, silent rendering |
 
 ## Resource registry

@@ -1,5 +1,9 @@
 # Cognistration WebMCP demo script
 
+## Standout opening: Agentic Session Score
+
+Open `/try` and ask: “Compose a 10-minute focus score.” Show the three proportional timeline stages and say that carrier is constant per stage while the beat moves linearly. Ask the agent to select stage 2, refine it to 222 Hz with a 10→14 Hz beat, then undo. Export the technical JSON to show that the listener’s free-form intention is absent. Call preview once without confirmation to show `CONFIRMATION_REQUIRED`, then use the visible Confirm & preview stage control and show `audioReady=true`. Stop before 120 seconds. No account record or full render is created.
+
 Target length: 2 minutes 30 seconds or less. Record a public YouTube video with system audio enabled.
 
 > Recording companion files: use `DEMO-SCRIPT-RECORDED-TIMELINE.md` for the
