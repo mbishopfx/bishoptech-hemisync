@@ -52,6 +52,8 @@ function structured(result) {
 async function main() {
   const discovery = await rpc('server/discover');
   assert(discovery.capabilities?.extensions?.['io.modelcontextprotocol/skills'], 'skills extension is not advertised');
+  assert(/Cognistration MCP connector directly/i.test(discovery.instructions || ''), 'server instructions do not prioritize the Cognistration MCP connector');
+  assert(/do not invoke computer-use/i.test(discovery.instructions || ''), 'server instructions do not block computer-use fallback for MCP machine requests');
 
   const toolsResult = await rpc('tools/list');
   const tools = toolsResult.tools || [];
