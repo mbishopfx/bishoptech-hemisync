@@ -36,6 +36,7 @@ test('the menu spotlights ChatGPT without removing other connector metadata', as
   assert.doesNotMatch(header, /MCP_HOSTS\.slice\(1\)/);
   assert.match(header, /Other MCP hosts remain supported by the connector registry/);
   assert.match(header, /className=\{`site-header fixed/);
+  assert.match(header, /h-10 w-10/);
   assert.doesNotMatch(header, /hasScrolled|window\.addEventListener\('scroll'/);
 
   // .liquid-glass supplies a relative containing block for its highlight. The
