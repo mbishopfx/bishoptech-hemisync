@@ -397,6 +397,14 @@ main section[id] {
   pointer-events: none;
 }
 
+/* The menu is a viewport layer, not part of the fixed header's layout. The
+ * shared glass surface needs a positioned containing block for its highlight,
+ * but must not override the menu's fixed placement or scroll surface. */
+.site-menu-panel {
+  position: fixed;
+  overflow-y: auto;
+}
+
 .site-header {
   transition: none;
 }

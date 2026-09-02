@@ -27,6 +27,7 @@ test('the published header uses the MCP menu and protects the ChatGPT setup moda
 
 test('the menu spotlights ChatGPT without removing other connector metadata', async () => {
   const header = await readFile(new URL('../components/layout/LiquidHeader.jsx', import.meta.url), 'utf8');
+  const styles = await readFile(new URL('../app/globals.css', import.meta.url), 'utf8');
 
   assert.match(header, /const MCP_HOSTS = \[/);
   assert.match(header, /const FEATURED_MCP_HOST_IDS = \['chatgpt'\]/);
@@ -36,4 +37,11 @@ test('the menu spotlights ChatGPT without removing other connector metadata', as
   assert.match(header, /Other MCP hosts remain supported by the connector registry/);
   assert.match(header, /className=\{`site-header fixed/);
   assert.doesNotMatch(header, /hasScrolled|window\.addEventListener\('scroll'/);
+
+  // .liquid-glass supplies a relative containing block for its highlight. The
+  // menu must override that shared rule or its hidden max-height becomes part
+  // of the fixed header's layout and covers the page.
+  const menuSurfaceRules = styles.match(/\.site-menu-panel\s*\{[^}]*\}/g)?.join('\n') || '';
+  assert.match(menuSurfaceRules, /position:\s*fixed/);
+  assert.match(menuSurfaceRules, /overflow-y:\s*auto/);
 });
