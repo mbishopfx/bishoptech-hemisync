@@ -24,6 +24,7 @@ import {
   MCP_SUPPORTED_LEGACY_VERSIONS,
   MCP_TOOLS,
   MCP_PROMPTS,
+  MACHINE_WIDGET_RESOURCE_URI,
   capabilityManifest
 } from '../lib/agentic/mcp-contract.js';
 import {
