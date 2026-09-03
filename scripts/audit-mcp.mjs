@@ -34,6 +34,7 @@ import {
 } from '../lib/agentic/webmcp-contract.js';
 import { PUBLIC_TONE_CATALOG } from '../lib/agentic/tone-capability.js';
 import { PUBLIC_TONE_PACK_CATALOG } from '../lib/agentic/pack-capability.js';
+import { MACHINE_WIDGET_RESOURCE_URI } from '../lib/agentic/machine-capability.js';
 import { UCP_MCP_TOOLS, UCP_MCP_PROTOCOL_VERSION } from '../lib/commerce/ucp-contract.mjs';
 
 const DEFAULT_SITE_ORIGIN = 'https://cognistration.com';
@@ -715,7 +716,7 @@ async function auditTools() {
         assert(envelope._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v4.html', 'machine render result is missing its widget resource.');
       }
       if (machineActionNames.has(tool.name)) {
-        assert(tool._meta?.ui?.resourceUri === undefined, `${tool.name} advertises a UI resource and may remount the machine.`);
+        assert(tool._meta?.ui?.resourceUri === MACHINE_WIDGET_RESOURCE_URI, `${tool.name} is not bound to the active machine resource.`);
         assert(tool._meta?.['openai/outputTemplate'] === undefined, `${tool.name} advertises a compatibility output template and may remount the machine.`);
         assert(tool._meta?.ui?.visibility?.join(',') === 'model,app', `${tool.name} is not visible to both the model and active app.`);
         assert(envelope._meta?.ui?.resourceUri === undefined, `${tool.name} result asks the host to render a new widget.`);

@@ -291,6 +291,9 @@ test('machine generator render state stays bounded and seeds direct user control
   assert.match(MACHINE_WIDGET_HTML, /ui\/notifications\/tool-result/);
   assert.match(MACHINE_WIDGET_HTML, /openai\/widget-output/);
   assert.match(MACHINE_WIDGET_HTML, /openai:set_globals/);
+  assert.match(MACHINE_WIDGET_HTML, /toolResponseMetadata/);
+  assert.match(MACHINE_WIDGET_HTML, /mcp_tool_result/);
+  assert.match(MACHINE_WIDGET_HTML, /lastHostOutputSignature/);
   assert.match(MACHINE_WIDGET_HTML, /params\.arguments/);
   assert.match(MACHINE_WIDGET_HTML, /window\.openai\.callTool/);
   assert.match(MACHINE_WIDGET_HTML, /class="frequency-stage"/);
@@ -904,25 +907,25 @@ test('MCP and WebMCP contracts expose only approved bounded tools', () => {
   assert.equal(machineTool.annotations.readOnlyHint, true);
   assert.equal(MCP_RESOURCES.some((resource) => resource.uri === MACHINE_WIDGET_LEGACY_RESOURCE_URI), false);
   const machineSetTool = MCP_TOOLS.find((tool) => tool.name === 'set_machine_controls');
-  assert.equal(machineSetTool._meta.ui.resourceUri, undefined);
+  assert.equal(machineSetTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineSetTool._meta.ui.visibility.join(','), 'model,app');
   assert.equal(machineSetTool._meta['openai/outputTemplate'], undefined);
   assert.equal(machineSetTool._meta['openai/widgetAccessible'], true);
   assert.equal(machineSetTool.outputSchema.required.includes('resourceUri'), false);
   assert.equal(machineSetTool.annotations.idempotentHint, true);
   const machineAdjustTool = MCP_TOOLS.find((tool) => tool.name === 'adjust_machine_controls');
-  assert.equal(machineAdjustTool._meta.ui.resourceUri, undefined);
+  assert.equal(machineAdjustTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineAdjustTool._meta['openai/outputTemplate'], undefined);
   assert.equal(machineAdjustTool.annotations.idempotentHint, false);
   assert.equal(machineAdjustTool.inputSchema.properties.control.enum.join(','), 'carrier,rhythm,volume');
   const machineStartTool = MCP_TOOLS.find((tool) => tool.name === 'start_machine_preview');
-  assert.equal(machineStartTool._meta.ui.resourceUri, undefined);
+  assert.equal(machineStartTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
   assert.equal(machineStartTool._meta['openai/outputTemplate'], undefined);
   assert.equal(machineStartTool.consent, 'explicit_confirmation_required');
   assert.equal(machineStartTool.inputSchema.properties.confirmed.const, true);
   for (const actionName of ['set_machine_direction', 'stop_machine_preview', 'open_machine_fullscreen']) {
     const actionTool = MCP_TOOLS.find((tool) => tool.name === actionName);
-    assert.equal(actionTool._meta.ui.resourceUri, undefined);
+    assert.equal(actionTool._meta.ui.resourceUri, MACHINE_WIDGET_RESOURCE_URI);
     assert.equal(actionTool._meta['openai/outputTemplate'], undefined);
     assert.equal(actionTool._meta.ui.visibility.join(','), 'model,app');
   }

@@ -76,7 +76,7 @@ async function main() {
   assert(machineRenderTool?._meta?.['openai/outputTemplate'] === 'ui://cognistration/machine-generator/v4.html', 'machine render tool compatibility template is missing');
   for (const name of ['set_machine_controls', 'adjust_machine_controls', 'set_machine_direction', 'start_machine_preview', 'stop_machine_preview', 'open_machine_fullscreen']) {
     const tool = tools.find((candidate) => candidate.name === name);
-    assert(tool?._meta?.ui?.resourceUri === undefined, `${name} still advertises a UI resource and may remount the machine`);
+    assert(tool?._meta?.ui?.resourceUri === 'ui://cognistration/machine-generator/v4.html', `${name} is not bound to the active machine resource`);
     assert(tool?._meta?.['openai/outputTemplate'] === undefined, `${name} still advertises a compatibility output template and may remount the machine`);
     assert(tool?._meta?.ui?.visibility?.join(',') === 'model,app', `${name} does not advertise model/app visibility`);
   }
@@ -103,7 +103,10 @@ async function main() {
   assert(/ui\/notifications\/size-changed/.test(machineWidget.text || ''), 'machine widget size notification is missing');
   assert(/ui\/update-model-context/.test(machineWidget.text || ''), 'machine widget model context bridge is missing');
   assert(/openai:set_globals/.test(machineWidget.text || ''), 'machine widget ChatGPT globals fallback is missing');
+  assert(/toolResponseMetadata/.test(machineWidget.text || ''), 'machine widget full response metadata fallback is missing');
+  assert(/mcp_tool_result/.test(machineWidget.text || ''), 'machine widget MCP result envelope fallback is missing');
   assert(/openai\/widget-output/.test(machineWidget.text || ''), 'machine widget typed result fallback is missing');
+  assert(/lastHostOutputSignature/.test(machineWidget.text || ''), 'machine widget result de-duplication guard is missing');
   assert(/adjust_machine_controls/.test(machineWidget.text || ''), 'machine widget relative control bridge is missing');
   assert(/resumeAudioContext/.test(machineWidget.text || ''), 'machine widget audio resume verification is missing');
   assert(/audioReady/.test(machineWidget.text || ''), 'machine widget audio readiness state is missing');
