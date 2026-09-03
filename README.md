@@ -18,6 +18,12 @@ Cognistration is a human-first audio-session platform with progressive WebMCP an
 
 Agent discovery is available from `/.well-known/agent-card.json`, `/.well-known/ard.json`, `/.well-known/api-catalog`, `/.well-known/mcp/server-card.json`, `/.well-known/agent-skills/index.json`, and `/.well-known/schemamap.xml`. Markdown documentation is available from `/index.md`, `/docs.md`, and `/auth.md`; the read-only documentation MCP server is `/api/docs-mcp`.
 
+## A note to the judges
+
+Thank you for creating this challenge and for making room for people who are building between the rest of life. I’m a single, full-time father and a contractor, and I built Cognistration while continuing to serve my clients and keeping my family at the center. Codex and the efficiency of the OpenAI models have made that balance possible. They help me deliver good contracting work efficiently, then turn the small windows between responsibilities into real building time, without giving up the mornings that matter: getting my kids ready, taking them to school, being there for pickup, and making those moments meaningful.
+
+I give the Codex and OpenAI teams my full gratitude and grace. The value of these tools is not only that they make development faster; they create room for meaningful work alongside meaningful responsibility. This project is my thank-you in code: an attempt to make a calmer, more human relationship between people and their agents. Thank you for the opportunity to participate.
+
 ## Operating loops
 
 - `loops/state.md` is the resumable operating memory.
