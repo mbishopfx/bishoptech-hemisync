@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-02T09:08:07.416709-05:00",
+  "rows": [
+    {
+      "id": "3lW3K-_Sjd0",
+      "url": "https://www.youtube.com/watch?v=3lW3K-_Sjd0",
+      "resolved": false,
+      "returncode": 1,
+      "stderr": "ERROR: [youtube] 3lW3K-_Sjd0: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+    },
+    {
+      "id": "2QazKP2d1Lc",
+      "url": "https://www.youtube.com/watch?v=2QazKP2d1Lc",
+      "resolved": true,
+      "title": "Stop Thinking. Start Doing. | Turn Your Intentions Into Action | Live #153 | Devendra Mohan",
+      "channel": "Devendra-Diary",
+      "upload_date": "20260831",
+      "duration": 2248,
+      "license": null,
+      "live_status": "not_live",
+      "availability": "public",
+      "language": "en",
+      "rights_evidence": "Stop Thinking. Start Doing. | Turn Your Intentions Into Action | Live #153 | Devendra Mohan Original video (Hindi): https://www.youtube.com/watch?v=fficJ7kLu5E&t=10s @devendra-talks-show This is an AI-translated English voice version of the original Hindi Live, published with permission. -------------------------------------------------- We all have things we want to change. We have ideas, dreams and goals. We tell ourselves that tomorrow we will finally begin. But thinking about change is not the same as creating it. On the occasion of Baisakhi – a festival associated with new beginnings, growth and progress – Devendra Mohan invites us to look honestly at our lives: Are we truly moving forward, or are we simply repeating the same routines? In this Q&A Live, he explores why intentions alone are not enough. Real change begins when thoughts become actions and when we develop the courage an"
+    },
+    {
+      "id": "W_Ihk1N6yeQ",
+      "url": "https://www.youtube.com/watch?v=W_Ihk1N6yeQ",
+      "resolved": true,
+      "title": "INNER PEACE DOESN’T BEGIN OUTSIDE | Devendra Mohan Satsang | 17.04.2026",
+      "channel": "Devendra-Diary",
+      "upload_date": "20260815",
+      "duration": 2167,
+      "license": null,
+      "live_status": "not_live",
+      "availability": "public",
+      "language": "en",
+      "rights_evidence": "INNER PEACE DOESN’T BEGIN OUTSIDE | Devendra Mohan Satsang | 17.04.2026 Original video (Hindi): https://www.youtube.com/watch?v=25hFyF7uAK8&t=2s @bhaiyajisatsang This is an AI-translated English voice version of the original Hindi Satsang, published with permission. -------------------------------------------------- We spend so much of our lives trying to change what is happening around us. We want other people to understand us. We want our families to behave the way we think they should. We want recognition for what we do. We want situations to unfold according to our plans. And even in spirituality, we may find ourselves asking God or the Guru to fulfil our wishes. But what if the real obstacle to peace is not the world around us? What if it is the “I” within us that constantly wants to control, achieve, receive and be acknowledged? In this Satsang, Devendra Mohan explores the subtle r"
+    },
+    {
+      "id": "89qrD-8KbXo",
+      "url": "https://www.youtube.com/watch?v=89qrD-8KbXo",
+      "resolved": false,
+      "returncode": 1,
+      "stderr": "ERROR: [youtube] 89qrD-8KbXo: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+    }
+  ]
+}

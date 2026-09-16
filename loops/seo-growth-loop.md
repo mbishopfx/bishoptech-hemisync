@@ -1,14 +1,14 @@
 # Cognistration SEO Growth Loop
 
 Purpose
-- Monitor Google Search Console trends on a 3-day cadence.
+- Monitor Google Search Console trends on a 48-hour cadence.
 - Find query/page gaps that can become blog posts, landing pages, FAQ pages, and social repurposing angles.
 - Use the blog system message to request a deeper, article-style ghostwritten draft: more mechanism, logic, examples, and practical meaning than a short promo blurb.
 - Keep the resulting post aligned with the calm, premium, trust-first brand.
 - After publish, make sure the new URL is in the sitemap and submit the sitemap again so current and new pages are refreshed for indexing.
 
 Cadence
-- Run every 3 days.
+- Run every 48 hours.
 - If the current search data is sparse, log that clearly and keep building the watchlist instead of forcing publication.
 
 Inputs

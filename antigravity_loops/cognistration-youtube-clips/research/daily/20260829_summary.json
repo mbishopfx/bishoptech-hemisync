@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-08-29T10:34:42.137297-05:00",
+  "cutoff": "2026-07-29T10:33:59.075918-05:00",
+  "cutoff_date": "2026-07-29",
+  "discovered_unique_count": 120,
+  "resolved_count": 119,
+  "resolution_error_count": 1,
+  "fresh_count": 119,
+  "fresh_substantive_count": 71,
+  "rights_declared_fresh_count": 7,
+  "new_rights_cleared_count": 1,
+  "selected_source": null,
+  "downloads": 1,
+  "renders": 0,
+  "youtube_uploads": 0,
+  "drive_archives": 0,
+  "web_search_fallback": "Configured Firecrawl-backed web_search failed with NoneType/status_code error. DDGS fallback completed discovery; it was used only for discovery, not upload-date, rights, ranking, demand, or trend claims. Direct yt-dlp YouTube metadata was authoritative for upload_date and license.",
+  "artifacts": {
+    "web": "research/daily/20260829_ddgs_results.json",
+    "youtube_discovery": "research/daily/20260829_ytsearch_discovery.json",
+    "youtube_metadata": "research/daily/20260829_ytdlp_metadata.json",
+    "candidate_decisions": "research/daily/20260829_candidate_decisions.json"
+  },
+  "decision": "No finalized fresh, non-duplicate, rights-cleared source passed all gates. The only newly rights-cleared relevant candidate was rejected after resolved metadata showed it was an active live stream. No render, YouTube upload, or Drive archive occurred.",
+  "partial_downloads": 1,
+  "attempted_source": {
+    "id": "zdtrvG3u2Rg",
+    "url": "https://www.youtube.com/watch?v=zdtrvG3u2Rg",
+    "title": "Sarah Starr and Max Rempel — Starseeds, Telepathy and the World After Contact, Aug 29 2026 2026-08-29 10:34",
+    "creator": "Hucolo TV / Channeling",
+    "upload_date": "20260829",
+    "freshness_result": "PASS by date; then rejected because live_status=is_live",
+    "personality_match": [],
+    "topic_match": [
+      "consciousness",
+      "altered-state history"
+    ],
+    "rights_basis": "Creative Commons Attribution license (reuse allowed)",
+    "run": "20260829_103817",
+    "failure": "Active live/DVR stream; terminated before render/publish/archive",
+    "partial_run_size_bytes": 54263808
+  }
+}

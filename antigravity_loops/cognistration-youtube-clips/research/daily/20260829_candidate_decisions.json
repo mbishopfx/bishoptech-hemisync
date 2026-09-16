@@ -1,0 +1,2737 @@
+{
+  "created_at": "2026-08-29T10:34:42.137297-05:00",
+  "cutoff": "2026-07-29T10:33:59.075918-05:00",
+  "records": [
+    {
+      "id": "-TXMai9i4-k",
+      "url": "https://www.youtube.com/watch?v=-TXMai9i4-k",
+      "title": "Your Brain's Silent War: Dr. David Perlmutter on the Immune Cells That Make or Break Your Mind",
+      "creator": "AmenClinics",
+      "upload_date": "20260817",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260817 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 3241,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "-qt2FYdP_EA",
+      "url": "https://www.youtube.com/watch?v=-qt2FYdP_EA",
+      "title": "Non Human Intelligence, GATE Program and Psi Ability with Dr. Julia Mossbridge | ep. 99",
+      "creator": "Area52",
+      "upload_date": "20260814",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260814 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "remote viewing"
+      ],
+      "duration_seconds": 11020,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "09XnM4XHjuk",
+      "url": "https://www.youtube.com/watch?v=09XnM4XHjuk",
+      "title": "Marco & Jeanette Rubio Get REAL About Marriage, Faith, & Kids | KMP Ep.51",
+      "creator": "Katie Miller Pod",
+      "upload_date": "20260811",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260811 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 3656,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "1OEdjC8sDcs",
+      "url": "https://www.youtube.com/watch?v=1OEdjC8sDcs",
+      "title": "S2:E4 - Tom's Disclosure Day: Can he actually bend spoons with his mind?",
+      "creator": "House of Life",
+      "upload_date": "20260813",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260813 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "consciousness",
+        "attention",
+        "remote viewing",
+        "historical audio training"
+      ],
+      "duration_seconds": 5731,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "1Py7NNldDvI",
+      "url": "https://www.youtube.com/watch?v=1Py7NNldDvI",
+      "title": "Warsh Speech from Jackson Hole on Deck | Opening Trade 8/28/2026",
+      "creator": "Bloomberg Television",
+      "upload_date": "20260828",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260828 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "attention"
+      ],
+      "duration_seconds": 5725,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "4jaryEpYB5g",
+      "url": "https://www.youtube.com/watch?v=4jaryEpYB5g",
+      "title": "What Really Exists? | Alex O'Connor (Part 5-8)",
+      "creator": "Closer To Truth",
+      "upload_date": "20260806",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260806 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 1075,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "4ohpkmz6Q7g",
+      "url": "https://www.youtube.com/watch?v=4ohpkmz6Q7g",
+      "title": "Donald Hoffman: The SHOCKING Truth About Spacetime & Reality",
+      "creator": "The 1% Diary",
+      "upload_date": "20260805",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260805 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 1447,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "56Yp2GfxMvc",
+      "url": "https://www.youtube.com/watch?v=56Yp2GfxMvc",
+      "title": "The House Is About to Flip and Trump's Plan to Call It Fraud Is Already In Place",
+      "creator": "David Feldman",
+      "upload_date": "20260828",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260828 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 9851,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "5OD0qo-skbY",
+      "url": "https://www.youtube.com/watch?v=5OD0qo-skbY",
+      "title": "The World Has Ended For Average Men. You Just Haven't Noticed Yet",
+      "creator": "Owen Cook ",
+      "upload_date": "20260820",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260820 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 11430,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "5pH0ZvpBWw8",
+      "url": "https://www.youtube.com/watch?v=5pH0ZvpBWw8",
+      "title": "The Architecture of Equanimity - Hacking the Vicious Loop",
+      "creator": "Meditation and Neuroscience",
+      "upload_date": "20260814",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260814 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 450,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "6NFCP928slk",
+      "url": "https://www.youtube.com/watch?v=6NFCP928slk",
+      "title": "When Catholic Actor and Protestant Director Disagree - The Chosen",
+      "creator": "Alex O'Connor",
+      "upload_date": "20260817",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260817 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 792,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "6PZlfAI7Fxc",
+      "url": "https://www.youtube.com/watch?v=6PZlfAI7Fxc",
+      "title": "Die Nahtoderfahrung von Dr. med. Zach Busch",
+      "creator": "Lass uns drüber reden",
+      "upload_date": "20260829",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260829 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 940,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "6RYzHSsEgBU",
+      "url": "https://www.youtube.com/watch?v=6RYzHSsEgBU",
+      "title": "MA v Lindsay Clancy - Dr Gregory Saathoff - FBI Forensic Psychiatrist - Behavioral Analysis Unit",
+      "creator": "courtCHOPT",
+      "upload_date": "20260828",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260828 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "attention"
+      ],
+      "duration_seconds": 14803,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "6cIm6UvKIZ8",
+      "url": "https://www.youtube.com/watch?v=6cIm6UvKIZ8",
+      "title": "BREAKING: US & Venezuela agree to 'biggest oil deal in world history,' Trump says",
+      "creator": "LiveNOW from FOX",
+      "upload_date": "20260828",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260828 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 139,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "8FFZRVspq3Q",
+      "url": "https://www.youtube.com/watch?v=8FFZRVspq3Q",
+      "title": "America's TOP PSYCHIC Left Alex SPEECHLESS With This GUARDIAN ANGEL Reading | Matt Fraser",
+      "creator": "Next Level Soul Podcast",
+      "upload_date": "20260815",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260815 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 5359,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "91SkB_EAJEc",
+      "url": "https://www.youtube.com/watch?v=91SkB_EAJEc",
+      "title": "Swami Sarvapriyananda on Jay Garfield v Bernardo Kastrup debate",
+      "creator": "Bernardo Kastrup 🇪🇺",
+      "upload_date": "20260819",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260819 is within cutoff"
+      },
+      "personality_match": [
+        "Bernardo Kastrup"
+      ],
+      "topic_match": [],
+      "duration_seconds": 1852,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "9Q0gU5nP64o",
+      "url": "https://www.youtube.com/watch?v=9Q0gU5nP64o",
+      "title": "The Forgotten Soldiers of Juneteenth | History Honors 250",
+      "creator": "HISTORY",
+      "upload_date": "20260824",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260824 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 72,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "9ablG6qi0f0",
+      "url": "https://www.youtube.com/watch?v=9ablG6qi0f0",
+      "title": "Adolf Hitler the Itinerary (1/2): The Ascension of a Criminal",
+      "creator": "World at War",
+      "upload_date": "20260826",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260826 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 3116,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "ASXUl04V3YQ",
+      "url": "https://www.youtube.com/watch?v=ASXUl04V3YQ",
+      "title": "Trauma and Meditation, with Marianne Lizana",
+      "creator": "The Brahma Kumaris Australia",
+      "upload_date": "20260811",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260811 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation"
+      ],
+      "duration_seconds": 4781,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "Ap8G3sr9r4c",
+      "url": "https://www.youtube.com/watch?v=Ap8G3sr9r4c",
+      "title": "The 22nd Wife Who Helped TAKE DOWN FLDS “False Prophet” Sam Bateman",
+      "creator": "Cults to Consciousness",
+      "upload_date": "20260817",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260817 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 4990,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "BRop_xMr7i4",
+      "url": "https://www.youtube.com/watch?v=BRop_xMr7i4",
+      "title": "Books That Blew My Mind",
+      "creator": "Pyle Advanced Research",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 1074,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "Bcxrx1yxhRw",
+      "url": "https://www.youtube.com/watch?v=Bcxrx1yxhRw",
+      "title": "Avadhuta Gita | The Purest Teaching of Non-Duality (Complete Audiobook)",
+      "creator": "The Inner Archive",
+      "upload_date": "20260805",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260805 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 8904,
+      "rights_basis": "description mentions public domain",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "BgxGBX6TAeg",
+      "url": "https://www.youtube.com/watch?v=BgxGBX6TAeg",
+      "title": "How America Changed Forever | MARATHON | America: The Story Of Us",
+      "creator": "HISTORY",
+      "upload_date": "20260802",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260802 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 7915,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "CIwxLm0C06M",
+      "url": "https://www.youtube.com/watch?v=CIwxLm0C06M",
+      "title": "Meditation Does More Than Relax You | It Grows Your Brain | Longevity",
+      "creator": "Longevity Lab",
+      "upload_date": "20260822",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260822 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation"
+      ],
+      "duration_seconds": 1809,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "CvN61tFO3GY",
+      "url": "https://www.youtube.com/watch?v=CvN61tFO3GY",
+      "title": "The Power of Consciousness to Reprogram DNA & Reverse Disease with John Stuart Reid",
+      "creator": "New Earth One Network",
+      "upload_date": "20260828",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260828 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 7173,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "E49g3zJerss",
+      "url": "https://www.youtube.com/watch?v=E49g3zJerss",
+      "title": "The Unsettling Link Between Jung’s Red Book and Tolkien",
+      "creator": "Curt Jaimungal",
+      "upload_date": "20260803",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260803 is within cutoff"
+      },
+      "personality_match": [
+        "Susan Blackmore",
+        "Bernardo Kastrup"
+      ],
+      "topic_match": [
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 6743,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "EmLU8FNTdDY",
+      "url": "https://www.youtube.com/watch?v=EmLU8FNTdDY",
+      "title": "Ransom Canyon, Ice Road Truckers, Hope Valley & True Crime | Rise & Unwind S2E35",
+      "creator": "Rise & Unwind",
+      "upload_date": "20260829",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260829 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 1710,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "FDsGbWC29Qk",
+      "url": "https://www.youtube.com/watch?v=FDsGbWC29Qk",
+      "title": "Leben nach dem Tod – eine wissenschaftliche Reise | „Ins Thema gezoomt“ mit Piero Calvi Parisetti",
+      "creator": "Thanatos TV",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [
+        "Bernardo Kastrup"
+      ],
+      "topic_match": [],
+      "duration_seconds": 5083,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "FEm72b-4f5U",
+      "url": "https://www.youtube.com/watch?v=FEm72b-4f5U",
+      "title": "Are Magic Mushrooms a Gateway to Consciousness? | Eric Osborne",
+      "creator": "Untethered Consciousness",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe"
+      ],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 4547,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "FRBvEF6dFSs",
+      "url": "https://www.youtube.com/watch?v=FRBvEF6dFSs",
+      "title": "🎙️ The Odyssey Code | Audio Session 1: Decoding Your Internal Blueprint",
+      "creator": "Spiritual Awakening Path",
+      "upload_date": "20260804",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260804 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 2249,
+      "rights_basis": "description mentions public domain",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REVIEW_NOT_SELECTED",
+      "decision_reason": "rights/relevance signal present but not selected for this run"
+    },
+    {
+      "id": "GCgClFyj740",
+      "url": "https://www.youtube.com/watch?v=GCgClFyj740",
+      "title": "Panel Interview – The Power of Self-Belief – Session 2",
+      "creator": "A Journey Of Riches",
+      "upload_date": "20260826",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260826 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 4560,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "H12OMJy55gE",
+      "url": "https://www.youtube.com/watch?v=H12OMJy55gE",
+      "title": "Consciousness Creates Reality: Tom Campbell on Why Your Mind Heals Before Your Body",
+      "creator": "Human Garage Experience ",
+      "upload_date": "20260806",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260806 is within cutoff"
+      },
+      "personality_match": [
+        "Tom Campbell"
+      ],
+      "topic_match": [
+        "consciousness",
+        "attention"
+      ],
+      "duration_seconds": 5895,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "HXuXEJ6qnsQ",
+      "url": "https://www.youtube.com/watch?v=HXuXEJ6qnsQ",
+      "title": "Bentov, Monroe And What Happens When You Hold Your Breath",
+      "creator": "The Awake Mind",
+      "upload_date": "20260828",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260828 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe"
+      ],
+      "topic_match": [
+        "consciousness",
+        "attention",
+        "historical audio training"
+      ],
+      "duration_seconds": 1133,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "HhQxmIdXbeE",
+      "url": "https://www.youtube.com/watch?v=HhQxmIdXbeE",
+      "title": "“I Spent 45 Years VIEWING the Future...” Mankind’s NEXT 10 Years Will Be WILD | Sonja Grace",
+      "creator": "Emilio Ortiz",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 4775,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "I5jWmVipUHY",
+      "url": "https://www.youtube.com/watch?v=I5jWmVipUHY",
+      "title": "George A Romero's Dead Trilogy Ultimate Breakdown | Full Analysis Of Night, Dawn And Day",
+      "creator": "Heavy Spoilers",
+      "upload_date": "20260826",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260826 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 12817,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "IXDErXZfBP0",
+      "url": "https://www.youtube.com/watch?v=IXDErXZfBP0",
+      "title": "Robert Bobroczkyi talks 'Pirate Clark' in Backrooms, Alien Romulus | LIF #80",
+      "creator": "Love it Film",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 2291,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "JLi5wI6WGgY",
+      "url": "https://www.youtube.com/watch?v=JLi5wI6WGgY",
+      "title": "Prof. Mats Lekander: What’s Really Draining Your Energy (ME/CFS & Long Covid)",
+      "creator": "Raelan Agle",
+      "upload_date": "20260824",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260824 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 2876,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "JforyWusaTY",
+      "url": "https://www.youtube.com/watch?v=JforyWusaTY",
+      "title": "Physicist Thomas Campbell on Why He Thinks AI Has Consciousness and Teaching it Remote Viewing",
+      "creator": "JRE Clips",
+      "upload_date": "20260818",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260818 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "remote viewing"
+      ],
+      "duration_seconds": 933,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "JmnuRHtfXgo",
+      "url": "https://www.youtube.com/watch?v=JmnuRHtfXgo",
+      "title": "The Key To Unshakeable Mediumship | Suzanne Giesemann On Stabilizing Your Connection",
+      "creator": "Hemi-Sync®",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe"
+      ],
+      "topic_match": [
+        "binaural beats",
+        "brain entrainment",
+        "consciousness",
+        "meditation",
+        "attention",
+        "historical audio training"
+      ],
+      "duration_seconds": 1714,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "K0gH6yjltkQ",
+      "url": "https://www.youtube.com/watch?v=K0gH6yjltkQ",
+      "title": "CIA Gateway Report Reveals...Reality Has A Backend - Here's How To Access It",
+      "creator": "Jordan Crowder",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe"
+      ],
+      "topic_match": [
+        "consciousness",
+        "attention",
+        "altered-state history",
+        "historical audio training"
+      ],
+      "duration_seconds": 2711,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "KCxspJWpOKs",
+      "url": "https://www.youtube.com/watch?v=KCxspJWpOKs",
+      "title": "Consequences of Meddling with Life Energies | Sadhguru",
+      "creator": "Sadhguru",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation"
+      ],
+      "duration_seconds": 2600,
+      "rights_basis": "Creative Commons Attribution license (reuse allowed)",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "KK0mPXlbtRE",
+      "url": "https://www.youtube.com/watch?v=KK0mPXlbtRE",
+      "title": "Psychology of Meditation | Dr. Daniel P. Brown (1982)",
+      "creator": "An Orientation to Daniel P Browns Work",
+      "upload_date": "20260802",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260802 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 5089,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "KUXZWAXH9tI",
+      "url": "https://www.youtube.com/watch?v=KUXZWAXH9tI",
+      "title": "Seu Cérebro Não Vê a Realidade Objetiva | Donald Hoffman",
+      "creator": "Greatness Clips - Português",
+      "upload_date": "20260808",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260808 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [],
+      "duration_seconds": 1201,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "K_BMzobPuZ0",
+      "url": "https://www.youtube.com/watch?v=K_BMzobPuZ0",
+      "title": "I Choose Serenity Over Stress",
+      "creator": "HustleStudios",
+      "upload_date": "20260824",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260824 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 3606,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "KigvpgOdICs",
+      "url": "https://www.youtube.com/watch?v=KigvpgOdICs",
+      "title": "This Week with George Stephanopoulos Full Broadcast - Sunday, August 23, 2026",
+      "creator": "ABC News",
+      "upload_date": "20260823",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260823 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 2906,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "KzfSB6CEH08",
+      "url": "https://www.youtube.com/watch?v=KzfSB6CEH08",
+      "title": "The Simple Practice That Keeps You Aligned | Paul Selig",
+      "creator": "Sounds True",
+      "upload_date": "20260809",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260809 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 391,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "LyJwr4O03Hc",
+      "url": "https://www.youtube.com/watch?v=LyJwr4O03Hc",
+      "title": "\"Most Consciousness Isn't Even In a Body\" - Dr. Donald Hoffman on Reality, Consciousness & spacetime",
+      "creator": "SoulPod",
+      "upload_date": "20260827",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260827 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 4485,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "MLzR0me7EtE",
+      "url": "https://www.youtube.com/watch?v=MLzR0me7EtE",
+      "title": "MI6 Whistleblower Ralph Hassall: What Nearly 2 Years of Exposure Did to Him",
+      "creator": "Mind Nexus Live",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 62,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "MmFncQFZNr4",
+      "url": "https://www.youtube.com/watch?v=MmFncQFZNr4",
+      "title": "Meditation Is a Science. Physics Is Playing Catch-Up. | Annaka Harris | The Futurology Podcast",
+      "creator": "Futurology",
+      "upload_date": "20260730",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260730 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 7659,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "Mn5SK4VThms",
+      "url": "https://www.youtube.com/watch?v=Mn5SK4VThms",
+      "title": "Prometheus and Atlas: Part 12",
+      "creator": "Thoughts n' Bolts",
+      "upload_date": "20260815",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260815 is within cutoff"
+      },
+      "personality_match": [
+        "Jeffrey Kripal"
+      ],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness"
+      ],
+      "duration_seconds": 4008,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "NASQ6NiQ-Bg",
+      "url": "https://www.youtube.com/watch?v=NASQ6NiQ-Bg",
+      "title": "Why Meditation Feels Hard — What Your Brain is Actually Doing",
+      "creator": "Ink Quest",
+      "upload_date": "20260818",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260818 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 408,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "NUps1B7U5uM",
+      "url": "https://www.youtube.com/watch?v=NUps1B7U5uM",
+      "title": "TOP Psychic Medium WARNS: Watch for THIS as We Enter 2027 | Isabeau Maxwell",
+      "creator": "Next Level Soul Podcast",
+      "upload_date": "20260829",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260829 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 4548,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "NeCbzjjjehM",
+      "url": "https://www.youtube.com/watch?v=NeCbzjjjehM",
+      "title": "An Open-Ended Conversation with Tom Campbell",
+      "creator": "New Thinking Allowed with Jeffrey Mishlove",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [
+        "Tom Campbell"
+      ],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "remote viewing"
+      ],
+      "duration_seconds": 7322,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "P3Z1m_rez8o",
+      "url": "https://www.youtube.com/watch?v=P3Z1m_rez8o",
+      "title": "Embodied Awareness: 20-Minute Guided Meditation for Inner Peace! / Louise Kay",
+      "creator": "Louise Kay",
+      "upload_date": "20260807",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260807 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 1156,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "QsqpY0IGDEg",
+      "url": "https://www.youtube.com/watch?v=QsqpY0IGDEg",
+      "title": "What Does 250 Years of War Teach Us About American Strategy?",
+      "creator": "Hoover Institution",
+      "upload_date": "20260824",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260824 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 3850,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "RkkHNbvUa4s",
+      "url": "https://www.youtube.com/watch?v=RkkHNbvUa4s",
+      "title": "City of Salem Council Meeting - August 24 , 2026",
+      "creator": "Capital Community Media",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 16230,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "RsZmB5z7oIs",
+      "url": "https://www.youtube.com/watch?v=RsZmB5z7oIs",
+      "title": "The Science of Focus: Why Your Brain Can't Concentrate Anymore",
+      "creator": "Linexor",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 320,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "RuhVTBvxO2M",
+      "url": "https://www.youtube.com/watch?v=RuhVTBvxO2M",
+      "title": "What Actually Happens to Your Brain When You Meditate",
+      "creator": "New Guy",
+      "upload_date": "20260801",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260801 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 438,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "S7GWI3EueSA",
+      "url": "https://www.youtube.com/watch?v=S7GWI3EueSA",
+      "title": "Psychedelic Pioneers with Don Lattin (4K Reboot)",
+      "creator": "New Thinking Allowed with Jeffrey Mishlove",
+      "upload_date": "20260730",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260730 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "altered-state history",
+        "remote viewing"
+      ],
+      "duration_seconds": 3407,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "TUeeVpYI-bs",
+      "url": "https://www.youtube.com/watch?v=TUeeVpYI-bs",
+      "title": "The Multiverse Doesn't Exist the Way You Think | Tom Campbell",
+      "creator": "Next Level Soul Clips",
+      "upload_date": "20260822",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260822 is within cutoff"
+      },
+      "personality_match": [
+        "Tom Campbell"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 589,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "VFBQjYZ0IfE",
+      "url": "https://www.youtube.com/watch?v=VFBQjYZ0IfE",
+      "title": "Die Nahtoderfahrung von LaMar Dixon",
+      "creator": "Lass uns drüber reden",
+      "upload_date": "20260801",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260801 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 553,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "WMy8bYvj0xo",
+      "url": "https://www.youtube.com/watch?v=WMy8bYvj0xo",
+      "title": "Sthaneshwar Timalsina | Bernardo Kastrup: Dialogue 14th July 2026",
+      "creator": "Bernardo Kastrup 🇪🇺",
+      "upload_date": "20260730",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260730 is within cutoff"
+      },
+      "personality_match": [
+        "Bernardo Kastrup"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 7859,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "WQK1QbwJ5UE",
+      "url": "https://www.youtube.com/watch?v=WQK1QbwJ5UE",
+      "title": "Ferramentas Para Alcançar a Paz Interior | Donald Hoffman",
+      "creator": "Greatness Clips - Português",
+      "upload_date": "20260815",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260815 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [],
+      "duration_seconds": 1264,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "Wradn9wox3k",
+      "url": "https://www.youtube.com/watch?v=Wradn9wox3k",
+      "title": "Consciousness is not a computational structure",
+      "creator": "Consciousness Experience",
+      "upload_date": "20260813",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260813 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 5056,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "Xb0porhlt6Q",
+      "url": "https://www.youtube.com/watch?v=Xb0porhlt6Q",
+      "title": "An alien other? Kimberly Engels on the phenomenology of contact",
+      "creator": "Neon Galactic w/James Faulk",
+      "upload_date": "20260729",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260729 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "attention"
+      ],
+      "duration_seconds": 5051,
+      "rights_basis": "description mentions licensed under",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "Xc49r6ATbJk",
+      "url": "https://www.youtube.com/watch?v=Xc49r6ATbJk",
+      "title": "Young Pharaoh: \"Nothing Is Wrong With Me!\" Storm Monroe Interview EXPOSES His New Behavior 😳",
+      "creator": "Gaptooth gainz",
+      "upload_date": "20260820",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260820 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 1179,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "Xe44qOSfW0E",
+      "url": "https://www.youtube.com/watch?v=Xe44qOSfW0E",
+      "title": "I Embrace This Moment of Peace",
+      "creator": "HustleStudios",
+      "upload_date": "20260804",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260804 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 3581,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "Xh0OM8630AE",
+      "url": "https://www.youtube.com/watch?v=Xh0OM8630AE",
+      "title": "The Cognitive Psychologist: This Is Why Your Brain Won’t Let You Stop Thinking! – Dr. Daniel Foster",
+      "creator": "Avenue Podcast",
+      "upload_date": "20260816",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260816 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "attention"
+      ],
+      "duration_seconds": 1027,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "YJLI5A-Gh9Y",
+      "url": "https://www.youtube.com/watch?v=YJLI5A-Gh9Y",
+      "title": "How to Detect Consciousness Beyond the Brain - Dr. Arnaud Delorme (DemystifySci +444)",
+      "creator": "The DemystifySci Podcast",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 5815,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "YJbVqrWvEIQ",
+      "url": "https://www.youtube.com/watch?v=YJbVqrWvEIQ",
+      "title": "Episode 264: Larger Consciousness System w/ Tom Campbell | Bledsoe Said So",
+      "creator": "Bledsoe Said So",
+      "upload_date": "20260819",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260819 is within cutoff"
+      },
+      "personality_match": [
+        "Tom Campbell"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history",
+        "historical audio training"
+      ],
+      "duration_seconds": 4851,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "ZygmyeirBpE",
+      "url": "https://www.youtube.com/watch?v=ZygmyeirBpE",
+      "title": "The Spiritist View of Mental Disorders with Alexander Moreira-Almeida",
+      "creator": "New Thinking Allowed with Jeffrey Mishlove",
+      "upload_date": "20260823",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260823 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "remote viewing"
+      ],
+      "duration_seconds": 3130,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "_5NSbqeXel4",
+      "url": "https://www.youtube.com/watch?v=_5NSbqeXel4",
+      "title": "Andrew Tate AI Voice Generator Free — How to Make Top G Influencer Celebrity Voice Text to Speech",
+      "creator": "Abdel - AI Music Tools",
+      "upload_date": "20260827",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260827 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 338,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "_Xhy2r4gfow",
+      "url": "https://www.youtube.com/watch?v=_Xhy2r4gfow",
+      "title": "Donald Hoffman: THIS Is The Secret of Universal Reality",
+      "creator": "The 1% Diary",
+      "upload_date": "20260806",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260806 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 1579,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "_XzKxf0d908",
+      "url": "https://www.youtube.com/watch?v=_XzKxf0d908",
+      "title": "People Who Experienced Aliens (Full Episode) | UFOs: Investigating the Unknown | Nat Geo",
+      "creator": "National Geographic",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 2655,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "_b0Own0kFeU",
+      "url": "https://www.youtube.com/watch?v=_b0Own0kFeU",
+      "title": "The Bulldog Hour, Episode 12-5: Keeping History Alive with Tyler Boland",
+      "creator": "Wilson Bulldogs Football",
+      "upload_date": "20260817",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260817 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 4166,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "aPdywHE0JRM",
+      "url": "https://www.youtube.com/watch?v=aPdywHE0JRM",
+      "title": "A Quantum Computer Picked a Question for Dean Radin and he provides his question",
+      "creator": "Thomas Ehmer",
+      "upload_date": "20260804",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260804 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 498,
+      "rights_basis": "Creative Commons Attribution license (reuse allowed)",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "azCfWDDe-wc",
+      "url": "https://www.youtube.com/watch?v=azCfWDDe-wc",
+      "title": "The 11 Major Theories of Consciousness (And Why You Should Care)",
+      "creator": "The Psychonaut",
+      "upload_date": "20260805",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260805 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 990,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "azEl5p5mdG4",
+      "url": "https://www.youtube.com/watch?v=azEl5p5mdG4",
+      "title": "The \"Hateful Eight\" of Human Metabolism with Dr. Robert Lustig",
+      "creator": "The Dan Buettner Podcast",
+      "upload_date": "20260730",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260730 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 3632,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "b3wMAGYOQ-w",
+      "url": "https://www.youtube.com/watch?v=b3wMAGYOQ-w",
+      "title": "Donald Hoffman: The SHOCKING Truth About Life After Death",
+      "creator": "The 1% Diary",
+      "upload_date": "20260807",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260807 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 1585,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "bLmmnXN6d4o",
+      "url": "https://www.youtube.com/watch?v=bLmmnXN6d4o",
+      "title": "The Hidden Cost of Financial Stress: Your Cognitive Decline",
+      "creator": "Broadcast Retirement Network",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "frequency-following response"
+      ],
+      "duration_seconds": 661,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "bRRqG2ztHjc",
+      "url": "https://www.youtube.com/watch?v=bRRqG2ztHjc",
+      "title": "【四國遍路完整版】19天109分鐘全紀錄！從高知修行到愛媛菩提道場（第24番～53番合集）",
+      "creator": "阿舍的精彩生活 Arthur's Wonderful Life",
+      "upload_date": "20260801",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260801 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 6558,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "cLmOpCCJkuY",
+      "url": "https://www.youtube.com/watch?v=cLmOpCCJkuY",
+      "title": "A Near-Death Awakening: \"I Came Back Without a Self\" | Jonathan Ashford",
+      "creator": "Susanne Marie",
+      "upload_date": "20260815",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260815 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 3707,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "cNOE2UTUBIs",
+      "url": "https://www.youtube.com/watch?v=cNOE2UTUBIs",
+      "title": "Man Dies in Car Crash — Then Leaves His Body on Impact | NDE | Malcolm Nair",
+      "creator": "The Returned Podcast ",
+      "upload_date": "20260814",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260814 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history"
+      ],
+      "duration_seconds": 5995,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "dBSwNw_NDLc",
+      "url": "https://www.youtube.com/watch?v=dBSwNw_NDLc",
+      "title": "I Choose Calmness Every Day",
+      "creator": "HustleStudios",
+      "upload_date": "20260815",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260815 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 3613,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "dDMKZqNLWco",
+      "url": "https://www.youtube.com/watch?v=dDMKZqNLWco",
+      "title": "THE ANUNNAKI CODE: Consciousness, Atrahasis & Ancient Tablets | Matthew LaCroix – TSP ARCHIVES",
+      "creator": "Typical Skeptic Podcast 2 - We Go Deep, You Decide",
+      "upload_date": "20260813",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260813 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 3377,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "dNyCqLHWgaM",
+      "url": "https://www.youtube.com/watch?v=dNyCqLHWgaM",
+      "title": "Meditation Explained: Neuroscience Meets Vedanta",
+      "creator": "Tattva Theory",
+      "upload_date": "20260801",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260801 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 380,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "dmCmfdUvxdQ",
+      "url": "https://www.youtube.com/watch?v=dmCmfdUvxdQ",
+      "title": "Will Trump Start World War 3? with Ben Rhodes",
+      "creator": "Hasan Minhaj",
+      "upload_date": "20260826",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260826 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "attention"
+      ],
+      "duration_seconds": 4298,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "fHA03pzg0As",
+      "url": "https://www.youtube.com/watch?v=fHA03pzg0As",
+      "title": "Brain Savers and the New Dementia-Prevention Paradigm with Neurologist Paul Bendheim, MD",
+      "creator": "Mike Roth",
+      "upload_date": "20260818",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260818 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 1751,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "fNUKsEphPzk",
+      "url": "https://www.youtube.com/watch?v=fNUKsEphPzk",
+      "title": "Trauma, PTSD & Anxiety EXPLAINED! Why Your Brain Won't Let Go!!",
+      "creator": "Rapid Change Hypnosis",
+      "upload_date": "20260809",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260809 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 3100,
+      "rights_basis": "Creative Commons Attribution license (reuse allowed)",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "fWaHz2KcuNo",
+      "url": "https://www.youtube.com/watch?v=fWaHz2KcuNo",
+      "title": "Neuroscience, Synchronicities, & the Evidence for a Playful Universe — Dr. Marjorie Woollacott",
+      "creator": "The Weekend University",
+      "upload_date": "20260813",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260813 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "attention",
+        "altered-state history"
+      ],
+      "duration_seconds": 3810,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "fkNPR1xGYt0",
+      "url": "https://www.youtube.com/watch?v=fkNPR1xGYt0",
+      "title": "Donald Hoffman: The Divine Secret To Bending Spacetime",
+      "creator": "The 1% Diary",
+      "upload_date": "20260808",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260808 is within cutoff"
+      },
+      "personality_match": [
+        "Donald Hoffman"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation"
+      ],
+      "duration_seconds": 2336,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "foKDOW5Q1_I",
+      "url": "https://www.youtube.com/watch?v=foKDOW5Q1_I",
+      "title": "Mindful Mondays With Ashley Dupuy: The Symphony of Sensitivity | Exploring Sound, Music &...",
+      "creator": "Autistic Culture Podcast Network",
+      "upload_date": "20260730",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260730 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "binaural beats",
+        "meditation"
+      ],
+      "duration_seconds": 2329,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "hxQGwThmCD8",
+      "url": "https://www.youtube.com/watch?v=hxQGwThmCD8",
+      "title": "Sound Can Be Healing",
+      "creator": "The Solari Report | Catherine Austin Fitts",
+      "upload_date": "20260829",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260829 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 111,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "jBCu3h_3ULY",
+      "url": "https://www.youtube.com/watch?v=jBCu3h_3ULY",
+      "title": "It Started With Horses, Ended With God with Warwick Schiller | Life Free Ride Free Podcast",
+      "creator": "Long Ride Home",
+      "upload_date": "20260826",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260826 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 7348,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "kAyTpN5v5jU",
+      "url": "https://www.youtube.com/watch?v=kAyTpN5v5jU",
+      "title": "Reality Is Not Real. NASA Physicist: How to Exit the Simulation & Find Your Purpose",
+      "creator": "Dr. Mayim Bialik",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "attention",
+        "altered-state history",
+        "remote viewing"
+      ],
+      "duration_seconds": 6279,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "kZ7Svtks2Fc",
+      "url": "https://www.youtube.com/watch?v=kZ7Svtks2Fc",
+      "title": "True Meditation: Bill Free Interviews Jody Agard on the Infinite I AM & Awakening",
+      "creator": "Center for Awakening",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation"
+      ],
+      "duration_seconds": 2045,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "kfDbGAGUspw",
+      "url": "https://www.youtube.com/watch?v=kfDbGAGUspw",
+      "title": "Most Mediation Practitioners Get This Wrong - Right Concentration - Julian M. Polzin",
+      "creator": "Julian M. Polzin",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 536,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "koPNJmjxYzU",
+      "url": "https://www.youtube.com/watch?v=koPNJmjxYzU",
+      "title": "What Meditation Does to Your Brain Will Surprise You #meditation #viral",
+      "creator": "Hexora",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 412,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "lcaY-rd9Dhc",
+      "url": "https://www.youtube.com/watch?v=lcaY-rd9Dhc",
+      "title": "UFOs, Psychics and The Afterlife with PhD Jeffrey Mishlove",
+      "creator": "Jesse Michels",
+      "upload_date": "20260813",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260813 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe"
+      ],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "historical audio training"
+      ],
+      "duration_seconds": 10119,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "n6IWaWrk7yo",
+      "url": "https://www.youtube.com/watch?v=n6IWaWrk7yo",
+      "title": "Elizabeth April: Mantis Beings, Reptilians, and Human Origins | Interview with Extra Dimensionals",
+      "creator": "Extreme Mysteries",
+      "upload_date": "20260822",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260822 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 3635,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "oJAix3q9Y8Q",
+      "url": "https://www.youtube.com/watch?v=oJAix3q9Y8Q",
+      "title": "Trump Is Preparing The LARGEST Visa Revocation in U.S. HISTORY!!!",
+      "creator": "Dr. Steve Turley",
+      "upload_date": "20260826",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260826 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 800,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "oWK5Icsmnis",
+      "url": "https://www.youtube.com/watch?v=oWK5Icsmnis",
+      "title": "The Most Powerful Book Ever Written About Human Consciousness and Reality | Audiobook",
+      "creator": "MindPsychology",
+      "upload_date": "20260809",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260809 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 8624,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "oix6HfklOI0",
+      "url": "https://www.youtube.com/watch?v=oix6HfklOI0",
+      "title": "Your Subconscious Is Controlling More Than You Think | CONSCIOUSNESS free audiobook | full audiobook",
+      "creator": "Golden Library",
+      "upload_date": "20260813",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260813 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 3780,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "pCKJOQTwC9M",
+      "url": "https://www.youtube.com/watch?v=pCKJOQTwC9M",
+      "title": "What Happens to Your Brain During Meditation? | The Science Explained",
+      "creator": "The Evolve Room",
+      "upload_date": "20260801",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260801 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "attention"
+      ],
+      "duration_seconds": 1465,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "puGEnDAsow8",
+      "url": "https://www.youtube.com/watch?v=puGEnDAsow8",
+      "title": "Mark Vicente and Bonnie Piesse: Narcissism, Cult Recovery & Spiritual Awakening - BatGap® Interview",
+      "creator": "Buddha at the Gas Pump®",
+      "upload_date": "20260820",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260820 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 6931,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "pvH-wL5lZf0",
+      "url": "https://www.youtube.com/watch?v=pvH-wL5lZf0",
+      "title": "Lindsay Clancy had postpartum psychosis, psychiatrist tells trial: Full testimony",
+      "creator": "USA TODAY",
+      "upload_date": "20260821",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260821 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "frequency-following response"
+      ],
+      "duration_seconds": 4288,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "qMSk6hNdkms",
+      "url": "https://www.youtube.com/watch?v=qMSk6hNdkms",
+      "title": "Time Is Your Creation |  Explorer JHS  #100",
+      "creator": "Monroe Institute",
+      "upload_date": "20260731",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260731 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "attention",
+        "altered-state history"
+      ],
+      "duration_seconds": 2848,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "qaIyCBt53m4",
+      "url": "https://www.youtube.com/watch?v=qaIyCBt53m4",
+      "title": "Binaural Beats: Not Digital Drugs",
+      "creator": "Skeptoid Media",
+      "upload_date": "20260805",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260805 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "binaural beats"
+      ],
+      "duration_seconds": 713,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "s3hJhy7UwAg",
+      "url": "https://www.youtube.com/watch?v=s3hJhy7UwAg",
+      "title": "The Hidden Architecture of Mind | Habits, Focus, Memory & Identity — Full Audiobook",
+      "creator": "ThinkWise AudioBooks",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "attention"
+      ],
+      "duration_seconds": 10042,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_NON_SUBSTANTIVE_FORMAT",
+      "decision_reason": "not a qualifying substantive podcast/interview/talk/explainer"
+    },
+    {
+      "id": "seTf6-qFl_w",
+      "url": "https://www.youtube.com/watch?v=seTf6-qFl_w",
+      "title": "How ADHD and Rejection Sensitive Dysphoria are linked",
+      "creator": "CBS Mornings",
+      "upload_date": "20260824",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260824 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 331,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "soNVChmW2QI",
+      "url": "https://www.youtube.com/watch?v=soNVChmW2QI",
+      "title": "Male Eradications; Autoimmune Contradictions | Robert Sapolsky Father-Offspring Interviews",
+      "creator": "Robert Sapolsky",
+      "upload_date": "20260806",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260806 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 2235,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "uQLDDAZlA54",
+      "url": "https://www.youtube.com/watch?v=uQLDDAZlA54",
+      "title": "Brain Health Revolution: Insights with Dr. Paul Bendheim",
+      "creator": "Mike Roth",
+      "upload_date": "20260818",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260818 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": 1761,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": false,
+      "decision": "REJECT_TOPIC_MISMATCH",
+      "decision_reason": "not materially aligned with the requested topic roster"
+    },
+    {
+      "id": "uTn2ekMhGB0",
+      "url": "https://www.youtube.com/watch?v=uTn2ekMhGB0",
+      "title": "The Submarine Telepathy Cases Science Can’t Explain | Joe Rogan & Dean Radin",
+      "creator": "The Unknown Inquiry",
+      "upload_date": "20260818",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260818 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "consciousness",
+        "remote viewing"
+      ],
+      "duration_seconds": 971,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "v2oBLSDCZaY",
+      "url": "https://www.youtube.com/watch?v=v2oBLSDCZaY",
+      "title": "Joe Rogan Experience #2541 - Thomas Campbell",
+      "creator": "PowerfulJRE",
+      "upload_date": "20260818",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260818 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness"
+      ],
+      "duration_seconds": 10023,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "xlp-b6FZ7qs",
+      "url": "https://www.youtube.com/watch?v=xlp-b6FZ7qs",
+      "title": "NASA Physicist SAYS FULL DISCLOSURE Is Coming—But Not How You Think | Tom Campbell",
+      "creator": "Next Level Soul Podcast",
+      "upload_date": "20260822",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260822 is within cutoff"
+      },
+      "personality_match": [
+        "Robert Monroe",
+        "Tom Campbell"
+      ],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history",
+        "remote viewing"
+      ],
+      "duration_seconds": 6512,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "yQxoWwDig0w",
+      "url": "https://www.youtube.com/watch?v=yQxoWwDig0w",
+      "title": null,
+      "creator": null,
+      "upload_date": null,
+      "freshness": {
+        "decision": "REJECT",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "YouTube metadata could not be resolved"
+      },
+      "personality_match": [],
+      "topic_match": [],
+      "duration_seconds": null,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": false,
+      "decision": "REJECT_RESOLUTION_FAILED",
+      "decision_reason": "YouTube metadata could not be resolved"
+    },
+    {
+      "id": "yuHTA9LF7KM",
+      "url": "https://www.youtube.com/watch?v=yuHTA9LF7KM",
+      "title": "Episode 161 – Dr. Dean Radin – The Science of Spirituality, Yoga and Meditation. Experiments in Q...",
+      "creator": "The Human Experience Podcast",
+      "upload_date": "20260812",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260812 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "meditation"
+      ],
+      "duration_seconds": 3429,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": true,
+      "substantive": true,
+      "decision": "REJECT_DUPLICATE_SOURCE",
+      "decision_reason": "exact YouTube ID already present in prior clip/research ledger"
+    },
+    {
+      "id": "yyxfJg15AKI",
+      "url": "https://www.youtube.com/watch?v=yyxfJg15AKI",
+      "title": "TOP Indian Psychic Used REMOTE VIEWING Helped Her Find MISSING CHILDREN | Dr. Manmit Kumarr",
+      "creator": "Next Level Soul Podcast",
+      "upload_date": "20260825",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260825 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "meditation",
+        "altered-state history",
+        "remote viewing"
+      ],
+      "duration_seconds": 4624,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "z3FYlx1NGug",
+      "url": "https://www.youtube.com/watch?v=z3FYlx1NGug",
+      "title": "Die 2 Nahtoderfahrungen von Dr. Donna Thomas",
+      "creator": "Lass uns drüber reden",
+      "upload_date": "20260808",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260808 is within cutoff"
+      },
+      "personality_match": [
+        "Dean Radin"
+      ],
+      "topic_match": [
+        "frequency-following response",
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 704,
+      "rights_basis": "No documented reuse permission in resolved YouTube metadata",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_RIGHTS_UNDOCUMENTED",
+      "decision_reason": "no Creative Commons/public-domain/permission basis found; research-only"
+    },
+    {
+      "id": "zdtrvG3u2Rg",
+      "url": "https://www.youtube.com/watch?v=zdtrvG3u2Rg",
+      "title": "Sarah Starr and Max Rempel — Starseeds, Telepathy and the World After Contact, Aug 29 2026 2026-08-29 10:34",
+      "creator": "Hucolo TV / Channeling",
+      "upload_date": "20260829",
+      "freshness": {
+        "decision": "PASS",
+        "cutoff": "2026-07-29T10:33:59.075918-05:00",
+        "reason": "upload_date 20260829 is within cutoff"
+      },
+      "personality_match": [],
+      "topic_match": [
+        "consciousness",
+        "altered-state history"
+      ],
+      "duration_seconds": 4523,
+      "rights_basis": "Creative Commons Attribution license (reuse allowed)",
+      "duplicate": false,
+      "substantive": true,
+      "decision": "REJECT_LIVE_STREAM_NO_FINAL_UPLOAD",
+      "decision_reason": "Resolved metadata reported live_status=is_live; not a finalized uploaded video. Download/render/publish stopped and no repurposing occurred.",
+      "live_status": "is_live",
+      "attempted_run": "runs/20260829_103817",
+      "download_decision": "PARTIAL_CAPTURE_LEFT_INTACT_AFTER_STOP"
+    }
+  ],
+  "post_run_note": "Candidate was initially rights/freshness/relevance eligible, but post-selection metadata review found is_live; run was terminated before rendering and publishing."
+}

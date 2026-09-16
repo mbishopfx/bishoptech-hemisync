@@ -1,0 +1,3997 @@
+{
+  "wireMagic": "pb3",
+  "pens": [ {
+  
+  } ],
+  "wsWinStyles": [ {
+  
+  }, {
+    "juJustifCode": 2
+  }, {
+    "juJustifCode": 0
+  } ],
+  "wpWinPositions": [ {
+  
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 31
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 28
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 27
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 27
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 26
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 28
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 25
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 30
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 21
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 17
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 24
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 19
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 22
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 20
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 30
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 23
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 21
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 16
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 19
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 32
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 29
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 18
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 15
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 26
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 32
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 29
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 13
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 25
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 10
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 24
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 11
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 20
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 17
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 22
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 31
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 18
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 23
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 14
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 9
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 2,
+    "ccCols": 16
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 12
+  }, {
+    "apPoint": 7,
+    "ahHorPos": 50,
+    "avVerPos": 100,
+    "rcRows": 1,
+    "ccCols": 6
+  } ],
+  "events": [ {
+    "tStartMs": 1201,
+    "dDurationMs": 4370,
+    "segs": [ {
+      "utf8": "David Muir, ABC's World News\nTonight, America's most watched"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 5671,
+    "dDurationMs": 4171,
+    "segs": [ {
+      "utf8": "newscast. Now streaming same\nday with all the breaking"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 9942,
+    "dDurationMs": 1936,
+    "segs": [ {
+      "utf8": "news of the day on Disney+."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 11978,
+    "dDurationMs": 2135,
+    "segs": [ {
+      "utf8": "Most watched, most trusted."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 14213,
+    "dDurationMs": 2036,
+    "segs": [ {
+      "utf8": "Now on Disney+ every night."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 16349,
+    "dDurationMs": 2435,
+    "segs": [ {
+      "utf8": "Tonight, breaking news, the\nnew turn in the death of"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 18884,
+    "dDurationMs": 1335,
+    "segs": [ {
+      "utf8": "actress Hayden Panettiere."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 20319,
+    "dDurationMs": 2837,
+    "segs": [ {
+      "utf8": "ABC News tonight obtaining\nthe police report about the"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 23256,
+    "dDurationMs": 1434,
+    "segs": [ {
+      "utf8": "sudden death of the actress."
+    } ],
+    "wpWinPosId": 6,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 24790,
+    "dDurationMs": 3070,
+    "segs": [ {
+      "utf8": "The call to 911 authorities\nfinding her on again,"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 27960,
+    "dDurationMs": 3037,
+    "segs": [ {
+      "utf8": "off again, boyfriend and his\nbrother at the apartment"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 31097,
+    "dDurationMs": 1468,
+    "segs": [ {
+      "utf8": "building when they arrived."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 32665,
+    "dDurationMs": 2369,
+    "segs": [ {
+      "utf8": "What they discovered at\nthe scene and tonight her"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 35134,
+    "dDurationMs": 3003,
+    "segs": [ {
+      "utf8": "mother breaking her silence\nand the father of Panettiere's"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 38237,
+    "dDurationMs": 1068,
+    "segs": [ {
+      "utf8": "11 year old daughter."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 39405,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "and what he's now\nsaying tonight."
+    } ],
+    "wpWinPosId": 10,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 41540,
+    "dDurationMs": 2636,
+    "segs": [ {
+      "utf8": "Also breaking in Philadelphia,\nchilling video tonight"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 44276,
+    "dDurationMs": 2836,
+    "segs": [ {
+      "utf8": "showing a masked suspect\nchasing a female jogger"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 47212,
+    "dDurationMs": 1202,
+    "segs": [ {
+      "utf8": "down a city street."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 48514,
+    "dDurationMs": 3070,
+    "segs": [ {
+      "utf8": "That suspect accused of\nchasing multiple men and women"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 51684,
+    "dDurationMs": 2269,
+    "segs": [ {
+      "utf8": "asking quote, \"If\nthey're ready to die.\""
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 54053,
+    "dDurationMs": 3370,
+    "segs": [ {
+      "utf8": "A manhunt underway tonight and\nwhat police want you to know."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 57523,
+    "dDurationMs": 2136,
+    "segs": [ {
+      "utf8": "Tonight, more than\n85 million Americans"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 59759,
+    "dDurationMs": 2369,
+    "segs": [ {
+      "utf8": "dealing with dangerous\nlife-threatening heat."
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 62228,
+    "dDurationMs": 1835,
+    "segs": [ {
+      "utf8": "Temperatures hitting\ntriple digits"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 64163,
+    "dDurationMs": 1835,
+    "segs": [ {
+      "utf8": "before you factor in humidity."
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 66098,
+    "dDurationMs": 1369,
+    "segs": [ {
+      "utf8": "Ginger Zee is here."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 67567,
+    "dDurationMs": 3336,
+    "segs": [ {
+      "utf8": "Tonight, the deadly explosion,\nmultiple tanks erupting, two"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 71003,
+    "dDurationMs": 2370,
+    "segs": [ {
+      "utf8": "missing workers have\nbeen found dead."
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 73473,
+    "dDurationMs": 3303,
+    "segs": [ {
+      "utf8": "Tonight, authorities say these\ntwo young men, a Penn State"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 76876,
+    "dDurationMs": 2836,
+    "segs": [ {
+      "utf8": "grad and a former Penn State\nstudent, were allegedly"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 79812,
+    "dDurationMs": 2536,
+    "segs": [ {
+      "utf8": "leading a major cocaine\nring for students, where"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 82448,
+    "dDurationMs": 3236,
+    "segs": [ {
+      "utf8": "they allegedly traveled\nto to get the cocaine."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 85784,
+    "dDurationMs": 2670,
+    "segs": [ {
+      "utf8": "Tonight, outside Boston,\nthe emotional testimony"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 88554,
+    "dDurationMs": 2236,
+    "segs": [ {
+      "utf8": "at the Lindsay Clancy\nmurder trial, accused"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 90890,
+    "dDurationMs": 3637,
+    "segs": [ {
+      "utf8": "of killing her three young\nchildren, her own mother-in-law"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 94627,
+    "dDurationMs": 3437,
+    "segs": [ {
+      "utf8": "taking the stand for the\ndefense at what she said."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 98164,
+    "dDurationMs": 2869,
+    "segs": [ {
+      "utf8": "Tonight here dramatic\nimages, multiple tourists"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 101134,
+    "dDurationMs": 2668,
+    "segs": [ {
+      "utf8": "taking selfies, suddenly\nswept away by a raging"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 103902,
+    "dDurationMs": 3204,
+    "segs": [ {
+      "utf8": "flash flood, and then the\nrescue effort that followed."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 107206,
+    "dDurationMs": 934,
+    "segs": [ {
+      "utf8": "Tonight the U.S."
+    } ],
+    "wpWinPosId": 18,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 108241,
+    "dDurationMs": 2635,
+    "segs": [ {
+      "utf8": "Navy and new concerns\nabout conditions aboard"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 110976,
+    "dDurationMs": 2303,
+    "segs": [ {
+      "utf8": "another warship for\nAmerican sailors."
+    } ],
+    "wpWinPosId": 19,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 113379,
+    "dDurationMs": 2436,
+    "segs": [ {
+      "utf8": "A spokesperson telling\nABC News the USS"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 115915,
+    "dDurationMs": 3136,
+    "segs": [ {
+      "utf8": "Benfold, a guided missile\ndestroyer, suffering a"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 119151,
+    "dDurationMs": 2103,
+    "segs": [ {
+      "utf8": "power failure lasting four days."
+    } ],
+    "wpWinPosId": 20,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 121354,
+    "dDurationMs": 2669,
+    "segs": [ {
+      "utf8": "Limited water, toilets\nand air conditioning."
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 124123,
+    "dDurationMs": 2837,
+    "segs": [ {
+      "utf8": "Tonight the FAA investigating\ntwo separate passenger"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 127060,
+    "dDurationMs": 3703,
+    "segs": [ {
+      "utf8": "jets with blown tires on\nlanding hours apart, both"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 130863,
+    "dDurationMs": 1368,
+    "segs": [ {
+      "utf8": "at O'Hare Airport."
+    } ],
+    "wpWinPosId": 22,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 132331,
+    "dDurationMs": 1502,
+    "segs": [ {
+      "utf8": "The disturbing scene authorities"
+    } ],
+    "wpWinPosId": 20,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 133933,
+    "dDurationMs": 2001,
+    "segs": [ {
+      "utf8": "trying to get into this\ntrailer, children crying"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 136035,
+    "dDurationMs": 3070,
+    "segs": [ {
+      "utf8": "for help and what they\nfound two children who'd"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 139205,
+    "dDurationMs": 1034,
+    "segs": [ {
+      "utf8": "been kidnapped."
+    } ],
+    "wpWinPosId": 23,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 140339,
+    "dDurationMs": 1802,
+    "segs": [ {
+      "utf8": "Tonight here after we showed you"
+    } ],
+    "wpWinPosId": 20,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 142241,
+    "dDurationMs": 2870,
+    "segs": [ {
+      "utf8": "the humanoid robots on our\ntrip to China this evening"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 145211,
+    "dDurationMs": 3337,
+    "segs": [ {
+      "utf8": "that same company and what\ntheir latest robot they're"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 148648,
+    "dDurationMs": 2803,
+    "segs": [ {
+      "utf8": "calling Superman can do\njumping six and a half feet"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 151551,
+    "dDurationMs": 2568,
+    "segs": [ {
+      "utf8": "into the air and tonight\nthe community losing their"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 154219,
+    "dDurationMs": 3971,
+    "segs": [ {
+      "utf8": "high school football coach\nand his wife, a teacher, just"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 158290,
+    "dDurationMs": 1903,
+    "segs": [ {
+      "utf8": "as the school year begins."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 162862,
+    "dDurationMs": 4905,
+    "segs": [ {
+      "utf8": "From ABC News World Headquarters\nin New York, this is World"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 167867,
+    "dDurationMs": 2469,
+    "segs": [ {
+      "utf8": "News Tonight with David Muir."
+    } ],
+    "wpWinPosId": 26,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 170436,
+    "dDurationMs": 834,
+    "segs": [ {
+      "utf8": "Good evening."
+    } ],
+    "wpWinPosId": 27,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 171370,
+    "dDurationMs": 734,
+    "segs": [ {
+      "utf8": "It's great to have\nyou with us here in"
+    } ],
+    "wpWinPosId": 19,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 172204,
+    "dDurationMs": 1101,
+    "segs": [ {
+      "utf8": "a very busy Tuesday night."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 173405,
+    "dDurationMs": 2369,
+    "segs": [ {
+      "utf8": "And we begin tonight with\nthe new turn in the death of"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 175874,
+    "dDurationMs": 1436,
+    "segs": [ {
+      "utf8": "actress Hayden Panettiere."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 177410,
+    "dDurationMs": 2436,
+    "segs": [ {
+      "utf8": "ABC News tonight obtaining the\npolice report about the sudden"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 179946,
+    "dDurationMs": 2302,
+    "segs": [ {
+      "utf8": "death of the actress found\nin an apartment building"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 182348,
+    "dDurationMs": 1101,
+    "segs": [ {
+      "utf8": "in South Carolina."
+    } ],
+    "wpWinPosId": 22,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 183549,
+    "dDurationMs": 2870,
+    "segs": [ {
+      "utf8": "The call to 911 on the scene\nauthorities finding her on"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 186519,
+    "dDurationMs": 2836,
+    "segs": [ {
+      "utf8": "again off again boyfriend\nand his brother when they"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 189455,
+    "dDurationMs": 2703,
+    "segs": [ {
+      "utf8": "arrived and what else they\ndiscovered while there."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 192258,
+    "dDurationMs": 2302,
+    "segs": [ {
+      "utf8": "Tonight her mother breaking\nher silence and the"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 194660,
+    "dDurationMs": 2102,
+    "segs": [ {
+      "utf8": "father of Panettiere's\n11 year old daughter"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 196862,
+    "dDurationMs": 1602,
+    "segs": [ {
+      "utf8": "and what he's now saying."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 198565,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "ABC Stephanie Ramos\nleading us off tonight."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 201668,
+    "dDurationMs": 2435,
+    "segs": [ {
+      "utf8": "Tonight, a police report\nobtained by ABC News"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 204203,
+    "dDurationMs": 2303,
+    "segs": [ {
+      "utf8": "is revealing new details\nabout the death of"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 206606,
+    "dDurationMs": 2168,
+    "segs": [ {
+      "utf8": "36-year-old Hayden Panettiere."
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 208874,
+    "dDurationMs": 3137,
+    "segs": [ {
+      "utf8": "The actress' on-and-off-again\nboyfriend, Brian Hickerson, and"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 212111,
+    "dDurationMs": 3270,
+    "segs": [ {
+      "utf8": "his brother, Zach, were inside\nthe Greenville, South Carolina,"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 215481,
+    "dDurationMs": 2970,
+    "segs": [ {
+      "utf8": "apartment when police arrived\nafter they called 911."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 221221,
+    "dDurationMs": 2368,
+    "segs": [ {
+      "utf8": "Police reporting that\nthe boyfriend's brother,"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 223690,
+    "dDurationMs": 2301,
+    "segs": [ {
+      "utf8": "Zach, was very emotional\nwhile EMS were working"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 226092,
+    "dDurationMs": 933,
+    "segs": [ {
+      "utf8": "on Hayden."
+    } ],
+    "wpWinPosId": 29,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 227126,
+    "dDurationMs": 2169,
+    "segs": [ {
+      "utf8": "The longtime boyfriend,\nBrian, did not become"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 229395,
+    "dDurationMs": 3170,
+    "segs": [ {
+      "utf8": "emotional until EMS declared\nher officially deceased,"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 232665,
+    "dDurationMs": 3570,
+    "segs": [ {
+      "utf8": "showing the officer the bag of\nmedication Hayden is currently"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 236335,
+    "dDurationMs": 2469,
+    "segs": [ {
+      "utf8": "on. Panettiere's\npreliminary autopsy found"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 238905,
+    "dDurationMs": 2436,
+    "segs": [ {
+      "utf8": "no signs of trauma, and\npolice say there were"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 241441,
+    "dDurationMs": 2802,
+    "segs": [ {
+      "utf8": "no signs of foul play or\nsuspicious circumstances."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 244343,
+    "dDurationMs": 2670,
+    "segs": [ {
+      "utf8": "The couple had a troubling\nhistory that included"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 247113,
+    "dDurationMs": 934,
+    "segs": [ {
+      "utf8": "domestic violence."
+    } ],
+    "wpWinPosId": 22,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 248147,
+    "dDurationMs": 2169,
+    "segs": [ {
+      "utf8": "Hickerson was charged\nwith multiple counts"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 250416,
+    "dDurationMs": 3671,
+    "segs": [ {
+      "utf8": "of felony abuse and he pleaded\nno contest, serving 45 days in"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 254187,
+    "dDurationMs": 4337,
+    "segs": [ {
+      "utf8": "jail. In her memoir, Panettiere\nwrote, \"One night he busts"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 258624,
+    "dDurationMs": 3104,
+    "segs": [ {
+      "utf8": "up my face so badly I don't\nleave the house for weeks,\""
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 261828,
+    "dDurationMs": 3436,
+    "segs": [ {
+      "utf8": "later describing being\nlocked in a cycle of abuse."
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 265364,
+    "dDurationMs": 4771,
+    "segs": [ {
+      "utf8": "The abuse, the fact that I\nallowed this person not only"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 270235,
+    "dDurationMs": 3671,
+    "segs": [ {
+      "utf8": "into my life, but for how\nlong I put up with it."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 274006,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "Here, reading her own\njournal, I realized"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 277042,
+    "dDurationMs": 3905,
+    "segs": [ {
+      "utf8": "that I was more afraid of\nbeing alone than being abused."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 281047,
+    "dDurationMs": 2735,
+    "segs": [ {
+      "utf8": "In a recent interview with\nTMZ, Hickerson said they"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 283882,
+    "dDurationMs": 2871,
+    "segs": [ {
+      "utf8": "were still friends and\nacknowledged having regrets."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 286853,
+    "dDurationMs": 7340,
+    "segs": [ {
+      "utf8": "went into such a dark place,\nman, drugs, alcohol, beauty,"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 294293,
+    "dDurationMs": 6040,
+    "segs": [ {
+      "utf8": "good God almighty, she's\n5'2\" on paper, 4'11\" in"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 300433,
+    "dDurationMs": 3236,
+    "segs": [ {
+      "utf8": "real life, I mean, come on."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 303769,
+    "dDurationMs": 2770,
+    "segs": [ {
+      "utf8": "In a new interview, Panettiere's\nmother says, \"This person"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 306639,
+    "dDurationMs": 2769,
+    "segs": [ {
+      "utf8": "in her life that we have been\ntrying to get rid of her quite"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 309508,
+    "dDurationMs": 2737,
+    "segs": [ {
+      "utf8": "some time was with her at her\ndeath, and that was Brian"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 312345,
+    "dDurationMs": 3336,
+    "segs": [ {
+      "utf8": "Hickerson. But tonight, again,\npolice say they found nothing"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 315782,
+    "dDurationMs": 2735,
+    "segs": [ {
+      "utf8": "suspicious. Panettiere's\nmother calling Hayden"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 318617,
+    "dDurationMs": 2303,
+    "segs": [ {
+      "utf8": "an amazingly talented\nperson, adding, \"I"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 321020,
+    "dDurationMs": 2903,
+    "segs": [ {
+      "utf8": "think young people who grow\nup in the entertainment"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 324023,
+    "dDurationMs": 1602,
+    "segs": [ {
+      "utf8": "industry, it is a struggle.\""
+    } ],
+    "wpWinPosId": 6,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 325725,
+    "dDurationMs": 2903,
+    "segs": [ {
+      "utf8": "Meanwhile, Ukrainian boxer\nof Vladimir Klitschko,"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 328728,
+    "dDurationMs": 2201,
+    "segs": [ {
+      "utf8": "Panettiere's former\nfiance and the father"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 331029,
+    "dDurationMs": 2670,
+    "segs": [ {
+      "utf8": "of her daughter, Kaya, is\nhonoring her, writing,"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 333800,
+    "dDurationMs": 2768,
+    "segs": [ {
+      "utf8": "\"She built an incredible\ncareer through immense"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 336669,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "talent while also facing\nthe darker sides of a"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 339338,
+    "dDurationMs": 1502,
+    "segs": [ {
+      "utf8": "very demanding industry."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 340940,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "To our daughter, Kaya,\nI will always speak"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 343442,
+    "dDurationMs": 3504,
+    "segs": [ {
+      "utf8": "of her mother with respect and\nmake sure she remembers the"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 347046,
+    "dDurationMs": 934,
+    "segs": [ {
+      "utf8": "person she was.\""
+    } ],
+    "wpWinPosId": 18,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 348080,
+    "dDurationMs": 1769,
+    "segs": [ {
+      "utf8": "And David, We have\nreached out to Brian"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 349949,
+    "dDurationMs": 2502,
+    "segs": [ {
+      "utf8": "Hickerson through his attorney\nfor comment, but we have not"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 352551,
+    "dDurationMs": 967,
+    "segs": [ {
+      "utf8": "heard back."
+    } ],
+    "wpWinPosId": 31,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 353619,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "Tonight, there are growing\ntributes to Hayden"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 356655,
+    "dDurationMs": 3104,
+    "segs": [ {
+      "utf8": "Panettiere, fans remembering\nall of her beloved"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 359859,
+    "dDurationMs": 3336,
+    "segs": [ {
+      "utf8": "roles and the joy that\nshe brought to so many."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 363295,
+    "dDurationMs": 1301,
+    "segs": [ {
+      "utf8": "David. Stephanie Ramos leading"
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 364696,
+    "dDurationMs": 668,
+    "segs": [ {
+      "utf8": "us off here tonight."
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 365464,
+    "dDurationMs": 968,
+    "segs": [ {
+      "utf8": "Steph, thank you."
+    } ],
+    "wpWinPosId": 33,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 366532,
+    "dDurationMs": 2202,
+    "segs": [ {
+      "utf8": "Also breaking in Philadelphia\ntonight, a manhunt"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 368834,
+    "dDurationMs": 1068,
+    "segs": [ {
+      "utf8": "underway at this hour."
+    } ],
+    "wpWinPosId": 34,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 370002,
+    "dDurationMs": 1602,
+    "segs": [ {
+      "utf8": "A suspect seen chasing a woman."
+    } ],
+    "wpWinPosId": 35,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 371704,
+    "dDurationMs": 1935,
+    "segs": [ {
+      "utf8": "They say he has\nchased others too."
+    } ],
+    "wpWinPosId": 36,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 373739,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "The chilling video right\nhere tonight showing the"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 376408,
+    "dDurationMs": 2903,
+    "segs": [ {
+      "utf8": "suspect wearing a disturbing\nHalloween doll faced mask"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 379411,
+    "dDurationMs": 2736,
+    "segs": [ {
+      "utf8": "seen here chasing a female\njogger down a city street."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 382248,
+    "dDurationMs": 2435,
+    "segs": [ {
+      "utf8": "The suspect accused of\nchasing multiple men and"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 384783,
+    "dDurationMs": 2503,
+    "segs": [ {
+      "utf8": "women and asking if they're,\nquote, ready to die."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 387386,
+    "dDurationMs": 1836,
+    "segs": [ {
+      "utf8": "Here's Rhiannon Ally."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 389322,
+    "dDurationMs": 2335,
+    "segs": [ {
+      "utf8": "And tonight, a growing\nsearch for this masked"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 391757,
+    "dDurationMs": 2836,
+    "segs": [ {
+      "utf8": "attacker who Philadelphia\npolice say is terrorizing"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 394693,
+    "dDurationMs": 1469,
+    "segs": [ {
+      "utf8": "people across the city."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 396262,
+    "dDurationMs": 3937,
+    "segs": [ {
+      "utf8": "Chilling video released by\ninvestigators show a man wearing"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 400299,
+    "dDurationMs": 3570,
+    "segs": [ {
+      "utf8": "a disturbing doll face mask,\nnormally seen at Halloween,"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 403969,
+    "dDurationMs": 3337,
+    "segs": [ {
+      "utf8": "chasing a female jogger near\nCity Hall around 5.30 a.m."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 407407,
+    "dDurationMs": 2735,
+    "segs": [ {
+      "utf8": "He's actively engaged in\nrunning up to people."
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 410242,
+    "dDurationMs": 3737,
+    "segs": [ {
+      "utf8": "It looks like he's attempting\nto scare or antagonize them."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 414079,
+    "dDurationMs": 2436,
+    "segs": [ {
+      "utf8": "Watch as a woman\njogs before sunrise."
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 416615,
+    "dDurationMs": 2703,
+    "segs": [ {
+      "utf8": "Seconds later, the suspect\nappears behind her,"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 419418,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "following her step for\nstep as they disappear"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 422087,
+    "dDurationMs": 1001,
+    "segs": [ {
+      "utf8": "out of frame."
+    } ],
+    "wpWinPosId": 27,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 423189,
+    "dDurationMs": 2135,
+    "segs": [ {
+      "utf8": "Police believe he's\nthreatened or chased at"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 425424,
+    "dDurationMs": 1201,
+    "segs": [ {
+      "utf8": "least half a dozen people."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 426726,
+    "dDurationMs": 2668,
+    "segs": [ {
+      "utf8": "While he was harassing\nthat jogger, the suspect"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 429495,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "held up a cell phone and\nsaid just five words"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 431997,
+    "dDurationMs": 1269,
+    "segs": [ {
+      "utf8": "that terrified the woman."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 433366,
+    "dDurationMs": 3203,
+    "segs": [ {
+      "utf8": "He's holding a cell phone up\nin front of her, at which time"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 436669,
+    "dDurationMs": 1835,
+    "segs": [ {
+      "utf8": "he asks her, \"Are\nyou ready to die."
+    } ],
+    "wpWinPosId": 10,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 438604,
+    "dDurationMs": 2870,
+    "segs": [ {
+      "utf8": "Jameika says when that\nsuspect turned his attention"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 441574,
+    "dDurationMs": 2769,
+    "segs": [ {
+      "utf8": "to her, she screamed and\nkicked the attacker in the"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 444443,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "chest. I blocked my face,\nmade sure that my center line"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 447479,
+    "dDurationMs": 868,
+    "segs": [ {
+      "utf8": "was protected."
+    } ],
+    "wpWinPosId": 38,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 448447,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "And then he also started\nto put his hands"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 450582,
+    "dDurationMs": 2770,
+    "segs": [ {
+      "utf8": "up. But I could tell that he\nhad never been in a fight"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 453452,
+    "dDurationMs": 3137,
+    "segs": [ {
+      "utf8": "before. Police say the suspect\nis seen using a cell phone,"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 456689,
+    "dDurationMs": 2536,
+    "segs": [ {
+      "utf8": "appearing to film the\nterrifying encounters."
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 459325,
+    "dDurationMs": 2602,
+    "segs": [ {
+      "utf8": "Intelligence units now\nscouring social media."
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 462027,
+    "dDurationMs": 2770,
+    "segs": [ {
+      "utf8": "He's also observed, which\nis a tell, holding a cell"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 464897,
+    "dDurationMs": 3103,
+    "segs": [ {
+      "utf8": "phone in his left hand, and\nthe screen appears to be lit."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 475508,
+    "dDurationMs": 3536,
+    "segs": [ {
+      "utf8": "David police say the suspect,\nwho they believe is between"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 479144,
+    "dDurationMs": 3471,
+    "segs": [ {
+      "utf8": "16 and 20 years old, will face\nmultiple charges including"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 482715,
+    "dDurationMs": 2535,
+    "segs": [ {
+      "utf8": "harassment and assault\nwhen they find him."
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 485350,
+    "dDurationMs": 834,
+    "segs": [ {
+      "utf8": "Rhiannon Ally, tonight."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 486284,
+    "dDurationMs": 1102,
+    "segs": [ {
+      "utf8": "Rhiannon, thank you."
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 487486,
+    "dDurationMs": 1868,
+    "segs": [ {
+      "utf8": "This evening, more than 85\nmillion Americans under heat"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 489454,
+    "dDurationMs": 1403,
+    "segs": [ {
+      "utf8": "alerts, oppressive triple digit"
+    } ],
+    "wpWinPosId": 35,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 496996,
+    "dDurationMs": 5572,
+    "segs": [ {
+      "utf8": "Heat Warnings."
+    } ],
+    "wpWinPosId": 38,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 506005,
+    "dDurationMs": 933,
+    "segs": [ {
+      "utf8": "Hi, David."
+    } ],
+    "wpWinPosId": 29,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 507039,
+    "dDurationMs": 2736,
+    "segs": [ {
+      "utf8": "Miami hit 100 degrees\ntoday, something they've"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 509875,
+    "dDurationMs": 3704,
+    "segs": [ {
+      "utf8": "only ever done one other time\nsince records began in 1895."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 513679,
+    "dDurationMs": 1869,
+    "segs": [ {
+      "utf8": "So this is hotter\nthan just summer."
+    } ],
+    "wpWinPosId": 10,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 515648,
+    "dDurationMs": 1968,
+    "segs": [ {
+      "utf8": "And that's why you see\nextreme heat warnings"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 517716,
+    "dDurationMs": 2303,
+    "segs": [ {
+      "utf8": "tomorrow from Wilmington\nto Jacksonville, back to"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 520119,
+    "dDurationMs": 1368,
+    "segs": [ {
+      "utf8": "Oklahoma City and Little Rock."
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 521587,
+    "dDurationMs": 3003,
+    "segs": [ {
+      "utf8": "Charleston has had 95\ndegrees or higher for the"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 524690,
+    "dDurationMs": 1401,
+    "segs": [ {
+      "utf8": "last nine days in a row."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 526192,
+    "dDurationMs": 1567,
+    "segs": [ {
+      "utf8": "That's something they've\nonly done three other"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 527859,
+    "dDurationMs": 869,
+    "segs": [ {
+      "utf8": "times in recorded history."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 528828,
+    "dDurationMs": 1534,
+    "segs": [ {
+      "utf8": "We're going to stay\nthis way through the"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 530462,
+    "dDurationMs": 934,
+    "segs": [ {
+      "utf8": "weekend for most folks."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 531497,
+    "dDurationMs": 1901,
+    "segs": [ {
+      "utf8": "There's a lot of heat in\nthe southwest too, but"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 533498,
+    "dDurationMs": 2236,
+    "segs": [ {
+      "utf8": "there are also storms firing\nup overnight tonight."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 535834,
+    "dDurationMs": 2136,
+    "segs": [ {
+      "utf8": "Kansas City could see\ndamaging winds by tomorrow."
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 538070,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "St. Louis, David."
+    } ],
+    "wpWinPosId": 33,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 539305,
+    "dDurationMs": 1668,
+    "segs": [ {
+      "utf8": "Ginger, we'll see you first\nthing in the morning on GMA."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 541073,
+    "dDurationMs": 968,
+    "segs": [ {
+      "utf8": "Thank you, Ginger."
+    } ],
+    "wpWinPosId": 22,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 542141,
+    "dDurationMs": 2068,
+    "segs": [ {
+      "utf8": "Tonight, the deadly\nexplosion at an industrial"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 544309,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "facility in Toledo, Ohio."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 545544,
+    "dDurationMs": 2002,
+    "segs": [ {
+      "utf8": "Two missing workers were killed."
+    } ],
+    "wpWinPosId": 20,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 547647,
+    "dDurationMs": 1701,
+    "segs": [ {
+      "utf8": "Multiple blasts tearing\nthrough that plant."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 549448,
+    "dDurationMs": 2970,
+    "segs": [ {
+      "utf8": "Authorities say it stored\ncleaning chemicals, flames more"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 552518,
+    "dDurationMs": 1234,
+    "segs": [ {
+      "utf8": "than 100 feet into the air."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 553852,
+    "dDurationMs": 1569,
+    "segs": [ {
+      "utf8": "The building\npartially collapsing."
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 555521,
+    "dDurationMs": 3169,
+    "segs": [ {
+      "utf8": "Fire officials say 12 workers\ndid make it out, most of"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 558790,
+    "dDurationMs": 1536,
+    "segs": [ {
+      "utf8": "them with minor injuries."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 560426,
+    "dDurationMs": 3069,
+    "segs": [ {
+      "utf8": "Tonight, authorities say two\nyoung men, a Penn State grad"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 563595,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "and a former Penn State\nstudent, were the leaders of a"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 566631,
+    "dDurationMs": 1535,
+    "segs": [ {
+      "utf8": "cocaine ring for students."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 568266,
+    "dDurationMs": 2870,
+    "segs": [ {
+      "utf8": "Authorities say they traveled\nto Philadelphia and New York"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 571236,
+    "dDurationMs": 1469,
+    "segs": [ {
+      "utf8": "City to get their cocaine haul."
+    } ],
+    "wpWinPosId": 35,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 572805,
+    "dDurationMs": 1869,
+    "segs": [ {
+      "utf8": "Here's Matt Rivers tonight."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 574774,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "Tonight, officials say you're\nlooking at the faces of the"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 577276,
+    "dDurationMs": 2502,
+    "segs": [ {
+      "utf8": "two alleged ringleaders\naccused accused of running a"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 579878,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "major cocaine operation\nthrough multiple Penn State"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 582915,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "frat houses, allegedly\nmaking trips to New York"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 585585,
+    "dDurationMs": 2635,
+    "segs": [ {
+      "utf8": "City and Philadelphia to\nrefill their supplies."
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 588321,
+    "dDurationMs": 2702,
+    "segs": [ {
+      "utf8": "Agostino Abatiello, a\nPenn State grad, turning"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 591123,
+    "dDurationMs": 1368,
+    "segs": [ {
+      "utf8": "himself in this morning."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 592591,
+    "dDurationMs": 2970,
+    "segs": [ {
+      "utf8": "Police say he and former\nstudent Thomas Robinson"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 595661,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "brought in kilos of\ncocaine at a time in 2023"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 598331,
+    "dDurationMs": 1300,
+    "segs": [ {
+      "utf8": "and 2024."
+    } ],
+    "wpWinPosId": 39,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 599731,
+    "dDurationMs": 2670,
+    "segs": [ {
+      "utf8": "There was nothing junior\nor childlike about"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 602501,
+    "dDurationMs": 1268,
+    "segs": [ {
+      "utf8": "this type of conduct."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 603869,
+    "dDurationMs": 3170,
+    "segs": [ {
+      "utf8": "This was an upper-level\ntrafficking organization for"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 607139,
+    "dDurationMs": 1701,
+    "segs": [ {
+      "utf8": "this region in Pennsylvania."
+    } ],
+    "wpWinPosId": 6,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 608940,
+    "dDurationMs": 3071,
+    "segs": [ {
+      "utf8": "Officials say Delta Upsilon\nand Sigma Chi frat houses,"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 612111,
+    "dDurationMs": 2769,
+    "segs": [ {
+      "utf8": "both off-campus, were used\nto package the drugs, part"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 614981,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "of what authorities\ncalled a hazing ritual."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 617116,
+    "dDurationMs": 4638,
+    "segs": [ {
+      "utf8": "In fact, we found a pattern\nof events that showed cutting"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 621854,
+    "dDurationMs": 4805,
+    "segs": [ {
+      "utf8": "and bagging cocaine was, for\nsome pledges, an indoctrination"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 626759,
+    "dDurationMs": 3670,
+    "segs": [ {
+      "utf8": "into the Delta Upsilon and\nSigma Chi fraternities."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 630529,
+    "dDurationMs": 3470,
+    "segs": [ {
+      "utf8": "Thirteen current and former\nstudents charged in total, five"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 634099,
+    "dDurationMs": 3237,
+    "segs": [ {
+      "utf8": "with felony counts of corrupt\norganizations and conspiracy,"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 637436,
+    "dDurationMs": 1268,
+    "segs": [ {
+      "utf8": "the rest with misdemeanors."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 638804,
+    "dDurationMs": 3270,
+    "segs": [ {
+      "utf8": "A 14th person, Pittsburgh-based\nattorney Paul Robinson, also"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 642174,
+    "dDurationMs": 2669,
+    "segs": [ {
+      "utf8": "charged with interfering\nwith the investigation."
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 644943,
+    "dDurationMs": 1835,
+    "segs": [ {
+      "utf8": "He's the father of\nthe other alleged"
+    } ],
+    "wpWinPosId": 36,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 646878,
+    "dDurationMs": 1335,
+    "segs": [ {
+      "utf8": "leader, Thomas Robinson."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 648313,
+    "dDurationMs": 2503,
+    "segs": [ {
+      "utf8": "David, Penn State University\nsaying in part that they"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 650916,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "are horrified by these\naccusations, adding quote"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 653418,
+    "dDurationMs": 2436,
+    "segs": [ {
+      "utf8": "\"criminal activity including\nhazing has no place"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 655954,
+    "dDurationMs": 968,
+    "segs": [ {
+      "utf8": "at our institution.\""
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 657022,
+    "dDurationMs": 1302,
+    "segs": [ {
+      "utf8": "David? Matt Rivers tonight."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 658424,
+    "dDurationMs": 933,
+    "segs": [ {
+      "utf8": "Thank you, Matt."
+    } ],
+    "wpWinPosId": 18,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 659458,
+    "dDurationMs": 1902,
+    "segs": [ {
+      "utf8": "Tonight outside Boston,\nemotional testimony"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 661460,
+    "dDurationMs": 1535,
+    "segs": [ {
+      "utf8": "at the Lindsay\nClancy murder trial."
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 663095,
+    "dDurationMs": 1501,
+    "segs": [ {
+      "utf8": "The mother accused\nof killing her"
+    } ],
+    "wpWinPosId": 36,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 664696,
+    "dDurationMs": 1002,
+    "segs": [ {
+      "utf8": "three young children."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 665798,
+    "dDurationMs": 1334,
+    "segs": [ {
+      "utf8": "Her own mother-in-law taking"
+    } ],
+    "wpWinPosId": 6,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 667232,
+    "dDurationMs": 1902,
+    "segs": [ {
+      "utf8": "Taking the stand\nfor the defense."
+    } ],
+    "wpWinPosId": 40,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 669234,
+    "dDurationMs": 2236,
+    "segs": [ {
+      "utf8": "Here's Aaron Katersky."
+    } ],
+    "wpWinPosId": 34,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 671570,
+    "dDurationMs": 2602,
+    "segs": [ {
+      "utf8": "Tonight Lindsay Clancy's\nmother-in-law testifying"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 674272,
+    "dDurationMs": 2069,
+    "segs": [ {
+      "utf8": "the young mother was\nbegging for help in the"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 676441,
+    "dDurationMs": 2803,
+    "segs": [ {
+      "utf8": "weeks before she strangled her\nthree children in the basement,"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 679344,
+    "dDurationMs": 2336,
+    "segs": [ {
+      "utf8": "then jumped from a second\nfloor window, leaving"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 681780,
+    "dDurationMs": 768,
+    "segs": [ {
+      "utf8": "her paralyzed."
+    } ],
+    "wpWinPosId": 38,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 682648,
+    "dDurationMs": 1602,
+    "segs": [ {
+      "utf8": "Lindsay was struggling."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 684350,
+    "dDurationMs": 1701,
+    "segs": [ {
+      "utf8": "We were all very concerned."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 686151,
+    "dDurationMs": 2937,
+    "segs": [ {
+      "utf8": "Susan Clancy described her\ndaughter-in-law as nurturing,"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 689188,
+    "dDurationMs": 2769,
+    "segs": [ {
+      "utf8": "loving, a wonderful mother\nwho who confided that she"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 692058,
+    "dDurationMs": 2602,
+    "segs": [ {
+      "utf8": "had insomnia, was losing\nher appetite and was"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 694760,
+    "dDurationMs": 1401,
+    "segs": [ {
+      "utf8": "growing anxious and sad."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 696261,
+    "dDurationMs": 4071,
+    "segs": [ {
+      "utf8": "Did you find that Lindsay was\ninterested at all times in"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 700432,
+    "dDurationMs": 2369,
+    "segs": [ {
+      "utf8": "getting better and see doctors?"
+    } ],
+    "wpWinPosId": 35,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 702901,
+    "dDurationMs": 767,
+    "segs": [ {
+      "utf8": "Very much so."
+    } ],
+    "wpWinPosId": 27,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 703768,
+    "dDurationMs": 1936,
+    "segs": [ {
+      "utf8": "She was begging for help."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 705804,
+    "dDurationMs": 2603,
+    "segs": [ {
+      "utf8": "Prosecutors questioned\nwhether Lindsay Clancy was"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 708507,
+    "dDurationMs": 1201,
+    "segs": [ {
+      "utf8": "really in such distress."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 709808,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "Did the kids come to stay at\nyour house overnight so that"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 712477,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "she could get some sleep?"
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 713712,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "No, they didn't."
+    } ],
+    "wpWinPosId": 18,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 714947,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "A psychologist who evaluated\nLindsay Clancy after she killed"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 717616,
+    "dDurationMs": 2502,
+    "segs": [ {
+      "utf8": "the children and tried to\nkill herself described a"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 720218,
+    "dDurationMs": 2837,
+    "segs": [ {
+      "utf8": "phone call she made to her\nhusband from a hospital bed."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 723155,
+    "dDurationMs": 8409,
+    "segs": [ {
+      "utf8": "She had said that she heard a\nmale voice ordering her, telling"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 731664,
+    "dDurationMs": 8174,
+    "segs": [ {
+      "utf8": "her that she didn't have any\nchoice, but she had to kill her"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 739938,
+    "dDurationMs": 4672,
+    "segs": [ {
+      "utf8": "children and then kill herself."
+    } ],
+    "wpWinPosId": 35,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 744710,
+    "dDurationMs": 3169,
+    "segs": [ {
+      "utf8": "But prosecutors argue Clancy\nknew what she was doing and"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 747979,
+    "dDurationMs": 1869,
+    "segs": [ {
+      "utf8": "carefully planned the killings."
+    } ],
+    "wpWinPosId": 35,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 749948,
+    "dDurationMs": 2903,
+    "segs": [ {
+      "utf8": "If Clancy's convicted, David,\nshe faces life in prison."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 752951,
+    "dDurationMs": 2803,
+    "segs": [ {
+      "utf8": "If not, she would be committed\nto a state psychiatric"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 755854,
+    "dDurationMs": 1301,
+    "segs": [ {
+      "utf8": "hospital for treatment."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 757255,
+    "dDurationMs": 1068,
+    "segs": [ {
+      "utf8": "David. Aaron Katersky on"
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 758423,
+    "dDurationMs": 701,
+    "segs": [ {
+      "utf8": "this again tonight."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 759224,
+    "dDurationMs": 1168,
+    "segs": [ {
+      "utf8": "Aaron, thank you."
+    } ],
+    "wpWinPosId": 33,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 760492,
+    "dDurationMs": 2603,
+    "segs": [ {
+      "utf8": "This evening, dramatic images\nshowing multiple tourists taking"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 763195,
+    "dDurationMs": 2469,
+    "segs": [ {
+      "utf8": "selfies suddenly swept\naway by a raging flash"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 765764,
+    "dDurationMs": 1268,
+    "segs": [ {
+      "utf8": "flood in Thailand."
+    } ],
+    "wpWinPosId": 22,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 767132,
+    "dDurationMs": 2069,
+    "segs": [ {
+      "utf8": "Here's James Longman now."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 769301,
+    "dDurationMs": 2335,
+    "segs": [ {
+      "utf8": "-Tonight, a terrifying\nflash flood"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 771736,
+    "dDurationMs": 4205,
+    "segs": [ {
+      "utf8": "sweeping away\ntourists in Thailand."
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 776041,
+    "dDurationMs": 2636,
+    "segs": [ {
+      "utf8": "People shouting, a park\nofficial blowing a whistle,"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 778777,
+    "dDurationMs": 4071,
+    "segs": [ {
+      "utf8": "as usually calm water\nturns into raging rapids."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 782948,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "Watch as those trying to\nescape lose their footing."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 785617,
+    "dDurationMs": 5105,
+    "segs": [ {
+      "utf8": "This man tries to pull another\nfree, but his hand slips."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 790822,
+    "dDurationMs": 2036,
+    "segs": [ {
+      "utf8": "Another man stuck in\nthe middle of the river"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 792958,
+    "dDurationMs": 3504,
+    "segs": [ {
+      "utf8": "as the water churns around him\nbefore he and another person"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 796562,
+    "dDurationMs": 2735,
+    "segs": [ {
+      "utf8": "are taken by the current,\neventually washing up"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 799397,
+    "dDurationMs": 1101,
+    "segs": [ {
+      "utf8": "further downstream."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 800598,
+    "dDurationMs": 2637,
+    "segs": [ {
+      "utf8": "The group had been taking\nselfies near the famous Mei"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 803335,
+    "dDurationMs": 2736,
+    "segs": [ {
+      "utf8": "Tsao waterfall in Chiang\nMai, a major attraction for"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 806171,
+    "dDurationMs": 1335,
+    "segs": [ {
+      "utf8": "international visitors."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 807606,
+    "dDurationMs": 4204,
+    "segs": [ {
+      "utf8": "Miraculously, authorities say\neveryone swept away survived."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 811910,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "Park officials say they alerted\nthose there to the rising water,"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 814946,
+    "dDurationMs": 2669,
+    "segs": [ {
+      "utf8": "but the flood came in too\nquickly for some to escape."
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 817716,
+    "dDurationMs": 2736,
+    "segs": [ {
+      "utf8": "As that incredible video\nshows, David, this was"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 820552,
+    "dDurationMs": 1168,
+    "segs": [ {
+      "utf8": "a horrendous ordeal."
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 821820,
+    "dDurationMs": 2703,
+    "segs": [ {
+      "utf8": "One person was taken to\nthe hospital, but luckily,"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 824623,
+    "dDurationMs": 2803,
+    "segs": [ {
+      "utf8": "park officials say there\nwere only minor injuries."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 827526,
+    "dDurationMs": 1301,
+    "segs": [ {
+      "utf8": "David. Our chief international"
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 828927,
+    "dDurationMs": 1168,
+    "segs": [ {
+      "utf8": "correspondent, James Longman."
+    } ],
+    "wpWinPosId": 26,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 830195,
+    "dDurationMs": 1101,
+    "segs": [ {
+      "utf8": "Thanks, James."
+    } ],
+    "wpWinPosId": 38,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 831396,
+    "dDurationMs": 2536,
+    "segs": [ {
+      "utf8": "Tonight, there are new concerns\nabout conditions aboard"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 834032,
+    "dDurationMs": 568,
+    "segs": [ {
+      "utf8": "another U.S."
+    } ],
+    "wpWinPosId": 41,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 834700,
+    "dDurationMs": 800,
+    "segs": [ {
+      "utf8": "Navy warship."
+    } ],
+    "wpWinPosId": 27,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 835600,
+    "dDurationMs": 3137,
+    "segs": [ {
+      "utf8": "John Karl and what\nhe's learned now."
+    } ],
+    "wpWinPosId": 36,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 838837,
+    "dDurationMs": 2836,
+    "segs": [ {
+      "utf8": "Tonight growing questions\nabout whether the U.S."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 841773,
+    "dDurationMs": 2069,
+    "segs": [ {
+      "utf8": "Navy is now stretched\ntoo thin, after"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 843943,
+    "dDurationMs": 3069,
+    "segs": [ {
+      "utf8": "new reports of grim\nliving conditions aboard"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 847112,
+    "dDurationMs": 1502,
+    "segs": [ {
+      "utf8": "a second massive ship."
+    } ],
+    "wpWinPosId": 34,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 848714,
+    "dDurationMs": 3303,
+    "segs": [ {
+      "utf8": "Some 300 sailors on the\ndestroyer the USS Benfold,"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 852117,
+    "dDurationMs": 3771,
+    "segs": [ {
+      "utf8": "deployed in the South China Sea,\nwent four days with limited"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 855988,
+    "dDurationMs": 3503,
+    "segs": [ {
+      "utf8": "drinking water and no working\ntoilets or air conditioning"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 859591,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "after the ship suffered a\ncomplete loss of power."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 862628,
+    "dDurationMs": 2669,
+    "segs": [ {
+      "utf8": "After four days adrift,\nthe Benfold was towed"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 865397,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "to the Philippines."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 866632,
+    "dDurationMs": 2702,
+    "segs": [ {
+      "utf8": "A Navy spokesman cites\nproblems with its generators,"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 869434,
+    "dDurationMs": 2236,
+    "segs": [ {
+      "utf8": "adding, \"There were no\ninjuries to the crew,"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 871770,
+    "dDurationMs": 3670,
+    "segs": [ {
+      "utf8": "who demonstrated resilience,\ngrit, professionalism and"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 875540,
+    "dDurationMs": 1636,
+    "segs": [ {
+      "utf8": "unwavering steadiness.\""
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 877276,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "The Benfold was part of the\nCarrier Strike Group heading"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 879945,
+    "dDurationMs": 3504,
+    "segs": [ {
+      "utf8": "to the Middle East to relieve\nthe USS Lincoln, whose crew"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 883549,
+    "dDurationMs": 4171,
+    "segs": [ {
+      "utf8": "was bent at sea for more than\n260 days as part of the war"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 887820,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "Iran. Amid deteriorating\nconditions"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 890322,
+    "dDurationMs": 3237,
+    "segs": [ {
+      "utf8": "on the Lincoln, some sailors'\nfamilies told the Military Times"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 893659,
+    "dDurationMs": 2835,
+    "segs": [ {
+      "utf8": "that at least two sailors\ntried to jump overboard."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 896594,
+    "dDurationMs": 668,
+    "segs": [ {
+      "utf8": "A U.S."
+    } ],
+    "wpWinPosId": 42,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 897730,
+    "dDurationMs": 2568,
+    "segs": [ {
+      "utf8": "official told ABC News\nthat a sailor did go into"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 900398,
+    "dDurationMs": 1836,
+    "segs": [ {
+      "utf8": "the water and was rescued."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 902334,
+    "dDurationMs": 3570,
+    "segs": [ {
+      "utf8": "Defense Secretary Pete Hegseth,\nwho in a highly unusual move"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 906004,
+    "dDurationMs": 3437,
+    "segs": [ {
+      "utf8": "for a defense secretary, was\ncampaigning for Republicans"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 909541,
+    "dDurationMs": 2669,
+    "segs": [ {
+      "utf8": "in Iowa this week has\ndenied there's a problem."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 912310,
+    "dDurationMs": 4138,
+    "segs": [ {
+      "utf8": "We make sure that every ship,\nevery crew, every captain"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 916548,
+    "dDurationMs": 4438,
+    "segs": [ {
+      "utf8": "has everything we can provide\nthem at every single moment."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 921086,
+    "dDurationMs": 4003,
+    "segs": [ {
+      "utf8": "And David, the power failure\naboard the USS Benfold happened"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 925189,
+    "dDurationMs": 1670,
+    "segs": [ {
+      "utf8": "more than three weeks ago."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 926959,
+    "dDurationMs": 3002,
+    "segs": [ {
+      "utf8": "It's unclear why the Pentagon\nwaited so long, waited"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 930061,
+    "dDurationMs": 1235,
+    "segs": [ {
+      "utf8": "so long to disclose it."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 931396,
+    "dDurationMs": 1468,
+    "segs": [ {
+      "utf8": "John Karl live at the\nWhite House for us."
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 932964,
+    "dDurationMs": 901,
+    "segs": [ {
+      "utf8": "John, thanks."
+    } ],
+    "wpWinPosId": 27,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 933965,
+    "dDurationMs": 2003,
+    "segs": [ {
+      "utf8": "Tonight, the FAA\ninvestigating two separate"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 936068,
+    "dDurationMs": 3203,
+    "segs": [ {
+      "utf8": "passenger jets suffering blown\ntires landing just hours apart"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 939371,
+    "dDurationMs": 1435,
+    "segs": [ {
+      "utf8": "at Chicago's O'Hare Airport."
+    } ],
+    "wpWinPosId": 6,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 940906,
+    "dDurationMs": 2202,
+    "segs": [ {
+      "utf8": "The planes coming down\non separate runways, an"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 943208,
+    "dDurationMs": 2603,
+    "segs": [ {
+      "utf8": "American Airlines flight\narriving from New York, blew"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 945911,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "out two tires yesterday."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 947146,
+    "dDurationMs": 3302,
+    "segs": [ {
+      "utf8": "Then two hours later, a United\nflight out of Nebraska losing"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 950548,
+    "dDurationMs": 1703,
+    "segs": [ {
+      "utf8": "its main left tire on touchdown."
+    } ],
+    "wpWinPosId": 20,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 952351,
+    "dDurationMs": 2002,
+    "segs": [ {
+      "utf8": "No one hurt in either landing."
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 954453,
+    "dDurationMs": 2703,
+    "segs": [ {
+      "utf8": "When we come back here tonight,\nthe community losing their"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 957256,
+    "dDurationMs": 2368,
+    "segs": [ {
+      "utf8": "high school football coach\nand his wife, a teacher,"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 959724,
+    "dDurationMs": 2536,
+    "segs": [ {
+      "utf8": "just as the school year\nbegins, the horrible accident."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 962360,
+    "dDurationMs": 2202,
+    "segs": [ {
+      "utf8": "And the images coming in\ntonight, police trying to get"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 964662,
+    "dDurationMs": 2303,
+    "segs": [ {
+      "utf8": "into this trailer right here,\nchildren crying for help."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 967065,
+    "dDurationMs": 3270,
+    "segs": [ {
+      "utf8": "Authorities say they've\nbeen kidnapped."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 970435,
+    "dDurationMs": 1536,
+    "segs": [ {
+      "utf8": "We'll be right back."
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 972071,
+    "dDurationMs": 2268,
+    "segs": [ {
+      "utf8": "Tonight here, the dramatic\nmoment police in Atlanta"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 974439,
+    "dDurationMs": 1035,
+    "segs": [ {
+      "utf8": "find two missing girls."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 975574,
+    "dDurationMs": 2135,
+    "segs": [ {
+      "utf8": "The officers could hear\ntheir cries in a trailer."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 977809,
+    "dDurationMs": 2736,
+    "segs": [ {
+      "utf8": "Abusing a cinder block and\nbolt cutters break in."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 980645,
+    "dDurationMs": 2770,
+    "segs": [ {
+      "utf8": "Two young sisters were\ninside, four years old and"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 983515,
+    "dDurationMs": 1435,
+    "segs": [ {
+      "utf8": "a baby, just 11 months old."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 985050,
+    "dDurationMs": 2836,
+    "segs": [ {
+      "utf8": "A woman was arrested at the\nscene, the girl's mother telling"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 987986,
+    "dDurationMs": 2870,
+    "segs": [ {
+      "utf8": "police she had just hired the\nwoman as a babysitter, claiming"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 990956,
+    "dDurationMs": 1301,
+    "segs": [ {
+      "utf8": "she kidnapped the children."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 992357,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "Tonight, outside Houston, a\ncommunity mourning a high school"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 2
+  }, {
+    "tStartMs": 995393,
+    "dDurationMs": 2904,
+    "segs": [ {
+      "utf8": "football coach and his wife, a\nteacher, both killed in a crash."
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 998397,
+    "dDurationMs": 2569,
+    "segs": [ {
+      "utf8": "Authorities say Jeremy and\nBrandi Jenkins were killed when"
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1001066,
+    "dDurationMs": 2436,
+    "segs": [ {
+      "utf8": "their car approached a curve\nand overturned on a highway."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1003602,
+    "dDurationMs": 2201,
+    "segs": [ {
+      "utf8": "Brandi, a teacher in the East\nBernard School District,"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1005904,
+    "dDurationMs": 1901,
+    "segs": [ {
+      "utf8": "Jeremy, the high school's\nhead football coach."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1007905,
+    "dDurationMs": 3138,
+    "segs": [ {
+      "utf8": "Their deaths just days into this\nnew school year and just before"
+    } ],
+    "wpWinPosId": 25,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1011143,
+    "dDurationMs": 1401,
+    "segs": [ {
+      "utf8": "the start of football season."
+    } ],
+    "wpWinPosId": 26,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1012644,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "We're thinking about\nthat community tonight."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1014779,
+    "dDurationMs": 1302,
+    "segs": [ {
+      "utf8": "And when we come back right here"
+    } ],
+    "wpWinPosId": 20,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1016181,
+    "dDurationMs": 2636,
+    "segs": [ {
+      "utf8": "tonight, tributes this evening\nfor the co-founder of ESPN."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1018917,
+    "dDurationMs": 2469,
+    "segs": [ {
+      "utf8": "Also a passing to note\na member of ZZ Top."
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1021486,
+    "dDurationMs": 1101,
+    "segs": [ {
+      "utf8": "And we took you to China."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1022687,
+    "dDurationMs": 2737,
+    "segs": [ {
+      "utf8": "You'll remember tonight that\nhumanoid robot company is"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1025524,
+    "dDurationMs": 2368,
+    "segs": [ {
+      "utf8": "back and what it can do\nnow, jumping six and a half"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1027993,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "feet into the air,\nbeating the human record."
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1030128,
+    "dDurationMs": 2603,
+    "segs": [ {
+      "utf8": "And you'll see it in a moment."
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1032831,
+    "dDurationMs": 4571,
+    "segs": [ {
+      "utf8": "To the index of other news\ntonight, a passing to"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1037502,
+    "dDurationMs": 4938,
+    "segs": [ {
+      "utf8": "note, Frank Beard, the\ndrummer of ZZ Top, has died."
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1042540,
+    "dDurationMs": 802,
+    "segs": [ {
+      "utf8": "Takes you right back."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1043442,
+    "dDurationMs": 1368,
+    "segs": [ {
+      "utf8": "Beard brought a\nsignature backbeat"
+    } ],
+    "wpWinPosId": 36,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1044910,
+    "dDurationMs": 2302,
+    "segs": [ {
+      "utf8": "to the band's blues rock sound\nfor more than five decades."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1047312,
+    "dDurationMs": 2769,
+    "segs": [ {
+      "utf8": "ZZ Top sharing on social\nmedia, Beard was in hospice"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1050182,
+    "dDurationMs": 2435,
+    "segs": [ {
+      "utf8": "care when he died Monday\nat his ranch in Texas."
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1052717,
+    "dDurationMs": 1468,
+    "segs": [ {
+      "utf8": "No official cause\nof death tonight."
+    } ],
+    "wpWinPosId": 10,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1054285,
+    "dDurationMs": 2169,
+    "segs": [ {
+      "utf8": "Frank Beard was 77."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1056555,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "Tonight here, we also\nremember the co-founder"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1059057,
+    "dDurationMs": 1234,
+    "segs": [ {
+      "utf8": "of ESPN, Bill Rasmussen."
+    } ],
+    "wpWinPosId": 30,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1060392,
+    "dDurationMs": 3369,
+    "segs": [ {
+      "utf8": "Rasmussen, alongside his\nson, fueled the launch"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1063861,
+    "dDurationMs": 1369,
+    "segs": [ {
+      "utf8": "of ESPN back in 1979."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1065330,
+    "dDurationMs": 2102,
+    "segs": [ {
+      "utf8": "He heralded the idea\nof an around the clock"
+    } ],
+    "wpWinPosId": 13,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1067532,
+    "dDurationMs": 1134,
+    "segs": [ {
+      "utf8": "cable sports network."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1068766,
+    "dDurationMs": 2170,
+    "segs": [ {
+      "utf8": "Rasmussen died today at\nhis home in Florida from"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1071036,
+    "dDurationMs": 1267,
+    "segs": [ {
+      "utf8": "the effects of Parkinson's."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1072403,
+    "dDurationMs": 1302,
+    "segs": [ {
+      "utf8": "Bill Rasmussen was 93."
+    } ],
+    "wpWinPosId": 34,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1073805,
+    "dDurationMs": 3303,
+    "segs": [ {
+      "utf8": "And what an impact he had when\nwe come back here tonight."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1077208,
+    "dDurationMs": 701,
+    "segs": [ {
+      "utf8": "We took you to China."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1078009,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "You'll remember this."
+    } ],
+    "wpWinPosId": 9,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1079244,
+    "dDurationMs": 2669,
+    "segs": [ {
+      "utf8": "Well, tonight, that company\nis back with their humanoid"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1082013,
+    "dDurationMs": 2970,
+    "segs": [ {
+      "utf8": "robot now able to jump six\nand a half feet into the air,"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1085083,
+    "dDurationMs": 1568,
+    "segs": [ {
+      "utf8": "breaking the human record."
+    } ],
+    "wpWinPosId": 5,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1086751,
+    "dDurationMs": 2837,
+    "segs": [ {
+      "utf8": "And you have to see it."
+    } ],
+    "wpWinPosId": 37,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1089688,
+    "dDurationMs": 5839,
+    "segs": [ {
+      "utf8": "ABC World News Tonight with\nDavid Muir, sponsored by Aleve."
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1095627,
+    "dDurationMs": 2303,
+    "segs": [ {
+      "utf8": "Finally tonight here,\njumping to new heights, the"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1098030,
+    "dDurationMs": 2268,
+    "segs": [ {
+      "utf8": "humanoid robot we showed\nyou when we were in China."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1100398,
+    "dDurationMs": 2269,
+    "segs": [ {
+      "utf8": "Well, tonight here,\nthe new feat."
+    } ],
+    "wpWinPosId": 19,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1102767,
+    "dDurationMs": 2035,
+    "segs": [ {
+      "utf8": "Look what it's up to now."
+    } ],
+    "wpWinPosId": 28,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1104902,
+    "dDurationMs": 3371,
+    "segs": [ {
+      "utf8": "We took you to China in May,\nwhere the global race to lead"
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1108373,
+    "dDurationMs": 3637,
+    "segs": [ {
+      "utf8": "on artificial intelligence and\nrobotics technology is on."
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1112110,
+    "dDurationMs": 3237,
+    "segs": [ {
+      "utf8": "The Chinese humanoid robot\ncompany, Unitry, at the AI"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1115447,
+    "dDurationMs": 1769,
+    "segs": [ {
+      "utf8": "Developer Conference there."
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1117316,
+    "dDurationMs": 2668,
+    "segs": [ {
+      "utf8": "Unitry has put their robots\nthrough extreme tests,"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1120084,
+    "dDurationMs": 2603,
+    "segs": [ {
+      "utf8": "walking through deep snow\nin northwestern China,"
+    } ],
+    "wpWinPosId": 7,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1122787,
+    "dDurationMs": 2336,
+    "segs": [ {
+      "utf8": "freezing Arctic level\ntemperatures 53"
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1125223,
+    "dDurationMs": 1168,
+    "segs": [ {
+      "utf8": "degrees below zero."
+    } ],
+    "wpWinPosId": 12,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1126491,
+    "dDurationMs": 4137,
+    "segs": [ {
+      "utf8": "That same robot on rollerblades\nand on ice skates doing flips."
+    } ],
+    "wpWinPosId": 1,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1130728,
+    "dDurationMs": 3804,
+    "segs": [ {
+      "utf8": "And look at this, 50 of\nthose robots in unison."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1134632,
+    "dDurationMs": 2537,
+    "segs": [ {
+      "utf8": "So this is the robot\nthat you've seen"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1137269,
+    "dDurationMs": 2202,
+    "segs": [ {
+      "utf8": "rollerblading, ice skating,"
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1141006,
+    "dDurationMs": 2402,
+    "segs": [ {
+      "utf8": "testing temperatures,\nArctic level temperatures."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1143508,
+    "dDurationMs": 3203,
+    "segs": [ {
+      "utf8": "You'll remember we went\nfor a walk with the robot."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1146811,
+    "dDurationMs": 3971,
+    "segs": [ {
+      "utf8": "It then performed martial\narts and dance moves, too."
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1150882,
+    "dDurationMs": 2970,
+    "segs": [ {
+      "utf8": "Well, tonight, that same\ncompany, Unitry, unveiling"
+    } ],
+    "wpWinPosId": 24,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1153952,
+    "dDurationMs": 2802,
+    "segs": [ {
+      "utf8": "their latest robot they\ncall Superman, they say"
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1156854,
+    "dDurationMs": 3038,
+    "segs": [ {
+      "utf8": "it can jump more than six\nand a half feet in the air."
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1159992,
+    "dDurationMs": 1301,
+    "segs": [ {
+      "utf8": "That's not all."
+    } ],
+    "wpWinPosId": 23,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1161393,
+    "dDurationMs": 2135,
+    "segs": [ {
+      "utf8": "Watch it run a top speed of"
+    } ],
+    "wpWinPosId": 3,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1163628,
+    "dDurationMs": 2936,
+    "segs": [ {
+      "utf8": "28.3 miles per hour,\nfaster than Olympic"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1166664,
+    "dDurationMs": 1202,
+    "segs": [ {
+      "utf8": "champion Usain Bolt."
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1167966,
+    "dDurationMs": 1969,
+    "segs": [ {
+      "utf8": "And you remember\nwhat they showed us?"
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1170035,
+    "dDurationMs": 2969,
+    "segs": [ {
+      "utf8": "Unitary also programming\nrobots to make beds, to help"
+    } ],
+    "wpWinPosId": 2,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1173104,
+    "dDurationMs": 1602,
+    "segs": [ {
+      "utf8": "clean the house, to do dishes."
+    } ],
+    "wpWinPosId": 15,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1174806,
+    "dDurationMs": 3904,
+    "segs": [ {
+      "utf8": "The people at that conference\nin China mesmerized."
+    } ],
+    "wpWinPosId": 21,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1178810,
+    "dDurationMs": 3337,
+    "segs": [ {
+      "utf8": "Tonight here, that humanoid\nrobot called Superman and"
+    } ],
+    "wpWinPosId": 4,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1182247,
+    "dDurationMs": 3103,
+    "segs": [ {
+      "utf8": "his six and a half foot\njump into the air."
+    } ],
+    "wpWinPosId": 16,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1185450,
+    "dDurationMs": 1635,
+    "segs": [ {
+      "utf8": "Now, it is something\nthe racer is on."
+    } ],
+    "wpWinPosId": 14,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1187185,
+    "dDurationMs": 834,
+    "segs": [ {
+      "utf8": "I'm David Muir."
+    } ],
+    "wpWinPosId": 23,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1188119,
+    "dDurationMs": 901,
+    "segs": [ {
+      "utf8": "I'll see you right\nback here tomorrow."
+    } ],
+    "wpWinPosId": 19,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1189120,
+    "dDurationMs": 2603,
+    "segs": [ {
+      "utf8": "No robot, just me,\nat least not yet."
+    } ],
+    "wpWinPosId": 36,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1191823,
+    "dDurationMs": 2236,
+    "segs": [ {
+      "utf8": "We'll see you right\nback here tomorrow."
+    } ],
+    "wpWinPosId": 19,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1194159,
+    "dDurationMs": 934,
+    "segs": [ {
+      "utf8": "Good night."
+    } ],
+    "wpWinPosId": 31,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1195194,
+    "dDurationMs": 2168,
+    "segs": [ {
+      "utf8": "David Muir, the most\ntrusted and most watched"
+    } ],
+    "wpWinPosId": 11,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1197462,
+    "dDurationMs": 1135,
+    "segs": [ {
+      "utf8": "newscast in America."
+    } ],
+    "wpWinPosId": 32,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1198697,
+    "dDurationMs": 3369,
+    "segs": [ {
+      "utf8": "And now, World News Tonight\nhas won the Emmy for Best Live"
+    } ],
+    "wpWinPosId": 8,
+    "wsWinStyleId": 1
+  }, {
+    "tStartMs": 1202166,
+    "dDurationMs": 2604,
+    "segs": [ {
+      "utf8": "News Program for the\nfourth year in a row."
+    } ],
+    "wpWinPosId": 17,
+    "wsWinStyleId": 1
+  } ]
+}

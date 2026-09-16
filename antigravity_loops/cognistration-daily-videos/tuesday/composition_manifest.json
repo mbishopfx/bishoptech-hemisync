@@ -1,0 +1,24 @@
+{
+  "durationSeconds": 70,
+  "fps": 30,
+  "toneSeconds": 60,
+  "audioFadeStartSeconds": 60,
+  "audioFadeDurationSeconds": 10,
+  "visualSource": [
+    {
+      "source": "BishopTech Visuals",
+      "file": "2026-08-06-vertical-09-gravity-garden.html",
+      "title": "Gravity Garden",
+      "orientation": "vertical",
+      "aspect_ratio": "9:16",
+      "manifest": "/Users/matthewbishop/BishopTech.dev/bishoptech-visuals/2026-08-06-manifest.json",
+      "startFrame": 0,
+      "duration": 2100
+    }
+  ],
+  "visualCapture": "deterministic-p5-frames-to-mp4",
+  "visualBackgroundFile": "bishoptech_visual_background.mp4",
+  "closingMessage": "Adopt the pace of nature: her secret is patience.",
+  "closingAttribution": "Ralph Waldo Emerson",
+  "output": "/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration/antigravity_loops/cognistration-daily-videos/tuesday/output.mp4"
+}

@@ -1,0 +1,24 @@
+{
+  "durationSeconds": 90,
+  "fps": 30,
+  "toneSeconds": 90,
+  "visualSource": [
+    {
+      "source": "BishopTech Visuals",
+      "file": "2026-08-09-vertical-07-curl-field-weave.html",
+      "title": "2026-08-09-vertical-07-curl-field-weave",
+      "orientation": "vertical",
+      "aspect_ratio": "9:16",
+      "variationSeed": 518434484,
+      "startFrame": 0,
+      "duration": 2700
+    }
+  ],
+  "visualMode": "rendered-favorites-full-bleed",
+  "visualCapture": "deterministic-p5-frames-to-mp4",
+  "visualBackgroundFile": "bishoptech_visual_background.mp4",
+  "appStoreAssetFile": "app_store_badge.png",
+  "layout": "three-section-top-frequency-middle-app-store-bottom-visual",
+  "videoEffects": [],
+  "output": "/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration/antigravity_loops/cognistration-daily-videos/sunday/output.mp4"
+}

@@ -1,0 +1,26 @@
+{
+  "durationSeconds": 90,
+  "fps": 30,
+  "toneSeconds": 90,
+  "audioFadeStartSeconds": 80,
+  "audioFadeDurationSeconds": 10,
+  "visualSource": [
+    {
+      "source": "BishopTech Visuals",
+      "file": "2026-08-12-vertical-01-storm-loom.html",
+      "title": "Storm Loom",
+      "orientation": "vertical",
+      "aspect_ratio": "9:16",
+      "manifest": "/Users/matthewbishop/BishopTech.dev/bishoptech-visuals/2026-08-12-manifest.json",
+      "variationSeed": 304282997,
+      "startFrame": 0,
+      "duration": 2700
+    }
+  ],
+  "visualMode": "rendered-visual-only",
+  "visualCapture": "deterministic-p5-frames-to-mp4",
+  "visualBackgroundFile": "bishoptech_visual_background.mp4",
+  "closingMessage": "Keep going gently. Consistency compounds.",
+  "closingAttribution": "Cognistration",
+  "output": "/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration/antigravity_loops/cognistration-daily-videos/wednesday/output.mp4"
+}

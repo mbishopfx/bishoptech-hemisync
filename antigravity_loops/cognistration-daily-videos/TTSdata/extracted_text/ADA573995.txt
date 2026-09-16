@@ -1,0 +1,996 @@
+Task-Related Suppression of the Brainstem Frequency
+following Response
+W. David Hairston*, Tomasz R. Letowski, Kaleb McDowell
+Human Research and Engineering Directorate, United States Army Research Laboratory, Aberdeen Proving Ground, Maryland, United States of America
+
+Abstract
+Recent evidence has shown top-down modulation of the brainstem frequency following response (FFR), generally in the
+form of signal enhancement from concurrent stimuli or from switching between attention-demanding task stimuli.
+However, it is also possible that the opposite may be true – the addition of a task, instead of a resting, passive state may
+suppress the FFR. Here we examined the influence of a subsequent task, and the relevance of the task modality, on signal
+clarity within the FFR. Participants performed visual and auditory discrimination tasks in the presence of an irrelevant
+background sound, as well as a baseline consisting of the same background stimuli in the absence of a task. FFR pitch
+strength and amplitude of the primary frequency response were assessed within non-task stimulus periods in order to
+examine influences due solely to general cognitive state, independent of stimulus-driven effects. Results show decreased
+signal clarity with the addition of a task, especially within the auditory modality. We additionally found consistent
+relationships between the extent of this suppressive effect and perceptual measures such as response time and proclivity
+towards one sensory modality. Together these results suggest that the current focus of attention can have a global, topdown effect on the quality of encoding early in the auditory pathway.
+Citation: Hairston WD, Letowski TR, McDowell K (2013) Task-Related Suppression of the Brainstem Frequency following Response. PLoS ONE 8(2): e55215.
+doi:10.1371/journal.pone.0055215
+Editor: Pratibha V. Nerurkar, College of Tropical Agriculture and Human Resources, University of Hawaii, United States of America
+Received April 7, 2012; Accepted December 20, 2012; Published February 18, 2013
+This is an open-access article, free of all copyright, and may be freely reproduced, distributed, transmitted, modified, built upon, or otherwise used by anyone for
+any lawful purpose. The work is made available under the Creative Commons CC0 public domain dedication.
+Funding: No current external funding sources for this study.
+Competing Interests: The authors have declared that no competing interests exist.
+* E-mail: William.d.hairston4.civ@mail.mil
+
+domain leads to increased cortical response amplitude and
+decreased response latency, occurring even in primary cortices
+[18–20], functionally increasing the gain of the attended signal.
+Alternatively, recent evidence has suggested enhanced selectivity
+within auditory cortex by inhibiting responsiveness to non-relevant
+stimuli or specific features [21–24]. Similar attention-related
+filtering mechanisms have been observed when looking across
+modalities as well [25–27].
+Although most attention-related research focuses on corticallevel interactions, there is evidence of attention-related mediation
+of the FFR in both amplitude and latency [28–30]. For example,
+attending to vowels leads to an amplitude increase of the
+fundamental frequency [29]. In one particular case [28] it has
+been argued that using a task to focus attention within the auditory
+modality provides a stronger response than when the task uses an
+opposing sense (e.g., vision).
+To date, however, it remains unclear whether this level of
+subcortical auditory encoding can also be suppressed based solely on
+the current focus of attention. That is, top-down interactions may
+also be able to operate in an inhibitory manner when the scenario
+necessitates it, as a mechanism for filtering non-relevant information. Several examples of this have been shown cortically,
+especially when looking across modalities, such as where
+presentation of a stimulus in one sensory modality (e.g. visual or
+somatosensory) can lead to a decrease in regional measures of
+neuronal activity in other cortices (e.g. auditory or visual,
+respectively) [27,31–34]. This paucity is due in part to the fact
+that most studies of attention effects on early auditory encoding
+use the ABR-eliciting stimulus as part of the attention-mediating
+
+Introduction
+The auditory brainstem response (ABR) represents some of the
+earliest encoding of acoustic information within the auditory
+system, arising from the pooled synchronized response of
+brainstem neurons. The frequency following response (FFR)
+component of the ABR represents a phasic, sustained response
+generally assumed to arise from phase-locking cells within the
+rostral brainstem projecting into the auditory midbrain, characterized by a frequency profile matching that of the incoming sound
+[1–7]. As a result, the FFR can be used as a metric for encoding
+quality of sound as represented early in the auditory system.
+Because the ABR can be recorded passively using scalp electrodes,
+it has been advocated as an excellent means for assessing low-level
+auditory function in a non-invasive manner in either a clinical or
+laboratory setting (see [1] for a review).
+Despite its low-level origins, there is evidence that the FFR is
+malleable based on higher-level cognitive influence. For instance,
+simultaneous presentation of matching visual information with the
+ABR eliciting acoustic stimuli leads to an enhanced response [8–
+10], with correlated responses at the cortical level [10]. Meanwhile, within a single recording session, adaptation in response
+amplitude can occur based on the local acoustic statistics of the
+stimuli used [11], similar to other examples of experiencedependent modulation [12–16] but on a more rapid scale, further
+supporting malleability from top-down factors.
+These types of effects are most likely linked to the direction of
+attention, which has been extensively shown to modulate cortical
+responses [17]. For instance selective attention to the auditory
+
+PLOS ONE | www.plosone.org
+
+1
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Form Approved
+OMB No. 0704-0188
+
+Report Documentation Page
+
+Public reporting burden for the collection of information is estimated to average 1 hour per response, including the time for reviewing instructions, searching existing data sources, gathering and
+maintaining the data needed, and completing and reviewing the collection of information. Send comments regarding this burden estimate or any other aspect of this collection of information,
+including suggestions for reducing this burden, to Washington Headquarters Services, Directorate for Information Operations and Reports, 1215 Jefferson Davis Highway, Suite 1204, Arlington
+VA 22202-4302. Respondents should be aware that notwithstanding any other provision of law, no person shall be subject to a penalty for failing to comply with a collection of information if it
+does not display a currently valid OMB control number.
+
+1. REPORT DATE
+
+3. DATES COVERED
+2. REPORT TYPE
+
+2013
+
+00-00-2013 to 00-00-2013
+
+4. TITLE AND SUBTITLE
+
+5a. CONTRACT NUMBER
+
+Task-Related Suppression of the Brainstem Frequency following
+Response
+
+5b. GRANT NUMBER
+5c. PROGRAM ELEMENT NUMBER
+
+6. AUTHOR(S)
+
+5d. PROJECT NUMBER
+5e. TASK NUMBER
+5f. WORK UNIT NUMBER
+
+7. PERFORMING ORGANIZATION NAME(S) AND ADDRESS(ES)
+
+United States Army Research Laboratory,Human Research and
+Engineering Directorate,Aberdeen Proving Ground,MD, 20783
+9. SPONSORING/MONITORING AGENCY NAME(S) AND ADDRESS(ES)
+
+8. PERFORMING ORGANIZATION
+REPORT NUMBER
+
+10. SPONSOR/MONITOR’S ACRONYM(S)
+11. SPONSOR/MONITOR’S REPORT
+NUMBER(S)
+
+12. DISTRIBUTION/AVAILABILITY STATEMENT
+
+Approved for public release; distribution unlimited
+13. SUPPLEMENTARY NOTES
+
+PLoS ONE volume 8, volume 2, Published February 18, 2013
+14. ABSTRACT
+
+15. SUBJECT TERMS
+16. SECURITY CLASSIFICATION OF:
+a. REPORT
+
+b. ABSTRACT
+
+c. THIS PAGE
+
+unclassified
+
+unclassified
+
+unclassified
+
+17. LIMITATION OF
+ABSTRACT
+
+18. NUMBER
+OF PAGES
+
+Same as
+Report (SAR)
+
+10
+
+19a. NAME OF
+RESPONSIBLE PERSON
+
+Standard Form 298 (Rev. 8-98)
+Prescribed by ANSI Std Z39-18
+
+Task-Related Suppression of the Brainstem FFR
+
+Figure 1. The experimental paradigm. Non-task relevant ABR-eliciting stimuli per presented every 455 ms, with task target stimuli occurring
+asynchronously, randomly presented (6750 ms mean ISI). Only background tones falling between task stimuli (shaded area) were used in the analysis.
+doi:10.1371/journal.pone.0055215.g001
+
+task, making it difficult to separate attention to the response
+eliciting stimuli from the task itself. Additionally, a non-task
+‘‘resting’’ baseline is needed for assessing potential decreases from
+the additional task load.
+In this study, we sought to investigate this possibility through the
+use of a paradigm more common for studies of cortical processing
+of non-task relevant information [35]. Specifically, participants
+perform a task in either the visual or auditory modality, where the
+stimuli used to assess FFR acuity remain in the background,
+completely irrelevant to the task at hand. Additionally, we include
+a non-task ‘‘baseline’’ in order to assess potential changes in FFR
+clarity related to the addition of the task paradigm. We then
+examine within- versus cross-modality effects on the suppression of
+low-level auditory encoding, and follow this with an analysis of
+some behavioral metrics of sensory bias which help predict the
+extent to which the FFR signal mediation is observed across
+subjects.
+
+Materials and Methods
+Participants
+Participants were twenty-three adults (6 females) between 22–
+45 years of age, with normal or corrected-to-normal vision and
+normal hearing as determined by 250 to 8,000 Hz pure tone air
+conduction audiometry (25dB or less hearing level at each
+frequency). All were native English speakers, and none reported
+as being ‘‘fluently bilingual’’. While three participants reported
+having .3 years of musical experience, none performed professionally or had formal training beyond high school. All methods
+were approved by the Institutional Review Board and conformed
+to the 1964 Declaration of Helsinki. The voluntary, fully informed
+consent of the persons used in this research was obtained as
+required by U.S. Army human use regulations (U.S. Department
+of Defense, 1999; U.S. Department of the Army, 1990). Data from
+5 participants were removed from the group analysis due to
+technical failure (1), excessive motion (1), or poor SNR (3).
+
+Figure 2. FFR metrics for each task type. Pitch strength significantly decreased for both visual and auditory tasks (A) relative to baseline (no task).
+In addition, average signal amplitude within the target frequency (220 Hz) decreased for auditory, but not visual tasks (B). Error bars represent
+standard error across subjects Asterisks on right denote significant (p,.05) differences. Note that only background stimuli not overlapping with the
+task and identical in all conditions were used in this analysis, suggesting a tonic suppression of background auditory signals that may be greater
+when also performing an auditory task.
+doi:10.1371/journal.pone.0055215.g002
+
+PLOS ONE | www.plosone.org
+
+2
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+a range of 3000–12000 ms (mean 6750 ms) so they could not
+predict the onset of the next stimulus. The length of the longer
+stimulus was set to a range (+/216.7 ms) centered around each
+participant’s own individually-derived 75% discrimination threshold for the task. Discrimination threshold values were acquired
+prior to testing using an adaptive staircase procedure [36] adapted
+for the E-Prime programming environment [37]. Using the
+adaptive staircase and individual-specific concomitant values both
+provided an assessment of sensory temporal acuity for each subject
+and modality, and ensured approximately equal difficulty across
+subjects and conditions. Background tones (see below) were also
+included during the staircase procedure so as to match the primary
+testing environment.
+Background Tones. During all conditions, there was an
+additional background, ongoing ‘‘probe’’ stimulus (1,200 repetitions) used for eliciting the frequency following response (FFR)
+component of the auditory brainstem response (ABR). The probe
+was a 100 ms, 220 Hz pure tone (5 ms linear amplitude ramps at
+on/offset) presented every 455 ms. Occasionally (3% of presentations) the tone changed in pitch (247 Hz); response to this oddball
+is not discussed here. Participants were told not to worry about the
+background tones, and focus only on the primary task. By using
+this interleaved paradigm of both primary and background tasks,
+we are able to infer responses to both task relevant and task nonrelevant stimuli. Figure 1 shows an example of the stimulus
+paradigm. Background tones occurred with a constant ISI in order
+to minimize distraction from the primary task.
+
+Experimental Paradigm
+Three different experimental conditions
+were used; an auditory task, a visual task, and no-task ‘‘baseline’’
+condition, each tested in a separate block lasting approximately
+7 minutes. At the beginning of each run, the participant was given
+instructions denoting which task type would be performed. Each
+paradigm type (visual, auditory, no-task) was performed twice in
+an order randomized across subjects, with the only caveat that no
+task type was repeated before all three conditions had been
+completed at least once.
+Subjects were given sensory tasks with the goal of ensuring that
+they must focus on one particular sensory modality, while also
+providing behavioral measures of performance. Both sensory tasks
+were a temporal discrimination presented in a two-interval, forced
+choice format, designed to be analogous for both sensory
+modalities. In the visual task, subjects were presented with a light
+grey square centered on the screen, which appeared and
+disappeared twice. One presentation always lasted 250 ms, and
+the other was presented within a range of 255–400 ms duration,
+with order randomized across trials. In the auditory task, the target
+stimulus was a pure tone (587 Hz), also presented once for 250 ms
+and once for 255–400 ms. In both cases, participants were given 2
+seconds to answer which of the presentations was shorter (first or
+second). In the no-task condition, subjects simply fixated on a
+constant, central cross, identical to one used for the two active
+tasks.
+To ensure that subjects constantly paid attention across the
+entire block of trials, the ISI between trials varied randomly within
+Primary Tasks.
+
+Figure 3. Fourier time-frequency plots for each of the primary conditions. The strongest response occurs primarily within the 220 Hz
+frequency range, although a short broadboand response is seen at onset and offset in the response spectrogram (A). Differences across conditions
+were limited to only the primary frequency. Dashed lines represent time and frequency periods used for ANOVA; 100–200 Hz (yellow), 210–230 Hz
+(target range, orange), 240–400 Hz (yellow), and 553–613 Hz (green), pre- and post-stimulus onset. (B) shows group average autocorrelelograms
+reflecting the highly consistent response with this stimulus.
+doi:10.1371/journal.pone.0055215.g003
+
+PLOS ONE | www.plosone.org
+
+3
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+Figure 5. Temporal thresholds and the relation to RT. Temporal
+thresholds for each modality derived prior to the study (via staircase
+procedure) show no systematic relationship across subjects (A). Shaded
+areas represent whether a subject shows more temporal acuity in the
+visual (blue) or auditory (green) domain. There is, however, a high
+correlation between the amount of sensory bias (difference between
+visual and auditory thresholds) observed and reaction time differences
+across subjects (B).
+doi:10.1371/journal.pone.0055215.g005
+
+Analysis
+Brainstem FFR. Because the brainstem FFR is strongest at
+scalp location CZ when using bilateral stimuli and linked earlobe
+reference [1], that served as the primary focus for this initial study.
+To derive the ABR FFR, EEG data were filtered between 80 and
+2,000 Hz using a Butterworth filter, and epoched based on the
+consistent background tone for the period 2200 to 225 ms relative
+to stimulus onset. Artifacts were rejected based on a +/235 mV
+voltage threshold (typically ,3%), and data from similar blocks
+(e.g. 2 auditory task runs) were combined. Any cases overlapping
+the primary task stimuli (,250) were also removed, and responses
+to the oddball background tone (247 Hz) were ignored, ensuring
+all waveforms represented only the auditory response to the
+consistent non-relevant probe. For no-task data, we matched the
+number and temporal placement of ABR-eliciting events by
+removing the same cases which overlapped with task stimuli in the
+other two conditions. Waveforms (typically about 1800 trials
+remaining) were averaged to yield a phasic FFR for each subject
+and task type (visual, auditory, no-task).
+Waveform averages were imported into the Brainstem Toolbox
+from Northwestern University [1] and used to compute two
+primary metrics. First, pitch strength was calculated as the mean of
+results from a running autocorrelelogram (40 ms window, 1 ms
+steps) across the time-locked average EEG waveform during the
+central 75 ms of response [38,39]. Thus, it summarizes how
+
+Figure 4. Response time per sensory modality. Subjects
+responded faster (lower median response times) and more consistently
+(lower mean within-subject variance) with visual than auditory task
+stimuli (A). Error bars depict standard error across subjects. There was a
+high correlation across subjects’ response times between the two tasks
+(r = 0.883, p,.05) such that subjects with longer responses during the
+visual task also tended to take longer to respond with auditory targets
+as well (B). The shaded area emphases how this relative difference
+increases consistently across subjects.
+doi:10.1371/journal.pone.0055215.g004
+
+All sounds were presented via Etymotic Research ER-3A insert
+tube earphones, presented at 83dB (peak) at the ear. Visual stimuli
+were presented on a Dell 24’’ 2408WFP monitor, with central
+fixation approximately 50 cm from the participant’s nose. Data
+were collected in an acoustically isolated chamber with reflective
+attenuation. During all 6 testing runs, whole-scalp EEG data were
+collected using a 64 channel Biosemi active electrode biopotential
+measurement system, sampled at 8.192 kHz, filtered at 0.1–4 kHz
+with external references set to bilateral earlobes.
+
+PLOS ONE | www.plosone.org
+
+4
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+consistent the periodicity of the neural response is (but without
+specificity to a certain frequency), in this case reflecting the highly
+phasic characteristics of the external acoustic waveform. Note that
+this is a characterization only of the encoding characteristics, and
+it distinct from higher cortical processes such as pitch perception
+which might depend on changes in temporal envelope or more
+complex features. Second, frequency response amplitude was determined by the amplitude of the average response (normalized to
+nV) of the Fourier-transformed signal within the target frequency
+range (210–230 Hz), thus reflecting the overall power contained
+within the target frequency of the phasic response but irrespective
+of minor temporal fluctuations in that period. Response amplitudes were normalized to the pre-stimulus period to account for
+small but non-significant differences in baseline. Data from three
+subjects for whom the SNR (calculated as the level of measured
+response divided by the pre-stimulus period amplitude) during the
+no-task condition was below 1.5 were removed prior to any
+analyses.
+A slight harmonic distortion was created by the sound
+presentation equipment (ER3A transducer and tube inserts), as
+measured by a KEMAR mannequin (GRAS Sound & Vibration)
+inside the ear when compared to direct recording from the PC
+sound card. While the FFR response to this harmonic effect is
+evident in group spectrograms, it is outside of the frequency realm
+focused on for analyses here.
+Behavioral Responses. Two primary behavioral metrics
+were measured. First, for each sensory modality (vision and
+audition), we used the resulting mean SOA between primary task
+stimuli from the staircase threshold procedure as an assessment of
+temporal processing acuity for that sense. Note that in this case,
+lower values denote a higher acuity – less time necessary to
+perform the task at equivalent accuracy. From these, a ‘‘sensory
+bias’’ score was calculated as the relative difference (in ms) when
+the auditory threshold was subtracted from the visual threshold.
+This yields positive values indicating higher acuity in audition than
+vision, while negative scores denote subjects with an acuity bias
+towards the visual domain.
+Second, reaction time (RT) was calculated as the median time,
+in ms, to press the button relative to the onset of the second of the
+two primary task stimuli. RTs from the auditory task were
+
+Figure 6. RT changes relative to each FFR metric. Subjects with
+higher pitch strength (A) and higher target frequency response
+amplitude (B) also showed the greatest response time difference
+(increasingly negative values) when comparing auditory and visual
+performance. Dashed lines connect each subject’s data for the three
+conditions. This relationship between RT and each FFR metric is
+consistent regardless of which task (auditory, visual, or no-task, see table
+in Figure 6, C) subjects were performing at the time (similarity of dotted
+line in Figure 6) Table lists correlation coefficients between response
+times (columns) and each of the two FFR metrics (rows), as observed
+within each of the three recording conditions (A = Auditory, V = Visual,
+N = No task). Highlighted values depict correlations significant at p,.05.
+doi:10.1371/journal.pone.0055215.g006
+
+PLOS ONE | www.plosone.org
+
+Figure 7. FFR change related to sensory bias. The degree of
+subjects’ sensory bias significantly predicts auditory task-related
+suppression in primary FFR frequency amplitude (relative to no task),
+such that those subjects that are more highly acute in the auditory
+domain show minimal or no suppression. Meanwhile, those whom
+display less bias or a proclivity more towards vision appear more
+susceptible to the suppressive effect. A similar trend occurs when
+comparing auditory against visual tasks, but not for visual above
+baseline, as well as with FFR pitch strength as the metric.
+doi:10.1371/journal.pone.0055215.g007
+
+5
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+individuals and help explain this variance. No significant
+differences were observed in subjects’ overall accuracy between
+the tasks (77.7%+/22% auditory, 80.2%+/22% visual), suggesting
+an equal, moderate level of difficulty for both tasks, and consistent
+with having thresholds matched according to the staircase
+procedure. Subjects did respond faster (684+/244 ms vs 755+/
+256 ms, t(16) = 2.67,p,.05), Figure 4, A) and more consistently
+(lower mean within-subject variance) (254.5+/220.3 vs 305.0+/
+222, t(16) = 5.84,p,.05) when performing the visual task with
+auditory background, than when the task and background were
+both auditory.
+Additionally, when looking across subjects, there was a high
+correlation in response times between the two specific tasks
+(r = 0.883, p,.05). That is, subjects with longer responses during
+the visual task also tended to take longer to respond with auditory
+targets as well (Figure 4, B). Note that the relative difference
+increases consistently across subjects (slope of the regression line is
+less than 1). Specifically, subjects with the longest auditory RT
+show the greatest RT decrease (e.g., improvement) in the visual
+task condition relative to their own auditory performance (Figure 2,
+increasing shaded region).
+Prior to ABR testing, we determined the threshold test stimulus
+length necessary for each subject to perform the tasks just above
+chance using an adaptive staircase procedure. The resulting values
+show that, on average, temporal discrimination thresholds were
+significantly longer for visual than auditory stimuli (t(16) = 3.23,
+p,.05), consistent with previous reports [40,41], and supporting
+claims that auditory acuity is superior to visual in the temporal
+domain [42–44]. For the group a wide range of temporal
+thresholds were observed, with no consistent corollary relationship
+between modalities across subjects (r(16) = 0.079, p..05, Figure 5,
+A).
+It is possible, however, that each subject’s bias or proclivity
+towards higher acuity in one modality verses another is directly
+related to low-level processing. To examine this behaviorally,
+‘‘sensory bias’’ was calculated as the difference, in ms, between
+threshold values for each subject. This is highlighted in the
+diagonal line in Figure 5, B, where high positive values indicate
+higher acuity to audition than vision (green shaded region, right
+side), while negative scores denote subjects with a sensory bias
+towards the visual domain (blue region, left side).
+Figure 5 (B) shows that the relationship between sensory bias,
+and the difference in RTs observed between visual and auditory
+tasks, for each subject. Note that these are highly correlated
+(r(16) = 0.54, p,.05), such that the degree of sensory bias is
+predictive of the difference in reaction times between tasks.
+Specifically, those subjects with a higher temporal acuity in the
+auditory domain show the largest decrease in response time (a
+performance benefit) when switching from multiple stimuli
+occurring within the same modality (auditory task, auditory
+background) to being across modalities (visual task, auditory
+background). Likewise, response times by the few subjects with
+higher visual acuity were increased when the task changed from
+visual to auditory in nature.
+
+subtracted from visual, so that positive values denote faster
+auditory responses, while negative values (in ms) represent faster
+responses with a visual, rather than auditory, task. This RT
+difference (in ms) represents the performance gain by performing
+the primary task in an opposite modality (visual task, auditory
+background) versus the same modality (auditory task, auditory
+background) as the non-relevant stimuli. Additionally, it normalizes RTs across subjects to account for the large variability in
+general RT tendencies and places all subjects within a common
+scale.
+
+Results
+Brainstem Response
+For the group of subjects, pitch strength, a measure of the
+consistency of frequency encoding, was significantly decreased for
+both visual and auditory tasks (Figure 2, A) relative to a resting (no
+task) baseline [visual, t(16) = 2.12, p,.05, auditory, t(16) = 2.10,
+p,.05)]. In other words, with the addition of the task, brainstem
+encoding of background, non-relevant signals was less consistent
+(relative to the actual acoustic signal) than when there was no task.
+Meanwhile, average signal amplitude within the target frequency
+(220 Hz) decreased for auditory, but not visual tasks [Figure 2, B,
+visual, t(16) = 0.14, p..05, auditory, t(16) = 2.31, p,.05], suggesting
+a suppression of background auditory signals that is more specific
+to also performing an auditory (as opposed to visual) task within
+this domain.
+Importantly, this suppressive effect appears within only the
+primary frequency range of the background FFR-eliciting tone.
+Figure 3 shows Fourier time-frequency plots (using a 40 ms sliding
+window with 1 ms steps across the range from 100–900 Hz in
+2 Hz increments) for each of the primary conditions. Note there is
+a substantial response within the 220 Hz range, with transient
+broadband responses around the beginning and end of each
+response, but differences across conditions are limited only to the
+primary frequency tested here.
+Statistically, we tested the specificity of this effect by computing
+the Fourier power within several frequency ranges for a 50 ms
+window, both pre- and post stimulus and illustrated by dashed
+lines in Figure 3. These included 100–200 Hz (yellow), 210–
+230 Hz (target range, orange), 240–400 Hz (yellow), and 553–
+613 Hz (green). This latter range centers around the frequency of
+the auditory task stimuli (587 Hz). Strength of the response was
+calculated as the difference between the pre- and post-stimuli
+50 ms windows. Despite slightly different pre-stimulus baselines, in
+all three tasks ANOVAs show a significant response across the
+entire frequency spectrum, including below the target range (100–
+200 Hz,
+F(16,1) = 27.8,
+p,.001),
+above
+(240–400 Hz,
+F(16,1) = 17.6, p,.001), and the specific frequency of the auditory
+task stimuli (583 Hz, F(16,1) = 18.9, p,.001).
+However, only the target frequency (220 Hz) showed a
+significant interaction (F(15,2) = 3.72, p,.05) with task modality
+for the response period, where the amplitude of the response
+during the auditory task was lower than in the other conditions.
+None of the non-target frequency sidebands (100–200 Hz, 240–
+400 Hz, or 553–613 Hz) showed this effect, highlighting the
+specificity of the effect to the range of the background tones and
+not as a broad suppression of all acoustic frequencies.
+
+Relationship between brainstem FFR and performance
+Given the observed individual variation in differences in withinmodal (auditory task) versus cross-modal (visual-task) performance
+and group-level FFR suppression, we sought to establish how task
+performance was related to the primary metrics of pitch strength
+and frequency response amplitude, which contribute to ABR
+signal encoding clarity.
+While there was no direct correlation between pitch strength
+and frequency amplitude with auditory and visual response times
+
+Behavioral Responses
+Because of cross-subject variance observed in the ABR
+suppression effect described above (e.g. average standard error
+size covers over 12% of the response amplitude), we sought to
+examine behavioral metrics which might similarly vary across
+PLOS ONE | www.plosone.org
+
+6
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+by themselves, our primary interest was with the relative difference
+between modalities. Indeed, there was a consistent relationship here
+– as can be seen in Figure 6, subjects with higher pitch strength (A)
+and higher target frequency response amplitude (B) also showed
+the greatest response time difference when comparing auditory
+and visual (V–A) performance. Dashed lines connect each subject’s
+data for the three conditions. This relationship between RT
+difference and each FFR metric is consistent regardless of which
+task (auditory, visual, or no-task, see table in Figure 6, C, which lists
+correlation coefficients for each pair) subjects were performing at
+the time (similarity of slopes for dotted line in Figure 6).
+Above we showed that on average, there was a difference in
+overall ABR clarity (suppression) with the addition of the task,
+which is particularly dominant within the auditory modality
+(observed for both metrics). Meanwhile, participants display a wide
+range in the degree of sensory bias. Figure 7 shows the relationship
+between this sensory bias, and the degree of suppression in the
+amplitude of the FFR primary frequency for the auditory task
+compared to both no task and visual task conditions.
+Here, the degree of subjects’ sensory bias significantly predicts
+(r(17) = .55, p,.05) suppression in amplitude of the primary FFR
+frequency from the additional auditory task (relative to no task). A
+similar trend (r(17) = .46,p,.07) occurs when comparing auditory
+against visual tasks, but not for visual above baseline (no task,
+r(17) = .02, p..05)). That is, subjects with the strongest bias
+towards vision also showed the largest difference in pitch encoding.
+A matching, but weaker trend was observed for pitch strength with
+auditory tasks above baseline (r(17) = .47, P,.06) while not
+consistently while comparing against visual (r(17) = .34, p..05)
+or with visual verses no task (r(17) = .06, p..05).
+
+enough to alter the mean power of the frequency range tested
+across the entire response window. The auditory task, on the other
+hand, involves greater perceptual competition and likely induces
+additional inhibition on early encoding, which decreases the
+frequency power as well, consistent with visual and auditory
+processes using different physiological networks for initial encoding.
+Second, when looking at subjects’ behavioral performance,
+response times were faster for discriminating visual stimuli than
+when the same task occurred in the auditory domain, even though
+the tasks were confirmed to be equally difficult (similar accuracy,
+set via staircase). While one potential explanation for these
+differences is that is the neural processes involved in auditory
+discrimination may simply take more time than visual, which has
+been espoused previously [38], [39], another possibility is that the
+facilitation in visual RT over auditory shown here is afforded from
+operating with stimuli across modalities, rather than within the
+same sense. Specifically, the auditory condition in this paradigm
+requires participants to focus on a specific frequency range (e.g.
+that of the target stimulus) while inhibiting other frequencies (that
+of the background tones) in order to perform the task, especially
+since the task target tones and background tones overlap within
+different, inconsistent periods. In contrast, the visual task likely
+does not require the same level of focused attention, wherein
+subjects can simply attend to the visual stream as a whole, and
+ignore all information within the auditory channel. Much research
+has suggested that performance is better when dividing attention
+across senses rather than within (e.g., [45,46]). This explanation is
+also supported by the greater overall suppression of the FFR
+during the auditory than visual task (e.g. Figure 2), suggesting that
+subjects more actively inhibited the background tone. The
+difference in response time, which may be viewed as a facilitation
+yielded from working across, rather than within modalities, was
+also highly correlated with each subject’s difference in temporal
+acuity, or proclivity towards one sense (sensory bias as measured
+by differences in threshold discrimination times).
+Finally, we have shown that there is a consistent relationship
+between this cross-modality related facilitation and the measures of
+low-level auditory acuity utilized here. For both pitch strength and
+response amplitude higher values (e.g. better signal consistency or
+higher SNR) predicted a larger difference in performance time
+when operating across modalities. That is, subjects who exhibit
+stronger brainstem encoding also show the greatest improvement
+in response time when their primary task shifts from operating in
+the auditory realm to being visual instead. This relationship is
+fairly robust, occurring regardless of what the subject is actually
+doing when the FFR is derived.
+Perhaps more striking, however, is that the degree to which
+attenuation in FFR pitch strength (and to a lesser degree frequency
+amplitude) will be observed when performing an auditory task is
+directly related to an individual’s proclivity towards that same
+modality. Specifically, those individuals with a higher temporal
+perceptual acuity within the auditory modality show virtually no
+change in brainstem encoding quality (when comparing performance on an auditory task to either a visual or no task at all).
+Meanwhile, participants who are less naturally biased towards the
+auditory modality also show the largest decrement in signal
+encoding. This trend does not occur when the task is visual,
+allowing attention to be focused away from the potentially
+distracting background tones.
+While this study cannot differentiate the neurophysiological
+source of the suppressive effect described here, it is most likely that
+this is a top-down (e.g. cortically-driven) phenomenon, and not
+from the bottom-up. Previous studies have documented cortico-
+
+Discussion
+Here, we have described a method that allows testing the degree
+to which background, task irrelevant auditory information is
+encoded at very early stages of processing, independent of the
+actual task at hand. With it, we have shown that simply adding a
+task leads to attenuation of the brainstem frequency following
+response. Additionally, this low-level modulation is linked to
+behavioral measures of performance for the primary task and a
+participant’s own perceptual acuity, at least within the temporal
+domain. Specifically, this study provides three primary results.
+First, relative to a baseline of having no task to perform at all,
+early auditory encoding (brainstem FFR clarity, assessed using two
+metrics) of background, non-relevant sounds appears inhibited
+simply by the addition of a sensory-driven primary task. This effect
+is most evident when the task is also within the auditory domain.
+While pitch strength, a measure of encoding reliability [1], is
+decreased for visual tasks (a case of operating across modalities) as
+well, having subjects work within the same modality as the
+background tone also decreased the spectral amplitude of the
+brainstem-encoded signal, yielding lower overall encoding acuity.
+This suggests that the suppression of non-relevant, background
+information may be stronger when it is within the same modality
+than when it is across senses.
+It is not entirely clear why, although the effects for pitch strength
+were identical, the frequency amplitude results are not the same
+for the visual and auditory tasks. One possibility is that this effect is
+most likely due to differences in the relative sensitivities of each of
+these methods, and reflect a change occurring within the temporal
+domain relating to the periodic encoding of the primary frequency
+(relative to no task). That is, addition of the visual task may induce
+slight alterations in the temporal encoding of the signal (e.g. jitter)
+that affect the periodicity of the signal, but are not substantial
+PLOS ONE | www.plosone.org
+
+7
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+fugal projections which could mediate midbrain (and lower)
+function [12,47–49]. Additionally, inhibitory effects from the
+efferent medial olivocochlear (MOC) tracts innervating outer hair
+cells have been implicated in modulating evoked otoacoustic
+emissions when attention is focused on other modalities [50–52].
+This falls in line with the numerous previous reports of auditory
+[21–24] and other cortical [26,53,54] modulation from selectively
+attending to specific stimuli. It should be noted however that it
+remains controversial whether attention-related mediation of
+directly driven stimulus-locked brainstem auditory evoked potentials (BAEPs) at the initial stages of encoding should be expected as
+well [55–58] but also see [59].
+Mechanistically, we propose that the effects observed here
+reflect an interplay between brainstem and cortex based on these
+structural connections. Specifically, the addition of the task
+increases the total attentional demand within cortex, which leads
+to a concomitant top-down utilization of the inhibitory corticofugal projections, which is turn suppresses the encoding clarity of
+the FFR. Because the cortical demand is greater in the auditory
+task (where the background tones are more potentially distracting
+to the primary task within the same modality), the cortical driver
+increases the suppression even more, which is reflected is the
+differential change in frequency amplitude.
+The cross-subject variance observed here, which is common in
+similar studies, certainly represents some combination of differences in individuals’ perceptual acuity and whatever strategies they
+may employ for performing tasks in the presence of background
+noise. However, accounting for this variance (regardless of its
+origin) based on participants’ perceptual proclivity aides in
+illustrating differences in sub-populations which might otherwise
+not be known.
+These results provide important implications within two
+avenues. First, we have established the utility of a paradigm which
+allows the ability to compare brainstem-level effects relative to
+different types of cortical tasks, while remaining independent of
+the stimuli used for those tasks. Unlike previous approaches using
+the response-eliciting stimuli as a primary component of the task,
+ABR time-locked events in this case are completely non-task
+relevant and temporally separate from task-related events. In our
+analyses we included only data from time periods non-overlapping
+with the primary task stimuli or response periods, so that the EEGmeasured activity examined here reflects only time between task
+trials and the response to the background tone, and thus all
+stimulus features were physically identical across all conditions.
+This means that any effects observed must be related to chronic,
+global state-mediated changes rather than stimulus-driven,
+bottom-up or immediate response influences.
+It should be noted that in this paradigm, we cannot completely
+separate whether the fluctuations observed here stem solely from
+the brainstem FFR, or alternatively from a concomitant increase
+
+in cortical or other sources related to performing a task which
+could change the overall background electrical field level assumed
+to be a baseline. That is, although the target signal discussed here
+is the brainstem FFR, it is possible that the suppressive effect
+observed with our metrics appear as a result of increased ‘‘noise’’
+(meaning non-brainstem originating fluctuations) adding variance
+to the overall signal during the active task conditions. For instance,
+cortical oscillations are known to occur for sustained periods of
+task engagement [60,61], and although oscillations differ across
+sensory modalities, they are critical for binding across senses [62].
+However, while it is indeed likely that parallel cortical activity is
+induced by the task and maintained between trial periods, we do
+not feel this could fully explain the extent of the effects examined
+here. The highpass filter (80 Hz) should remove typical cortical
+activity, although this will not eliminate all neurophysiologically
+driven signals such as microsaccades. Perhaps more importantly,
+because the techniques here rely on averaging across hundreds of
+stimulus epochs, any remaining contaminating effect would
+require the oscillations to be phase-locked with the stimuli in
+order to survive combining across so many trials. Additionally, any
+such sources would have to also fall within the specific frequency
+range targeted in our analyses (220 Hz). Although we did observe
+small differences in the pre-stimulus period, these were not
+statistically significant at the group level or correlated with any of
+the behavioral measures compared here, such as the observed
+relationship between each participant’s sensory proclivity and the
+extent of suppression observed in the FFR (Figure 7).
+Second, we have shown that variance in the quality of sound
+encoding sub-cortically can be introduced simply by the addition
+of a task. Not only is the degree to which this occurs dependent on
+the type of task and modality used, but also appears to vary across
+individuals based on other intrinsic properties, such as their own
+discrimination acuity within a particular sense. This suggests that
+care should be taken in future brainstem FFR-based studies,
+because the size of the effect observed may depend more on
+external parameters of the study than originally assumed.
+Likewise, excess variance due to individual differences in
+susceptibility to these effects could decrease the overall power of
+a study to properly identify hypothesized effects.
+
+Acknowledgments
+The authors would like to thank Tim Mermagen and the Auditory
+Research Team, as well as Keith Whitaker and Alfred Yu from the Army
+Research Laboratory for their help and insight in carrying out this project.
+
+Author Contributions
+Conceived and designed the experiments: WDH KM TRL. Performed the
+experiments: WDH KM. Analyzed the data: WDH KM. Contributed
+reagents/materials/analysis tools: KM. Wrote the paper: WDH KM.
+
+References
+1. Skoe E, Kraus N (2010) Auditory brain stem response to complex sounds: a
+tutorial. Ear Hear 31: 302–324. doi:10.1097/AUD.0b013e3181cdb272.
+2. Kraus N, Skoe E, Parbery-Clark A, Ashley R (2009) Experience-induced
+malleability in neural encoding of pitch, timbre, and timing. Ann N Y Acad Sci
+1169: 543–557. doi:10.1111/j.1749–6632.2009.04549.x.
+3. Bidelman GM, Krishnan A (2009) Neural correlates of consonance, dissonance,
+and the hierarchy of musical pitch in the human brainstem. J Neurosci 29:
+13165–13171. doi:10.1523/JNEUROSCI.3900–09.2009.
+4. Krishnan A (2002) Human frequency-following responses: representation of
+steady-state synthetic vowels. Hear Res 166: 192–201.
+5. Chandrasekaran B, Kraus N (2010) The scalp-recorded brainstem response to
+speech: Neural origins and plasticity. Psychophysiology 47: 236–246.
+doi:10.1111/j.1469–8986.2009.00928.x.
+6. Burkard RF, Eggermont JJ, Don M (2007) Auditory evoked potentials: basic
+principles and clinical application. Lippincott Williams & Wilkins. 783 p.
+
+PLOS ONE | www.plosone.org
+
+7. Galbraith GC, Threadgill MR, Hemsley J, Salour K, Songdej N, et al. (2000)
+Putative measure of peripheral and brainstem frequency-following in humans.
+Neurosci Lett 292: 123–127.
+8. Musacchia G, Sams M, Nicol T, Kraus N (2006) Seeing speech affects acoustic
+information processing in the human brainstem. Exp Brain Res 168: 1–10.
+doi:10.1007/s00221-005-0071-5.
+9. Musacchia G, Sams M, Skoe E, Kraus N (2007) Musicians have enhanced
+subcortical auditory and audiovisual processing of speech and music. Proc Natl
+Acad Sci USA 104: 15894–15898. doi:10.1073/pnas.0701498104.
+10. Musacchia G, Strait D, Kraus N (2008) Relationships between behavior,
+brainstem and cortical encoding of seen and heard speech in musicians and nonmusicians. Hear Res 241: 34–42. doi:10.1016/j.heares.2008.04.013.
+11. Skoe E, Kraus N (2010) Hearing it again and again: on-line subcortical plasticity
+in humans. PLoS ONE 5: e13645. doi:10.1371/journal.pone.0013645.
+
+8
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+Task-Related Suppression of the Brainstem FFR
+
+12. Krishnan A, Xu Y, Gandour J, Cariani P (2005) Encoding of pitch in the human
+brainstem is sensitive to language experience. Brain Res Cogn Brain Res 25:
+161–168. doi:10.1016/j.cogbrainres.2005.05.004.
+13. Akhoun I, Gallégo S, Moulin A, Ménard M, Veuillet E, et al. (2008) The
+temporal relationship between speech auditory brainstem responses and the
+acoustic pattern of the phoneme/ba/ in normal-hearing adults. Clin
+Neurophysiol 119: 922–933. doi:10.1016/j.clinph.2007.12.010.
+14. Wong PCM, Skoe E, Russo NM, Dees T, Kraus N (2007) Musical experience
+shapes human brainstem encoding of linguistic pitch patterns. Nat Neurosci 10:
+420–422. doi:10.1038/nn1872.
+15. Strait DL, Kraus N, Skoe E, Ashley R (2009) Musical experience and neural
+efficiency: effects of training on subcortical processing of vocal expressions of
+emotion. Eur J Neurosci 29: 661–668. doi:10.1111/j.1460–9568.2009.06617.x.
+16. De Boer J, Thornton ARD (2008) Neural correlates of perceptual learning in the
+auditory brainstem: efferent activity predicts and reflects improvement at a
+speech-in-noise discrimination task. J Neurosci 28: 4929–4937. doi:10.1523/
+JNEUROSCI.0902–08.2008.
+17. Posner MI (2011) Imaging attention networks. NeuroImage. Available: http://
+www.ncbi.nlm.nih.gov/pubmed/22227132. Accessed 23 February 2012.
+18. Hillyard SA, Hink RF, Schwent VL, Picton TW (1973) Electrical signs of
+selective attention in the human brain. Science 182: 177–180.
+19. Woldorff MG, Gallen CC, Hampson SA, Hillyard SA, Pantev C, et al. (1993)
+Modulation of early sensory processing in human auditory cortex during
+auditory selective attention. Proc Natl Acad Sci USA 90: 8722–8726.
+20. Fujiwara N, Nagamine T, Imai M, Tanaka T, Shibasaki H (1998) Role of the
+primary auditory cortex in auditory selective attention studied by whole-head
+neuromagnetometer. Brain Res Cogn Brain Res 7: 99–109.
+21. Ahveninen J, Hämäläinen M, Jääskeläinen IP, Ahlfors SP, Huang S, et al. (2011)
+Attention-driven auditory cortex short-term plasticity helps segregate relevant
+sounds from noise. Proc Natl Acad Sci USA 108: 4182–4187. doi:10.1073/
+pnas.1016134108.
+22. Okamoto H, Stracke H, Zwitserlood P, Roberts LE, Pantev C (2009) Frequencyspecific modulation of population-level frequency tuning in human auditory
+cortex. BMC Neuroscience 10: 1. doi:10.1186/1471-2202-10-1.
+23. Kauramäki J, Jääskeläinen IP, Sams M (2007) Selective attention increases both
+gain and feature selectivity of the human auditory cortex. PLoS ONE 2: e909.
+doi:10.1371/journal.pone.0000909.
+24. Alain C, Bernstein LJ (2008) From sounds to meaning: the role of attention
+during auditory scene analysis. Current Opinion in Otolaryngology & Head and
+Neck Surgery 16: 485–489. doi:10.1097/MOO.0b013e32830e2096.
+25. Gondan M, Blurton SP, Hughes F, Greenlee MW (2011) Effects of spatial and
+selective attention on basic multisensory integration. J Exp Psychol Hum Percept
+Perform 37: 1887–1897. doi:10.1037/a0025635.
+26. Macaluso E, Frith CD, Driver J (2000) Modulation of human visual cortex by
+crossmodal spatial attention. Science 289: 1206–1208.
+27. Hairston WD, Hodges DA, Casanova R, Hayasaka S, Kraft R, et al. (2008)
+Closing the mind’s eye: deactivation of visual cortex related to auditory task
+difficulty. Neuroreport 19: 151–154. doi:10.1097/WNR.0b013e3282f42509.
+28. Galbraith GC, Olfman DM, Huffman TM (2003) Selective attention affects
+human brain stem frequency-following response. Neuroreport 14: 735–738.
+doi:10.1097/01.wnr.0000064983.96259.49.
+29. Galbraith GC, Bhuta SM, Choate AK, Kitahara JM, Mullen TA Jr (1998) Brain
+stem frequency-following response to dichotic vowels during attention.
+Neuroreport 9: 1889–1893.
+30. Hoormann J, Falkenstein M, Hohnsbein J (1994) Effect of selective attention on
+the latency of human frequency-following potentials. Neuroreport 5: 1609–1612.
+31. Shulman GL, Corbetta M, Buckner RL, Raichle ME, Fiez JA, et al. (1997) Topdown modulation of early sensory cortex. Cereb Cortex 7: 193–206.
+32. Laurienti PJ, Burdette JH, Wallace MT, Yen Y-F, Field AS, et al. (2002)
+Deactivation of sensory-specific cortex by cross-modal stimuli. J Cogn Neurosci
+14: 420–429. doi:10.1162/089892902317361930.
+33. Haxby JV, Horwitz B, Ungerleider LG, Maisog JM, Pietrini P, et al. (1994) The
+functional organization of human extrastriate cortex: a PET-rCBF study of
+selective attention to faces and locations. J Neurosci 14: 6336–6353.
+34. Bense S, Stephan T, Yousry TA, Brandt T, Dieterich M (2001) Multisensory
+cortical signal increases and decreases during vestibular galvanic stimulation
+(fMRI). J Neurophysiol 85: 886–899.
+35. Papanicolaou AC, Johnstone J (1984) Probe evoked potentials: theory, method
+and applications. Int J Neurosci 24: 107–131.
+36. Levitt H (1971) Transformed up-down methods in psychoacoustics. J Acoust Soc
+Am 49: Suppl 2:467+.
+37. Hairston WD, Maldjian JA (2009) An adaptive staircase procedure for the EPrime programming environment. Comput Methods Programs Biomed 93:
+104–108. doi:10.1016/j.cmpb.2008.08.003.
+
+PLOS ONE | www.plosone.org
+
+38. Krishnan A, Xu Y, Gandour J, Cariani P (2005) Encoding of pitch in the human
+brainstem is sensitive to language experience. Brain Res Cogn Brain Res 25:
+161–168. doi:10.1016/j.cogbrainres.2005.05.004.
+39. Skoe E, Kraus N (2010) Auditory brain stem response to complex sounds: a
+tutorial. Ear Hear 31: 302–324. doi:10.1097/AUD.0b013e3181cdb272.
+40. Laurienti PJ, Kraft RA, Maldjian JA, Burdette JH, Wallace MT (2004) Semantic
+congruence is a critical factor in multisensory behavioral performance. Exp
+Brain Res 158: 405–414. doi:10.1007/s00221-004-1913-2.
+41. Diederich A, Colonius H (2009) Crossmodal interaction in speeded responses:
+time window of integration model. Prog Brain Res 174: 119–135. doi:10.1016/
+S0079–6123(09)01311-9.
+42. Welch RB, Warren DH (1980) Immediate perceptual response to intersensory
+discrepancy. Psychol Bull 88: 638–667.
+43. Hirsch IJ, Sherrick CE Jr (1961) Perceived order in different sense modalities.
+J Exp Psychol 62: 423–432.
+44. Hairston WD, Hodges DA, Burdette JH, Wallace MT (2006) Auditory
+enhancement of visual temporal order judgment. Neuroreport 17: 791–795.
+doi:10.1097/01.wnr.0000220141.29413.b4.
+45. Duncan J, Martens S, Ward R (1997) Restricted attentional capacity within but
+not between sensory modalities. Nature 387: 808–810. doi:10.1038/42947.
+46. Santangelo V, Fagioli S, Macaluso E (2010) The costs of monitoring
+simultaneously two sensory modalities decrease when dividing attention in
+space. Neuroimage 49: 2717–2727. doi:10.1016/j.neuroimage.2009.10.061.
+47. Saldaña E, Feliciano M, Mugnaini E (1996) Distribution of descending
+projections from primary auditory neocortex to inferior colliculus mimics the
+topography of intracollicular projections. J Comp Neurol 371: 15–40.
+doi:10.1002/(SICI)1096-9861(19960715)371:1,15::AID-CNE2.3.0.CO;2-O.
+48. Huffman RF, Henson OW Jr (1990) The descending auditory pathway and
+acousticomotor systems: connections with the inferior colliculus. Brain Res Brain
+Res Rev 15: 295–323.
+49. Galbraith GC, Doan BQ (1995) Brainstem frequency-following and behavioral
+responses during selective attention to pure tone and missing fundamental
+stimuli. Int J Psychophysiol 19: 203–214.
+50. Giard M-H, Collet L, Bouchet P, Pernier J (1994) Auditory selective attention in
+the human cochlea. Brain Research 633: 353–356. doi:10.1016/0006–
+8993(94)91561-X.
+51. Maison S, Micheyl C, Collet L (2001) Influence of focused auditory attention on
+cochlear activity in humans. Psychophysiology 38: 35–40. doi:10.1111/1469–
+8986.3810035.
+52. Delano PH, Elgueda D, Hamame CM, Robles L (2007) Selective Attention to
+Visual Stimuli Reduces Cochlear Sensitivity in Chinchillas. Journal of
+Neuroscience 27: 4146–4153. doi:10.1523/JNEUROSCI.3702–06.2007.
+53. Johnson JA, Zatorre RJ (2006) Neural substrates for dividing and focusing
+attention between simultaneous auditory and visual events. Neuroimage 31:
+1673–1681. doi:10.1016/j.neuroimage.2006.02.026.
+54. Shomstein S, Yantis S (2004) Control of attention shifts between vision and
+audition in human cortex. J Neurosci 24: 10702–10706. doi:10.1523/
+JNEUROSCI.2939-04.2004.
+55. Gregory SD, Heath JA, Rosenberg ME (1989) Does selective attention influence
+the brain-stem auditory evoked potential? Electroencephalography and Clinical
+Neurophysiology 73: 557–560. doi:10.1016/0013–4694(89)90266-6.
+56. Connolly JF, Aubry K, McGillivary N, Scott DW (1989) Human Brainstem
+Auditory Evoked Potentials Fail to Provide Evidence of Efferent Modulation of
+Auditory Input During Attentional Tasks. Psychophysiology 26: 292–303.
+doi:10.1111/j.1469–8986.1989.tb01920.x.
+57. Hackley SA, Woldorff M, Hillyard SA (1990) Cross-Modal Selective Attention
+Effects on Retinal, Myogenic, Brainstem, and Cerebral Evoked Potentials.
+Psychophysiology 27: 195–208. doi:10.1111/j.1469–8986.1990.tb00370.x.
+58. Hirschhorn TN, Michie PT (1990) Brainstem Auditory Evoked Potentials
+(BAEPS) and Selective Attention Revisited. Psychophysiology 27: 495–512.
+doi:10.1111/j.1469–8986.1990.tb01964.x.
+59. Lukas JH (1981) The Role of Efferent Inhibition in Human Auditory Attention:
+An Examination of the Auditory Brainstem Potentials. International Journal of
+Neuroscience 12: 137–145. doi:10.3109/00207458108985796.
+60. Kaiser J, Lutzenberger W (2005) Human gamma-band activity: a window to
+cognitive processing. Neuroreport 16: 207–211.
+61. Womelsdorf T, Fries P (2007) The role of neuronal synchronization in selective
+attention. Curr Opin Neurobiol 17: 154–160. doi:10.1016/j.conb.2007.02.002.
+62. Senkowski D, Schneider TR, Foxe JJ, Engel AK (2008) Crossmodal binding
+through neural coherence: implications for multisensory processing. Trends
+Neurosci 31: 401–409. doi:10.1016/j.tins.2008.05.002.
+
+9
+
+February 2013 | Volume 8 | Issue 2 | e55215
+
+

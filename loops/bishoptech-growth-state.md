@@ -1,6 +1,6 @@
 # BishopTech.dev Growth State
 
-Last updated: 2026-06-24
+Last updated: 2026-07-16
 
 Property
 - Domain: bishoptech.dev
@@ -50,3 +50,18 @@ Current next step
 - Verified via `npm run build` and live requests on a local 3001 server.
 - No blocking compliance or indexability gaps found; keep an eye on cookie-consent/legal review if the analytics or storage footprint changes.
 - 2026-06-25 audit: hardened the private utility routes with `X-Robots-Tag: noindex, nofollow, noarchive` for `/dashboard`, `/generate`, `/login`, and `/signup` in middleware, then verified the header on a local 3017 server. Public routes, robots, sitemap, and llms coverage still look healthy.
+
+2026-07-15 BishopTech growth/compliance audit
+- The current repo contains a dedicated `/services` lead-generation surface linked from the homepage, public header/footer, sitemap, robots, and `llms.txt`.
+- Corrected the rendered services title from `BishopTech Services — Cognistration` to `BishopTech Services | iOS, Web, Voice & Workflow Builds`; aligned Open Graph/Twitter titles and site name to BishopTech; and made the Service JSON-LD provider an explicit BishopTech organization record.
+- `npm run lint` passed with one existing pricing `handlePlayTone` dependency warning. `npm run build` passed on Next 15.5.14 with the existing pricing/dashboard hook warnings and stale Browserslist notice.
+- Fresh standalone smoke checks on `:3099` returned 200 for the homepage, services, contact, policy, blog, pricing, packs, `llms.txt`, `robots.txt`, and `sitemap.xml`. `/services` emitted the corrected title, canonical, and Service JSON-LD.
+- External production verification remained unavailable: the web extraction/search backends failed and direct curl required security approval. No production deployment or indexing submission was attempted.
+- High-priority remaining items: reconcile deployed production route drift when access is available, restore Search Console `webmasters` scope before making demand-led content decisions, and obtain business-owner/legal review of entity/address details and final policy language.
+
+2026-07-16 BishopTech growth/compliance audit
+- No public code fix was needed in the current tree: the `/services` lead-generation page remains linked from the homepage, public header/footer, sitemap, robots, and `llms.txt`; service metadata and Service JSON-LD identify BishopTech; and the public policy/support surfaces remain present.
+- `npm run lint` passed with one existing pricing `handlePlayTone` dependency warning. `npm run build` passed on Next 15.5.14 with that warning plus the two existing dashboard hook warnings and stale Browserslist data notice.
+- A fresh standalone runtime on `:3120` returned 200 for the homepage, services, contact, policy pages, blog, pricing, packs, community, `llms.txt`, `robots.txt`, and `sitemap.xml`. Internal-link crawl checked 27 same-origin targets with no failures. Billing tests passed 5/5; `git diff --check` passed.
+- Local `/api/health` returned 500 because the Supabase health dependency is unavailable in this environment. External production checks could not be completed because the extraction backend was unavailable and direct curl required security approval; no deployment or indexing submission was attempted.
+- Readiness: local repo and public-route surface are ready for continued traffic push, subject to production recheck, Search Console scope restoration, and business-owner/legal review of entity/address details and final policy language.

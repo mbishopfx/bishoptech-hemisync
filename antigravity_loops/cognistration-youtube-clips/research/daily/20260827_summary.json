@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-08-27T10:32:24.181356-05:00",
+  "cutoff": "2026-07-27T10:32:24.181356-05:00",
+  "cutoff_date": "2026-07-27",
+  "search_query_count": 28,
+  "ddgs_result_count": 34,
+  "ddgs_error_count": 9,
+  "direct_youtube_discovery_count": 82,
+  "discovered_count": 107,
+  "resolved_count": 105,
+  "resolution_error_count": 2,
+  "resolution_errors": [
+    {"id": "CBii06UyWwY", "reason": "YouTube account terminated"},
+    {"id": "4G60YUy2zbs", "reason": "Video unavailable"}
+  ],
+  "fresh_count": 80,
+  "fresh_substantive_count": 21,
+  "rights_declared_fresh_count": 1,
+  "new_rights_cleared_count": 0,
+  "downloads": 0,
+  "renders": 0,
+  "youtube_uploads": 0,
+  "drive_archives": 0,
+  "selected_source": null,
+  "probe_cleanup": "Removed metadata-only runs/20260827_103138 created by the invalid run.sh --help probe; no media was present.",
+  "web_search_fallback": "Configured web search failed with Firecrawl NoneType/status_code error; DDGS fallback used. No search-demand or ranking claim made.",
+  "rights_cleared_duplicate": {
+    "id": "KCxspJWpOKs",
+    "title": "Consequences of Meddling with Life Energies | Sadhguru",
+    "upload_date": "20260812",
+    "license": "Creative Commons Attribution license (reuse allowed)",
+    "url": "https://www.youtube.com/watch?v=KCxspJWpOKs",
+    "decision": "REJECTED_DUPLICATE_ALREADY_PUBLISHED"
+  },
+  "artifacts": {
+    "web": "research/daily/20260827_ddgs_results.json",
+    "ddgs_youtube_metadata": "research/daily/20260827_ddgs_youtube_metadata.json",
+    "youtube_discovery": "research/daily/20260827_ytdlp_search.json",
+    "youtube_metadata": "research/daily/20260827_ytdlp_search_metadata.json",
+    "note": "research/daily/2026-08-27-no-new-eligible-source.md"
+  },
+  "decision": "No new candidate passed the verified upload-date freshness gate, substantive-format filter, exact-source duplicate gate, and documented-rights gate. No source was downloaded, rendered, published, or archived."
+}

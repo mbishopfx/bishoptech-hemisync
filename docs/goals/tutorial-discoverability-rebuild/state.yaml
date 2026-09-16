@@ -1,0 +1,793 @@
+version: 2
+
+goal:
+  title: "Tutorial Discoverability Rebuild"
+  slug: "tutorial-discoverability-rebuild"
+  kind: existing_plan
+  tranche: "Continuous execution through research, implementation, and rendered verification of the full tutorial and discoverability system."
+  status: done
+  intake:
+    original_request: "Remake /tutorial with anime.js, clearer guidance, science and topical SEO pages, stronger schema/crawlability, and the supplied logo outside the header and in social metadata."
+    interpreted_outcome: "A clear, credible, motion-rich public learning hub that teaches Cognistration and earns relevant search/AI visibility without keyword stacking or scientific overclaiming."
+    input_shape: existing_plan
+    audience: "Meditation, self-exploration, dreamwork, astral-projection, metaphysics, and remote-viewing learners."
+    authority: requested
+    proof_type: demo
+    completion_proof: "Build, tests, source checks, and rendered route audits prove all requested UX, content, SEO, branding, crawlability, accessibility, and sourcing requirements."
+    likely_misfire: "A stylish keyword-stuffed page that obscures platform guidance, overclaims science, or breaks protected product/header behavior."
+    blind_spots_considered:
+      - "Scientific and historical claim quality"
+      - "Distinct search intent versus doorway-page risk"
+      - "Motion accessibility, mobile performance, and cleanup"
+      - "Supported schema and crawl/index behavior"
+      - "Logo and social-preview format requirements"
+      - "Protected Workshop, header, and paid-product behavior"
+    existing_plan_facts:
+      - "Use anime.js and advanced motion on /tutorial."
+      - "Make platform usage substantially clearer."
+      - "Explain the science behind the experience responsibly."
+      - "Target astral projection, metaphysics, deep dreaming, remote viewing, meditation, and self-exploration with semantic phrases."
+      - "Use breadcrumb-linked granular pages if they improve intent clarity and avoid keyword stacking."
+      - "Link remote-viewing content to primary CIA studies/documents."
+      - "Improve schema, snippets, metadata, URLs, robots, and AI-search legibility."
+      - "Use the supplied logo everywhere except the existing header and in shared-link metadata."
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+  continuous_until_full_outcome: true
+  missing_input_or_credentials_do_not_stop_goal: true
+  preserve_and_validate_existing_plan: true
+  intake_misfire_must_be_audited: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+visual_board:
+  selected: local
+  local:
+    status: live
+    url: "http://goalbuddy.localhost:41737/tutorial-discoverability-rebuild/"
+    command: "npx goalbuddy board docs/goals/tutorial-discoverability-rebuild"
+  github_projects:
+    status: not_requested
+    url: null
+    command: "npx goalbuddy extend github-projects"
+    missing: []
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: medium
+    objective: "Map the current tutorial, app architecture, branding and metadata surfaces, SEO/crawl files, dependencies, verification commands, and dirty-tree constraints."
+    inputs:
+      - "Current repository"
+      - "Supplied logo attachment"
+      - "Existing public routes and SEO infrastructure"
+    constraints:
+      - "Read-only."
+      - "Do not edit implementation files."
+      - "Identify user-owned changes before proposing allowed files."
+      - "Prefer exact file paths and commands over generic advice."
+    expected_output:
+      - "Repo and route map"
+      - "Tutorial and brand gap analysis"
+      - "Dependency and verification commands"
+      - "Dirty-tree ownership risks"
+      - "Candidate bounded implementation slices"
+    receipt:
+      result: done
+      note: "notes/T001-repo-map.md"
+      summary: "Mapped the Next.js tutorial, anime.js pattern, logo/metadata/crawl surfaces, protected header/Workshop boundaries, verification commands, and missing Git baseline."
+      evidence:
+        - "app/tutorial/page.js"
+        - "components/packs/PacksBrowser.jsx"
+        - "components/layout/PublicHeader.jsx"
+        - "app/layout.js"
+        - "app/robots.js"
+        - "app/sitemap.js"
+        - "app/llms.txt/route.js"
+        - "GEMINI.md"
+      spawned_tasks:
+        - T002
+        - T003
+  - id: T002
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: high
+    objective: "Research search intent, semantic phrase clusters, content architecture, primary scientific sources, and authoritative CIA remote-viewing documents for accurate tutorial content."
+    inputs:
+      - "Named audience and keyword clusters"
+      - "Official Google Search guidance"
+      - "Primary scientific and CIA sources"
+    constraints:
+      - "Read-only."
+      - "Separate supported findings from disputed or experiential claims."
+      - "Avoid doorway pages and unsupported ranking hacks."
+    expected_output:
+      - "Search-intent and semantic phrase map"
+      - "Recommended hub/spoke URL architecture"
+      - "Source-backed science brief"
+      - "Claim-safety rules"
+      - "Schema and crawlability recommendations"
+    receipt:
+      result: done
+      note: "notes/T002-research-architecture.md"
+      summary: "Defined one tutorial hub plus four distinct spokes, mapped semantic intent, assembled scientific/CIA primary sources, and set claim-safe Google-aligned schema and crawl rules."
+      evidence:
+        - "lib/blog/posts-data.js"
+        - "app/tutorial/page.js"
+        - "app/robots.js"
+        - "app/sitemap.js"
+        - "app/llms.txt/route.js"
+        - "Official Google Search documentation"
+        - "Peer-reviewed scientific sources"
+        - "CIA STAR GATE primary records"
+      spawned_tasks:
+        - T003
+  - id: T003
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Validate the combined repo and research findings, resolve scope risks, and define the first safe implementation slice with exact file boundaries and verification."
+    inputs:
+      - "T001 receipt"
+      - "T002 receipt"
+      - "Original objective and non-negotiable constraints"
+    constraints:
+      - "Do not implement."
+      - "Preserve the header logo and existing Workshop/product behavior."
+      - "Reject keyword stuffing, unsupported schema, and scientific overclaiming."
+    expected_output:
+      - "Decision and rationale"
+      - "Exact Worker objective"
+      - "allowed_files"
+      - "verify"
+      - "stop_if"
+      - "Sequenced remaining slices"
+    receipt:
+      result: done
+      decision: "Conditionally approved one server-first hub plus four intent-distinct spokes and narrow checksum-protected Worker slices."
+      note: "notes/T003-judge-decision.md"
+      next_allowed_task: T004
+      summary: "Resolved the logo exception, claim/schema boundaries, origin cleanup scope, no-Git safeguards, no-local-build rule, and implementation sequence."
+  - id: T004
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Rebuild only /tutorial as a server-rendered, claim-safe product-use hub; add the exact supplied mark as a separate asset; consolidate tutorial metadata to one implementation; and isolate reusable animejs choreography in a reduced-motion-aware client leaf."
+    allowed_files:
+      - "app/tutorial/page.js"
+      - "app/tutorial/layout.js"
+      - "app/tutorial/head.js"
+      - "components/tutorial/TutorialMotion.jsx"
+      - "public/images/cognistration-mark.png"
+    verify:
+      - "Confirm parent Git root is /Users/matthewbishop and this app is still wholly untracked."
+      - "Confirm attachment SHA-256 is 5fa96928cd4a5c6002cfceb34b9d6ec45b3fad1f22d5b132a3f3da81d869e382."
+      - "Archive existing allowed files in a task-specific /tmp directory and record pre/post SHA-256 manifests."
+      - "cmp public/images/cognistration-mark.png /Users/matthewbishop/.codex/attachments/8ceb77c4-082f-443e-9f1c-f2e31875d00e/image-1.png"
+      - "npx eslint app/tutorial/page.js app/tutorial/layout.js components/tutorial/TutorialMotion.jsx"
+      - "npm run test:billing"
+      - "npm run test:studio"
+      - "Next dev compile plus curl/source assertions for /tutorial; do not run npm run build."
+      - "Confirm only the five allowed paths changed."
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Attachment is missing or its SHA-256 differs."
+      - "Implementation needs global CSS, package changes, PublicHeader, or public/images/logo.png."
+      - "Critical content would require client rendering."
+      - "animejs cannot use scoped selectors, cleanup, and prefers-reduced-motion."
+      - "Copy exceeds approved claim rules."
+      - "Any non-allowed path changes."
+      - "Verification fails twice for the same unexplained reason."
+    receipt:
+      result: done
+      note: "notes/T004-tutorial-hub.md"
+      changed_files:
+        - "app/tutorial/page.js"
+        - "app/tutorial/layout.js"
+        - "components/tutorial/TutorialMotion.jsx"
+        - "public/images/cognistration-mark.png"
+      deleted_files:
+        - "app/tutorial/head.js"
+      commands:
+        - cmd: "npx eslint app/tutorial/page.js app/tutorial/layout.js components/tutorial/TutorialMotion.jsx"
+          status: pass
+        - cmd: "npm run test:billing"
+          status: pass
+        - cmd: "npm run test:studio"
+          status: pass
+        - cmd: "Next dev compile and /tutorial HTML assertions"
+          status: pass
+      summary: "Shipped the server-first tutorial hub, exact supplied mark, consolidated metadata, claim-safe guidance, and reduced-motion-aware anime.js choreography."
+  - id: T005
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Apply the supplied brand mark to all public non-header visual/schema consumers, create the social preview from the supplied artwork, and correct central canonical-origin helpers."
+    allowed_files:
+      - "public/images/og-preview.png"
+      - "app/page.js"
+      - "app/machine/page.js"
+      - "app/layout.js"
+      - "app/blog/page.js"
+      - "app/blog/[slug]/page.js"
+      - "lib/seo.js"
+      - "lib/seo.ts"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched source files."
+      - "Confirm PublicHeader and public/images/logo.png are unchanged."
+      - "Confirm Cognistration social/schema image and canonical origin outputs."
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Any behavior beyond brand/metadata changes is required."
+      - "Any non-allowed path changes."
+      - "Verification fails twice unexplained."
+    receipt:
+      result: done
+      note: "notes/T005-brand-metadata.md"
+      changed_files:
+        - "public/images/og-preview.png"
+        - "app/page.js"
+        - "app/machine/page.js"
+        - "app/layout.js"
+        - "app/blog/page.js"
+        - "app/blog/[slug]/page.js"
+        - "lib/seo.js"
+        - "lib/seo.ts"
+      commands:
+        - cmd: "Exact attachment comparison for mark and social asset"
+          status: pass
+        - cmd: "Targeted ESLint"
+          status: pass
+        - cmd: "npm run test:billing"
+          status: pass
+        - cmd: "npm run test:studio"
+          status: pass
+      summary: "Applied the supplied mark to approved non-header visuals/schema/social metadata and corrected public canonical fallbacks without behavior changes."
+  - id: T006
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Create the reusable server-rendered tutorial article/breadcrumb shell and the meditation-self-exploration spoke."
+    allowed_files:
+      - "components/tutorial/TutorialArticleShell.jsx"
+      - "components/tutorial/TutorialBreadcrumbs.jsx"
+      - "app/tutorial/meditation-self-exploration/page.js"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched files."
+      - "Next dev compile and HTML/schema/link assertions."
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Page cannot provide substantial distinct intent."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T006-meditation-spoke.md"
+      changed_files:
+        - "components/tutorial/TutorialArticleShell.jsx"
+        - "components/tutorial/TutorialBreadcrumbs.jsx"
+        - "app/tutorial/meditation-self-exploration/page.js"
+      commands:
+        - cmd: "Targeted ESLint"
+          status: pass
+        - cmd: "Next dev and HTML/schema assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added the shared tutorial article/breadcrumb system and a source-backed meditation/self-exploration guide."
+  - id: T007
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Create the sleep-respecting dreamwork/lucid-dreaming spoke."
+    allowed_files:
+      - "app/tutorial/dreamwork-lucid-dreaming/page.js"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched file."
+      - "Next dev compile and HTML/schema/link assertions."
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Claims exceed approved source brief."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T007-dreamwork-spoke.md"
+      changed_files:
+        - "app/tutorial/dreamwork-lucid-dreaming/page.js"
+      commands:
+        - cmd: "Targeted ESLint"
+          status: pass
+        - cmd: "Next dev and HTML/schema assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added a source-backed, sleep-respecting dreamwork and lucid-dreaming guide."
+  - id: T008
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Create the astral-projection/OBE spoke, separating personal interpretation from neurological evidence."
+    allowed_files:
+      - "app/tutorial/astral-projection-out-of-body-experiences/page.js"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched file."
+      - "Next dev compile and HTML/schema/link assertions."
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Claims imply product-induced astral projection or adjudicate spiritual interpretation."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T008-astral-obe-spoke.md"
+      changed_files:
+        - "app/tutorial/astral-projection-out-of-body-experiences/page.js"
+      commands:
+        - cmd: "Targeted ESLint"
+          status: pass
+        - cmd: "Next dev and HTML/schema assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added a claim-safe, evidence-calibrated astral-projection and OBE guide with grounding steps."
+  - id: T009
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Create the remote-viewing/STAR GATE archival guide with direct CIA documents and required no-proof framing."
+    allowed_files:
+      - "app/tutorial/remote-viewing-stargate-documents/page.js"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched file."
+      - "Next dev compile and HTML/schema/link assertions."
+      - "Confirm every CIA URL and no-proof framing."
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Claims imply CIA records prove paranormal efficacy."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T009-stargate-spoke.md"
+      changed_files:
+        - "app/tutorial/remote-viewing-stargate-documents/page.js"
+      commands:
+        - cmd: "Targeted ESLint and exact CIA URL checks"
+          status: pass
+        - cmd: "Next dev and HTML/schema assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added a primary-source STAR GATE archive guide with explicit program-history-not-proof framing."
+  - id: T010
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Add the four canonical spokes to crawl/discovery surfaces and finish safe public-origin fallback consolidation."
+    allowed_files:
+      - "app/robots.js"
+      - "app/sitemap.js"
+      - "app/llms.txt/route.js"
+      - "lib/seo.ts"
+      - "app/pricing/head.js"
+      - "app/machine/head.js"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched source files."
+      - "Next dev curl assertions for robots, sitemap, llms.txt, canonicals, and all spokes."
+    stop_if:
+      - "Need fabricated lastModified dates."
+      - "Change would claim llms.txt boosts rankings."
+      - "Need blanket BishopTech domain replacement."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T010-crawl-discovery.md"
+      changed_files:
+        - "app/robots.js"
+        - "app/sitemap.js"
+        - "app/llms.txt/route.js"
+        - "lib/seo.ts"
+      deleted_files:
+        - "app/pricing/head.js"
+        - "app/machine/head.js"
+      commands:
+        - cmd: "Targeted ESLint"
+          status: pass
+        - cmd: "Next dev curl and crawl/canonical assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added the tutorial cluster to crawl/discovery surfaces, corrected public origins, and removed safe duplicate metadata."
+  - id: T011
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Replace dashboard non-PublicHeader logo instances with the supplied mark, with no behavioral edits."
+    allowed_files:
+      - "app/dashboard/page.jsx"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "Lint touched file."
+      - "npm run test:billing"
+      - "npm run test:studio"
+    stop_if:
+      - "Any behavior, navigation, Workshop, Studio, billing, or entitlement change is needed."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T011-dashboard-brand.md"
+      changed_files:
+        - "app/dashboard/page.jsx"
+      commands:
+        - cmd: "Minimal backup/source comparison"
+          status: pass
+        - cmd: "Targeted ESLint"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Replaced two non-header dashboard logo instances without behavioral changes."
+  - id: T012
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: high
+    objective: "Run desktop, mobile, keyboard, reduced-motion, HTML, canonical, schema, link, and crawl-surface audits; identify narrowly scoped repairs for every failure."
+    inputs:
+      - "All Worker receipts"
+      - "Current source and local runtime"
+    constraints:
+      - "Read-only."
+      - "Do not run npm run build."
+    expected_output:
+      - "Rendered audit"
+      - "Requirement evidence map"
+      - "Exact repair tasks"
+    receipt:
+      result: done
+      note: "notes/T012-render-audit.md"
+      summary: "Core tutorial UX, motion, sources, metadata, schema, crawlability, logo rule, and tests pass; footer, favicon, global schema, stale dimensions, header accessibility, and community runtime defects remain."
+      evidence:
+        - "Five-route desktop/mobile Playwright audit"
+        - "Reduced-motion and keyboard audit"
+        - "JSON-LD and metadata parsing"
+        - "robots/sitemap/llms checks"
+        - "Full lint and product tests"
+      spawned_tasks:
+        - T014
+  - id: T014
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Triage T012 failures, authorize the narrowest in-scope repairs, and decide whether the protected-header accessibility and community runtime defects belong in this tranche."
+    inputs:
+      - "notes/T012-render-audit.md"
+      - "Original objective and non-negotiable constraints"
+      - "Current source and prior Worker receipts"
+    constraints:
+      - "Read-only."
+      - "Do not change the protected header logo or public/images/logo.png."
+      - "Do not broaden into unrelated product behavior."
+    expected_output:
+      - "Decision per failure"
+      - "Exact repair Worker tasks"
+      - "allowed_files"
+      - "verify"
+      - "stop_if"
+      - "Next audit scope"
+    receipt:
+      result: done
+      decision: "Authorize four narrow repair Workers and a full repeat audit; keep Vercel proof separately blocked."
+      note: "notes/T014-repair-decision.md"
+      next_allowed_task: T015
+  - id: T015
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Add the shared footer to /tutorial, derive a favicon only from the checksum-verified supplied mark, and relocate homepage WebPage JSON-LD from the root layout to the homepage without behavioral changes."
+    allowed_files:
+      - "app/tutorial/page.js"
+      - "app/layout.js"
+      - "app/page.js"
+      - "app/favicon.ico"
+    verify:
+      - "Checksum-protected scoped edit and exact supplied-mark source verification."
+      - "Targeted ESLint and billing/studio tests."
+      - "Next dev /tutorial, /, and /favicon.ico checks."
+      - "Parse JSON-LD so homepage and tutorial each have one correct WebPage and non-home routes have no homepage entity."
+      - "Confirm PublicTrustFooter and protected logo checksums."
+    stop_if:
+      - "Homepage behavior or client state must be refactored."
+      - "Favicon cannot be derived only from the supplied attachment."
+      - "Any non-allowed path changes."
+      - "Local build becomes necessary."
+    receipt:
+      result: done
+      note: "notes/T015-footer-favicon-schema.md"
+      changed_files:
+        - "app/tutorial/page.js"
+        - "app/layout.js"
+        - "app/page.js"
+        - "app/favicon.ico"
+      commands:
+        - cmd: "Targeted ESLint and JSON-LD/footer/favicon assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added the tutorial footer and supplied-mark favicon and corrected homepage-only WebPage schema scope."
+  - id: T016
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Mechanically correct the eleven stale Open Graph image declarations from 886x886 to truthful 1254x1254 dimensions and supplied-mark alt text."
+    allowed_files:
+      - "app/cookies/page.js"
+      - "app/login/page.js"
+      - "app/pricing/layout.js"
+      - "app/community/[username]/page.js"
+      - "app/contact/page.js"
+      - "app/health-warning/page.js"
+      - "app/privacy/page.js"
+      - "app/ai-disclosure/page.js"
+      - "app/signup/page.js"
+      - "app/machine/layout.js"
+      - "app/terms/page.js"
+    verify:
+      - "Checksum-protected scoped edit."
+      - "No 886 metadata declarations remain."
+      - "Targeted ESLint and rendered metadata assertions."
+      - "Billing/studio tests."
+    stop_if:
+      - "Any edit beyond width, height, or truthful image alt text is needed."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T016-metadata-dimensions.md"
+      changed_files:
+        - "app/cookies/page.js"
+        - "app/login/page.js"
+        - "app/pricing/layout.js"
+        - "app/community/[username]/page.js"
+        - "app/contact/page.js"
+        - "app/health-warning/page.js"
+        - "app/privacy/page.js"
+        - "app/ai-disclosure/page.js"
+        - "app/signup/page.js"
+        - "app/machine/layout.js"
+        - "app/terms/page.js"
+      commands:
+        - cmd: "Targeted ESLint and exact source/dimension assertions"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Corrected all stale social-image dimensions; community rendered proof remains dependent on T018."
+  - id: T017
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Give only the PublicHeader mobile-menu toggle an accessible name, expanded state, and controlled-menu relationship without altering either logo or navigation."
+    allowed_files:
+      - "components/layout/PublicHeader.jsx"
+    verify:
+      - "Targeted ESLint."
+      - "390px named button, aria-expanded state changes, valid aria-controls, and keyboard activation."
+      - "Logo JSX block byte-identical and public/images/logo.png checksum unchanged."
+      - "Billing/studio tests."
+    stop_if:
+      - "Any logo, link set, animation, styling, or navigation behavior must change."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T017-header-accessibility.md"
+      changed_files:
+        - "components/layout/PublicHeader.jsx"
+      commands:
+        - cmd: "Targeted ESLint and 390px browser accessibility interaction"
+          status: pass
+        - cmd: "Protected logo byte/checksum checks"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Added name/state/relationship semantics to the mobile menu without altering the protected logo or behavior."
+  - id: T018
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Repair only the existing server-side Supabase client compatibility used by public community routes without product or data-semantics changes."
+    allowed_files:
+      - "lib/supabase/server.js"
+      - "app/community/page.js"
+      - "app/community/[username]/page.js"
+    verify:
+      - "Confirm installed createServerComponentClient API."
+      - "Targeted ESLint and billing/studio tests."
+      - "Next dev /community 200 with no createServerClient/type error."
+      - "Test a public profile or expected not-found behavior."
+      - "Anonymous render exposes no authenticated controls."
+    stop_if:
+      - "Dependency update, migration, policy, entitlement, UX, or data-semantics change is required."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T018-community-client.md"
+      changed_files:
+        - "lib/supabase/server.js"
+        - "app/community/page.js"
+        - "app/community/[username]/page.js"
+      commands:
+        - cmd: "Targeted ESLint and installed export/source assertions"
+          status: pass
+        - cmd: "Next dev /community, anonymous controls, and missing-profile checks"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Repaired the advertised community routes' bounded Supabase server-client compatibility bug without UX or data changes."
+  - id: T019
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: high
+    objective: "Repeat the complete rendered, source, schema, metadata, accessibility, favicon, server-log, link, and crawl audit after T015-T018."
+    inputs:
+      - "All repair receipts"
+      - "All PUBLIC_ROUTES and five tutorial routes"
+    constraints:
+      - "Read-only."
+      - "Do not run npm run build."
+      - "Use existing safe credentials only; do not create or mutate accounts/data."
+    expected_output:
+      - "Full requirement evidence map"
+      - "Pass/fail per prior defect"
+      - "Remaining blockers or exact repair task"
+    receipt:
+      result: done
+      note: "notes/T019-post-repair-audit.md"
+      summary: "All original audit repairs and 19 public routes pass; community params warnings, packs fallback log, authenticated render, and Vercel compile evidence remain for final scope decisions."
+      evidence:
+        - "19-route Playwright sweep"
+        - "Five-route desktop/mobile tutorial sweep"
+        - "JSON-LD/metadata/crawl/favicon/log audits"
+        - "Full lint and product tests"
+      spawned_tasks:
+        - T020
+  - id: T020
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Decide whether the remaining community params warning, packs fallback log, authenticated render gap, and blocked Vercel proof require more work before the final goal audit."
+    inputs:
+      - "notes/T019-post-repair-audit.md"
+      - "Original objective and all receipts"
+      - "Current source"
+    constraints:
+      - "Read-only."
+      - "Authorize only work required by the original outcome."
+      - "Do not broaden into unrelated pack/catalog or protected-product behavior."
+    expected_output:
+      - "Decision per issue"
+      - "Exact repair task if required"
+      - "Final-audit readiness decision"
+    receipt:
+      result: done
+      decision: "Require one community async-params repair; defer packs fallback; accept protected dashboard evidence substitution; keep deployment unattempted."
+      note: "notes/T020-final-scope-decision.md"
+      next_allowed_task: T021
+  - id: T021
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: low
+    objective: "Repair only Next 15 async params consumption for public community profiles."
+    allowed_files:
+      - "app/community/[username]/page.js"
+    verify:
+      - "Checksum-protected single-file edit."
+      - "Targeted ESLint."
+      - "Missing profile returns 404 with correct slug metadata and no synchronous params warning."
+      - "/community remains 200 without Supabase helper errors."
+      - "Billing/studio tests."
+      - "Only the allowed file changes."
+    stop_if:
+      - "Any package, configuration, query, auth, visibility, metadata-copy, UX, or additional-file change is needed."
+      - "404 behavior changes."
+      - "The warning persists twice unexplained."
+      - "Any non-allowed path changes."
+    receipt:
+      result: done
+      note: "notes/T021-community-params.md"
+      changed_files:
+        - "app/community/[username]/page.js"
+      commands:
+        - cmd: "Targeted ESLint and Next dev community/profile/server-log checks"
+          status: pass
+        - cmd: "npm run test:billing && npm run test:studio"
+          status: pass
+      summary: "Resolved the final deterministic Next 15 public-route warning without behavior changes."
+  - id: T013
+    type: worker
+    assignee: Worker
+    status: blocked
+    reasoning_hint: low
+    objective: "Obtain remote Vercel compile proof without running a local build."
+    allowed_files: []
+    verify:
+      - "Vercel deployment build reaches Ready."
+      - "Inspect deployment build evidence and public routes."
+    stop_if:
+      - "Correct Git repository/remote remains absent and owner has not authorized preview upload."
+    receipt:
+      result: blocked
+      summary: "Deployment was not requested. Current production compile proof is unavailable until the correct Git repository/remote is restored or the owner explicitly authorizes a Vercel preview upload from the untracked app."
+  - id: T999
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit the full current result against every explicit requirement in the original objective."
+    inputs:
+      - "All done task receipts"
+      - "Current source and dirty diff"
+      - "Build/test/source/rendered-route evidence"
+      - "Current public behavior if deployment is in scope and available"
+    constraints:
+      - "Do not implement."
+      - "Reject completion if required Worker work remains queued or active."
+      - "Reject completion if any claim, route, schema, logo surface, crawlability surface, accessibility behavior, or protected product behavior is unverified."
+    expected_output:
+      - "complete | not_complete"
+      - "full_outcome_complete: true | false"
+      - "Requirement-by-requirement evidence map"
+      - "Missing evidence or next task"
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      note: "notes/T999-final-audit.md"
+      summary: "Requirement-by-requirement audit proves the full requested local implementation complete; no required Worker work remains."
+      remaining_gaps:
+        - "Unrequested deployment/production compile proof remains unavailable under current no-Git/no-local-build constraints and is not a completion dependency."
+
+checks:
+  dirty_fingerprint: "No nested Git baseline: app is untracked under parent /Users/matthewbishop repository."
+  last_verification:
+    result: pass
+    task: T999
+    commands:
+      - "19-route browser sweep"
+      - "Five-route desktop/mobile/keyboard/reduced-motion tutorial sweep"
+      - "JSON-LD, metadata, crawl, logo, favicon, link, and server-log audits"
+      - "npm run lint"
+      - "npm run test:billing"
+      - "npm run test:studio"

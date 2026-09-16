@@ -1,0 +1,21 @@
+{
+  "name": "cognistration-mcp-broll",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "render": "remotion render src/index.ts MCPBroll out/cognistration-mcp-broll.mp4 --codec=h264 --crf=18",
+    "still": "remotion still src/index.ts MCPBroll out/cognistration-mcp-broll-still.png --frame=420",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.481",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.481"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "typescript": "5.9.3"
+  }
+}

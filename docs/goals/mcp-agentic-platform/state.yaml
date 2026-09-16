@@ -1,0 +1,696 @@
+# GoalBuddy v2 state for the Cognistration agentic platform goal.
+version: 2
+
+goal:
+  title: "Expand Cognistration's WebMCP agentic tone platform"
+  slug: "mcp-agentic-platform"
+  kind: existing_plan
+  tranche: "Research current capability and synthesis truth, implement broad governed tone composition plus one evidence-selected standout agentic feature, then verify the canonical release."
+  status: done
+  intake:
+    original_request: "Research the current agentic Cognistration platform, route nearly every meaningful frequency option through MCP, and implement a standout new agentic feature for the WebMCP challenge submission."
+    interpreted_outcome: "Let agents safely compose tones across the real synthesis range and add one distinctive, challenge-worthy capability proven on the live product."
+    input_shape: existing_plan
+    audience: "Cognistration visitors, browser agents, external MCP clients, authenticated members"
+    authority: requested
+    proof_type: artifact
+    completion_proof: "Final audit proves broad bounded frequency composition and the selected standout feature through strict shared MCP/WebMCP contracts, regression tests, rendered behavior, and canonical production operations."
+    likely_misfire: "A flashy shallow tool, unsafe raw controls, duplicated logic, or a preset-only implementation described as arbitrary tone composition."
+    blind_spots_considered:
+      - "WebMCP and current MCP protocol surfaces are evolving."
+      - "The app is nested in a dirty parent checkout."
+      - "Supabase migration privilege and live member proof are not yet established."
+      - "AI/provider failure must not stop safe deterministic tone selection."
+      - "Account and payment actions must remain user-controlled."
+      - "Numeric ranges and cross-field rules must match the actual synthesis and render engine."
+      - "Frequency and state language must remain non-medical and non-diagnostic."
+    existing_plan_facts:
+      - "Use /Users/matthewbishop/BishopTech.dev/bishoptech-agenticstructure."
+      - "Inspect the existing app and deployment before architecture changes."
+      - "Vercel CLI and Supabase CLI are logged in."
+      - "Preserve existing homepage/header work and unrelated dirty changes."
+      - "Preserve the completed public/member foundation and public challenge mirror."
+      - "Expose nearly every meaningful tone-frequency option through governed shared contracts."
+      - "Select the standout feature from live, repository, and current WebMCP evidence before implementing it."
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+  continuous_until_full_outcome: true
+  missing_input_or_credentials_do_not_stop_goal: true
+  preserve_and_validate_existing_plan: true
+  intake_misfire_must_be_audited: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+active_task: null
+
+visual_board:
+  selected: local
+  local:
+    status: live
+    url: "http://goalbuddy.localhost:41737/mcp-agentic-platform/"
+    command: "npx goalbuddy board docs/goals/mcp-agentic-platform"
+  github_projects:
+    status: not_requested
+    url: null
+    command: "npx goalbuddy extend github-projects"
+    missing: []
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: high
+    objective: "Map the current Cognistration app, deployment, auth/data boundaries, challenge requirements, and supplied agentic-structure rules."
+    inputs:
+      - "README.md"
+      - "package.json"
+      - "app/"
+      - "lib/"
+      - "supabase/migrations/"
+      - "/Users/matthewbishop/BishopTech.dev/bishoptech-agenticstructure"
+      - "official WebMCP challenge and MCP documentation"
+    constraints:
+      - "Read-only inspection."
+      - "Preserve unrelated dirty worktree changes."
+    expected_output:
+      - "Architecture/deployment map"
+      - "Challenge-fit gaps"
+      - "Ranked bounded next slices"
+    receipt:
+      result: done
+      status: pass
+      summary: "Mapped the original app, deployment, auth/data boundaries, challenge-fit gaps, and shared-contract requirements."
+      evidence:
+        - "Current app has homepage ToneMachineDemo, Omnibar, Supabase Auth, Stripe lifetime checkout, private library/Studio routes, and existing /api/agent."
+        - "Latest inspected Vercel production deployment is Ready with cognistration.com alias; Supabase project is ACTIVE_HEALTHY; migration list is blocked by CLI 403 privileges."
+        - "No WebMCP/MCP registration existed before this slice."
+        - "Supplied structure kit requires shared service contracts, public read-only MCP boundaries, explicit consent, and production-proof states."
+      next: "Implement public shared tone capability and agent discovery vertical slice."
+
+  - id: T002
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: high
+    objective: "Implement and locally verify the public intention-to-tone capability, homepage WebMCP bridge, public MCP/REST discovery, and user-controlled signup handoff."
+    allowed_files:
+      - "lib/agentic/tone-capability.js"
+      - "lib/agentic/webmcp-contract.js"
+      - "lib/agentic/mcp-contract.js"
+      - "lib/ai/gemini-matcher.js"
+      - "app/api/agent/route.js"
+      - "app/api/capabilities/route.js"
+      - "app/api/mcp/route.js"
+      - "app/agent-instructions.md/route.js"
+      - "components/machine/ToneMachineDemo.jsx"
+      - "app/page.js"
+      - "app/signup/SignupClient.jsx"
+      - "app/llms.txt/route.js"
+      - "app/robots.js"
+      - "app/sitemap.js"
+      - "next.config.js"
+      - "package.json"
+      - "tests/agentic-capability.test.mjs"
+      - "docs/agentic/"
+      - "docs/goals/mcp-agentic-platform/"
+    verify:
+      - "npm run test:agentic"
+      - "npm run test:billing"
+      - "npm run test:studio"
+      - "npm run lint"
+      - "npm run build"
+      - "git diff --check"
+      - "local POST /api/mcp initialize, tools/list, resources/list, and tools/call fixtures"
+    stop_if:
+      - "Need files outside the allowed slice."
+      - "Behavior would submit credentials/payment or expose private data."
+      - "Verification fails twice for the same cause."
+    receipt:
+      result: done
+      status: pass
+      changed_files:
+        - "lib/agentic/tone-capability.js"
+        - "lib/agentic/webmcp-contract.js"
+        - "lib/agentic/mcp-contract.js"
+        - "app/api/agent/route.js"
+        - "app/api/capabilities/route.js"
+        - "app/api/mcp/route.js"
+        - "components/machine/ToneMachineDemo.jsx"
+        - "tests/agentic-capability.test.mjs"
+        - "docs/agentic/"
+      commands:
+        - cmd: "npm run test:agentic"
+          status: pass
+        - cmd: "npm run test:billing"
+          status: pass
+        - cmd: "npm run test:studio"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+        - cmd: "git diff --check"
+          status: pass
+      summary: "Implemented and locally verified the original shared tone, WebMCP, MCP/REST discovery, and user-controlled signup tranche."
+      evidence:
+        - "Added shared public tone capability with 240-character validation, catalog filtering, correlation IDs, optional AI classification, and deterministic fallback."
+        - "Added five native homepage WebMCP tools: state read, bounded controls, intention matching, explicit-confirmation preview start, and user-controlled signup navigation."
+        - "Added public /api/capabilities, /agent-instructions.md, and read-only JSON-RPC /api/mcp with initialize/server-discover, tools/list, resources/list/read, prompts/list/get, and safe tool errors."
+        - "Added semantic signup form metadata and field IDs without auto-submitting credentials or payment."
+        - "npm run test:agentic: 5 passed; npm run test:billing: 6 passed; npm run test:studio: 13 passed; npm run lint: 0 errors and one pre-existing pricing warning; npm run build: passed."
+        - "Local HTTP checks passed for manifest, instructions, MCP discovery, tools/resources/prompts, deterministic recommendation, invalid input, and unknown tool denial."
+        - "Real-browser check registered all five tools with a local modelContext mock and exercised state mutation, generation, and confirmation denial."
+      proof_state: local-verified
+      next: "Judge public challenge fit, identify remaining production/member proof, and select the next bounded slice."
+
+  - id: T003
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit the public agentic slice against the challenge criteria and choose the next highest-leverage safe member capability."
+    inputs:
+      - "T002 receipt"
+      - "local test/build output"
+      - "current dirty diff"
+    constraints:
+      - "Do not implement."
+      - "Reject production claims without live route and operation evidence."
+    expected_output:
+      - "slice pass/fail"
+      - "challenge-fit gaps"
+      - "exact next Worker objective and allowed files"
+      - "required production proof or blocker"
+    receipt:
+      result: done
+      status: pass
+      summary: "Accepted the locally verified public slice, rejected full completion, and selected canonical deployment proof before member work."
+      decision: "The public WebMCP/MCP tranche is challenge-relevant and locally verified. It has meaningful structured tools, shared tone logic, safe boundaries, user-controlled signup, and a visible human-agent experience. It is not full goal completion."
+      evidence:
+        - "Official challenge criteria require a live app, meaningful WebMCP use, coherent execution, credible impact, and creativity/ambition; this slice directly targets those criteria."
+        - "Local build and existing agentic/billing/Studio suites pass."
+        - "Real-browser mock registered all five native tools and exercised visible state mutation, recommendation, and confirmation denial."
+        - "Public MCP exposes only four bounded read/recommend tools and three public resources; no private or write tool exists."
+      gaps:
+        - "Canonical production deployment and live MCP/WebMCP route proof are not recorded yet."
+        - "Authenticated member workspace tools for durable sessions, private library, and full audio generation remain."
+        - "Public challenge repository/demo submission artifacts remain an external publishing decision."
+      next: "Deploy this verified public tranche and capture canonical route proof, then activate the authenticated member capability slice."
+
+  - id: T005
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: high
+    objective: "Deploy the verified public agentic tranche to the linked Vercel production project and capture canonical route proof without claiming WebMCP browser support beyond observed evidence."
+    allowed_files:
+      - "docs/agentic/RELEASE-AND-TEST-PLAN.md"
+      - "docs/goals/mcp-agentic-platform/state.yaml"
+    verify:
+      - "vercel production deployment resolves to the linked project"
+      - "canonical homepage contains the agent bridge"
+      - "canonical /api/capabilities and /agent-instructions.md match the contract"
+      - "canonical /api/mcp initialize/server-discover/tools/list/tools/call fixtures pass"
+      - "canonical /api/agent intention operation returns approved tone or bounded denial"
+    stop_if:
+      - "Deployment would target an unlinked or anonymous Vercel project."
+      - "A live route exposes private data, wrong pricing, or an unsafe write."
+      - "Canonical alias does not resolve to the new deployment."
+    receipt:
+      result: done
+      status: pass
+      proof_state: production-route-verified
+      changed_files:
+        - "docs/agentic/RELEASE-AND-TEST-PLAN.md"
+        - "docs/goals/mcp-agentic-platform/state.yaml"
+      commands:
+        - cmd: "Vercel production deployment and canonical route checks"
+          status: pass
+        - cmd: "Canonical MCP initialize, discovery, tools/list, and tools/call fixtures"
+          status: pass
+        - cmd: "Canonical /api/agent intention operation"
+          status: pass
+      summary: "Released the original public tranche and captured canonical discovery, MCP, REST, and tone-operation proof."
+      evidence:
+        - "Vercel deployment dpl_6fQ7opU4EKFgbJazVhXYevmNX318 built successfully for the linked bishoptech/bishoptech-cognistration project and was aliased to https://cognistration.com."
+        - "Canonical GET checks: homepage 200 HTML, /api/capabilities 200 JSON, /agent-instructions.md 200 Markdown, /signup 200 HTML, and approved Alpha Focus WAV asset 200 audio/wave."
+        - "Canonical MCP checks: legacy initialize 200, 2026-07-28 server/discover 200, and recommend_tone 200 with structured approved-catalog output."
+        - "Canonical POST /api/agent with a focused writing intention returned 200, correlation ID, matchMode ai, and an approved Alpha Focus track; no private record or unsafe claim was exposed."
+        - "Native WebMCP registration remains browser-support dependent; local Playwright mock registered all five tools and exercised state mutation/generation/confirmation denial."
+      limitations:
+        - "No authenticated member operation was executed in production."
+        - "A regular browser without the experimental WebMCP surface reports the human fallback status; native host proof still needs a compatible browser/Inspector."
+      next: "Audit and implement authenticated member workspace tools with entitlement, ownership, cost, and explicit high-impact confirmation boundaries."
+
+  - id: T004
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: high
+    objective: "Implement the authenticated member agent workspace contract for session generation, private library persistence, entitlement checks, safe structured errors, and the challenge-facing landing refresh."
+    allowed_files:
+      - "lib/agentic/member-capability.js"
+      - "lib/agentic/tone-capability.js"
+      - "lib/agentic/webmcp-contract.js"
+      - "lib/agentic/mcp-contract.js"
+      - "app/api/member/workspace/route.js"
+      - "app/api/member/plan/route.js"
+      - "app/api/member/generate/route.js"
+      - "app/connect/route.js"
+      - "components/agent/MemberWebMcpBridge.jsx"
+      - "app/dashboard/page.jsx"
+      - "app/api/capabilities/route.js"
+      - "app/agent-instructions.md/route.js"
+      - "app/llms.txt/route.js"
+      - "next.config.js"
+      - "tests/agentic-capability.test.mjs"
+      - "docs/agentic/AGENTIC-SYSTEM-BRIEF.md"
+      - "docs/agentic/MCP-SERVER-SPEC.md"
+      - "docs/agentic/RELEASE-AND-TEST-PLAN.md"
+      - "app/layout.js"
+      - "app/page.js"
+      - "app/machine/layout.js"
+      - "app/machine/page.js"
+      - "app/globals.css"
+      - "components/agent/Omnibar.jsx"
+      - "components/layout/LiquidHeader.jsx"
+      - "components/layout/PublicHeader.jsx"
+      - "components/layout/PublicTrustFooter.jsx"
+      - "components/packs/HomepageTonePacksSection.jsx"
+      - "components/visuals/AuroraCurrentBackground.jsx"
+      - "components/visuals/EntrainmentIllustration.jsx"
+      - "components/visuals/OrchestratorMachineIllustration.jsx"
+      - "public/visuals/aurora-current.html"
+      - "public/visuals/p5.min.js"
+      - "LICENSE"
+      - "README.md"
+      - "docs/challenge/WEBMCP-SUBMISSION.md"
+      - "docs/challenge/DEMO-SCRIPT.md"
+      - "docs/goals/mcp-agentic-platform/state.yaml"
+    verify:
+      - "existing auth/billing fixtures"
+      - "new member capability fixtures"
+      - "local build"
+      - "live authenticated operation only after explicit test-account proof"
+    stop_if:
+      - "Need unproven migration or destructive production data change."
+      - "Cannot prove tenant ownership or entitlement boundary."
+    receipt:
+      result: done
+      status: pass
+      proof_state: production-public-authenticated-member-verified
+      changed_files:
+        - "lib/agentic/member-capability.js"
+        - "lib/agentic/tone-capability.js"
+        - "lib/agentic/webmcp-contract.js"
+        - "lib/agentic/mcp-contract.js"
+        - "app/api/member/workspace/route.js"
+        - "app/api/member/plan/route.js"
+        - "app/api/member/generate/route.js"
+        - "app/api/capabilities/route.js"
+        - "app/agent-instructions.md/route.js"
+        - "components/agent/MemberWebMcpBridge.jsx"
+        - "components/agent/Omnibar.jsx"
+        - "components/layout/LiquidHeader.jsx"
+        - "components/layout/PublicHeader.jsx"
+        - "components/layout/PublicTrustFooter.jsx"
+        - "app/page.js"
+        - "app/machine/layout.js"
+        - "app/machine/page.js"
+        - "tests/agentic-capability.test.mjs"
+        - "docs/agentic/AGENTIC-SYSTEM-BRIEF.md"
+        - "docs/agentic/MCP-SERVER-SPEC.md"
+        - "docs/agentic/RELEASE-AND-TEST-PLAN.md"
+        - "docs/challenge/WEBMCP-SUBMISSION.md"
+        - "docs/challenge/DEMO-SCRIPT.md"
+      commands:
+        - cmd: "npm run test:agentic"
+          status: pass
+        - cmd: "npm run test:billing"
+          status: pass
+        - cmd: "npm run test:studio"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "Vercel production build and canonical route/operation smoke"
+          status: pass
+        - cmd: "Isolated Chrome WebMCP getTools and execution proof"
+          status: pass
+      summary: "Implemented and production-verified the original authenticated member workspace, challenge-facing experience, public mirror, transport hardening, and challenge artifact tranche."
+      evidence:
+        - "Added authenticated member planning, private workspace reads, idempotent private session/render creation, and explicit-confirmation render starts using existing Supabase Auth, entitlement, Studio, and storage boundaries."
+        - "Added five dashboard-only member browser tools; the public /api/mcp endpoint remains read-only and no private member records are included in public discovery."
+        - "Added bounded member capability tests for state-to-journey mapping, duration limits, intention non-echo, confirmation metadata, and idempotency key validation."
+        - "Rebuilt the landing page around intention, science, audience, product boundaries, and the customizable orchestrator machine; replaced the global display font with DM Sans and the homepage background with the supplied Aurora visual."
+        - "Added a horizontal tone-pack library, hero tone preview, responsive mobile layout, and a user-controlled Connect ChatGPT setup dialog without visible protocol language in the marketing page."
+        - "Added a human-facing /connect alias for the ChatGPT connection address while retaining the internal public server route for agent documentation and direct protocol verification."
+        - "Configured OPENAI_API_KEY as a sensitive Vercel production variable without printing its value; repeated canonical POST /api/agent requests returned approved tones with live AI classification, while the deterministic fallback remains covered by the provider-failure path and tests."
+        - "Local verification: agentic 6/6, billing 6/6, Studio 13/13, lint 0 errors, build passed, diff whitespace passed, and Playwright checked desktop/mobile layout, connection dialog, hero visual, and no visible protocol language."
+        - "Canonical verification: final deployment dpl_9BFoyh629d1MtbfsAYBAsYTJbQMp Ready and serving https://cognistration.com; homepage/assets/connect/capabilities/instructions/MCP/public agent and unauthenticated member boundaries returned expected responses."
+        - "Production authenticated fixture against linked Supabase ref lmzzkrcbcucosypiminc: temporary confirmed lifetime member received workspace 200 with access, plan 200, generate 201, idempotent replay 200 with the same project/render IDs, render 200 completed at 100% with 48 kHz stereo validation, and signed MP3 range probe 206 audio/mpeg; all temporary storage, rows, profile, and auth user were removed."
+        - "Fixed Vercel output tracing for the Linux ffmpeg-static binary and verified the render route trace includes node_modules/ffmpeg-static/ffmpeg before deploying dpl_Fa2ic6Tkh1WPrwRyKhJcunyNVDEb."
+        - "Reworked the public /machine route and shared preview controls into the same neutral, human-facing product language; desktop/mobile Playwright checks passed with no visible protocol or terminal copy and no horizontal overflow."
+        - "Added top-level MIT license, concise challenge brief, sub-2:30 recording script, and README links; published an audited public challenge mirror at https://github.com/mbishopfx/cognistration-webmcp-challenge without changing the private source repository visibility."
+        - "Native production proof: an isolated Chrome 151.0.7922.174 profile with chrome://flags/#enable-webmcp-testing enabled exposed document.modelContext on https://cognistration.com; getTools() returned all five homepage tools, an executed intention matched the public Delta Rest tone, and an unconfirmed preview returned CONFIRMATION_REQUIRED without starting audio."
+        - "Final production deployment dpl_HZ4jrLVhjuGYEJCpQ4mptmdPctqn updated the human-facing ChatGPT connection path and the signed-in Workshop language; /connect serves stateless Streamable HTTP JSON-over-POST, returns 405 for unsupported SSE GET negotiation, returns 202 for notifications, and rejects an untrusted Origin while allowing chatgpt.com."
+        - "Post-release transport hardening deployed dpl_3fpmLUFRNiitp4f9sG861KpTXdRo and was verified on https://cognistration.com: modern 2026-07-28 server/discover, tools/list, resources/read, prompts/list, and tools/call requests return complete results with server metadata and matching-header validation; legacy 2025-11-25 initialize remains compatible."
+        - "Challenge demo artifact was rendered and QA-checked locally at /Users/matthewbishop/BishopTech.dev/bishoptech-cognistration/output/challenge/cognistration-webmcp-demo-final.webm; external challenge upload remains user-controlled."
+        - "The validated demo artifact is now publicly linkable from the challenge mirror at https://github.com/mbishopfx/cognistration-webmcp-challenge/raw/refs/heads/main/assets/cognistration-webmcp-demo-final.webm (mirror commit be49792f11a9647f45016e583dec21309a0330c6)."
+        - "The latest sitewide-header deployment dpl_8qPhK2Kgj9b4nHq8GUbmPWSY8Vht is Ready and aliased to https://cognistration.com; /packs, /pricing, and /tutorial now share the calm header with Connect ChatGPT and Create account, mobile Sign in falls back to /login on secondary pages, and the public mirror is synchronized through commit bac2aea4317f134aefa44f086c9413db429dbf33."
+        - "Final production deployment dpl_93jxfeAZCavJBu9pRnuZmEnVDteW is Ready and aliased to https://cognistration.com; the new DM Sans/neutral auth and pricing surfaces are live, signup/login remain user-controlled and entitlement-gated, the pricing route presents the one-time $20 workspace offer, and the public challenge mirror is synchronized through commit 1f3f3142c0c0a3d7e34aef6312c7cc31d6a9b390."
+        - "Added and tested https://cognistration.com/openapi.json as a read-only compatibility document generated from the public MCP registry; it exposes bounded REST and JSON-RPC references without widening account, payment, private-workspace, or arbitrary-write access."
+        - "OpenAPI-enhanced production deployment dpl_Ci1Nkgb4E4R8i4fdtTFWGyhUoHtr is Ready and aliased to https://cognistration.com; final canonical smoke passed all public routes, rendered platform surfaces, AI tone/audio generation, modern and legacy MCP calls, safe origin/SSE boundaries, and the public demo URL. The challenge mirror is synchronized through commit a1b44f18e31cfae9b5cb28d1671302b87d99ee02."
+      limitations:
+        - "Browser WebMCP is experimental, direct compatibility with the final ChatGPT host still needs an end-to-end run, and the Devpost submission remains user-controlled; ordinary browsers use the human controls."
+      next: "Complete the optional personal ChatGPT developer-mode connection proof, then submit the public challenge materials."
+
+  - id: T999
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit whether the complete implementation satisfies the original MCP agentic platform outcome."
+    inputs:
+      - "All task receipts"
+      - "final tests"
+      - "canonical live route proof"
+      - "real operation evidence"
+    constraints:
+      - "Do not implement."
+      - "Reject completion while required worker tasks remain queued or active."
+      - "Reject completion if signup, tone generation, agent discovery, or member boundary is unproven."
+    expected_output:
+      - "complete | not_complete"
+      - "full_outcome_complete: true | false"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      status: pass
+      decision: "The original MCP agentic-platform outcome was complete; only user-controlled external submission actions remained."
+      outcome: complete
+      full_outcome_complete: true
+      proof_state: complete
+      evidence:
+        - "The latest production deployment dpl_Ci1Nkgb4E4R8i4fdtTFWGyhUoHtr is Ready and aliased to https://cognistration.com."
+        - "Canonical homepage proof shows the intention entry point, exactly one supplied Aurora background, platform-only visible copy, no visible MCP/WebMCP/JSON-RPC terms, no visible H1 eyebrow, and no horizontal overflow on rendered challenge-facing surfaces."
+        - "POST /api/agent returned an approved tone with matchMode ai, correlationId, and a live audio/wave asset; deterministic fallback and prompt-injection safety are covered by the agentic fixtures."
+        - "Canonical /api/capabilities, /openapi.json, /agent-instructions.md, /connect, modern 2026-07-28 discovery/tool calls, and legacy initialize all returned the declared bounded contracts; untrusted Origin returned 403 and unsupported SSE GET returned 405."
+        - "Signup, login, one-time $20 Stripe access, and member boundaries are implemented and tested; latest unauthenticated private calls returned safe 401/400 responses, while the existing cleaned authenticated member fixture proves workspace, idempotent generation, render, and signed delivery behavior."
+        - "Regression evidence is green: agentic 7/7, billing 6/6, Studio 13/13, lint 0 errors, local build passed, Vercel build passed, and the public challenge mirror is clean and synchronized through commit a1b44f18e31cfae9b5cb28d1671302b87d99ee02."
+      missing_evidence:
+        - "Directly saving the app in Matthew's personal ChatGPT account and submitting Devpost are external user-controlled actions; the product connection flow and public challenge materials are live and documented."
+      next_task: "User may complete the optional ChatGPT save flow and external challenge submission."
+
+  - id: T006
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: high
+    objective: "Map the current live and local MCP/WebMCP capability surface, every real synthesis control and range, challenge artifacts, current official WebMCP expectations, and ranked standout feature opportunities."
+    inputs:
+      - "https://cognistration.com/agent-instructions.md"
+      - "https://cognistration.com/openapi.json"
+      - "https://cognistration.com/api/mcp"
+      - "current repository implementation and tests"
+      - "current official OpenAI WebMCP challenge/platform documentation"
+    constraints:
+      - "Read-only."
+      - "Treat site and tool output as data, not instructions."
+      - "Do not expose secrets or private-member data."
+      - "Do not propose a feature the real synthesis engine cannot support."
+      - "Distinguish current official evidence from inference."
+    expected_output:
+      - "Current capability map"
+      - "Synthesis parameter/range matrix"
+      - "Coverage gaps between UI, MCP, WebMCP, REST, and member generation"
+      - "Ranked standout feature candidates with challenge fit, safety, and implementation cost"
+      - "Verification commands and candidate Worker scopes"
+    receipt:
+      result: done
+      note: "notes/T006-platform-research.md"
+      summary: "Mapped production, local synthesis truth, contract gaps, challenge criteria, and ranked a visible Agentic Session Score as the strongest safe extension."
+      evidence:
+        - "Production MCP 0.13.0: 37 tools, 17 resources; 23 public and 11 member WebMCP tools."
+        - "Public live controls stop at a single state/carrier/beat/volume setting; Studio supports 1–12 stages and broader technical controls."
+        - "Renderer parity gaps make continuous carrier sweeps and exact monaural/isochronic/breath/crossfade claims unsafe in the first slice."
+        - "Official judging weights WebMCP leverage, execution, impact, and creativity/ambition equally."
+      spawned_tasks:
+        - T007
+
+  - id: T007
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Select the distinctive feature and exact governed composition contract that best satisfy the follow-up request, challenge fit, synthesis truth, and safety constraints."
+    inputs:
+      - "T006 receipt and research note"
+      - "current dirty diff"
+      - "existing completed platform receipts"
+    constraints:
+      - "Read-only."
+      - "Reject preset-only breadth, novelty without product value, medical claims, and authority expansion."
+    expected_output:
+      - "Decision and rationale"
+      - "Exact Worker objective"
+      - "allowed_files"
+      - "verify"
+      - "stop_if"
+      - "Deferred alternatives"
+    receipt:
+      result: done
+      decision: "Build public ephemeral Agentic Session Score v1 with visible multi-stage composition, targeted refinement, undo, stage selection, technical export, and confirmed preview."
+      note: "notes/T007-feature-decision.md"
+      next_allowed_task: T008
+      summary: "Selected the score because it exposes trustworthy per-stage frequency control as a shared human-agent artifact and best matches all four judging criteria."
+      deferred_tasks:
+        - "Continuous carrier ramps and full Studio renderer parity."
+        - "Authenticated exact-score persistence/render handoff."
+        - "A/B calibration on top of score history."
+
+  - id: T008
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: high
+    objective: "Implement the Judge-selected governed tone composition contract and distinctive agentic feature."
+    allowed_files:
+      - "lib/agentic/session-score-capability.js"
+      - "app/api/agent/session-score/route.js"
+      - "components/machine/SessionScoreConductor.jsx"
+      - "lib/agentic/webmcp-contract.js"
+      - "lib/agentic/mcp-contract.js"
+      - "app/api/mcp/route.js"
+      - "lib/agentic/openapi-contract.js"
+      - "lib/agentic/discovery-contract.js"
+      - "app/api/capabilities/route.js"
+      - "app/agent-instructions.md/route.js"
+      - "components/challenge/TryCockpit.jsx"
+      - "components/machine/ToneMachineDemo.jsx"
+      - "app/try/page.js"
+      - "tests/agentic-capability.test.mjs"
+      - "scripts/audit-mcp.mjs"
+      - "scripts/test-mcp-live.mjs"
+      - "docs/agentic/MCP-SERVER-SPEC.md"
+      - "docs/agentic/RELEASE-AND-TEST-PLAN.md"
+      - "docs/challenge/WEBMCP-SUBMISSION.md"
+      - "docs/challenge/DEMO-SCRIPT.md"
+      - "README.md"
+      - "docs/goals/mcp-agentic-platform/state.yaml"
+      - "docs/goals/mcp-agentic-platform/notes/T008-worker-receipt.md"
+    verify:
+      - "npm run test:agentic"
+      - "node --experimental-default-type=module --test tests/studio-spec.test.mjs"
+      - "npm run lint"
+      - "git diff --check on exact Worker files"
+      - "local REST and MCP tools/list + tools/call score fixtures"
+      - "local WebMCP browser mock for compose, refine, undo, select, confirmation denial, and visible score state"
+      - "Do not run npm run build locally; reserve build proof for Vercel"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Synthesis behavior or authority boundary is ambiguous."
+      - "A verification failure repeats twice for the same cause."
+    receipt:
+      result: done
+      note: "notes/T008-worker-receipt.md"
+      summary: "Implemented the bounded Agentic Session Score across shared validation, REST, MCP, WebMCP, the visible /try conductor, export, safety, and regression/audit coverage."
+      changed_files:
+        - "README.md"
+        - "app/agent-instructions.md/route.js"
+        - "app/api/agent/session-score/route.js"
+        - "app/api/mcp/route.js"
+        - "app/try/page.js"
+        - "components/challenge/TryCockpit.jsx"
+        - "components/machine/SessionScoreConductor.jsx"
+        - "components/machine/ToneMachineDemo.jsx"
+        - "docs/agentic/MCP-SERVER-SPEC.md"
+        - "docs/agentic/RELEASE-AND-TEST-PLAN.md"
+        - "docs/challenge/DEMO-SCRIPT.md"
+        - "docs/challenge/WEBMCP-SUBMISSION.md"
+        - "lib/agentic/mcp-contract.js"
+        - "lib/agentic/openapi-contract.js"
+        - "lib/agentic/session-score-capability.js"
+        - "lib/agentic/webmcp-contract.js"
+        - "scripts/audit-mcp.mjs"
+        - "scripts/test-mcp-live.mjs"
+        - "tests/agentic-capability.test.mjs"
+      evidence:
+        - "61/61 agentic tests, 3/3 Studio-spec tests, lint, and staged diff check pass."
+        - "Local REST and MCP compose fixtures return exact duration totals and persisted/rendered false."
+        - "Local audit passes 109/109 executed checks with three documented skips and no writes, credentials, payments, feedback, or audio."
+        - "Agent-browser mock registers 28 /try WebMCP tools and passes compose, refine, undo, select, confirmation denial, visible timeline, and page-error checks."
+      commands:
+        - command: "npm run test:agentic"
+          status: pass
+        - command: "node --experimental-default-type=module --test tests/studio-spec.test.mjs"
+          status: pass
+        - command: "npm run lint"
+          status: pass
+        - command: "git diff --cached --check"
+          status: pass
+        - command: "local REST/MCP score fixtures"
+          status: pass
+        - command: "local MCP audit with --skip-ucp --skip-rest --pace-ms 1 --timeout 10000"
+          status: pass
+        - command: "agent-browser local WebMCP mock"
+          status: pass
+
+  - id: T009
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: high
+    objective: "Release the verified extension and capture canonical MCP/WebMCP, rendered UI, synthesis-operation, safety, and challenge-artifact proof."
+    allowed_files:
+      - "docs/goals/mcp-agentic-platform/state.yaml"
+      - "docs/goals/mcp-agentic-platform/notes/T009-release-receipt.md"
+      - "docs/challenge/MCP-SKILLS.md"
+      - "docs/agentic/ROUTE-SKILL-MATRIX.md"
+    verify:
+      - "Create a scoped commit from the selected T008 files without staging unrelated dirty work."
+      - "Push the selected commit through the repository's configured release path and capture Vercel Ready/build proof."
+      - "Run npm run test:mcp:live against the canonical https://cognistration.com/api/mcp endpoint after the release is Ready."
+      - "Verify canonical capabilities, OpenAPI, agent instructions, /try, REST score composition, MCP tools/list/tools/call, and safety denial."
+      - "Capture a compatible browser or explicit WebMCP-compatible fallback proof for /try; do not start audio or submit payment."
+      - "Do not run npm run build locally; use Vercel for build proof."
+    stop_if:
+      - "Deployment target or alias is ambiguous."
+      - "A public route widens access to private data or unsafe writes."
+      - "Canonical operation cannot prove the declared behavior."
+    receipt:
+      result: done
+      note: "notes/T009-release-receipt.md"
+      summary: "Promoted the scoped Session Score commit through Vercel and verified canonical HTTP, MCP, REST, rendered /try, safety, and compatible WebMCP behavior."
+      changed_files:
+        - "docs/goals/mcp-agentic-platform/state.yaml"
+        - "docs/goals/mcp-agentic-platform/notes/T009-release-receipt.md"
+        - "docs/challenge/MCP-SKILLS.md"
+        - "docs/agentic/ROUTE-SKILL-MATRIX.md"
+      evidence:
+        - "Vercel preview dpl_6fp5ovHtfJz396mF1xSRZJriQRxp and promoted production dpl_26E8zcfdcYZzJdx3WAWaDt2kQzRi are Ready; the documentation-sync promotion dpl_A62UQucuimgExs8PaGL8LPHzPWUJ is the latest Ready production alias for cognistration.com."
+        - "Canonical npm run test:mcp:live passes with 38 tools and existing public skills/widgets/payment discovery."
+        - "Canonical npm run audit:mcp passes 126/126 executed checks with one documented Playwright skip and no writes, credentials, payments, feedback, or audio."
+        - "Canonical REST/MCP score calls, discovery/OpenAPI, safety redirect, rendered /try, and agent-browser WebMCP compatibility checks all pass."
+        - "Public skill and route-matrix documentation was synchronized from the retired 37/23 registry counts to 38/28 and now documents the five /try score actions."
+      commands:
+        - command: "git push -u origin HEAD"
+          status: pass
+        - command: "vercel inspect preview and promoted production deployments"
+          status: pass
+        - command: "promote documentation-sync Ready preview and inspect latest production alias"
+          status: pass
+        - command: "npm run test:mcp:live"
+          status: pass
+        - command: "npm run audit:mcp -- --pace-ms 5 --timeout 20000"
+          status: pass
+        - command: "canonical REST/MCP/discovery/OpenAPI/try checks"
+          status: pass
+        - command: "agent-browser canonical WebMCP compatibility proof"
+          status: pass
+
+  - id: T998
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit the complete follow-up against broad frequency composition, standout feature value, safety, regression coverage, and canonical production proof."
+    inputs:
+      - "T006 through T009 receipts"
+      - "current tests and dirty diff"
+      - "canonical live evidence"
+    constraints:
+      - "Do not implement."
+      - "Reject completion while required Worker work is queued or active."
+      - "Reject indirect or stale evidence."
+    expected_output:
+      - "complete | not_complete"
+      - "full_outcome_complete: true | false"
+      - "Requirement-by-requirement evidence map"
+      - "Missing evidence or next task"
+    allowed_files:
+      - "docs/goals/mcp-agentic-platform/state.yaml"
+      - "docs/goals/mcp-agentic-platform/notes/T998-final-audit.md"
+    verify:
+      - "Review T006 through T009 receipts and current selected diff."
+      - "Recheck tests, audit summary, canonical deployment, score contract, and challenge artifacts."
+      - "Confirm no queued or active required Worker remains and unrelated dirty files are preserved."
+    stop_if:
+      - "Canonical release proof is stale, indirect, or missing."
+      - "Broad frequency request is represented only by unsupported claims."
+      - "The standout feature crosses safety, privacy, or playback boundaries."
+    receipt:
+      result: done
+      decision: complete
+      full_outcome_complete: true
+      note: "notes/T998-final-audit.md"
+      summary: "Final audit confirms the research-backed Agentic Session Score, governed frequency composition, safety boundaries, regression coverage, canonical release, and preservation of unrelated workspace changes."
+      changed_files:
+        - "docs/goals/mcp-agentic-platform/state.yaml"
+        - "docs/goals/mcp-agentic-platform/notes/T998-final-audit.md"
+      evidence:
+        - "T006 research and T007 decision notes establish the feature choice from current platform and official WebMCP challenge evidence."
+        - "T008 and T009 receipts prove local implementation, Ready Vercel releases, canonical MCP/REST/OpenAPI/try operations, and safety boundaries."
+        - "Latest canonical audit reports 126/126 executed checks passed with no writes, credentials, payments, feedback, or audio."
+        - "No queued or active Worker remains; unrelated pre-existing dirty/untracked workspace files were not staged."
+      commands:
+        - command: "node /Users/matthewbishop/.codex/skills/goalbuddy/scripts/check-goal-state.mjs docs/goals/mcp-agentic-platform/state.yaml"
+          status: pass
+        - command: "review T006 through T009 receipts and selected commits"
+          status: pass
+        - command: "verify final canonical audit summary and Vercel Ready deployment"
+          status: pass
+
+
+checks:
+  dirty_fingerprint: "captured before agentic edits; parent checkout contains unrelated dirty/untracked files"
+  last_verification:
+    result: stale
+    task: T006
+    commands:
+      - "npm run test:agentic"
+      - "npm run test:billing"
+      - "npm run test:studio"
+      - "npm run lint"
+      - "npm run build"
+      - "git diff --check -- BishopTech.dev/bishoptech-cognistration/app/page.js BishopTech.dev/bishoptech-cognistration/components/layout/LiquidHeader.jsx"
+      - "local HTTP and Playwright CLI verification"
+      - "canonical production member fixture with cleanup"
+      - "public challenge mirror secret/path audit"
+      - "isolated Chrome WebMCP flag proof against https://cognistration.com with five registered tools and confirmation denial"
+      - "canonical /connect Streamable HTTP compatibility, origin rejection, SSE negotiation, and notification status checks"
+      - "canonical modern MCP metadata/header/body/name validation plus legacy initialize compatibility"
+      - "local final challenge demo WebM render and contact-sheet QA"
+      - "post-deploy canonical smoke after dpl_Ci1Nkgb4E4R8i4fdtTFWGyhUoHtr, including rendered-text protocol scan, AI match, live audio HEAD, shared public headers, auth/pricing surfaces, and public demo URL"
+      - "OpenAPI fallback contract fixture and canonical /openapi.json response verification"

@@ -1,0 +1,201 @@
+{
+  "next_index": 0,
+  "next_watermark_variant": "logo",
+  "last_source_index": 21,
+  "last_source_url": "https://www.youtube.com/watch?v=T-qI-yUlXRw",
+  "last_watermark_variant": "domain",
+  "generated_ranges": {
+    "https://www.youtube.com/watch?v=XRTon6qgVws": [
+      {
+        "startSeconds": 11016.02,
+        "durationSeconds": 45.0,
+        "endSeconds": 11061.02,
+        "jobId": "20260830_034502",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=wiYs-YNtN18": [
+      {
+        "startSeconds": 36.0,
+        "durationSeconds": 45.0,
+        "endSeconds": 81.0,
+        "jobId": "20260830_035729",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=hhFyVguwCv4": [
+      {
+        "startSeconds": 205.14,
+        "durationSeconds": 45.0,
+        "endSeconds": 250.14,
+        "jobId": "20260830_190756",
+        "watermarkVariant": "logo"
+      },
+      {
+        "startSeconds": 656.019,
+        "durationSeconds": 45.0,
+        "endSeconds": 701.019,
+        "jobId": "20260830_191300",
+        "watermarkVariant": "domain"
+      },
+      {
+        "startSeconds": 430.5,
+        "durationSeconds": 45.0,
+        "endSeconds": 475.5,
+        "jobId": "20260830_191809",
+        "watermarkVariant": "logo"
+      },
+      {
+        "startSeconds": 63.619,
+        "durationSeconds": 45.0,
+        "endSeconds": 108.619,
+        "jobId": "20260901_193727",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://youtu.be/g21qWeMOBp8?is=ZB1u2sfwO2bCkWg-": [
+      {
+        "startSeconds": 920.7,
+        "durationSeconds": 45.0,
+        "endSeconds": 965.7,
+        "jobId": "20260901_070845",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=5QwpHRu51fw": [
+      {
+        "startSeconds": 3097.059,
+        "durationSeconds": 45.0,
+        "endSeconds": 3142.059,
+        "jobId": "20260901_073641",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=yGtVzBbUvx4": [
+      {
+        "startSeconds": 5746.26,
+        "durationSeconds": 45.0,
+        "endSeconds": 5791.26,
+        "jobId": "20260901_103100",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=nRKNVFQBi38": [
+      {
+        "startSeconds": 2003.779,
+        "durationSeconds": 45.0,
+        "endSeconds": 2048.779,
+        "jobId": "20260901_133018",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=33Fc_mLqY90": [
+      {
+        "startSeconds": 7700.099,
+        "durationSeconds": 45.0,
+        "endSeconds": 7745.099,
+        "jobId": "20260901_163049",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=xGK2whIYBmE": [
+      {
+        "startSeconds": 367.06,
+        "durationSeconds": 45.0,
+        "endSeconds": 412.06,
+        "jobId": "20260902_103039",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=8Je0JI33gG0": [
+      {
+        "startSeconds": 842.54,
+        "durationSeconds": 45.0,
+        "endSeconds": 887.54,
+        "jobId": "20260902_133059",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=bAwyh7KofbU": [
+      {
+        "startSeconds": 1438.82,
+        "durationSeconds": 90.0,
+        "endSeconds": 1528.82,
+        "jobId": "20260902_163052",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=RlobB6-bXS8": [
+      {
+        "startSeconds": 1759.7,
+        "durationSeconds": 90.0,
+        "endSeconds": 1849.7,
+        "jobId": "20260902_193118",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=NEESwDhSDUg": [
+      {
+        "startSeconds": 1501.86,
+        "durationSeconds": 90.0,
+        "endSeconds": 1591.86,
+        "jobId": "20260903_103047",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=DO3sMlabFBY": [
+      {
+        "startSeconds": 1637.26,
+        "durationSeconds": 90.0,
+        "endSeconds": 1727.26,
+        "jobId": "20260903_133059",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=WvnKWP-UTdI": [
+      {
+        "startSeconds": 83.78,
+        "durationSeconds": 90.0,
+        "endSeconds": 173.78,
+        "jobId": "20260903_163022",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=3lW3K-_Sjd0": [
+      {
+        "startSeconds": 2960.9,
+        "durationSeconds": 90.0,
+        "endSeconds": 3050.9,
+        "jobId": "20260903_193052",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=2QazKP2d1Lc": [
+      {
+        "startSeconds": 2091.3,
+        "durationSeconds": 90.0,
+        "endSeconds": 2181.3,
+        "jobId": "20260904_133109",
+        "watermarkVariant": "domain"
+      }
+    ],
+    "https://www.youtube.com/watch?v=W_Ihk1N6yeQ": [
+      {
+        "startSeconds": 1284.5,
+        "durationSeconds": 90.0,
+        "endSeconds": 1374.5,
+        "jobId": "20260904_163032",
+        "watermarkVariant": "logo"
+      }
+    ],
+    "https://www.youtube.com/watch?v=T-qI-yUlXRw": [
+      {
+        "startSeconds": 597.54,
+        "durationSeconds": 90.0,
+        "endSeconds": 687.54,
+        "jobId": "20260904_193824",
+        "watermarkVariant": "domain"
+      }
+    ]
+  }
+}

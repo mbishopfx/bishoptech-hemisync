@@ -1,0 +1,921 @@
+{
+  "sourceUrl": "https://youtu.be/9RNcKF4BKBI?is=Asyj1n4IlIqjbLtX",
+  "sourceFile": "/Users/matthewbishop/BishopTech.dev/bishoptech-cognistration/antigravity_loops/cognistration-youtube-clips/runs/20260819_190933/source.mp4",
+  "sourceDurationSeconds": 1205.835465,
+  "clipStartSeconds": 834.1,
+  "clipDurationSeconds": 45.0,
+  "fps": 30,
+  "durationInFrames": 1350,
+  "captions": [
+    {
+      "text": "ANOTHER U.S.",
+      "startFrame": 0,
+      "endFrame": 15
+    },
+    {
+      "text": "NAVY WARSHIP.",
+      "startFrame": 18,
+      "endFrame": 42
+    },
+    {
+      "text": "JOHN KARL AND WHAT HE'S",
+      "startFrame": 45,
+      "endFrame": 112
+    },
+    {
+      "text": "LEARNED NOW.",
+      "startFrame": 112,
+      "endFrame": 139
+    },
+    {
+      "text": "TONIGHT GROWING QUESTIONS ABOUT WHETHER",
+      "startFrame": 142,
+      "endFrame": 203
+    },
+    {
+      "text": "THE U.S.",
+      "startFrame": 203,
+      "endFrame": 227
+    },
+    {
+      "text": "NAVY IS NOW STRETCHED TOO",
+      "startFrame": 230,
+      "endFrame": 275
+    },
+    {
+      "text": "THIN, AFTER NEW REPORTS OF",
+      "startFrame": 275,
+      "endFrame": 335
+    },
+    {
+      "text": "GRIM LIVING CONDITIONS ABOARD A",
+      "startFrame": 335,
+      "endFrame": 402
+    },
+    {
+      "text": "SECOND MASSIVE SHIP.",
+      "startFrame": 402,
+      "endFrame": 435
+    },
+    {
+      "text": "SOME 300 SAILORS ON THE",
+      "startFrame": 438,
+      "endFrame": 493
+    },
+    {
+      "text": "DESTROYER THE USS BENFOLD, DEPLOYED",
+      "startFrame": 493,
+      "endFrame": 551
+    },
+    {
+      "text": "IN THE SOUTH CHINA SEA,",
+      "startFrame": 551,
+      "endFrame": 602
+    },
+    {
+      "text": "WENT FOUR DAYS WITH LIMITED",
+      "startFrame": 602,
+      "endFrame": 654
+    },
+    {
+      "text": "DRINKING WATER AND NO WORKING",
+      "startFrame": 657,
+      "endFrame": 715
+    },
+    {
+      "text": "TOILETS OR AIR CONDITIONING AFTER",
+      "startFrame": 715,
+      "endFrame": 775
+    },
+    {
+      "text": "THE SHIP SUFFERED A COMPLETE",
+      "startFrame": 775,
+      "endFrame": 823
+    },
+    {
+      "text": "LOSS OF POWER.",
+      "startFrame": 823,
+      "endFrame": 853
+    },
+    {
+      "text": "AFTER FOUR DAYS ADRIFT, THE",
+      "startFrame": 856,
+      "endFrame": 906
+    },
+    {
+      "text": "BENFOLD WAS TOWED TO THE",
+      "startFrame": 906,
+      "endFrame": 962
+    },
+    {
+      "text": "PHILIPPINES.",
+      "startFrame": 962,
+      "endFrame": 973
+    },
+    {
+      "text": "A NAVY SPOKESMAN CITES PROBLEMS",
+      "startFrame": 976,
+      "endFrame": 1027
+    },
+    {
+      "text": "WITH ITS GENERATORS, ADDING, \"THERE",
+      "startFrame": 1027,
+      "endFrame": 1077
+    },
+    {
+      "text": "WERE NO INJURIES TO THE",
+      "startFrame": 1077,
+      "endFrame": 1119
+    },
+    {
+      "text": "CREW, WHO DEMONSTRATED RESILIENCE,",
+      "startFrame": 1119,
+      "endFrame": 1185
+    },
+    {
+      "text": "GRIT, PROFESSIONALISM AND",
+      "startFrame": 1185,
+      "endFrame": 1240
+    },
+    {
+      "text": "UNWAVERING STEADINESS.\" THE",
+      "startFrame": 1243,
+      "endFrame": 1303
+    },
+    {
+      "text": "BENFOLD WAS PART OF THE",
+      "startFrame": 1303,
+      "endFrame": 1342
+    },
+    {
+      "text": "CARRIER STRIKE",
+      "startFrame": 1342,
+      "endFrame": 1350
+    }
+  ],
+  "cameraCuts": [
+    {
+      "startFrame": 0,
+      "endFrame": 75,
+      "scale": 1.02,
+      "xPct": 0,
+      "yPct": 0
+    },
+    {
+      "startFrame": 75,
+      "endFrame": 150,
+      "scale": 1.1,
+      "xPct": -3,
+      "yPct": 0
+    },
+    {
+      "startFrame": 150,
+      "endFrame": 225,
+      "scale": 1.06,
+      "xPct": 3,
+      "yPct": -1
+    },
+    {
+      "startFrame": 225,
+      "endFrame": 300,
+      "scale": 1.14,
+      "xPct": 0,
+      "yPct": 1
+    },
+    {
+      "startFrame": 300,
+      "endFrame": 375,
+      "scale": 1.02,
+      "xPct": 0,
+      "yPct": 0
+    },
+    {
+      "startFrame": 375,
+      "endFrame": 450,
+      "scale": 1.1,
+      "xPct": -3,
+      "yPct": 0
+    },
+    {
+      "startFrame": 450,
+      "endFrame": 525,
+      "scale": 1.06,
+      "xPct": 3,
+      "yPct": -1
+    },
+    {
+      "startFrame": 525,
+      "endFrame": 600,
+      "scale": 1.14,
+      "xPct": 0,
+      "yPct": 1
+    },
+    {
+      "startFrame": 600,
+      "endFrame": 675,
+      "scale": 1.02,
+      "xPct": 0,
+      "yPct": 0
+    },
+    {
+      "startFrame": 675,
+      "endFrame": 750,
+      "scale": 1.1,
+      "xPct": -3,
+      "yPct": 0
+    },
+    {
+      "startFrame": 750,
+      "endFrame": 825,
+      "scale": 1.06,
+      "xPct": 3,
+      "yPct": -1
+    },
+    {
+      "startFrame": 825,
+      "endFrame": 900,
+      "scale": 1.14,
+      "xPct": 0,
+      "yPct": 1
+    },
+    {
+      "startFrame": 900,
+      "endFrame": 975,
+      "scale": 1.02,
+      "xPct": 0,
+      "yPct": 0
+    },
+    {
+      "startFrame": 975,
+      "endFrame": 1050,
+      "scale": 1.1,
+      "xPct": -3,
+      "yPct": 0
+    },
+    {
+      "startFrame": 1050,
+      "endFrame": 1125,
+      "scale": 1.06,
+      "xPct": 3,
+      "yPct": -1
+    },
+    {
+      "startFrame": 1125,
+      "endFrame": 1200,
+      "scale": 1.14,
+      "xPct": 0,
+      "yPct": 1
+    },
+    {
+      "startFrame": 1200,
+      "endFrame": 1275,
+      "scale": 1.02,
+      "xPct": 0,
+      "yPct": 0
+    },
+    {
+      "startFrame": 1275,
+      "endFrame": 1350,
+      "scale": 1.1,
+      "xPct": -3,
+      "yPct": 0
+    }
+  ],
+  "format": "vertical-9:16",
+  "editingProfile": "hook-first-punchy-cuts",
+  "focusMode": "face-aware-yunet-smoothed",
+  "focusTrack": [
+    {
+      "frame": 0,
+      "xPct": 42.941,
+      "yPct": 41.18,
+      "facePresent": true,
+      "confidence": 0.941
+    },
+    {
+      "frame": 15,
+      "xPct": 38.468,
+      "yPct": 35.774,
+      "facePresent": true,
+      "confidence": 0.936
+    },
+    {
+      "frame": 30,
+      "xPct": 35.674,
+      "yPct": 32.437,
+      "facePresent": true,
+      "confidence": 0.937
+    },
+    {
+      "frame": 45,
+      "xPct": 33.846,
+      "yPct": 29.905,
+      "facePresent": true,
+      "confidence": 0.934
+    },
+    {
+      "frame": 60,
+      "xPct": 32.74,
+      "yPct": 28.931,
+      "facePresent": true,
+      "confidence": 0.936
+    },
+    {
+      "frame": 75,
+      "xPct": 32.093,
+      "yPct": 28.019,
+      "facePresent": true,
+      "confidence": 0.93
+    },
+    {
+      "frame": 90,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": true,
+      "confidence": 0.733
+    },
+    {
+      "frame": 105,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 120,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 135,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 150,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 165,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 180,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 195,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 210,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 225,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 240,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 255,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 270,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 285,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 300,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 315,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 330,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 345,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 360,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 375,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 390,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 405,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 420,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 435,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 450,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 465,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 480,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 495,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 511,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 526,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 541,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 556,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 571,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 586,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 601,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 616,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 631,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 646,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 661,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 676,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 691,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 706,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 721,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 736,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 751,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 766,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 781,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 796,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 811,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 826,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 841,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 856,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 871,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 886,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 901,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 916,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 931,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 946,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 961,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 976,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 991,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1006,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1021,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1036,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1051,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1066,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1081,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1096,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1111,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1126,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1141,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1156,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1171,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1186,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1201,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1216,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1231,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1246,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1261,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1276,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1291,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1306,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1321,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    },
+    {
+      "frame": 1336,
+      "xPct": 43.269,
+      "yPct": 25.595,
+      "facePresent": false,
+      "confidence": 0.0
+    }
+  ],
+  "focusSamples": 90,
+  "faceSamples": 7
+}

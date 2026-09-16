@@ -1,0 +1,86 @@
+{
+  "created_at": "2026-08-28T11:05:14.588420-05:00",
+  "cutoff": "2026-07-28T11:05:14.588420-05:00",
+  "cutoff_date": "2026-07-28",
+  "discovered_count": 334,
+  "resolved_count": 332,
+  "unique_resolution_error_count": 2,
+  "resolution_errors": [
+    {
+      "id": "dSmU5i4j4OY",
+      "url": "https://www.youtube.com/watch?v=dSmU5i4j4OY",
+      "error": "ERROR: [youtube] dSmU5i4j4OY: Sign in to confirm your age. This video may be inappropriate for some users. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+    },
+    {
+      "id": "dSmU5i4j4OY",
+      "url": "https://www.youtube.com/watch?v=dSmU5i4j4OY",
+      "error": "ERROR: [youtube] dSmU5i4j4OY: Sign in to confirm your age. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies\n"
+    },
+    {
+      "id": "yQxoWwDig0w",
+      "url": "https://www.youtube.com/watch?v=yQxoWwDig0w",
+      "error": "ERROR: [youtube] yQxoWwDig0w: Premieres in 19 days\n"
+    }
+  ],
+  "fresh_count": 165,
+  "fresh_substantive_reviewed_count": 138,
+  "rights_declared_fresh_count": 2,
+  "new_rights_cleared_count": 1,
+  "selected_source": {
+    "id": "aPdywHE0JRM",
+    "url": "https://www.youtube.com/watch?v=aPdywHE0JRM",
+    "title": "A Quantum Computer Picked a Question for Dean Radin and he provides his question",
+    "creator": "Thomas Ehmer",
+    "upload_date": "20260804",
+    "age_days": 24,
+    "license": "Creative Commons Attribution license (reuse allowed)",
+    "personality_match": [
+      "Dean Radin"
+    ],
+    "topic_match": [
+      "consciousness"
+    ],
+    "rights_basis": "Creative Commons Attribution license (reuse allowed)",
+    "duplicate_decision": "PASS_NOT_FOUND_IN_PRIOR_LEDGER",
+    "clip_duration_seconds": 90
+  },
+  "downloads": 1,
+  "renders": 2,
+  "youtube_uploads": 2,
+  "drive_archives": 6,
+  "youtube_urls": [
+    "https://www.youtube.com/watch?v=LlwDjfmi_TY",
+    "https://www.youtube.com/watch?v=JHitMln3zo4"
+  ],
+  "drive_links": {
+    "standard_video": "https://drive.google.com/file/d/1Mtgt5kvLpF8riYp1pQ0dEBZt4Xmw0hrW/view?usp=drivesdk",
+    "landscape_video": "https://drive.google.com/file/d/1VZ14bSB9cvvV95VKxgB56UTZW8MXs4CY/view?usp=drivesdk",
+    "metadata": "https://drive.google.com/file/d/1X8pohUk7Lvhm8dQtvJ_GOr1fqOS03s5h/view?usp=drivesdk",
+    "transcript": "https://drive.google.com/file/d/1j78berq8cP8x7wQRucbDXDof0wWqXLzS/view?usp=drivesdk",
+    "description": "https://drive.google.com/file/d/1Jb3hJEL-7j5UehNw66NCuLq2M-jq_ztw/view?usp=drivesdk",
+    "youtube_proof": "https://drive.google.com/file/d/1FH4fcMTK7W5kD9kO5HelGp_3z4lmycS0/view?usp=drivesdk"
+  },
+  "drive_sizes_bytes": {
+    "standard_video": 72272824,
+    "landscape_video": 31181764,
+    "metadata": 35472,
+    "transcript": 16528,
+    "description": 1668,
+    "youtube_proof": 1167
+  },
+  "render_verification": {
+    "standard": "1080x1920 H.264/AAC stereo 90.048s; early/middle/closing pixels inspected; closing CTA visible at 89.0–89.9s",
+    "landscape": "1080x1920 H.264/AAC stereo 90.048s; early/middle/closing pixels inspected; full landscape window and top/bottom CTAs visible"
+  },
+  "description_contract": {
+    "app_store_url": "https://apps.apple.com/us/app/cognistration/id6780132617",
+    "website_url": "https://cognistration.com",
+    "machine_url": "https://cognistration.com/machine",
+    "packs_url": "https://cognistration.com/packs",
+    "responsible_non_medical_wording": true,
+    "source_attribution_at_end": true
+  },
+  "local_cleanup": "PASS — run directory 20260828_104813 removed only after YouTube read-back and all six Drive size read-backs passed",
+  "web_search_fallback": "Configured Firecrawl-backed web_search failed with NoneType/status_code error. DDGS was retried with the installed user-site path and returned noisy/partially irrelevant results; it was used only for discovery, not for upload-date, rights, search-demand, ranking, or trend claims. Direct yt-dlp YouTube discovery with date-filter pass completed the authoritative candidate/date work.",
+  "decision": "Published the only fresh, non-duplicate candidate with an explicit Creative Commons reuse declaration. No other fresh candidate met both substantive and documented-rights gates."
+}

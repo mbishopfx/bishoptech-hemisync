@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-02T09:08:34.935010-05:00",
+  "rows": [
+    {
+      "id": "3lW3K-_Sjd0",
+      "resolved": false,
+      "returncode": 1,
+      "stderr": "ERROR: [youtube] 3lW3K-_Sjd0: Requested format is not available. Use --list-formats for a list of available formats\n"
+    },
+    {
+      "id": "89qrD-8KbXo",
+      "resolved": false,
+      "returncode": 1,
+      "stderr": "ERROR: [youtube] 89qrD-8KbXo: Requested format is not available. Use --list-formats for a list of available formats\n"
+    }
+  ]
+}

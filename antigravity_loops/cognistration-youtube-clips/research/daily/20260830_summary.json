@@ -1,0 +1,31 @@
+{
+  "created_at": "2026-08-30T10:39:29.837044-05:00",
+  "cutoff": "2026-07-30T10:39:29.837044-05:00",
+  "cutoff_date": "2026-07-30",
+  "query_count": 20,
+  "web_search_fallback": "Configured Firecrawl-backed web_search failed with NoneType/status_code. DDGS completed the web discovery fallback, with six protocol-version errors; DDGS was discovery-only. Direct yt-dlp YouTube metadata was authoritative for upload_date, live_status, and license.",
+  "discovered_unique_count": 112,
+  "resolved_count": 111,
+  "unresolved_count": 1,
+  "fresh_count": 111,
+  "rights_declared_count": 4,
+  "new_rights_declared_count": 0,
+  "decision_counts": {
+    "REJECT_DUPLICATE_SOURCE": 49,
+    "REJECT_NO_VERIFIED_UPLOAD_DATE": 1,
+    "REJECT_RIGHTS_UNDOCUMENTED": 36,
+    "REJECT_TOPIC_MISMATCH": 26
+  },
+  "selected_source": null,
+  "downloads": 0,
+  "renders": 0,
+  "youtube_uploads": 0,
+  "drive_archives": 0,
+  "artifacts": {
+    "web": "research/daily/20260830_ddgs_results.json",
+    "youtube_discovery": "research/daily/20260830_ytsearch_discovery.json",
+    "youtube_metadata": "research/daily/20260830_ytdlp_metadata.json",
+    "candidate_decisions": "research/daily/20260830_candidate_decisions.json"
+  },
+  "decision": "No finalized fresh, non-duplicate, rights-cleared source passed all gates. Three declared Creative Commons records were duplicates from prior runs; one additional candidate carried a public-domain notice but was off-topic; the remaining fresh topical candidates had no documented reuse permission. No render, YouTube upload, or Drive archive occurred."
+}

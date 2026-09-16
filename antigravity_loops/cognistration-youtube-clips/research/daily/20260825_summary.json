@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-08-25T10:34:01-05:00",
+  "cutoff": "2026-07-25T10:34:01-05:00",
+  "cutoff_date": "2026-07-25",
+  "search_query_count": 14,
+  "discovered_count": 61,
+  "resolved_count": 61,
+  "fresh_count": 61,
+  "fresh_substantive_count": 35,
+  "rights_cleared_fresh_substantive_count": 1,
+  "new_rights_cleared_count": 0,
+  "downloads": 0,
+  "renders": 0,
+  "youtube_uploads": 0,
+  "drive_archives": 0,
+  "search_errors": 0,
+  "web_search_errors": 5,
+  "ddgs_result_count": 40,
+  "ddgs_errors": 0,
+  "selected_source": null,
+  "duplicate_rights_cleared_candidate": {
+    "id": "KCxspJWpOKs",
+    "title": "Consequences of Meddling with Life Energies | Sadhguru",
+    "uploader": "Sadhguru",
+    "upload_date": "20260812",
+    "fresh": true,
+    "age_days": 13,
+    "personality_matches": [],
+    "topic_matches": ["meditation"],
+    "rights_basis": "CREATIVE_COMMONS_DECLARED",
+    "known_duplicate": true,
+    "webpage_url": "https://www.youtube.com/watch?v=KCxspJWpOKs"
+  },
+  "artifacts": {
+    "web": "research/daily/20260825_ddgs_results.json",
+    "youtube_discovery": "research/daily/20260825_ytdlp_search.json",
+    "youtube_metadata": "research/daily/20260825_ytdlp_search_metadata.json",
+    "note": "research/daily/2026-08-25-no-new-eligible-source.md"
+  },
+  "decision": "No new candidate passed freshness, substantive-format, non-duplicate, and documented-rights gates; no download, render, YouTube publish, or Drive archive was attempted."
+}
