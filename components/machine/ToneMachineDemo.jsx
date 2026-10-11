@@ -159,7 +159,7 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     }, 200);
   }, [stopAudioNodes, stopPackAudio]);
 
-  const startAudio = useCallback(async () => {
+  const startAudio = useCallback(async (overrides) => {
     try {
       if (stopTimerRef.current) {
         window.clearTimeout(stopTimerRef.current);
@@ -179,6 +179,14 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
           setIsPlaying(false);
           setAgentActivity('The browser suspended audio. Press Start preview to resume it.');
           return false;
+        }
+        // Update oscillator frequencies inline when audio is already running
+        if (overrides) {
+          const now = existingContext.currentTime;
+          const c = overrides.carrierHz ?? carrierFreq;
+          const b = overrides.beatHz ?? beatFreq;
+          leftOscRef.current.frequency.linearRampToValueAtTime(c, now + 0.05);
+          rightOscRef.current.frequency.linearRampToValueAtTime(c + b, now + 0.05);
         }
         return true;
       }
@@ -209,8 +217,10 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
       const rightOsc = ctx.createOscillator();
       leftOsc.type = 'sine';
       rightOsc.type = 'sine';
-      leftOsc.frequency.setValueAtTime(carrierFreq, ctx.currentTime);
-      rightOsc.frequency.setValueAtTime(carrierFreq + beatFreq, ctx.currentTime);
+      const c = overrides?.carrierHz ?? carrierFreq;
+      const b = overrides?.beatHz ?? beatFreq;
+      leftOsc.frequency.setValueAtTime(c, ctx.currentTime);
+      rightOsc.frequency.setValueAtTime(c + b, ctx.currentTime);
 
       const merger = ctx.createChannelMerger(2);
       leftOsc.connect(merger, 0, 0);
@@ -896,11 +906,9 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     if (state) {
       handleStateSelect(state.id, state.hz);
       setAgentActivity(`${state.label} direction set — starting audio preview...`);
-      // Let React flush the state update before starting audio so the
-      // oscillators read the new carrier/beat values.
-      window.setTimeout(() => startAudio(), 0);
+      startAudio({ carrierHz: carrierFreq, beatHz: state.hz });
     }
-  }, [handleStateSelect, startAudio]);
+  }, [handleStateSelect, startAudio, carrierFreq]);
 
   const handleDeclarativePreviewSubmit = useCallback((event) => {
     event.preventDefault();
