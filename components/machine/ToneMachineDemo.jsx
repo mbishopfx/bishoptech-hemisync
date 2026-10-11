@@ -13,11 +13,12 @@ import { RitualConductor } from './RitualConductor';
 const DEFAULT_MAX_DURATION_SEC = 120;
 
 const STATE_OPTIONS = [
-  { id: 'delta', label: 'Delta', hz: 3, range: '0.5 - 4 Hz · Deep rest' },
-  { id: 'theta', label: 'Theta', hz: 6, range: '4 - 8 Hz · Dreamy space' },
-  { id: 'alpha', label: 'Alpha', hz: 10, range: '8 - 14 Hz · Calm flow' },
-  { id: 'beta', label: 'Beta', hz: 18, range: '14 - 30 Hz · Active focus' },
-  { id: 'gamma', label: 'Gamma', hz: 39.5, range: '30 - 50 Hz · Creative synthesis' }
+  { id: 'delta', label: 'Delta', hz: 2.5, range: '0.5 – 4 Hz · Deep rest' },
+  { id: 'theta', label: 'Theta', hz: 6, range: '4 – 8 Hz · Dreamy space' },
+  { id: 'alpha', label: 'Alpha', hz: 10, range: '8 – 13 Hz · Calm flow' },
+  { id: 'smr',   label: 'SMR',   hz: 13, range: '12 – 15 Hz · Sensorimotor focus' },
+  { id: 'beta',  label: 'Beta',  hz: 18, range: '13 – 30 Hz · Active focus' },
+  { id: 'gamma', label: 'Gamma', hz: 38, range: '30 – 45 Hz · Creative synthesis' }
 ];
 
 const STATE_VISUALS = {
@@ -55,6 +56,13 @@ const STATE_VISUALS = {
     shadow: 'shadow-[0_0_50px_rgba(215,199,170,0.1)]',
     wave: 'bg-[#d7c7aa]',
     glow: 'bg-[#d7c7aa] shadow-[0_0_8px_rgba(215,199,170,0.45)]'
+  },
+  smr: {
+    accent: 'text-[#a2d8d0]',
+    border: 'border-[#a2d8d0]/30',
+    shadow: 'shadow-[0_0_50px_rgba(162,216,208,0.1)]',
+    wave: 'bg-[#a2d8d0]',
+    glow: 'bg-[#a2d8d0] shadow-[0_0_8px_rgba(162,216,208,0.45)]'
   }
 };
 
@@ -887,9 +895,12 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
     const state = STATE_OPTIONS.find((option) => option.id === stateId);
     if (state) {
       handleStateSelect(state.id, state.hz);
-      setAgentActivity(`${state.label} direction selected; live audio continues if it was already playing.`);
+      setAgentActivity(`${state.label} direction set — starting audio preview...`);
+      // Let React flush the state update before starting audio so the
+      // oscillators read the new carrier/beat values.
+      window.setTimeout(() => startAudio(), 0);
     }
-  }, [handleStateSelect]);
+  }, [handleStateSelect, startAudio]);
 
   const handleDeclarativePreviewSubmit = useCallback((event) => {
     event.preventDefault();
