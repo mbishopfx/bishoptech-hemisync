@@ -159,8 +159,8 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
     ? 'border-[#b8cbc0] bg-white/60 text-[#315e55] hover:border-[#7fa594] hover:bg-white'
     : 'border-[#b6ddcc]/20 bg-[#13201d]/55 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_24px_rgba(0,0,0,0.1)] hover:border-[#b6ddcc]/42 hover:bg-[#b6ddcc]/[0.1]';
   const menuSurface = isLight
-    ? 'border-[#cbd6cf]/90 bg-[#eef1ee]/[0.97] text-[#1d302c] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_24px_60px_rgba(45,65,59,0.14)]'
-    : 'border-[#b6ddcc]/20 bg-[#0f1e1a] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_30px_80px_rgba(0,0,0,0.35)]';
+    ? 'border-[#cbd6cf]/90 !bg-[#eef1ee] text-[#1d302c] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_24px_60px_rgba(45,65,59,0.14)]'
+    : 'border-[#b6ddcc]/20 !bg-[#1a1f1e] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_30px_80px_rgba(0,0,0,0.35)]';
   const menuItemSurface = isLight
     ? 'text-[#52665e] hover:bg-[#dce8e0]/70 hover:text-[#1d302c]'
     : 'text-white/70 hover:bg-white/[0.06] hover:text-white';
