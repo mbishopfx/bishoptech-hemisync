@@ -901,7 +901,12 @@ export function ToneMachineDemo({ agentTone = null, showWebMcpStatus = false, wo
 
   const handleDeclarativeDirectionSubmit = useCallback((event) => {
     event.preventDefault();
-    const stateId = String(new FormData(event.currentTarget).get('targetState') || '');
+    // FormData constructed from a form element does not include the
+    // submit button's name/value. Use event.nativeEvent.submitter
+    // (the actual button clicked) to read the selected state.
+    const submitter = event.nativeEvent?.submitter;
+    const stateId = submitter?.value
+      || String(new FormData(event.currentTarget).get('targetState') || '');
     const state = STATE_OPTIONS.find((option) => option.id === stateId);
     if (state) {
       handleStateSelect(state.id, state.hz);
