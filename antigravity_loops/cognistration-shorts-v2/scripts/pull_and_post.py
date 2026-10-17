@@ -194,6 +194,15 @@ def main(dry_run=False, limit=None, only=None, privacy="private"):
         pulled_ids.add(file_id)
         state['pulled_file_ids'] = sorted(pulled_ids)
         save_state(state)
+
+        # Drive holds the master copy; the local download is only needed for the
+        # upload, so remove it once YouTube has the video.
+        try:
+            os.remove(dest)
+            print(f"  removed local copy: {dest}")
+        except OSError as exc:
+            print(f"  could not remove local copy: {exc}")
+
         print(f"  ✓ Complete")
 
     print(f"\nProcessed {len(new_videos)} videos.")
