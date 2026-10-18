@@ -184,7 +184,40 @@ def re_clean(title):
 # ---------------------------------------------------------------------------
 # Upload
 # ---------------------------------------------------------------------------
-def publish(file_path, channel_key, source_id, privacy="public"):
+def already_live(yt, source_title, channel_name):
+    """Return the videoId of an existing upload of this same source clip.
+
+    state/clip_state.json only records what this script published, and several
+    clips were published before it existed by other means. Without this check a
+    leftover file in output/ can be re-published as a duplicate of a video that
+    has been live for days, which is exactly how one Jesse Michaels clip ended
+    up on the channel twice.
+    """
+    if not source_title:
+        return None
+    pl = yt.channels().list(part="contentDetails", mine=True).execute()[
+        "items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    token = re_clean(source_title).lower()[:40]
+    if len(token) < 10:
+        return None
+    nxt = None
+    for _ in range(4):
+        r = yt.playlistItems().list(part="snippet", playlistId=pl,
+                                    maxResults=50, pageToken=nxt).execute()
+        for it in r.get("items", []):
+            s = it["snippet"]
+            vid = s["resourceId"]["videoId"]
+            blob = (s.get("title", "") + " " + s.get("description", "")).lower()
+            if token in re_clean(blob).lower():
+                return vid
+        nxt = r.get("nextPageToken")
+        if not nxt:
+            break
+    return None
+
+
+def publish(file_path, channel_key, source_id, privacy="public",
+            allow_duplicate=False):
     path = Path(file_path)
     if not path.exists():
         raise RuntimeError(f"no such file: {path}")
@@ -192,8 +225,8 @@ def publish(file_path, channel_key, source_id, privacy="public"):
         raise RuntimeError(f"unknown channel {channel_key!r}")
 
     info = CHANNELS[channel_key]
-    title = build_title(channel_key, source_id)
     src = source_title(source_id)
+    title = build_title(channel_key, source_id)
     description = (
         f"{info['credit']}\n\n"
         f"Source: {src or 'https://www.youtube.com/watch?v=' + source_id}\n\n"
@@ -210,6 +243,12 @@ def publish(file_path, channel_key, source_id, privacy="public"):
     print(f"[publish] channel: {channel_title} ({channel_id})")
     print(f"[publish] title  : {title}")
     print(f"[publish] file   : {path.name} ({path.stat().st_size / 1e6:.1f} MB)")
+
+    dup = already_live(yt, src, info["name"])
+    if dup and not allow_duplicate:
+        raise RuntimeError(
+            f"this source is already published as {dup} "
+            f"(https://youtube.com/shorts/{dup}); pass --allow-duplicate to post anyway")
 
     media = MediaFileUpload(str(path), mimetype="video/mp4",
                             resumable=True, chunksize=5 * 1024 * 1024)
@@ -267,6 +306,8 @@ def main():
     ap.add_argument("--source-id")
     ap.add_argument("--privacy", default="public",
                     choices=["public", "unlisted", "private"])
+    ap.add_argument("--allow-duplicate", action="store_true",
+                    help="Publish even if this source is already on the channel")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -287,7 +328,8 @@ def main():
         print("  title:", build_title(args.channel, args.source_id))
         return
 
-    result = publish(args.file, args.channel, args.source_id, args.privacy)
+    result = publish(args.file, args.channel, args.source_id, args.privacy,
+                     allow_duplicate=args.allow_duplicate)
     record_published(load_state(), args.channel, args.source_id,
                      result["videoId"], result["title"])
     print(result["url"])
