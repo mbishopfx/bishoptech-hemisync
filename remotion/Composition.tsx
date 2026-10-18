@@ -5,6 +5,7 @@ import {
   Audio,
   Img,
   OffthreadVideo,
+  Sequence,
   interpolate,
   staticFile,
 } from 'remotion';
@@ -32,16 +33,189 @@ const STATE_INFO: Record<string, StateInfo> = {
   gamma:  { label: 'Gamma', hz: 38.0, range: '30–45 Hz',  outcome: 'Higher awareness, connected consciousness', leftColor: '#d7c7aa', rightColor: '#e0b493', beatColor: '#efe0c8', glowColor: 'rgba(215,199,170,0.45)' },
 };
 
+type HookWord = { text: string; start: number; end: number; accent?: boolean };
+
+// The cold-open manifest produced by scripts/generate_hook.py on every render.
+// When it is absent — generation failed, or an older run — the composition
+// falls back to DEFAULT_HOOK so a short always opens with a spoken line.
+export interface HookManifest {
+  state?: string;
+  text: string;
+  audioPath: string;
+  audioSec: number;
+  frames?: number;
+  words: HookWord[];
+}
+
 export interface CognistrationShortProps {
   brainState: string;
   audioPath: string;
   backgroundPath?: string;
   carrierHz?: number;
   durationSec?: number;
+  hook?: HookManifest;
 }
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+
+// ---------------------------------------------------------------------------
+// COLD OPEN — whispered hook on a blank screen
+// ---------------------------------------------------------------------------
+//
+// A soft, slow, whispered line over near-black, one word at a time in large
+// type, then a snap and straight into the session. The point is a pause and a
+// promise before the machine appears, which is what holds the first seconds.
+//
+// Voice: ElevenLabs `eleven-v3`, voice "Rachel" (21m00Tcm4TlvDq8ikWAM), with the
+// `[whispers]` tag, then EQ'd and slowed to 0.80x and padded 0.45s lead /
+// 0.35s tail. Regenerate with:
+//
+//   python3 or_tts.py --model elevenlabs/eleven-v3 --voice 21m00Tcm4TlvDq8ikWAM \
+//     --text "[whispers] You're about to have a digital reset in theta." \
+//     --out final_voice_raw.mp3
+//   ffmpeg -y -i final_voice_raw.mp3 -af "highpass=f=95,\
+//     equalizer=f=200:t=q:w=1:g=-3,equalizer=f=2800:t=q:w=1.3:g=2.5,\
+//     acompressor=threshold=-20dB:ratio=3.2:attack=8:release=220,atempo=0.80,\
+//     volume=2.2,alimiter=limit=0.92" -ar 48000 -ac 2 body.wav
+//   # then concat 0.45s silence + body.wav + 0.35s silence -> hook/hook_voice.mp3
+//
+// Word timings below are whisper word timestamps from that exact file, with the
+// first word corrected to the real speech onset at 0.607s (the lead silence).
+
+export const HOOK_AUDIO_SEC = 3.892;
+export const HOOK_FRAMES = Math.round(HOOK_AUDIO_SEC * 30); // 117 frames
+
+// The line that ships when generate_hook.py could not run. Same voice, same
+// shaping, same timings as the original cold open — kept as the safe default.
+const DEFAULT_HOOK_WORDS: HookWord[] = [
+  { text: "You're",  start: 0.607, end: 0.840 },
+  { text: "about",   start: 0.840, end: 1.060 },
+  { text: "to",      start: 1.060, end: 1.300 },
+  { text: "have",    start: 1.300, end: 1.480 },
+  { text: "a",       start: 1.480, end: 1.620 },
+  { text: "digital", start: 1.620, end: 2.100 },
+  { text: "reset",   start: 2.100, end: 2.740 },
+  { text: "in",      start: 2.740, end: 3.080 },
+  { text: "theta",   start: 3.080, end: 3.542, accent: true },
+];
+
+export const DEFAULT_HOOK: HookManifest = {
+  text: "You're about to have a digital reset in theta.",
+  audioPath: 'hook/hook_voice.mp3',
+  audioSec: HOOK_AUDIO_SEC,
+  frames: HOOK_FRAMES,
+  words: DEFAULT_HOOK_WORDS,
+};
+
+// Frames the cold open occupies for a given run. The generator measures the
+// real audio, so the length comes from the manifest, not a constant.
+export function hookFrames(hook?: { audioSec?: number } | null): number {
+  const sec = hook?.audioSec ?? DEFAULT_HOOK.audioSec;
+  return Math.round(sec * 30);
+}
+
+const HookScreen: React.FC<{ words: HookWord[] }> = ({ words }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const breath = 0.5 + 0.5 * Math.sin(t * 1.9);
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: '#070811' }}>
+      {/* A barely-there glow so the black reads as intentional, not empty. */}
+      <AbsoluteFill
+        style={{
+          background: `radial-gradient(ellipse at 50% 46%, rgba(182,221,204,${(
+            0.03 + 0.028 * breath
+          ).toFixed(3)}) 0%, rgba(7,8,17,0) 60%)`,
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          background:
+            'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 44%, rgba(0,0,0,0.5) 100%)',
+        }}
+      />
+
+      <AbsoluteFill
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        {words.map((w, i) => {
+          const isLast = i === words.length - 1;
+          const fadeIn = interpolate(t, [w.start, w.start + 0.1], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          });
+          // The final word holds until the snap cuts it away.
+          const fadeOut = isLast
+            ? 1
+            : interpolate(t, [w.end - 0.04, w.end + 0.03], [1, 0], {
+                extrapolateLeft: 'clamp',
+                extrapolateRight: 'clamp',
+              });
+          const opacity = Math.min(fadeIn, fadeOut);
+          if (opacity <= 0.002) return null;
+
+          const rise = interpolate(t, [w.start, w.start + 0.18], [16, 0], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          });
+          const size = Math.max(120, Math.min(268, 1010 / Math.max(2, w.text.length * 0.56)));
+
+          return (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                opacity,
+                transform: `translateY(${rise.toFixed(1)}px)`,
+                fontFamily: SANS,
+                fontWeight: 200,
+                fontSize: size,
+                lineHeight: 1,
+                letterSpacing: '-0.03em',
+                color: w.accent ? '#d7eadf' : 'rgba(241,245,249,0.96)',
+                textShadow: w.accent
+                  ? '0 0 48px rgba(215,234,223,0.32), 0 2px 28px rgba(7,8,17,0.95)'
+                  : '0 2px 28px rgba(7,8,17,0.95)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {w.text}
+            </div>
+          );
+        })}
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+// The burst that lands with the snap: a theta-tinted radial pulse that expands
+// and fades, so the cut into the session reads as a reset rather than a jump.
+const TransitionPulse: React.FC<{ at: number }> = ({ at }) => {
+  const frame = useCurrentFrame();
+  const d = frame - at;
+  if (d < 0 || d > 18) return null;
+
+  const opacity = interpolate(d, [0, 2, 18], [0, 0.62, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const scale = interpolate(d, [0, 18], [0.55, 1.75]);
+
+  return (
+    <AbsoluteFill
+      style={{
+        pointerEvents: 'none',
+        opacity,
+        transform: `scale(${scale.toFixed(3)})`,
+        background:
+          'radial-gradient(circle at 50% 50%, rgba(231,245,238,0.95) 0%, rgba(182,221,204,0.42) 20%, rgba(7,8,17,0) 56%)',
+      }}
+    />
+  );
+};
 
 // SVG wave helpers — match the machine's getSinePath / getEntrainmentPath
 function sinePath(freq: number, amp: number, time: number, speed: number, w: number, h: number): string {
@@ -122,14 +296,18 @@ function WaveCard({
   );
 }
 
-export const CognistrationShort: React.FC<CognistrationShortProps> = ({
+// ---------------------------------------------------------------------------
+// The session itself. Lives inside a <Sequence from={HOOK_FRAMES}>, so its
+// frame counter is local and its own length is passed in explicitly.
+// ---------------------------------------------------------------------------
+const ShortBody: React.FC<CognistrationShortProps & { shortFrames: number }> = ({
   brainState,
-  audioPath,
   backgroundPath,
   carrierHz = 200,
+  shortFrames,
 }) => {
   const frame = useCurrentFrame();
-  const { durationInFrames, fps, width } = useVideoConfig();
+  const { fps, width } = useVideoConfig();
   const time = frame / fps;
   const state = STATE_INFO[brainState] || STATE_INFO.theta;
   const rightHz = carrierHz + state.hz;
@@ -138,7 +316,7 @@ export const CognistrationShort: React.FC<CognistrationShortProps> = ({
   const contentFade = interpolate(frame, [16, 44], [0, 1], { extrapolateRight: 'clamp' });
 
   // Last five seconds: the machine fades away and the app CTA takes over.
-  const ctaStart = durationInFrames - 150;
+  const ctaStart = shortFrames - 150;
   const machineOut = interpolate(frame, [ctaStart, ctaStart + 55], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -147,7 +325,7 @@ export const CognistrationShort: React.FC<CognistrationShortProps> = ({
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const outroFade = interpolate(frame, [durationInFrames - 12, durationInFrames - 1], [1, 0], {
+  const outroFade = interpolate(frame, [shortFrames - 12, shortFrames - 1], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -157,9 +335,7 @@ export const CognistrationShort: React.FC<CognistrationShortProps> = ({
   const waveH = 130;
 
   return (
-    <AbsoluteFill style={{ backgroundColor: '#070811' }}>
-      <Audio src={staticFile(audioPath)} />
-
+    <>
       {/* ── LAYER 1: the HTML animation, running behind everything ──
           Optional: a sandbox without a working Chromium can render without it. */}
       {backgroundPath ? (
@@ -338,6 +514,56 @@ export const CognistrationShort: React.FC<CognistrationShortProps> = ({
         </AbsoluteFill>
 
       </AbsoluteFill>
+    </>
+  );
+};
+
+// The session's binaural track. It starts on the same frame as the snap, and
+// both peak well below full scale on their own — summed at the cut they clip
+// (measured 1.008 before this ramp). A short fade-in gives the snap the first
+// ~0.6s of headroom, so the click lands clean and the tone swells under it.
+const SessionAudio: React.FC<{ src: string }> = ({ src }) => {
+  const frame = useCurrentFrame();
+  const gain = interpolate(frame, [0, 18], [0.12, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  return <Audio src={staticFile(src)} volume={gain} />;
+};
+
+// ---------------------------------------------------------------------------
+// Composition root — cold open, snap, session
+// ---------------------------------------------------------------------------
+export const CognistrationShort: React.FC<CognistrationShortProps> = (props) => {
+  const { durationInFrames } = useVideoConfig();
+  const hook = props.hook ?? DEFAULT_HOOK;
+  const frames = hookFrames(hook);
+  const shortFrames = Math.max(1, durationInFrames - frames);
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: '#070811' }}>
+
+      {/* ── The whispered cold open, playing from frame 0 ── */}
+      <Audio src={staticFile(hook.audioPath)} />
+
+      {/* ── Blank screen with the words, exactly as long as the voice ── */}
+      <Sequence durationInFrames={frames}>
+        <HookScreen words={hook.words} />
+      </Sequence>
+
+      {/* ── The snap lands here and the session begins on the same frame ── */}
+      <Sequence from={frames}>
+        <Audio src={staticFile('hook/snap.mp3')} volume={0.62} />
+      </Sequence>
+
+      <Sequence from={frames}>
+        <SessionAudio src={props.audioPath} />
+        <ShortBody {...props} shortFrames={shortFrames} />
+      </Sequence>
+
+      {/* ── The pulse that lands with the snap, drawn over everything ── */}
+      <TransitionPulse at={frames} />
+
     </AbsoluteFill>
   );
 };

@@ -31,6 +31,7 @@ DRIVE_SCRIPT = SCRIPTS_DIR / "drive_upload.py"
 
 sys.path.insert(0, str(SCRIPTS_DIR))
 import descriptions  # noqa: E402
+import generate_hook  # noqa: E402
 
 BEAT_MAP = {
     "delta": 2.5, "theta": 6.0, "alpha": 10.0,
@@ -143,7 +144,33 @@ def render_background(brain_state, duration_sec):
         return None
 
 
-def render_video(brain_state, carrier_hz, audio_mp3, background_mp4, duration_sec):
+def make_hook(brain_state):
+    """Generate this run's whispered cold open.
+
+    Returns the manifest dict Remotion expects as its `hook` prop, or None if
+    generation failed. A None hook means the composition falls back to its
+    baked-in DEFAULT_HOOK, so a TTS or Whisper hiccup never loses the render.
+    """
+    ledger = PROJECT_ROOT / "hooks.md"
+    public_dir = REMOTION_DIR / "public"
+    try:
+        manifest, audio_path, json_path = generate_hook.generate(
+            state=brain_state,
+            public_dir=str(public_dir),
+            ledger=str(ledger),
+            json_out=str(STAGING_DIR / "hook_manifest.json"),
+        )
+        # The composition reads audioPath relative to remotion/public/.
+        manifest["_audioFile"] = str(audio_path)
+        manifest["_jsonFile"] = str(json_path)
+        return manifest
+    except Exception as exc:
+        print(f"[hook] generation failed ({exc}); using the default cold open")
+        return None
+
+
+def render_video(brain_state, carrier_hz, audio_mp3, background_mp4, duration_sec,
+                 hook=None):
     """Run the Remotion render, return the output MP4 path."""
     slug = f"{brain_state}-{int(carrier_hz)}hz"
     date_tag = datetime.now(timezone.utc).strftime("%Y%m%d")
@@ -161,13 +188,20 @@ def render_video(brain_state, carrier_hz, audio_mp3, background_mp4, duration_se
         shutil.copy2(background_mp4, r_bg_dir / background_mp4.name)
         bg_prop = f"output/backgrounds/{background_mp4.name}"
 
-    props = json.dumps({
+    props_dict = {
         "brainState": brain_state,
         "audioPath": f"output/audio/{audio_mp3.name}",
         "backgroundPath": bg_prop,
         "carrierHz": carrier_hz,
         "durationSec": duration_sec,
-    })
+    }
+    # The cold open: measured audio path + word timings from generate_hook.py.
+    # Strip the private bookkeeping keys before Remotion sees them.
+    if hook:
+        props_dict["hook"] = {
+            k: v for k, v in hook.items() if not k.startswith("_")
+        }
+    props = json.dumps(props_dict)
 
     print(f"[render] Rendering {brain_state}...")
     subprocess.run([
@@ -179,6 +213,15 @@ def render_video(brain_state, carrier_hz, audio_mp3, background_mp4, duration_se
     (r_audio_dir / audio_mp3.name).unlink(missing_ok=True)
     if bg_prop:
         (r_bg_dir / background_mp4.name).unlink(missing_ok=True)
+    # Remove this run's hook audio + manifest so nothing accumulates.
+    if hook:
+        for key in ("_audioFile", "_jsonFile"):
+            p = hook.get(key)
+            if p and Path(p).exists():
+                Path(p).unlink(missing_ok=True)
+        hook_audio = REMOTION_DIR / "public" / str(hook.get("audioPath", ""))
+        if hook.get("audioPath") and hook_audio.exists():
+            hook_audio.unlink(missing_ok=True)
 
     size_mb = output_path.stat().st_size / 1e6
     print(f"[render] {output_path.name} ({size_mb:.1f} MB)")
@@ -246,6 +289,8 @@ def main():
     parser.add_argument("--duration", "-d", type=float, default=65.0)
     parser.add_argument("--keep-local", action="store_true",
                         help="Do not delete the MP4 after the Drive upload")
+    parser.add_argument("--no-hook", action="store_true",
+                        help="Skip the whispered cold open; use the default one")
     args = parser.parse_args()
 
     print(f"{'='*60}")
@@ -261,10 +306,15 @@ def main():
     ensure_env()
 
     mp3 = bg = vid = None
+    hook = None
     try:
+        if args.no_hook:
+            print("[hook] skipped (--no-hook); the default cold open will be used")
+        else:
+            hook = make_hook(args.state)
         mp3 = generate_audio(args.state, args.carrier, args.duration)
         bg = render_background(args.state, args.duration)
-        vid = render_video(args.state, args.carrier, mp3, bg, args.duration)
+        vid = render_video(args.state, args.carrier, mp3, bg, args.duration, hook)
 
         # Upload first, then remove the local MP4: Drive is the handoff point.
         drive_id = upload_to_drive(args.state, vid, args.duration, args.carrier)
