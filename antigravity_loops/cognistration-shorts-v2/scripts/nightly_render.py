@@ -213,15 +213,20 @@ def render_video(brain_state, carrier_hz, audio_mp3, background_mp4, duration_se
     (r_audio_dir / audio_mp3.name).unlink(missing_ok=True)
     if bg_prop:
         (r_bg_dir / background_mp4.name).unlink(missing_ok=True)
-    # Remove this run's hook audio + manifest so nothing accumulates.
+    # Remove this run's hook audio + manifest so nothing accumulates. Guarded by
+    # a whitelist: the committed fallback voice and the snap live in the repo and
+    # must never be deleted, even if a manifest ever points back at them.
     if hook:
         for key in ("_audioFile", "_jsonFile"):
             p = hook.get(key)
             if p and Path(p).exists():
                 Path(p).unlink(missing_ok=True)
-        hook_audio = REMOTION_DIR / "public" / str(hook.get("audioPath", ""))
-        if hook.get("audioPath") and hook_audio.exists():
-            hook_audio.unlink(missing_ok=True)
+        committed_assets = {"hook_voice.mp3", "snap.mp3"}
+        rel = str(hook.get("audioPath", ""))
+        if rel and Path(rel).name not in committed_assets:
+            hook_audio = REMOTION_DIR / "public" / rel
+            if hook_audio.exists():
+                hook_audio.unlink(missing_ok=True)
 
     size_mb = output_path.stat().st_size / 1e6
     print(f"[render] {output_path.name} ({size_mb:.1f} MB)")

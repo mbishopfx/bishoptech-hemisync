@@ -161,24 +161,35 @@ const HookScreen: React.FC<{ words: HookWord[] }> = ({ words }) => {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
           });
-          const size = Math.max(120, Math.min(268, 1010 / Math.max(2, w.text.length * 0.56)));
+          // Uppercase and heavy reads far larger than lowercase at the same
+          // point size, and capital glyphs are much wider, so the fit divisor
+          // is tuned for caps (0.74 em/char) to keep the longest word inside
+          // the frame instead of touching the edges.
+          const size = Math.max(104, Math.min(244, 920 / Math.max(2, w.text.length * 0.74)));
 
           return (
             <div
               key={i}
               style={{
+                // Explicitly centred rather than relying on a flex container to
+                // centre an absolutely positioned child.
                 position: 'absolute',
+                left: 0,
+                right: 0,
+                top: '50%',
+                transform: `translateY(calc(-50% + ${rise.toFixed(1)}px))`,
+                textAlign: 'center',
                 opacity,
-                transform: `translateY(${rise.toFixed(1)}px)`,
                 fontFamily: SANS,
-                fontWeight: 200,
+                fontWeight: 800,
                 fontSize: size,
                 lineHeight: 1,
-                letterSpacing: '-0.03em',
-                color: w.accent ? '#d7eadf' : 'rgba(241,245,249,0.96)',
+                letterSpacing: '0.01em',
+                textTransform: 'uppercase',
+                color: w.accent ? '#d7eadf' : 'rgba(244,247,250,0.98)',
                 textShadow: w.accent
-                  ? '0 0 48px rgba(215,234,223,0.32), 0 2px 28px rgba(7,8,17,0.95)'
-                  : '0 2px 28px rgba(7,8,17,0.95)',
+                  ? '0 0 52px rgba(215,234,223,0.38), 0 3px 30px rgba(7,8,17,0.95)'
+                  : '0 3px 30px rgba(7,8,17,0.95)',
                 whiteSpace: 'nowrap',
               }}
             >
