@@ -33,14 +33,26 @@ STATE_PATH = PROJECT_ROOT / "state" / "clip_state.json"
 TOKEN_PATH = Path(os.path.expanduser(
     "~/.hermes/profiles/cognistration/youtube_oauth_token.json"))
 
-try:
-    from google.oauth2.credentials import Credentials
-    from google.auth.transport.requests import Request
-    from googleapiclient.discovery import build
-    from googleapiclient.http import MediaFileUpload
-except ImportError as exc:  # pragma: no cover
-    print(f"google-api-python-client required: {exc}", file=sys.stderr)
-    raise
+# The Google client is imported lazily, inside _google(). Clipping is an
+# ffmpeg/yt-dlp job and must keep working in an interpreter that has no
+# googleapiclient; only the upload needs it. Importing it at module scope made
+# the whole clipper die at import time for a purely local --dry-run.
+_google_cache = {}
+
+
+def _google():
+    if "mod" not in _google_cache:
+        try:
+            from google.oauth2.credentials import Credentials
+            from google.auth.transport.requests import Request
+            from googleapiclient.discovery import build
+            from googleapiclient.http import MediaFileUpload
+        except ImportError as exc:
+            raise RuntimeError(
+                "publishing needs google-api-python-client "
+                f"({exc}); install it or run with --dry-run") from exc
+        _google_cache["mod"] = (Credentials, Request, build, MediaFileUpload)
+    return _google_cache["mod"]
 
 
 # ---------------------------------------------------------------------------
@@ -68,6 +80,7 @@ TAGS = ["shorts", "clip", "podcast", "interview", "youtube shorts"]
 # Auth
 # ---------------------------------------------------------------------------
 def credentials():
+    Credentials, Request, _build, _mu = _google()
     if not TOKEN_PATH.exists():
         raise RuntimeError(f"missing YouTube token at {TOKEN_PATH}")
     data = json.loads(TOKEN_PATH.read_text())
@@ -89,6 +102,7 @@ def credentials():
 
 
 def youtube():
+    _c, _r, build, _mu = _google()
     return build("youtube", "v3", credentials=credentials())
 
 
@@ -250,6 +264,7 @@ def publish(file_path, channel_key, source_id, privacy="public",
             f"this source is already published as {dup} "
             f"(https://youtube.com/shorts/{dup}); pass --allow-duplicate to post anyway")
 
+    _c, _r, _b, MediaFileUpload = _google()
     media = MediaFileUpload(str(path), mimetype="video/mp4",
                             resumable=True, chunksize=5 * 1024 * 1024)
     req = yt.videos().insert(
