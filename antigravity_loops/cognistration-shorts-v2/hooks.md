@@ -12,4 +12,5 @@ Format: `date | state | hook text | audio file | duration`
 <!-- HOOKS:BEGIN -->
 - 2026-10-18T06:31:21Z | theta | "In a few seconds, your mind drops into theta." | theta-20261018-063120.mp3 | 5.19s
 - 2026-10-18T07:34:37Z | theta | "The reset begins now, in theta." | theta-20261018-073437.mp3 | 4.58s
+- 2026-10-18T08:22:11Z | theta | "Breathe out. You're about to land in theta." | theta-20261018-082211.mp3 | 5.39s
 <!-- HOOKS:END -->
