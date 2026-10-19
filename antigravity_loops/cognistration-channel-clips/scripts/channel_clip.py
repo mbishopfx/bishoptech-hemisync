@@ -43,6 +43,57 @@ CHANNELS = {
 
 TARGET_SEC = 75
 
+# A long podcast holds more than one usable moment, so a source is no longer
+# spent by its first clip: each run takes the next spot in the episode instead
+# of skipping, up to this many clips per source, and only then does the loop
+# move on to the next upload. Tune with COGNISTRATION_MAX_CLIPS_PER_VIDEO.
+MAX_CLIPS_PER_VIDEO = int(os.environ.get("COGNISTRATION_MAX_CLIPS_PER_VIDEO", "3"))
+# How far down the channel's uploads list to look for a source that still has a
+# free clip slot before deciding there is nothing to publish today.
+RECENT_LIMIT = int(os.environ.get("COGNISTRATION_RECENT_LIMIT", "12"))
+# Two windows this close share the same stretch of conversation, so a fresh clip
+# must clear every used one by at least this many seconds.
+SEGMENT_PAD_SEC = int(os.environ.get("COGNISTRATION_SEGMENT_PAD_SEC", "30"))
+
+
+class NoFreeSegment(RuntimeError):
+    """Raised when a source has no unused, non-overlapping window left."""
+
+
+# The Homebrew build is the one that got updated to a SABR-capable release; a
+# stale yt_dlp also sits in the user site-packages and `which` can find either
+# depending on PATH, so pick the newest explicitly. An old yt-dlp is what made
+# these videos look 360p-only.
+def _resolve_ytdlp():
+    cands = ["/opt/homebrew/bin/yt-dlp", "/usr/local/bin/yt-dlp",
+             os.path.expanduser("~/Library/Python/3.9/bin/yt-dlp"),
+             os.path.expanduser("~/.local/bin/yt-dlp")]
+    found = [c for c in cands if os.path.exists(c)]
+    w = shutil.which("yt-dlp")
+    if w and w not in found:
+        found.append(w)
+    best, best_v = None, ()
+    for c in found:
+        try:
+            out = subprocess.run([c, "--version"], capture_output=True,
+                                 text=True, timeout=20).stdout.strip()
+            v = tuple(int(x) for x in out.split(".")[:3] if x.isdigit())
+        except Exception:
+            continue
+        if v > best_v:
+            best, best_v = c, v
+    return best or w or "yt-dlp"
+
+
+YTDLP = _resolve_ytdlp()
+
+# YouTube moved this session to SABR-only streaming. The `android` client used
+# to be the workaround for 403s, but it now tops out at 640x360, which is what
+# starved the vertical reframes; the default client exposes 720p and 1080p.
+# Override with COGNISTRATION_YTDLP_CLIENT if YouTube changes shape again.
+YTDLP_CLIENT = os.environ.get("COGNISTRATION_YTDLP_CLIENT", "default")
+YTDLP_ARGS = f"youtube:player_client={YTDLP_CLIENT}"
+
 # Every clip ends on the brand card, with the snap landing just before the cut.
 # The outro lives with the shorts factory, which is where the asset is managed;
 # SNAP is the same crack used to open a binaural short, so the two loops share
@@ -68,8 +119,12 @@ def ensure_dirs():
 def load_state():
     if STATE_PATH.exists():
         with open(STATE_PATH) as f:
-            return json.load(f)
-    return {"clipped": []}
+            state = json.load(f)
+    else:
+        state = {}
+    state.setdefault("clipped", [])
+    state.setdefault("segments", {})
+    return state
 
 
 def save_state(s):
@@ -83,7 +138,7 @@ def get_latest_video(channel_key):
     print(f"[source] Fetching latest from {info['name']}...")
     # Step 1: Get the first video ID from the uploads playlist
     result = subprocess.run([
-        "yt-dlp", "--flat-playlist", "--print", "id",
+        YTDLP, "--flat-playlist", "--print", "id",
         "--playlist-end", "1", info["url"],
     ], capture_output=True, text=True, timeout=60)
     if result.returncode != 0:
@@ -91,7 +146,7 @@ def get_latest_video(channel_key):
     vid = result.stdout.strip().split("\n")[0]
     # Step 2: Get title for that video
     result2 = subprocess.run([
-        "yt-dlp", "--print", "title", "--skip-download",
+        YTDLP, "--print", "title", "--skip-download",
         f"https://www.youtube.com/watch?v={vid}",
     ], capture_output=True, text=True, timeout=60)
     title = result2.stdout.strip().split("\n")[0] if result2.returncode == 0 else "Unknown"
@@ -99,14 +154,106 @@ def get_latest_video(channel_key):
     return vid, title
 
 
-def already_clipped(channel_key, video_id, state):
-    key = f"{channel_key}:{video_id}"
-    return key in state.get("clipped", [])
+def source_key(channel_key, video_id):
+    return f"{channel_key}:{video_id}"
 
 
-def mark_clipped(channel_key, video_id, state):
-    state.setdefault("clipped", []).append(f"{channel_key}:{video_id}")
+def used_segments(state, channel_key, video_id):
+    """The clip windows already published from this source video.
+
+    Entries written before segment tracking carry a null start: they still count
+    toward MAX_CLIPS_PER_VIDEO, but they cannot constrain where the next clip
+    lands because their position was never recorded.
+    """
+    return state.get("segments", {}).get(source_key(channel_key, video_id), [])
+
+
+def record_segment(state, channel_key, video_id, start, dur, part, posted_id):
+    key = source_key(channel_key, video_id)
+    segs = state.setdefault("segments", {}).setdefault(key, [])
+    segs.append({
+        "start": int(start),
+        "dur": int(dur),
+        "part": int(part),
+        "videoId": posted_id,
+        "publishedAt": datetime.now(timezone.utc).isoformat(),
+    })
+    state["segments"][key] = segs[-25:]
+    # Legacy mirror: anything older than this change reads the flat "clipped"
+    # list, so keep it truthful without letting it gate anything.
+    clipped = state.setdefault("clipped", [])
+    if key not in clipped:
+        clipped.append(key)
     save_state(state)
+
+
+def get_recent_videos(channel_key, limit=RECENT_LIMIT):
+    """Video ids from the channel's uploads list, newest first."""
+    info = CHANNELS[channel_key]
+    print(f"[source] Fetching recent uploads from {info['name']}...")
+    result = subprocess.run([
+        YTDLP, "--flat-playlist", "--print", "id",
+        "--playlist-end", str(limit), info["url"],
+    ], capture_output=True, text=True, timeout=120)
+    if result.returncode != 0:
+        raise RuntimeError(f"yt-dlp failed: {result.stderr[:300]}")
+    return [v.strip() for v in result.stdout.strip().split("\n") if v.strip()]
+
+
+def video_title(video_id):
+    result = subprocess.run([
+        YTDLP, "--print", "title", "--skip-download",
+        f"https://www.youtube.com/watch?v={video_id}",
+    ], capture_output=True, text=True, timeout=60)
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout.strip().split("\n")[0]
+    return "Unknown"
+
+
+def pick_segment(total, used, target=TARGET_SEC, pad=SEGMENT_PAD_SEC):
+    """A start time for the next clip, spaced away from the ones already used.
+
+    Old behaviour drew one random start from the whole episode. That is what
+    made a second run either duplicate a clip or skip the source entirely. Here
+    every candidate start is scored by how far it sits from the nearest used
+    window, and the run takes one of the widest-gap candidates, so successive
+    clips spread across the episode instead of clustering. Returns
+    (None, None) when no non-overlapping window is left.
+    """
+    margin = int(total * 0.15)
+    lo, hi = margin, total - margin - target
+    used_windows = [(u["start"], u["start"] + u["dur"])
+                    for u in used if u.get("start") is not None]
+
+    if hi < lo:
+        # Short source: exactly one window fits. Take it once, then stop.
+        end = min(total, lo + target)
+        if any(not (end + pad <= u_s or lo >= u_e + pad)
+               for u_s, u_e in used_windows):
+            return None, None
+        return lo, max(1, end - lo)
+
+    scored = []
+    for s in range(lo, hi + 1, 5):
+        e = s + target
+        if not used_windows:
+            scored.append((float("inf"), s))
+            continue
+        gap, ok = float("inf"), True
+        for u_s, u_e in used_windows:
+            if not (e + pad <= u_s or s >= u_e + pad):
+                ok = False
+                break
+            gap = min(gap, max(u_s - e, s - u_e))
+        if ok:
+            scored.append((gap, s))
+    if not scored:
+        return None, None
+    # Among the roomiest candidates, stay random so repeat runs do not land on
+    # the same second.
+    best_gap = max(g for g, _ in scored)
+    best = [s for g, s in scored if g >= best_gap * 0.8]
+    return random.choice(best), target
 
 
 def probe_size(path):
@@ -119,7 +266,8 @@ def probe_size(path):
     return int(w), int(h)
 
 
-def download_and_clip(channel_key, video_id):
+def download_and_clip(channel_key, video_id, used=None):
+    used = used or []
     url = f"https://www.youtube.com/watch?v={video_id}"
     td = Path(tempfile.mkdtemp(prefix="cog-clip-"))
     slug = f"{channel_key}-{video_id[:8]}"
@@ -129,7 +277,7 @@ def download_and_clip(channel_key, video_id):
     # Step 1: Get duration without downloading
     print("[info] Getting video duration...")
     dur_out = subprocess.run([
-        "yt-dlp", "--print", "duration_string", "--skip-download",
+        YTDLP, "--print", "duration_string", "--skip-download",
         url,
     ], capture_output=True, text=True, timeout=30)
     
@@ -148,29 +296,31 @@ def download_and_clip(channel_key, video_id):
     if total < 50:
         raise RuntimeError(f"Too short ({total:.0f}s)")
 
-    # Step 2: Pick random segment (avoid first/last 15%)
-    margin = int(total * 0.15)
-    if total - margin * 2 < TARGET_SEC:
-        start = margin
-        cdur = min(TARGET_SEC, total - margin)
-    else:
-        start = random.randint(margin, total - margin - TARGET_SEC)
-        cdur = TARGET_SEC
+    # Step 2: Pick the next segment, spaced away from any already used in this
+    # episode, instead of drawing one at random from the whole runtime.
+    start, cdur = pick_segment(total, used)
+    if start is None or cdur is None:
+        raise NoFreeSegment(
+            f"{video_id}: no unused {TARGET_SEC}s window left "
+            f"({len(used)} clip(s) already taken)")
+    start, cdur = int(start), int(cdur)
+    print(f"[clip] Segment {len(used) + 1}: {start}s + {cdur}s "
+          f"(clear of {len(used)} earlier clip(s))")
 
-    print(f"[clip] Segment: {start}s + {cdur}s")
-
-    # Step 3: Download only the segment we need. The old format string
-    # `best[height<=720]` was resolving to 360p, which then got cropped to a
-    # narrow slice and blown up to 1080x1920. Ask for the tallest real stream.
-    print("[download] Fetching segment...")
+    # YouTube's 720/1080p podcast streams are separate video+audio (DASH)
+    # tracks, so a plain `best[height<=1080]` matches nothing at all and the
+    # only muxed stream is 360p format 18 — which is exactly why every clip
+    # looked soft. The bv+ba form selects a real 1080p picture and merges it
+    # with the best audio, then remuxes to mp4 for ffmpeg downstream.
     subprocess.run([
-        "yt-dlp", "-f",
-        "best[height<=1080][vcodec^=avc1]/best[height<=1080]/best[height<=720]/best",
+        YTDLP, "-f",
+        "bv*[height<=1080]+ba/b[height<=1080]/b[height<=1080]/bv*[height<=720]+ba/b",
+        "--merge-output-format", "mp4",
         "--download-sections", f"*{start}-{start+cdur}",
         "-o", str(src), "--no-playlist",
-        "--extractor-args", "youtube:player_client=android",
+        "--extractor-args", YTDLP_ARGS,
         url,
-    ], check=True, timeout=300)
+    ], check=True, timeout=900)
 
     mb = src.stat().st_size / 1e6
     print(f"[download] {mb:.1f} MB")
@@ -245,7 +395,7 @@ def get_captons(video_id, clip_start, clip_dur, dest_dir):
 
     try:
         subprocess.run([
-            "yt-dlp", "--write-auto-subs", "--sub-lang", "en",
+            YTDLP, "--write-auto-subs", "--sub-lang", "en",
             "--skip-download", "--convert-subs", "srt",
             "-o", f"{tmp}/%(id)s",
             f"https://www.youtube.com/watch?v={video_id}",
@@ -434,48 +584,76 @@ def main():
     state = load_state()
 
     print(f"{'='*60}")
-    print(f" Channel Clp: {ch['name']}")
+    print(f" Channel Clip: {ch['name']}")
     print(f" Started: {datetime.now(timezone.utc).isoformat()}")
     print(f"{'='*60}")
 
-    video_id, title = get_latest_video(args.channel)
+    recent = get_recent_videos(args.channel)
+    if not recent:
+        raise RuntimeError("yt-dlp returned no uploads for this channel")
 
-    if already_clipped(args.channel, video_id, state):
-        print(f"[skip] Already clpped: {video_id}")
-        return
+    # Walk newest-first to the first source that still has a free clip slot, and
+    # within it take a fresh segment. This replaces the old "skip if already
+    # clipped" rule: a source that already carries clips is only passed over
+    # once it hits MAX_CLIPS_PER_VIDEO, so one long podcast yields several clips
+    # instead of one. A short source whose windows are all used is skipped for
+    # the next candidate rather than failing the run.
+    passed_over = []
+    for video_id in recent:
+        used = used_segments(state, args.channel, video_id)
+        if len(used) >= MAX_CLIPS_PER_VIDEO:
+            passed_over.append(
+                f"{video_id} (quota {len(used)}/{MAX_CLIPS_PER_VIDEO})")
+            continue
 
-    final = OUTPUT_DIR / f"{args.channel}-{video_id[:8]}-captioned.mp4"
-    td = None
+        part = len(used) + 1
+        title = video_title(video_id)
+        print(f"[source] Chose: {title} ({video_id}) - clip {part}")
+        final = OUTPUT_DIR / f"{args.channel}-{video_id[:8]}-p{part}-captioned.mp4"
+        td = None
+        try:
+            clipped, total, clip_start, clip_dur, td = download_and_clip(
+                args.channel, video_id, used)
+        except NoFreeSegment as exc:
+            print(f"[skip] {exc}")
+            passed_over.append(f"{video_id} (no free window)")
+            continue
+        except Exception as e:
+            print(f"\nFAILED: {e}")
+            sys.exit(1)
 
-    try:
-        clipped, total, clip_start, clip_dur, td = download_and_clip(
-            args.channel, video_id)
-        srt = get_captons(video_id, clip_start, clip_dur, str(td))
-        captioned = td / "captioned.mp4"
-        burn_captions(clipped, srt, str(captioned))
-        # The brand card is added after the captions so the subtitle pass never
-        # touches the outro, and the outro keeps its own audio intact.
-        append_outro(captioned, str(final))
+        try:
+            srt = get_captons(video_id, clip_start, clip_dur, str(td))
+            captioned = td / "captioned.mp4"
+            burn_captions(clipped, srt, str(captioned))
+            # The brand card is added after the captions so the subtitle pass
+            # never touches the outro, and the outro keeps its own audio intact.
+            append_outro(captioned, str(final))
 
-        # Post it. This used to be a print() that claimed "Would upload" and
-        # then marked the source consumed anyway, so the pipeline produced
-        # finished clips that never went anywhere.
-        if args.dry_run:
-            print(f"\n[dry-run] would publish: {final}")
+            # Post it. This used to be a print() that claimed "Would upload" and
+            # then marked the source consumed anyway, so the pipeline produced
+            # finished clips that never went anywhere.
+            if args.dry_run:
+                print(f"\n[dry-run] would publish clip {part}: {final}")
+                return
+            result = publish_clip.publish(final, args.channel, video_id,
+                                          privacy=args.privacy, part=part)
+            # Only now is the segment genuinely spent, so a failed upload leaves
+            # it eligible for the next run instead of silently dropping it.
+            record_segment(state, args.channel, video_id, clip_start, clip_dur,
+                           part, result["videoId"])
+            publish_clip.record_published(state, args.channel, video_id,
+                                          result["videoId"], result["title"],
+                                          part=part)
+            print(f"\nDone: {result['url']}")
             return
-        result = publish_clip.publish(final, args.channel, video_id,
-                                      privacy=args.privacy)
-        # Only now is the source genuinely spent, so a failed upload leaves it
-        # eligible for the next run instead of silently dropping it.
-        mark_clipped(args.channel, video_id, state)
-        print(f"\nDone: {result['url']}")
+        finally:
+            if td:
+                shutil.rmtree(td, ignore_errors=True)
 
-    except Exception as e:
-        print(f"\nFAILED: {e}")
-        sys.exit(1)
-    finally:
-        if td:
-            shutil.rmtree(td, ignore_errors=True)
+    print("[skip] every recent upload is at its clip quota:")
+    for line in passed_over[:8]:
+        print(f"        {line}")
 
 
 if __name__ == "__main__":

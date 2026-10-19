@@ -115,12 +115,17 @@ def load_state():
     return {"clipped": [], "published": []}
 
 
-def record_published(state, channel, source_id, video_id, title):
-    """Idempotent: republishing a known source updates rather than duplicates."""
+def record_published(state, channel, source_id, video_id, title, part=1):
+    """Idempotent: republishing a known source clip updates, never duplicates.
+
+    The key is the source *and* the part, because one episode can now yield
+    several clips and each of those is a separate upload.
+    """
     published = state.setdefault("published", [])
     entry = {
         "channel": channel,
         "sourceId": source_id,
+        "part": part,
         "videoId": video_id,
         "title": title,
         "url": f"https://youtube.com/shorts/{video_id}",
@@ -131,7 +136,7 @@ def record_published(state, channel, source_id, video_id, title):
         "repliesPosted": 0,
     }
     for i, p in enumerate(published):
-        if p.get("sourceId") == source_id:
+        if p.get("sourceId") == source_id and p.get("part", 1) == part:
             published[i] = {**p, **entry}
             break
     else:
@@ -158,11 +163,17 @@ def source_title(video_id):
     return ""
 
 
-def build_title(channel_key, video_id):
+def build_title(channel_key, video_id, part=1):
     name = CHANNELS[channel_key]["name"]
     t = re_clean(source_title(video_id))
+    # Several clips can now come out of one long episode. Only the first carries
+    # the bare title; later ones get a part marker, so the uploads are their own
+    # videos rather than three identical titles and the already-live guard can
+    # tell one clip of an episode from the next.
+    suffix = "" if part <= 1 else f" | Part {part}"
+    tail = f"{suffix} | #shorts"
     if not t:
-        return f"{name} clip | #shorts"
+        return f"{name} clip{tail}"
     # Rogan's video titles already carry the show name, and Shawn's carry the
     # channel; appending it again reads like a bot wrote it.
     key = name.lower().replace("the ", "")
@@ -170,9 +181,10 @@ def build_title(channel_key, video_id):
         core = t
     else:
         core = f"{t} — {name}"
-    if len(core) > 84:
-        core = core[:84].rsplit(" ", 1)[0].rstrip(",;:-—")
-    return f"{core} | #shorts"
+    max_core = max(20, 100 - len(tail))
+    if len(core) > max_core:
+        core = core[:max_core].rsplit(" ", 1)[0].rstrip(",;:-—")
+    return f"{core}{tail}"
 
 
 def re_clean(title):
@@ -198,22 +210,28 @@ def re_clean(title):
 # ---------------------------------------------------------------------------
 # Upload
 # ---------------------------------------------------------------------------
-def already_live(yt, source_title, channel_name):
-    """Return the videoId of an existing upload of this same source clip.
+def already_live(yt, source_title, channel_name, title=None, part=1):
+    """Return the videoId of an existing upload of this same clip, or None.
 
     state/clip_state.json only records what this script published, and several
     clips were published before it existed by other means. Without this check a
     leftover file in output/ can be re-published as a duplicate of a video that
     has been live for days, which is exactly how one Jesse Michaels clip ended
     up on the channel twice.
+
+    For the first clip of an episode the match is loose (the source title), so a
+    manually posted original is still caught. For a second or later clip it
+    matches the exact part title instead, because those clips deliberately share
+    the source title and a loose match would refuse every one of them.
     """
-    if not source_title:
+    if part <= 1:
+        token = re_clean(source_title or "").lower()[:40]
+    else:
+        token = re_clean(title or "").lower()
+    if len(token) < 10:
         return None
     pl = yt.channels().list(part="contentDetails", mine=True).execute()[
         "items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
-    token = re_clean(source_title).lower()[:40]
-    if len(token) < 10:
-        return None
     nxt = None
     for _ in range(4):
         r = yt.playlistItems().list(part="snippet", playlistId=pl,
@@ -231,7 +249,7 @@ def already_live(yt, source_title, channel_name):
 
 
 def publish(file_path, channel_key, source_id, privacy="public",
-            allow_duplicate=False):
+            allow_duplicate=False, part=1):
     path = Path(file_path)
     if not path.exists():
         raise RuntimeError(f"no such file: {path}")
@@ -240,7 +258,7 @@ def publish(file_path, channel_key, source_id, privacy="public",
 
     info = CHANNELS[channel_key]
     src = source_title(source_id)
-    title = build_title(channel_key, source_id)
+    title = build_title(channel_key, source_id, part)
     description = (
         f"{info['credit']}\n\n"
         f"Source: {src or 'https://www.youtube.com/watch?v=' + source_id}\n\n"
@@ -258,7 +276,7 @@ def publish(file_path, channel_key, source_id, privacy="public",
     print(f"[publish] title  : {title}")
     print(f"[publish] file   : {path.name} ({path.stat().st_size / 1e6:.1f} MB)")
 
-    dup = already_live(yt, src, info["name"])
+    dup = already_live(yt, src, info["name"], title=title, part=part)
     if dup and not allow_duplicate:
         raise RuntimeError(
             f"this source is already published as {dup} "
@@ -311,6 +329,7 @@ def publish(file_path, channel_key, source_id, privacy="public",
         "title": got_title,
         "privacy": got_privacy,
         "channel": channel_title,
+        "part": part,
     }
 
 
@@ -323,6 +342,8 @@ def main():
                     choices=["public", "unlisted", "private"])
     ap.add_argument("--allow-duplicate", action="store_true",
                     help="Publish even if this source is already on the channel")
+    ap.add_argument("--part", type=int, default=1,
+                    help="Which clip of the episode this is; 2+ marks the title")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -340,13 +361,13 @@ def main():
 
     if args.dry_run:
         print("[dry-run] would publish:")
-        print("  title:", build_title(args.channel, args.source_id))
+        print("  title:", build_title(args.channel, args.source_id, args.part))
         return
 
     result = publish(args.file, args.channel, args.source_id, args.privacy,
-                     allow_duplicate=args.allow_duplicate)
+                     allow_duplicate=args.allow_duplicate, part=args.part)
     record_published(load_state(), args.channel, args.source_id,
-                     result["videoId"], result["title"])
+                     result["videoId"], result["title"], part=args.part)
     print(result["url"])
 
 
