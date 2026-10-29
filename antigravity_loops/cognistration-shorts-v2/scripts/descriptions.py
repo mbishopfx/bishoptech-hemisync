@@ -13,81 +13,63 @@ Copy rules:
 
 # Discovery terms live in both the visible hashtag line and the tag metadata.
 TAGS = [
-    "binaural beats", "brain waves", "theta waves", "alpha waves", "delta waves",
-    "gamma waves", "beta waves", "meditation", "neuroscience",
-    "frequency following response", "brainwave entrainment", "deep focus",
-    "flow state", "inner voice", "consciousness", "higher self",
-    "cognistration", "binaural beat science",
+    "binaural beats", "audio design", "theta waves", "alpha waves", "delta waves",
+    "gamma waves", "beta waves", "meditation", "auditory science",
+    "listening practice", "headphones", "experimental audio", "cognistration",
 ]
 
 NEURO = {
     "delta": (
-        "Delta is the slowest band the brain produces, roughly 0.5 to 4 Hz, and it "
-        "dominates during the deepest stage of non REM sleep. In that window the "
-        "brain clears metabolic waste through the glymphatic system, consolidates "
-        "memory, and releases growth hormone. A binaural beat at 2.5 Hz presents two "
-        "nearly identical tones, one per ear, so the auditory brainstem resolves a "
-        "phantom pulse at the difference frequency and firing patterns across the "
-        "cortex begin to follow it."
+        "Delta is a label commonly used for EEG activity around 0.5 to 4 Hz. This "
+        "session places a 2.5 Hz difference between two tones, one per ear. It is an "
+        "audio design experiment; it does not guarantee sleep, restoration, or a "
+        "change in brain activity."
     ),
     "theta": (
-        "Theta runs about 4 to 8 Hz and rises in the borderland between waking and "
-        "sleep, the hypnagogic state, and in deep meditative absorption. When two "
-        "tones a few hertz apart are played one per ear, the auditory brainstem "
-        "resolves a phantom beat at the difference frequency, and cortical firing "
-        "starts to follow it. That is the frequency following response, and it is "
-        "measured, not imagined. Theta is where the default mode network quiets and "
-        "associative thinking loosens."
+        "Theta is a label commonly used for EEG activity around 4 to 8 Hz. This "
+        "session uses a 6 Hz difference between two tones. Research on binaural-beat "
+        "perception and effects varies; no mental state or cognitive outcome is "
+        "guaranteed."
     ),
     "alpha": (
-        "Alpha sits at roughly 8 to 13 Hz and shows up when you are awake but "
-        "settled, eyes closed, attention soft rather than narrow. Hans Berger first "
-        "recorded it a century ago. Binaural beats in this band present a phantom "
-        "difference tone that the auditory brainstem tracks, and the cortex tends to "
-        "follow, which is why alpha is associated with calm alertness rather than "
-        "drowsiness."
+        "Alpha is a label commonly used for EEG activity around 8 to 13 Hz. This "
+        "session uses a 10 Hz difference between two tones. Treat the range as an "
+        "audio-design reference, not a promise of relaxation or alertness."
     ),
     "smr": (
-        "The sensorimotor rhythm runs about 12 to 15 Hz and is measured over the "
-        "sensorimotor cortex when the body is still and the mind is quiet. It is the "
-        "band neurofeedback clinicians have used for decades with attention and "
-        "impulse control work. A binaural beat at 13 Hz gives the auditory brainstem "
-        "a steady difference tone to lock onto, and the resulting drive tends to "
-        "settle restless motor activity while attention stays sharp."
+        "SMR is a label used in some EEG and neurofeedback contexts for activity "
+        "around 12 to 15 Hz. This session uses a 13 Hz difference tone. It is audio "
+        "experimentation, not neurofeedback or treatment, and does not promise a "
+        "change in attention or movement."
     ),
     "beta": (
-        "Beta spans about 13 to 30 Hz and tracks active, outward facing cognition: "
-        "problem solving, conversation, deliberate focus. A binaural beat at 18 Hz "
-        "creates a difference tone the auditory brainstem resolves and follows, which "
-        "tends to lift arousal toward engaged wakefulness. This is the band people "
-        "reach for when the work needs to move."
+        "Beta is a label commonly used for EEG activity around 13 to 30 Hz. This "
+        "session uses an 18 Hz difference between two tones. It is an exploratory "
+        "listening cue, not a guaranteed way to change focus, alertness, or cognition."
     ),
     "gamma": (
-        "Gamma runs above 30 Hz and appears in bursts during binding, the moment "
-        "separate sensory streams resolve into one perception. It is also studied in "
-        "long term meditators. A binaural beat at 38 Hz gives the auditory brainstem "
-        "a fast difference tone to track, and because entrainment in this range is "
-        "harder to hold, it is best treated as something to explore rather than "
-        "something promised."
+        "Gamma is a broad label used for EEG activity above roughly 30 Hz. This "
+        "session uses a 38 Hz difference tone; perception varies between listeners. "
+        "It is an audio experiment, not a guaranteed cognitive or health effect."
     ),
 }
 
 OUTCOME = {
-    "delta": "Deep sleep, inner restoration",
-    "theta": "Meditation, creative flow, inner voice",
-    "alpha": "Calm awareness, quiet the noise",
-    "smr":   "Still body, sharp mind",
-    "beta":  "Active focus, mental clarity",
-    "gamma": "Higher awareness, connected consciousness",
+    "delta": "Delta-range listening experiment",
+    "theta": "Theta-range listening experiment",
+    "alpha": "Alpha-range listening experiment",
+    "smr":   "SMR-range listening experiment",
+    "beta":  "Beta-range listening experiment",
+    "gamma": "Gamma-range listening experiment",
 }
 
 TITLE = {
-    "delta": "Delta 2.5 Hz | Deep Sleep, Inner Restoration",
-    "theta": "Theta 6 Hz | Meditation and Creative Flow",
-    "alpha": "Alpha 10 Hz | Calm Awareness, Quiet the Noise",
-    "smr":   "SMR 13 Hz | Still Body, Sharp Mind",
-    "beta":  "Beta 18 Hz | Active Focus, Mental Clarity",
-    "gamma": "Gamma 38 Hz | Higher Awareness, Connected Consciousness",
+    "delta": "Delta 2.5 Hz | Binaural Audio Experiment",
+    "theta": "Theta 6 Hz | Binaural Audio Experiment",
+    "alpha": "Alpha 10 Hz | Binaural Audio Experiment",
+    "smr":   "SMR 13 Hz | Binaural Audio Experiment",
+    "beta":  "Beta 18 Hz | Binaural Audio Experiment",
+    "gamma": "Gamma 38 Hz | Binaural Audio Experiment",
 }
 
 FOOTER = (

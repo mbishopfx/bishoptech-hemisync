@@ -132,16 +132,23 @@ def upload_short(video_path: str, title: str, description: str, tags: list[str],
         id=video_id
     ).execute()
 
-    if verify_response.get("items"):
-        item = verify_response["items"][0]
-        actual_title = item["snippet"]["title"]
-        actual_privacy = item["status"]["privacyStatus"]
-        print(f"\nVerification:")
-        print(f"  Title: {actual_title}")
-        print(f"  Privacy: {actual_privacy}")
-        print(f"  Video ID: {video_id}")
-    else:
-        print("WARNING: Could not verify upload in API response")
+    items = verify_response.get("items") or []
+    if not items:
+        raise RuntimeError(
+            f"upload returned {video_id}, but read-back found no video; "
+            "not marking the Drive item as processed")
+
+    item = items[0]
+    actual_title = item["snippet"]["title"]
+    actual_privacy = item["status"]["privacyStatus"]
+    print(f"\nVerification:")
+    print(f"  Title: {actual_title}")
+    print(f"  Privacy: {actual_privacy}")
+    print(f"  Video ID: {video_id}")
+    if actual_privacy != privacy:
+        raise RuntimeError(
+            f"upload {video_id} has privacy {actual_privacy!r}, expected {privacy!r}; "
+            "not marking the Drive item as processed; verify the live video before retrying")
 
     return video_id, response
 
@@ -158,21 +165,18 @@ if __name__ == "__main__":
     full_description = args.description
     if not full_description:
         full_description = (
-            "Theta waves (4–8 Hz) dominate during deep meditation, creative flow, "
-            "and the hypnagogic state. Binaural beats at 6 Hz trigger the Frequency "
-            "Following Response in your auditory brainstem, guiding cortical networks "
-            "toward theta coherence.\n\n"
-            "🔗 Explore your own brain states: https://cognistration.com/machine\n\n"
-            "#binauralbeats #theta #meditation #neuroscience #brainwaves "
-            "#frequencyfollowingresponse #cognistration #flowstate #creativity #deepfocus"
+            "This session pairs two tones, one per ear, with a 6 Hz difference. "
+            "Frequency labels describe the audio design and do not guarantee a "
+            "change in brain activity, focus, sleep, or health. Headphones are "
+            "needed to hear the stereo difference. Listen at a comfortable volume.\n\n"
+            "#binauralbeats #theta #meditation #audioscience #cognistration "
+            "#listeningpractice #headphones"
         )
 
     tags = [
-        "binaural beats", "theta waves", "meditation", "neuroscience",
-        "brain waves", "frequency following response", "FFR",
-        "cognistration", "flow state", "creativity", "deep focus",
-        "binaural", "brain entrainment", "auditory neuroscience",
-        "theta meditation", "hypnagogic", "brain hacking"
+        "binaural beats", "theta waves", "meditation", "auditory science",
+        "audio design", "listening practice", "headphones", "cognistration",
+        "binaural audio", "experimental audio"
     ]
 
     upload_short(args.video_path, args.title, full_description, tags, args.privacy)

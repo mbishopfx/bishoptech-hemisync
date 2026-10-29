@@ -161,11 +161,43 @@ def source_key(channel_key, video_id):
 def used_segments(state, channel_key, video_id):
     """The clip windows already published from this source video.
 
-    Entries written before segment tracking carry a null start: they still count
-    toward MAX_CLIPS_PER_VIDEO, but they cannot constrain where the next clip
-    lands because their position was never recorded.
+    Older state files only contain ``clipped`` keys and ``published`` records.
+    Convert those into placeholder windows so they still count toward
+    MAX_CLIPS_PER_VIDEO, while their unknown start time does not constrain the
+    next segment's position.
     """
-    return state.get("segments", {}).get(source_key(channel_key, video_id), [])
+    key = source_key(channel_key, video_id)
+    segments = list(state.get("segments", {}).get(key, []))
+    known_ids = {s.get("videoId") for s in segments if s.get("videoId")}
+    legacy = []
+    legacy_part = 0
+    for published in state.get("published", []):
+        if (published.get("channel") != channel_key
+                or published.get("sourceId") != video_id):
+            continue
+        posted_id = published.get("videoId")
+        if posted_id and posted_id in known_ids:
+            continue
+        legacy_part += 1
+        try:
+            part = int(published.get("part") or legacy_part)
+        except (TypeError, ValueError):
+            part = legacy_part
+        legacy.append({
+            "start": None,
+            "dur": TARGET_SEC,
+            "part": part,
+            "videoId": posted_id,
+            "publishedAt": published.get("publishedAt"),
+        })
+        if posted_id:
+            known_ids.add(posted_id)
+
+    has_part_one = any(int(s.get("part") or 0) == 1 for s in segments)
+    if (key in state.get("clipped", []) and not legacy and not has_part_one):
+        legacy.append({"start": None, "dur": TARGET_SEC, "part": 1,
+                       "videoId": None})
+    return legacy + segments
 
 
 def record_segment(state, channel_key, video_id, start, dur, part, posted_id):
@@ -280,7 +312,7 @@ def download_and_clip(channel_key, video_id, used=None):
         YTDLP, "--print", "duration_string", "--skip-download",
         url,
     ], capture_output=True, text=True, timeout=30)
-    
+
     # Parse duration (HH:MM:SS or just seconds)
     dur_str = dur_out.stdout.strip().split("\n")[0]
     parts = dur_str.split(":")
@@ -411,29 +443,29 @@ def get_captons(video_id, clip_start, clip_dur, dest_dir):
 
         clip_end = clip_start + clip_dur
         out_lines = []
-        
+
         # Parse SRT blocks and shift timestamps
         for block in content.strip().split("\n\n"):
             lines = block.split("\n")
             if len(lines) < 3:
                 continue
-            
+
             # Parse timestamp line: 00:50:18,000 --> 00:50:21,500
             tm_match = re.match(
                 r"(\d+):(\d+):(\d+)[,.](\d+)\s*-->\s*(\d+):(\d+):(\d+)[,.](\d+)",
                 lines[1])
             if not tm_match:
                 continue
-            
+
             start_sec = (int(tm_match.group(1)) * 3600 + int(tm_match.group(2)) * 60 +
                          int(tm_match.group(3)) + int(tm_match.group(4)) / 1000)
             end_sec = (int(tm_match.group(5)) * 3600 + int(tm_match.group(6)) * 60 +
                        int(tm_match.group(7)) + int(tm_match.group(8)) / 1000)
-            
+
             # Check if this caption overlaps with our clip window
             if end_sec < clip_start - 0.5 or start_sec > clip_end + 0.5:
                 continue
-            
+
             # Shift timestamps relative to clip start
             rel_start = max(0, start_sec - clip_start)
             rel_end = min(clip_dur, end_sec - clip_start)
@@ -445,7 +477,7 @@ def get_captons(video_id, clip_start, clip_dur, dest_dir):
                 s = int(t % 60)
                 ms = int((t % 1) * 1000)
                 return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
-            
+
             out_lines.append(lines[0])  # sequence number
             out_lines.append(f"{fmt_ts(rel_start)} --> {fmt_ts(rel_end)}")
             out_lines.extend(lines[2:])  # caption text
@@ -460,7 +492,7 @@ def get_captons(video_id, clip_start, clip_dur, dest_dir):
         
         print(f"[captions] Extracted {len([l for l in out_lines if '-->' in l])} caption blocks")
         return str(srt_dest)
-        
+
     except Exception as e:
         print(f"[captions] Error: {e}")
         return None

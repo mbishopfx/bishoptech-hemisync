@@ -10,8 +10,9 @@ Usage:
   python3 scripts/pull_and_post.py --dry-run   # Show what's available without acting
 """
 
-import argparse, json, os, subprocess, sys
+import argparse, json, os, re, subprocess, sys
 from datetime import datetime, timezone
+from pathlib import Path
 
 # --- Config ---
 DRIVE_KEY_PATH = os.path.expanduser(
@@ -29,18 +30,17 @@ SCOPES_DRIVE = ['https://www.googleapis.com/auth/drive.readonly']
 
 # Brain state metadata for YouTube titles/descriptions
 STATE_META = {
-    'delta': {'title': 'Delta Binaural Beat 2.5 Hz — Deep Restorative Sleep', 'outcome': 'Deep restorative sleep'},
-    'theta': {'title': 'Theta Binaural Beat 6 Hz — Meditation & Creative Flow', 'outcome': 'Meditation · Creative flow'},
-    'alpha':  {'title': 'Alpha Binaural Beat 10 Hz — Relaxed Alertness', 'outcome': 'Relaxed alertness · Calm flow'},
-    'smr':    {'title': 'SMR Binaural Beat 13 Hz — Sensorimotor Focus', 'outcome': 'Sensorimotor focus'},
-    'beta':   {'title': 'Beta Binaural Beat 18 Hz — Active Concentration', 'outcome': 'Active concentration'},
-    'gamma':  {'title': 'Gamma Binaural Beat 38 Hz — Cognitive Synthesis', 'outcome': 'Cognitive synthesis'},
+    'delta': {'title': 'Delta 2.5 Hz | Binaural Audio Experiment', 'outcome': 'Delta-range listening experiment'},
+    'theta': {'title': 'Theta 6 Hz | Binaural Audio Experiment', 'outcome': 'Theta-range listening experiment'},
+    'alpha': {'title': 'Alpha 10 Hz | Binaural Audio Experiment', 'outcome': 'Alpha-range listening experiment'},
+    'smr':   {'title': 'SMR 13 Hz | Binaural Audio Experiment', 'outcome': 'SMR-range listening experiment'},
+    'beta':  {'title': 'Beta 18 Hz | Binaural Audio Experiment', 'outcome': 'Beta-range listening experiment'},
+    'gamma': {'title': 'Gamma 38 Hz | Binaural Audio Experiment', 'outcome': 'Gamma-range listening experiment'},
 }
 
 DISCOVERY_TAGS = [
-    'binaural beats', 'brain waves', 'meditation', 'neuroscience',
-    'frequency following response', 'cognistration', 'flow state',
-    'brain entrainment', 'auditory neuroscience', 'deep focus',
+    'binaural beats', 'theta waves', 'meditation', 'audio design',
+    'listening practice', 'auditory science', 'cognistration', 'headphones',
 ]
 
 
@@ -56,13 +56,42 @@ def list_new_videos(service, folder_id, pulled_ids):
     """List videos in Drive folder that haven't been pulled yet."""
     query = (f"'{folder_id}' in parents and mimeType contains 'video/' "
              f"and trashed = false")
-    results = service.files().list(
-        q=query,
-        fields='files(id, name, description, appProperties, createdTime, size)',
-        orderBy='createdTime asc', pageSize=20
-    ).execute()
-    files = results.get('files', [])
+    files = []
+    page_token = None
+    while True:
+        params = {
+            'q': query,
+            'fields': 'nextPageToken,files(id, name, description, appProperties, createdTime, size)',
+            'orderBy': 'createdTime asc',
+            'pageSize': 1000,
+        }
+        if page_token:
+            params['pageToken'] = page_token
+        results = service.files().list(**params).execute()
+        files.extend(results.get('files', []))
+        page_token = results.get('nextPageToken')
+        if not page_token:
+            break
     return [f for f in files if f['id'] not in pulled_ids]
+
+
+def safe_output_path(file_id, file_name, output_dir=OUTPUT_DIR):
+    """Build a unique path under OUTPUT_DIR from untrusted Drive metadata."""
+    file_id = str(file_id or '')
+    if not re.fullmatch(r'[A-Za-z0-9_-]+', file_id):
+        raise ValueError('Drive returned an invalid file id')
+
+    name = str(file_name or '').replace('\\', '/')
+    basename = name.rsplit('/', 1)[-1]
+    safe_name = re.sub(r'[^A-Za-z0-9._-]+', '_', basename).lstrip('.')
+    if not safe_name or safe_name in {'.', '..'}:
+        safe_name = 'video.mp4'
+
+    root = Path(output_dir).resolve()
+    target = (root / f'{file_id}-{safe_name}').resolve()
+    if not target.is_relative_to(root):
+        raise ValueError('Drive filename resolves outside the output directory')
+    return str(target)
 
 
 def download_video(service, file_id, dest_path):
@@ -178,7 +207,7 @@ def main(dry_run=False, limit=None, only=None, privacy="private"):
         brain_state = props.get('brainState', 'theta')
         drive_title = props.get('title')
         drive_description = v.get('description')
-        dest = os.path.join(OUTPUT_DIR, file_name)
+        dest = safe_output_path(file_id, file_name)
 
         print(f"\n⬇ Downloading {file_name}...")
         download_video(service, file_id, dest)

@@ -145,6 +145,14 @@ def record_published(state, channel, source_id, video_id, title, part=1):
     STATE_PATH.write_text(json.dumps(state, indent=2))
 
 
+def require_privacy_match(actual, expected, video_id):
+    """Refuse to mark an upload complete when YouTube applied other privacy."""
+    if actual != expected:
+        raise RuntimeError(
+            f"upload {video_id} has privacy {actual!r}, expected {expected!r}; "
+            "not recording it as a completed publish; verify the live video before retrying")
+
+
 # ---------------------------------------------------------------------------
 # Title
 # ---------------------------------------------------------------------------
@@ -320,8 +328,7 @@ def publish(file_path, channel_key, source_id, privacy="public",
     url = f"https://youtube.com/shorts/{video_id}"
     print(f"[publish] verified : {got_privacy} | {got_title}")
     print(f"[publish] url      : {url}")
-    if got_privacy != privacy:
-        print(f"[publish] WARNING: asked {privacy}, got {got_privacy}")
+    require_privacy_match(got_privacy, privacy, video_id)
 
     return {
         "videoId": video_id,

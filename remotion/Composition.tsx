@@ -25,12 +25,12 @@ type StateInfo = {
 };
 
 const STATE_INFO: Record<string, StateInfo> = {
-  delta:  { label: 'Delta', hz: 2.5,  range: '0.5–4 Hz',  outcome: 'Deep sleep, inner restoration', leftColor: '#e2e8f0', rightColor: '#cbd5e1', beatColor: '#f1f5f9', glowColor: 'rgba(226,232,240,0.45)' },
-  theta:  { label: 'Theta', hz: 6.0,  range: '4–8 Hz',    outcome: 'Meditation, creative flow, inner voice', leftColor: '#b6ddcc', rightColor: '#d7c7aa', beatColor: '#d7eadf', glowColor: 'rgba(182,221,204,0.55)' },
-  alpha:  { label: 'Alpha', hz: 10.0, range: '8–13 Hz',   outcome: 'Calm awareness, quiet the noise', leftColor: '#b6ddcc', rightColor: '#d7c7aa', beatColor: '#d7eadf', glowColor: 'rgba(182,221,204,0.55)' },
-  smr:    { label: 'SMR',   hz: 13.0, range: '12–15 Hz',  outcome: 'Still body, sharp mind', leftColor: '#a2d8d0', rightColor: '#d7c7aa', beatColor: '#c8f0e8', glowColor: 'rgba(162,216,208,0.45)' },
-  beta:   { label: 'Beta',  hz: 18.0, range: '13–30 Hz',  outcome: 'Active focus, mental clarity', leftColor: '#e0b493', rightColor: '#d7c7aa', beatColor: '#f0d4b8', glowColor: 'rgba(224,180,147,0.45)' },
-  gamma:  { label: 'Gamma', hz: 38.0, range: '30–45 Hz',  outcome: 'Higher awareness, connected consciousness', leftColor: '#d7c7aa', rightColor: '#e0b493', beatColor: '#efe0c8', glowColor: 'rgba(215,199,170,0.45)' },
+  delta:  { label: 'Delta', hz: 2.5,  range: '0.5–4 Hz',  outcome: 'Delta-range listening experiment', leftColor: '#e2e8f0', rightColor: '#cbd5e1', beatColor: '#f1f5f9', glowColor: 'rgba(226,232,240,0.45)' },
+  theta:  { label: 'Theta', hz: 6.0,  range: '4–8 Hz',    outcome: 'Theta-range listening experiment', leftColor: '#b6ddcc', rightColor: '#d7c7aa', beatColor: '#d7eadf', glowColor: 'rgba(182,221,204,0.55)' },
+  alpha:  { label: 'Alpha', hz: 10.0, range: '8–13 Hz',   outcome: 'Alpha-range listening experiment', leftColor: '#b6ddcc', rightColor: '#d7c7aa', beatColor: '#d7eadf', glowColor: 'rgba(182,221,204,0.55)' },
+  smr:    { label: 'SMR',   hz: 13.0, range: '12–15 Hz',  outcome: 'SMR-range listening experiment', leftColor: '#a2d8d0', rightColor: '#d7c7aa', beatColor: '#c8f0e8', glowColor: 'rgba(162,216,208,0.45)' },
+  beta:   { label: 'Beta',  hz: 18.0, range: '13–30 Hz',  outcome: 'Beta-range listening experiment', leftColor: '#e0b493', rightColor: '#d7c7aa', beatColor: '#f0d4b8', glowColor: 'rgba(224,180,147,0.45)' },
+  gamma:  { label: 'Gamma', hz: 38.0, range: '30–45 Hz',  outcome: 'Gamma-range listening experiment', leftColor: '#d7c7aa', rightColor: '#e0b493', beatColor: '#efe0c8', glowColor: 'rgba(215,199,170,0.45)' },
 };
 
 type HookWord = { text: string; start: number; end: number; accent?: boolean };
