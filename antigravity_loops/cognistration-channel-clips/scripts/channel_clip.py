@@ -469,7 +469,7 @@ def get_captons(video_id, clip_start, clip_dur, dest_dir):
             # Shift timestamps relative to clip start
             rel_start = max(0, start_sec - clip_start)
             rel_end = min(clip_dur, end_sec - clip_start)
-            
+
             # Format as SRT timestamp
             def fmt_ts(t):
                 h = int(t // 3600)
@@ -489,7 +489,7 @@ def get_captons(video_id, clip_start, clip_dur, dest_dir):
 
         with open(srt_dest, "w") as f:
             f.write("\n".join(out_lines))
-        
+
         print(f"[captions] Extracted {len([l for l in out_lines if '-->' in l])} caption blocks")
         return str(srt_dest)
 
