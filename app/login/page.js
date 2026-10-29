@@ -27,7 +27,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-[100dvh] bg-[#eef1ee]" />}>
+    <Suspense fallback={<div className="min-h-[100dvh] bg-[#080c0b]" />}>
       <LoginClient />
     </Suspense>
   );

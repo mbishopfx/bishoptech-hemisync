@@ -1,5 +1,6 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
 import { PolicySection } from '@/components/legal/PolicySection';
+import { PrivacyChoicesButton } from '@/components/analytics/AnalyticsConsent';
 
 export const metadata = {
   title: { absolute: 'Cookie Policy — Cognistration' },
@@ -26,23 +27,25 @@ export default function CookiesPage() {
     <LegalPageShell
       title="Cognistration cookie policy"
       activeHref="/cookies"
+      lastUpdated="October 18, 2026"
+      lastUpdatedDate="2026-10-18"
       summary="Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback, preview limits, and product operation."
     >
       <PolicySection id="what-we-use" title="What we use">
-        <p>We use cookies, local storage, and similar browser technologies to keep sign-in stable, remember preferences, preserve playback and preview state, enforce public-preview limits, and understand product performance.</p>
+        <p>We use essential cookies and browser storage to keep sign-in stable, remember preferences, preserve playback and preview state, and enforce public-preview limits. Optional Google Analytics measures general page views, CTA clicks, form starts, and completed purchases only after you allow it. These events exclude prompts, journal entries, health details, and form contents. Analytics can be changed through <PrivacyChoicesButton className="underline underline-offset-2" />.</p>
         <p>For unauthenticated visitors, a short-lived functional cookie can help count public preview generations. It is used for product operation, not as an advertising profile.</p>
       </PolicySection>
 
       <PolicySection id="why" title="Why they matter">
-        <p>These tools help pages and sessions work consistently across visits. Some are essential to a feature; others help us understand whether the product is working as intended.</p>
+        <p>Essential storage supports requested site features. Optional analytics storage is used by Google Analytics only after you allow analytics. Rejecting analytics does not affect site features.</p>
       </PolicySection>
 
       <PolicySection id="choices" title="Your choices">
-        <p>You can remove or block cookies and local storage through your browser settings. Sign-in, saved state, playback continuity, and public-preview limits may not work as expected after you do so.</p>
+        <p>Use <PrivacyChoicesButton className="underline underline-offset-2" /> to allow or reject optional analytics at any time. Your choice is saved in local storage. You can also clear it in your browser settings; analytics will remain off until you choose again. Blocking essential cookies or local storage may affect sign-in, saved state, playback continuity, and public-preview limits.</p>
       </PolicySection>
 
       <PolicySection id="related" title="Related information">
-        <p>For more detail about personal information, review the <a className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4 transition hover:text-[#1d302c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#548477]" href="/privacy">Privacy Policy</a>.</p>
+        <p>For more detail about personal information, review the <a className="text-[#b6ddcc] underline decoration-[#b6ddcc]/40 underline-offset-4 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b6ddcc]" href="/privacy">Privacy Policy</a>.</p>
       </PolicySection>
     </LegalPageShell>
   );

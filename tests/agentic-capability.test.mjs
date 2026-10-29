@@ -487,7 +487,7 @@ test('policy and account routes have source links and preserve user-controlled s
   assert.throws(() => PolicyInputSchema.parse({ topic: 'medical' }));
   const options = publicAccountOptions('https://example.test');
   assert.equal(options.publicPreview.price, 'Free');
-  assert.equal(options.privateWorkspace.price, '$20 one time');
+  assert.equal(options.privateWorkspace.price, '$2.99 one time');
   assert.equal(options.signup.credentialsAcceptedByPublicMcp, false);
   assert.equal(options.signup.paymentSubmittedByPublicMcp, false);
   assert.equal(options.signup.preferredFlow, 'in_platform_widget');

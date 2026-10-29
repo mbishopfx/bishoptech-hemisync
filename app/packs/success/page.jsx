@@ -3,6 +3,20 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Download, LoaderCircle, Mail } from 'lucide-react';
+import { pushCognistrationEvent } from '@/lib/analytics/client.mjs';
+import { TONE_PACKS } from '@/lib/audio/tone-packs.db.mjs';
+
+const trackedPurchaseSessions = new Set();
+
+function trackVerifiedPackPurchase(sessionId, packSlug) {
+  if (!sessionId || trackedPurchaseSessions.has(sessionId)) return;
+  if (!TONE_PACKS.some((pack) => pack.slug === packSlug)) return;
+  trackedPurchaseSessions.add(sessionId);
+  pushCognistrationEvent('purchase', {
+    currency: 'USD',
+    items: [{ item_id: packSlug }],
+  });
+}
 
 export default function PacksSuccessPage() {
   const [status, setStatus] = useState('Preparing your download…');
@@ -24,6 +38,7 @@ export default function PacksSuccessPage() {
         const response = await fetch(`/api/packs/${encodeURIComponent(packSlug)}/download?session_id=${encodeURIComponent(sessionId)}`);
         const data = await response.json().catch(() => ({}));
         if (response.status === 202) {
+          trackVerifiedPackPurchase(sessionId, packSlug);
           setStatus('Payment confirmed. Your bundle is still being prepared. Check your email shortly.');
           return;
         }
@@ -32,6 +47,7 @@ export default function PacksSuccessPage() {
         setPackName(data.packName || packSlug.replaceAll('-', ' '));
         setDownloadUrl(data.url);
         setStatus('Payment confirmed. Starting your download…');
+        trackVerifiedPackPurchase(sessionId, packSlug);
 
         const fileResponse = await fetch(data.url);
         if (!fileResponse.ok) throw new Error('The download link expired while starting.');
@@ -55,21 +71,21 @@ export default function PacksSuccessPage() {
   }, []);
 
   return (
-    <main className="min-h-[100dvh] bg-[#eef1ee] text-[#1d302c]">
+    <main className="min-h-[100dvh] bg-[#080c0b] text-[#f2f0ea]">
       <div className="mx-auto flex min-h-[75vh] max-w-3xl items-center px-6 py-28 md:px-10">
-        <section className="w-full rounded-[2.5rem] border border-[#cbd6cf] bg-white/80 p-8 text-center shadow-[0_30px_80px_-58px_rgba(45,65,59,0.42)] md:p-14">
-        <CheckCircle2 className="mx-auto size-12 text-[#548477]" />
-        <h1 className="mt-4 text-4xl font-medium tracking-[-0.04em] text-[#1d302c] md:text-6xl">Your audio is ready.</h1>
-        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#52635f]">{status}</p>
-        {status.includes('started') && <LoaderCircle className="mx-auto mt-7 size-5 animate-spin text-[#548477]" />}
+        <section className="w-full rounded-[2.5rem] border border-white/12 bg-white/[0.05] p-8 text-center shadow-[0_30px_80px_-58px_rgba(45,65,59,0.42)] md:p-14">
+        <CheckCircle2 className="mx-auto size-12 text-[#b6ddcc]" />
+        <h1 className="mt-4 text-4xl font-medium tracking-[-0.04em] text-[#f2f0ea] md:text-6xl">Your audio is ready.</h1>
+        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/60">{status}</p>
+        {status.includes('started') && <LoaderCircle className="mx-auto mt-7 size-5 animate-spin text-[#b6ddcc]" />}
         {downloadUrl && (
-          <a href={downloadUrl} download className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#1d302c] px-6 py-4 text-[10px] font-medium uppercase tracking-[0.2em] text-white hover:bg-[#315e55]">
+          <a href={downloadUrl} download className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#b6ddcc] px-6 py-4 text-[10px] font-medium uppercase tracking-[0.2em] text-[#0a1211] hover:bg-[#d5ece2]">
             <Download className="size-4" /> Download {packName}
           </a>
         )}
-        <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl border border-[#dbe2dd] bg-[#f7f9f6] p-4 text-left text-xs leading-5 text-[#71807b]"><Mail className="mt-0.5 size-4 shrink-0 text-[#548477]" />Your receipt and backup delivery link are sent to the email you entered at checkout. No Cognistration account is required.</div>
+        <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-2xl border border-white/10 bg-[#f7f9f6] p-4 text-left text-xs leading-5 text-[#71807b]"><Mail className="mt-0.5 size-4 shrink-0 text-[#b6ddcc]" />Your receipt and backup delivery link are sent to the email you entered at checkout. No Cognistration account is required.</div>
         {error && <p className="mt-6 rounded-2xl border border-[#d6a58f] bg-[#fff6f1] px-4 py-3 text-sm text-[#8f513d]">{error}</p>}
-        <Link href="/packs" className="mt-8 inline-block text-xs text-[#71807b] underline decoration-[#b7c9bf] underline-offset-4 hover:text-[#1d302c]">Return to packs</Link>
+        <Link href="/packs" className="mt-8 inline-block text-xs text-[#71807b] underline decoration-[#b7c9bf] underline-offset-4 hover:text-[#f2f0ea]">Return to packs</Link>
         </section>
       </div>
     </main>

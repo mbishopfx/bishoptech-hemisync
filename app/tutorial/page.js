@@ -73,7 +73,7 @@ export default function TutorialPage() {
   };
 
   return (
-    <div className="tutorial-light-theme min-h-[100dvh] overflow-x-hidden bg-[#eef1ee] text-[#1d302c] selection:bg-[#b6ddcc]/60">
+    <div className="tutorial-light-theme min-h-[100dvh] overflow-x-hidden bg-[#080c0b] text-[#f2f0ea] selection:bg-[#b6ddcc]/60">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(tutorialJsonLd) }} />
       <PublicHeader />
 
@@ -93,7 +93,7 @@ export default function TutorialPage() {
                   A practical guide to preparing a session, staying oriented while you listen, and reflecting on the experience without forcing a result.
                 </p>
                 <div className="mt-10 flex flex-wrap items-center gap-4">
-                  <a href="#workflow" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white active:translate-y-px">
+                  <a href="#workflow" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#0a1211] transition hover:bg-white/[0.06] active:translate-y-px">
                     Start with the routine <ArrowRight className="size-4" weight="bold" aria-hidden="true" />
                   </a>
                   <Link href="/machine" className="inline-flex items-center gap-2 text-sm text-white/70 underline decoration-white/25 underline-offset-8 transition hover:text-white">
@@ -118,90 +118,90 @@ export default function TutorialPage() {
             </a>
           </section>
 
-          <section id="workflow" className="scroll-mt-24 bg-[#eef1ee] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
+          <section id="workflow" className="scroll-mt-24 bg-[#080c0b] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
             <div className="mx-auto max-w-[1400px]">
-              <div data-tutorial-reveal className="grid gap-6 border-b border-[#cbd6cf] pb-12 lg:grid-cols-[0.7fr_1.3fr]">
-                <p className="text-sm font-medium text-[#315e55]">The listening routine</p>
-                <h2 className="max-w-3xl text-3xl font-medium leading-tight tracking-[-0.045em] text-[#1d302c] md:text-5xl">A clear before, during, and after makes the session easier to use.</h2>
+              <div data-tutorial-reveal className="grid gap-6 border-b border-white/12 pb-12 lg:grid-cols-[0.7fr_1.3fr]">
+                <p className="text-sm font-medium text-[#b6ddcc]">The listening routine</p>
+                <h2 className="max-w-3xl text-3xl font-medium leading-tight tracking-[-0.045em] text-[#f2f0ea] md:text-5xl">A clear before, during, and after makes the session easier to use.</h2>
               </div>
               <ol className="divide-y divide-[#cbd6cf]">
                 {workflow.map(({ phase, title, body, icon: Icon }, index) => (
                   <li key={phase} data-tutorial-reveal className="grid gap-6 py-10 md:grid-cols-[5rem_0.7fr_1.3fr] md:items-start md:py-14">
-                    <span className="text-xs font-medium tabular-nums text-[#87968f]">0{index + 1}</span>
+                    <span className="text-xs font-medium tabular-nums text-white/50">0{index + 1}</span>
                     <div>
-                      <Icon weight="duotone" className="mb-5 size-7 text-[#548477]" aria-hidden="true" />
-                      <p className="text-sm font-medium text-[#548477]">{phase}</p>
-                      <h3 className="mt-3 text-2xl font-medium tracking-[-0.035em] text-[#1d302c]">{title}</h3>
+                      <Icon weight="duotone" className="mb-5 size-7 text-[#b6ddcc]" aria-hidden="true" />
+                      <p className="text-sm font-medium text-[#b6ddcc]">{phase}</p>
+                      <h3 className="mt-3 text-2xl font-medium tracking-[-0.035em] text-[#f2f0ea]">{title}</h3>
                     </div>
-                    <p className="max-w-2xl text-base leading-8 text-[#60716b]">{body}</p>
+                    <p className="max-w-2xl text-base leading-8 text-white/60">{body}</p>
                   </li>
                 ))}
               </ol>
             </div>
           </section>
 
-          <section className="bg-[#f7f8f5] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
+          <section className="bg-[#0b1211] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
             <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
               <div data-tutorial-reveal>
-                <p className="text-sm font-medium text-[#315e55]">What the audio can do</p>
-                <h2 className="mt-6 text-3xl font-medium leading-tight tracking-[-0.045em] text-[#1d302c] md:text-5xl">A useful tool, with mixed evidence behind the mechanism.</h2>
+                <p className="text-sm font-medium text-[#b6ddcc]">What the audio can do</p>
+                <h2 className="mt-6 text-3xl font-medium leading-tight tracking-[-0.045em] text-[#f2f0ea] md:text-5xl">A useful tool, with mixed evidence behind the mechanism.</h2>
               </div>
-              <div data-tutorial-reveal className="space-y-7 text-base leading-8 text-[#60716b]">
+              <div data-tutorial-reveal className="space-y-7 text-base leading-8 text-white/60">
                 <p>Binaural beats are heard when each ear receives a slightly different tone and the listener perceives a rhythmic difference between them. Some studies report changes in anxiety, attention, pain, or brain activity, but results vary. A 2023 systematic review found EEG evidence for reliable brainwave entrainment was inconsistent.</p>
                 <p>Cognistration provides intentional audio and reflection tools. It does not guarantee a frequency-specific state, diagnose a condition, or replace medical or mental-health care.</p>
                 <div className="flex flex-wrap gap-x-7 gap-y-3 pt-2 text-sm">
-                  <a href="https://pubmed.ncbi.nlm.nih.gov/37205669/" rel="noreferrer" target="_blank" className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4">2023 EEG systematic review</a>
-                  <a href="https://pubmed.ncbi.nlm.nih.gov/30073406/" rel="noreferrer" target="_blank" className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4">2019 meta-analysis</a>
-                  <a href="https://www.who.int/publications/i/item/9789241515276" rel="noreferrer" target="_blank" className="text-[#315e55] underline decoration-[#315e55]/30 underline-offset-4">WHO safe-listening guidance</a>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/37205669/" rel="noreferrer" target="_blank" className="text-[#b6ddcc] underline decoration-[#315e55]/30 underline-offset-4">2023 EEG systematic review</a>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/30073406/" rel="noreferrer" target="_blank" className="text-[#b6ddcc] underline decoration-[#315e55]/30 underline-offset-4">2019 meta-analysis</a>
+                  <a href="https://www.who.int/publications/i/item/9789241515276" rel="noreferrer" target="_blank" className="text-[#b6ddcc] underline decoration-[#315e55]/30 underline-offset-4">WHO safe-listening guidance</a>
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="bg-gradient-to-b from-[#eef1ee] to-[#e1eae4] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
+          <section className="bg-gradient-to-b from-[#080c0b] to-[#0a100e] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
             <div className="mx-auto max-w-[1400px]">
               <div data-tutorial-reveal className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr]">
                 <div>
-                  <Pause weight="duotone" className="size-8 text-[#548477]" aria-hidden="true" />
-                  <p className="mt-6 text-sm font-medium text-[#315e55]">Know when to stop</p>
+                  <Pause weight="duotone" className="size-8 text-[#b6ddcc]" aria-hidden="true" />
+                  <p className="mt-6 text-sm font-medium text-[#b6ddcc]">Know when to stop</p>
                 </div>
                 <div>
-                  <h2 className="text-3xl font-medium tracking-[-0.045em] text-[#1d302c] md:text-5xl">Comfort and orientation come first.</h2>
-                  <p className="mt-7 max-w-3xl text-base leading-8 text-[#60716b]">Stop the audio if you feel pain, dizziness, panic, marked distress, disorientation, or worsening symptoms. Remove the headphones, open your eyes, notice the room, and return to ordinary activity. Seek appropriate professional help if symptoms are severe or persist. Do not use a session as a substitute for care.</p>
-                  <Link href="/health-warning" className="mt-8 inline-flex items-center gap-3 text-sm font-medium text-[#315e55] underline decoration-[#315e55]/30 underline-offset-8">Read the health warning <ArrowRight className="size-4" aria-hidden="true" /></Link>
+                  <h2 className="text-3xl font-medium tracking-[-0.045em] text-[#f2f0ea] md:text-5xl">Comfort and orientation come first.</h2>
+                  <p className="mt-7 max-w-3xl text-base leading-8 text-white/60">Stop the audio if you feel pain, dizziness, panic, marked distress, disorientation, or worsening symptoms. Remove the headphones, open your eyes, notice the room, and return to ordinary activity. Seek appropriate professional help if symptoms are severe or persist. Do not use a session as a substitute for care.</p>
+                  <Link href="/health-warning" className="mt-8 inline-flex items-center gap-3 text-sm font-medium text-[#b6ddcc] underline decoration-[#315e55]/30 underline-offset-8">Read the health warning <ArrowRight className="size-4" aria-hidden="true" /></Link>
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="bg-[#f7f8f5] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
+          <section className="bg-[#0b1211] px-5 py-24 sm:px-8 lg:py-32 lg:px-12">
             <div className="mx-auto max-w-[1400px]">
               <div data-tutorial-reveal className="max-w-3xl">
-                <p className="text-sm font-medium text-[#315e55]">Continue by intention</p>
-                <h2 className="mt-6 text-3xl font-medium tracking-[-0.045em] text-[#1d302c] md:text-5xl">Four deeper guides, each with a different question.</h2>
+                <p className="text-sm font-medium text-[#b6ddcc]">Continue by intention</p>
+                <h2 className="mt-6 text-3xl font-medium tracking-[-0.045em] text-[#f2f0ea] md:text-5xl">Four deeper guides, each with a different question.</h2>
               </div>
-              <nav aria-label="Tutorial topic guides" className="mt-14 divide-y divide-[#cbd6cf] border-y border-[#cbd6cf]">
+              <nav aria-label="Tutorial topic guides" className="mt-14 divide-y divide-[#cbd6cf] border-y border-white/12">
                 {guides.map((guide, index) => (
-                  <Link key={guide.href} href={guide.href} data-tutorial-reveal className="group grid gap-5 py-9 transition hover:bg-[#eef1ee] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#548477] md:grid-cols-[4rem_0.9fr_1.1fr_2rem] md:items-center md:px-4">
-                    <span className="text-xs font-medium text-[#87968f]">0{index + 1}</span>
-                    <h3 className="text-xl font-medium tracking-[-0.025em] text-[#1d302c]">{guide.title}</h3>
-                    <p className="max-w-xl text-sm leading-7 text-[#60716b]">{guide.description}</p>
-                    <ArrowRight className="size-5 text-[#87968f] transition-transform group-hover:translate-x-1 group-hover:text-[#315e55]" aria-hidden="true" />
+                  <Link key={guide.href} href={guide.href} data-tutorial-reveal className="group grid gap-5 py-9 transition hover:bg-[#080c0b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#548477] md:grid-cols-[4rem_0.9fr_1.1fr_2rem] md:items-center md:px-4">
+                    <span className="text-xs font-medium text-white/50">0{index + 1}</span>
+                    <h3 className="text-xl font-medium tracking-[-0.025em] text-[#f2f0ea]">{guide.title}</h3>
+                    <p className="max-w-xl text-sm leading-7 text-white/60">{guide.description}</p>
+                    <ArrowRight className="size-5 text-white/50 transition-transform group-hover:translate-x-1 group-hover:text-[#b6ddcc]" aria-hidden="true" />
                   </Link>
                 ))}
               </nav>
             </div>
           </section>
 
-          <section className="tutorial-dark-section bg-[#202b28] px-5 py-20 text-white sm:px-8 md:py-24 lg:px-12">
+          <section className="tutorial-dark-section bg-[#0b1211] px-5 py-20 text-white sm:px-8 md:py-24 lg:px-12">
             <div data-tutorial-reveal className="mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <SlidersHorizontal weight="duotone" className="size-8 text-[#b6ddcc]" aria-hidden="true" />
                 <h2 className="mt-6 text-3xl font-medium tracking-[-0.045em] md:text-4xl">Ready to build a private listening practice?</h2>
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">Cognistration is a one-time $20 platform purchase with access to the private Studio, Workshop, and listening tools.</p>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">Cognistration is a one-time $2.99 platform purchase with access to the private Studio, Workshop, and listening tools.</p>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Link href="/pricing" className="inline-flex items-center gap-3 rounded-full bg-[#d7eadf] px-6 py-3 text-sm font-medium text-[#17332e] transition hover:bg-white active:scale-[0.98]">View membership <ArrowRight className="size-4" aria-hidden="true" /></Link>
+                <Link href="/pricing" className="inline-flex items-center gap-3 rounded-full bg-[#d7eadf] px-6 py-3 text-sm font-medium text-[#0a1211] transition hover:bg-white/[0.06] active:scale-[0.98]">View membership <ArrowRight className="size-4" aria-hidden="true" /></Link>
                 <Link href="/machine" className="inline-flex items-center gap-3 rounded-full border border-white/20 px-6 py-3 text-sm text-white transition hover:border-white/40 hover:bg-white/[0.08] active:scale-[0.98]">Explore the platform</Link>
               </div>
             </div>

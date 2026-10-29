@@ -4,6 +4,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/theme-provider';
 import { buildAbsoluteUrl } from '@/lib/seo';
 import { CursorLight } from '@/components/visuals/CursorLight';
+import { CognistrationAnalytics } from '@/components/analytics/CognistrationAnalytics';
+import { AnalyticsConsent } from '@/components/analytics/AnalyticsConsent';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cognistration.com';
 const siteName = 'Cognistration';
@@ -141,7 +143,7 @@ const organizationJsonLd = {
       description: 'A user-controlled listening platform for focus, rest, reflection, and intentional reset.',
       offers: {
         '@type': 'Offer',
-        price: '20.00',
+        price: '2.99',
         priceCurrency: 'USD',
         url: `${siteUrl}/pricing`,
         category: 'Lifetime private workspace access'
@@ -222,6 +224,8 @@ export default function RootLayout({ children }) {
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CursorLight />
+          <CognistrationAnalytics />
+          <AnalyticsConsent />
           <div className="flex min-h-[100dvh]">
             <main className="min-w-0 flex-1 flex flex-col min-h-[100dvh] relative z-0">
               {children}

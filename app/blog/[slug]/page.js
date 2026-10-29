@@ -44,25 +44,25 @@ function buildArticleJsonLd(post) {
 function FallbackBlogPost({ post }) {
   return (
     <article className="space-y-8">
-      <header className="space-y-5 rounded-[1.75rem] border border-[#cbd6cf] bg-white/70 px-7 py-10 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl md:px-10 md:py-12">
-        <h1 className="text-balance text-4xl font-medium leading-[0.98] tracking-[-0.055em] text-[#1d302c] md:text-6xl">
+      <header className="space-y-5 rounded-[1.75rem] border border-white/12 bg-white/[0.05] px-7 py-10 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl md:px-10 md:py-12">
+        <h1 className="text-balance text-4xl font-medium leading-[0.98] tracking-[-0.055em] text-[#f2f0ea] md:text-6xl">
           {post.title}
         </h1>
-        <p className="max-w-3xl text-balance text-base leading-7 text-[#60716b]">
+        <p className="max-w-3xl text-balance text-base leading-7 text-white/60">
           {post.excerpt}
         </p>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#779187]">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/50">
           <span>{post.category}</span>
           <span>{post.readTime}</span>
           <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
         </div>
       </header>
 
-      <section className="space-y-5 rounded-[1.75rem] border border-[#cbd6cf] bg-white/70 p-7 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl md:p-8">
-        <h2 className="text-3xl font-medium leading-tight tracking-[-0.045em] text-[#1d302c] md:text-4xl">
+      <section className="space-y-5 rounded-[1.75rem] border border-white/12 bg-white/[0.05] p-7 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl md:p-8">
+        <h2 className="text-3xl font-medium leading-tight tracking-[-0.045em] text-[#f2f0ea] md:text-4xl">
           Summary view
         </h2>
-        <div className="space-y-4 text-sm leading-7 text-[#60716b]">
+        <div className="space-y-4 text-sm leading-7 text-white/60">
           <p>
             This post is registered in the blog archive, but the custom article component was not
             available in the current build. The summary view keeps the route live while the post
@@ -77,13 +77,13 @@ function FallbackBlogPost({ post }) {
 
       <section className="grid gap-4 md:grid-cols-2">
         <Link
-          className="rounded-[1.5rem] border border-[#cbd6cf] bg-white/60 p-5 text-sm font-medium text-[#315e55] transition-colors hover:border-[#9db9aa] hover:bg-white hover:text-[#1d302c]"
+          className="rounded-[1.5rem] border border-white/12 bg-white/[0.06] p-5 text-sm font-medium text-[#b6ddcc] transition-colors hover:border-[#9db9aa] hover:bg-white/[0.06] hover:text-[#f2f0ea]"
           href="/blog"
         >
           Back to the archive
         </Link>
         <Link
-          className="rounded-[1.5rem] border border-[#cbd6cf] bg-white/60 p-5 text-sm font-medium text-[#315e55] transition-colors hover:border-[#9db9aa] hover:bg-white hover:text-[#1d302c]"
+          className="rounded-[1.5rem] border border-white/12 bg-white/[0.06] p-5 text-sm font-medium text-[#b6ddcc] transition-colors hover:border-[#9db9aa] hover:bg-white/[0.06] hover:text-[#f2f0ea]"
           href="/tutorial"
         >
           Open the setup guide
@@ -154,7 +154,7 @@ export default async function BlogPostPage({ params }) {
   }
 
   return (
-    <div className="blog-light-theme min-h-[100dvh] overflow-x-hidden bg-[#eef1ee] text-[#1d302c] font-sans selection:bg-[#b6ddcc]/60">
+    <div className="blog-light-theme min-h-[100dvh] overflow-x-hidden bg-[#080c0b] text-[#f2f0ea] font-sans selection:bg-[#b6ddcc]/60">
       {post ? (
         <script
           type="application/ld+json"
@@ -165,15 +165,15 @@ export default async function BlogPostPage({ params }) {
 
       <main className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
         <div className="mx-auto w-full max-w-5xl space-y-8 research-paper-style">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#cbd6cf] pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/12 pb-4">
             <Link
-              className="inline-flex items-center gap-2 rounded-full border border-[#b8cbc0] bg-white/70 px-4 py-2 text-sm font-medium text-[#315e55] transition-colors hover:border-[#7fa594] hover:bg-white"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.05] px-4 py-2 text-sm font-medium text-[#b6ddcc] transition-colors hover:border-[#7fa594] hover:bg-white/[0.06]"
               href="/blog"
             >
               <ArrowLeft className="size-3.5" /> Back to archive
             </Link>
             <Link
-              className="hidden rounded-full border border-[#b8cbc0] bg-white/70 px-4 py-2 text-sm font-medium text-[#315e55] transition-colors hover:border-[#7fa594] hover:bg-white md:inline-flex"
+              className="hidden rounded-full border border-white/20 bg-white/[0.05] px-4 py-2 text-sm font-medium text-[#b6ddcc] transition-colors hover:border-[#7fa594] hover:bg-white/[0.06] md:inline-flex"
               href="/"
             >
               Home
@@ -184,15 +184,15 @@ export default async function BlogPostPage({ params }) {
             <PostComponent />
           </div>
 
-          <div className="metadata-block rounded-[1.75rem] border border-[#cbd6cf] bg-white/60 p-6 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl">
-            <p className="text-sm font-medium text-[#315e55]">
+          <div className="metadata-block rounded-[1.75rem] border border-white/12 bg-white/[0.06] p-6 shadow-[0_16px_42px_rgba(45,65,59,0.05)] backdrop-blur-xl">
+            <p className="text-sm font-medium text-[#b6ddcc]">
               Post metadata
             </p>
-            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#779187]">
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/50">
               <span>Read Time: {post.readTime}</span>
               <span>Published: {new Date(post.publishedAt).toLocaleDateString()}</span>
               <span>Category: {post.category}</span>
-                <Link href="/ai-disclosure" className="transition-colors hover:text-[#1d302c]">
+                <Link href="/ai-disclosure" className="transition-colors hover:text-[#f2f0ea]">
                 AI Disclosure
               </Link>
             </div>

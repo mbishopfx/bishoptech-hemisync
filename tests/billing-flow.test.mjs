@@ -6,12 +6,14 @@ async function source(path) {
   return readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 }
 
-test('public pricing exposes one $20 lifetime payment and no public monthly plan', async () => {
+test('public pricing exposes one $2.99 lifetime payment and no public monthly plan', async () => {
   const pricing = await source('app/pricing/page.js');
   const plans = await source('lib/billing/plans.js');
   assert.match(pricing, /id: LIFETIME_PLAN\.id/);
   assert.match(plans, /LIFETIME_PLAN_ID = 'lifetime'/);
-  assert.match(pricing, /price: '\$20'/);
+  assert.match(pricing, /price: '\$2\.99'/);
+  assert.match(plans, /price: 2\.99/);
+  assert.match(plans, /priceLabel: '\$2\.99'/);
   assert.match(plans, /price_1TWlbTDJtpuPVfuFG5ejsTAG/);
   assert.match(pricing, /mode: 'payment'/);
   assert.doesNotMatch(pricing, /\$9|\$\s*\/month|MONTHLY_PLAN/);

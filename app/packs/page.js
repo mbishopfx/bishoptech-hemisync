@@ -19,7 +19,7 @@ export const metadata = buildPageMetadata({
 
 export default function PacksPage() {
   return (
-    <div className="min-h-[100dvh] overflow-x-hidden bg-[#eef1ee] text-[#1d302c] selection:bg-[#b6ddcc] selection:text-[#17332e]">
+    <div className="min-h-[100dvh] overflow-x-hidden bg-[#080c0b] text-[#f2f0ea] selection:bg-[#b6ddcc] selection:text-[#0a1211]">
       <PublicHeader />
       <main>
         <script

@@ -272,7 +272,7 @@ export function LiquidHeader({ onOpenAuth, theme = 'dark' }) {
       >
         <div className="flex items-start justify-between gap-4 px-2 pb-4">
           <div>
-            <p className={`text-[11px] font-medium uppercase tracking-[0.18em] ${isLight ? 'text-[#548477]' : 'text-[#b6ddcc]'}`}>Cognistration menu</p>
+            <p className={`text-[11px] font-medium uppercase tracking-[0.18em] ${isLight ? 'text-[#548477]' : 'text-[#b6ddcc]/90'}`}>Cognistration menu</p>
             <p className={`mt-2 text-sm ${menuCopy}`}>Move between sessions, tools, and MCP hosts.</p>
           </div>
           <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em] ${isLight ? 'border-[#c9d9cf] bg-white/55 text-[#548477]' : 'border-[#b6ddcc]/20 bg-[#b6ddcc]/[0.08] text-[#b6ddcc]'}`}>MCP ready</span>

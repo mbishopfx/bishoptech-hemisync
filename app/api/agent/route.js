@@ -102,7 +102,7 @@ export async function POST(req) {
       subscription = profile;
 
       if (!hasPlatformAccess(subscription)) {
-        const error = new Error('Complete the $20 one-time membership to use the full Cognistration platform.');
+        const error = new Error('Complete the $2.99 one-time membership to use the full Cognistration platform.');
         error.status = 403;
         error.code = 'SUBSCRIPTION_REQUIRED';
         throw error;

@@ -24,20 +24,20 @@ export function AgenticAuthModal({ isOpen, onClose }) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="auth-modal-title"
-            className="relative w-full max-w-md rounded-[2rem] border border-[#cbd6cf] bg-[#f7f8f5] p-8 text-[#1d302c] shadow-2xl sm:p-10"
+            className="relative w-full max-w-md rounded-[2rem] border border-white/12 bg-[#0b1211] p-8 text-[#f2f0ea] shadow-2xl sm:p-10"
           >
-            <button type="button" onClick={onClose} className="absolute right-5 top-5 rounded-full p-2 text-[#7a8983] transition hover:bg-[#e5ece7] hover:text-[#1d302c]" aria-label="Close account prompt">
+            <button type="button" onClick={onClose} className="absolute right-5 top-5 rounded-full p-2 text-white/45 transition hover:bg-white/[0.08] hover:text-white" aria-label="Close account prompt">
               <X className="size-5" aria-hidden="true" />
             </button>
 
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-[#dcece2] text-[#315e55]">
+            <div className="flex size-14 items-center justify-center rounded-2xl bg-[#b6ddcc]/12 text-[#b6ddcc]">
               <LockKey className="size-6" weight="duotone" aria-hidden="true" />
             </div>
             <h2 id="auth-modal-title" className="mt-7 text-3xl font-medium tracking-[-0.045em]">Keep building your practice.</h2>
-            <p className="mt-4 text-sm leading-6 text-[#66746f]">Create an account to unlock the private workspace, expanded tone library, and saved sessions.</p>
+            <p className="mt-4 text-sm leading-6 text-white/55">Create an account to unlock the private workspace, expanded tone library, and saved sessions.</p>
 
             <div className="mt-8 flex flex-col gap-3">
-              <Link href="/signup" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#1d302c] px-5 py-3.5 text-sm font-medium text-white transition hover:bg-[#315e55] active:translate-y-px">
+              <Link href="/signup" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#b6ddcc] px-5 py-3.5 text-sm font-medium text-[#0a1211] transition hover:bg-[#d5ece2] active:translate-y-px">
                 Create your account <ArrowRight className="size-4" weight="bold" aria-hidden="true" />
               </Link>
               <Link href="/login" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-[#bfcfc5] px-5 py-3.5 text-sm font-medium text-[#315e55] transition hover:border-[#6b9587] hover:bg-[#edf4ef] active:translate-y-px">

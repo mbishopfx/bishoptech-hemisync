@@ -110,7 +110,7 @@ function AuthTag({ value }) {
     ? 'border-[#b6ddcc]/25 bg-[#b6ddcc]/[0.08] text-[#b6ddcc]'
     : value === 'authenticated_member'
       ? 'border-[#e0b493]/30 bg-[#e0b493]/[0.08] text-[#e0b493]'
-      : 'border-white/15 bg-white/[0.05] text-white/55';
+      : 'border-white/15 bg-white/[0.05] text-white/70';
 
   return <span className={`inline-flex rounded-full border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.13em] ${classes}`}>{value}</span>;
 }
@@ -127,7 +127,7 @@ function SchemaTable({ schema, emptyLabel }) {
         <div key={field.name} className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] gap-3 border-b border-white/10 px-3 py-2.5 last:border-b-0 sm:grid-cols-[minmax(140px,0.7fr)_minmax(100px,0.45fr)_minmax(0,1.5fr)]">
           <code className="min-w-0 break-words text-[11px] text-[#d7eadf]">{field.name}{field.required ? <span className="text-[#e0b493]" title="Required"> *</span> : null}</code>
           <span className="text-[10px] text-white/42">{field.type}</span>
-          <span className="col-span-2 text-[10px] leading-4 text-white/45 sm:col-span-1">{field.detail || '—'}</span>
+          <span className="col-span-2 text-[10px] leading-4 text-white/65 sm:col-span-1">{field.detail || '—'}</span>
         </div>
       ))}
     </div>
@@ -138,19 +138,19 @@ function ToolRow({ tool, index, kind }) {
   return (
     <details className="group border-b border-white/10 last:border-b-0">
       <summary className="grid cursor-pointer list-none gap-3 px-4 py-4 transition hover:bg-white/[0.035] [&::-webkit-details-marker]:hidden sm:grid-cols-[42px_minmax(0,1.1fr)_minmax(0,1.8fr)_auto] sm:items-start">
-        <span className="font-mono text-[10px] text-white/30">{String(index + 1).padStart(2, '0')}</span>
+        <span className="font-mono text-[10px] text-white/55">{String(index + 1).padStart(2, '0')}</span>
         <code className="break-words text-xs text-[#d7eadf]">{tool.name}</code>
         <span className="text-xs leading-5 text-white/52">{tool.description}</span>
-        <span className="flex items-center gap-2 text-white/30"><AuthTag value={tool.authorization || kind} /><span className="text-lg leading-none transition group-open:rotate-45">+</span></span>
+        <span className="flex items-center gap-2 text-white/55"><AuthTag value={tool.authorization || kind} /><span className="text-lg leading-none transition group-open:rotate-45">+</span></span>
       </summary>
       <div className="grid gap-6 border-t border-white/10 bg-black/10 px-4 py-5 sm:grid-cols-[minmax(150px,0.55fr)_minmax(0,1fr)_minmax(0,1fr)] sm:pl-[58px]">
         <div className="space-y-3">
-          <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/30">Contract</p><p className="mt-1 text-xs text-white/60">{kind}</p></div>
-          <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/30">Side effect</p><p className="mt-1 text-xs leading-5 text-white/58">{tool.sideEffect || 'not declared'}</p></div>
-          <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/30">Consent</p><p className="mt-1 text-xs leading-5 text-white/58">{tool.consent || 'none declared'}</p></div>
+          <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Contract</p><p className="mt-1 text-xs text-white/72">{kind}</p></div>
+          <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Side effect</p><p className="mt-1 text-xs leading-5 text-white/70">{tool.sideEffect || 'not declared'}</p></div>
+          <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Consent</p><p className="mt-1 text-xs leading-5 text-white/70">{tool.consent || 'none declared'}</p></div>
         </div>
-        <div><p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/30">Arguments</p><SchemaTable schema={tool.inputSchema} emptyLabel="No arguments." /></div>
-        <div><p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/30">Returns</p><SchemaTable schema={tool.outputSchema} emptyLabel="The tool returns a structured completion envelope; see the live response for its result schema." /></div>
+        <div><p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Arguments</p><SchemaTable schema={tool.inputSchema} emptyLabel="No arguments." /></div>
+        <div><p className="mb-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Returns</p><SchemaTable schema={tool.outputSchema} emptyLabel="The tool returns a structured completion envelope; see the live response for its result schema." /></div>
       </div>
     </details>
   );
@@ -181,7 +181,7 @@ function ResourceRow({ resource }) {
     <div className="grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[minmax(230px,0.9fr)_minmax(0,1.2fr)_auto] sm:items-start sm:gap-5">
       <code className="break-all text-xs text-[#d7eadf]">{resource.uri}</code>
       <div><p className="text-xs text-white/70">{resource.name}</p><p className="mt-1 text-xs leading-5 text-white/42">{resource.description}</p></div>
-      <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/30">{resource.mimeType}</span>
+      <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/55">{resource.mimeType}</span>
     </div>
   );
 }
@@ -222,7 +222,7 @@ export default function DocsPage() {
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#b6ddcc]">Cognistration SDK reference</p>
                 <h1 className="mt-6 max-w-4xl text-5xl font-medium leading-[0.96] tracking-[-0.075em] sm:text-7xl">One public contract for people and agents.</h1>
-                <p className="mt-7 max-w-2xl text-base leading-8 text-white/58 sm:text-lg">Discover the remote MCP endpoint, native browser WebMCP tools, interactive MCP Apps resources, reusable skills, prompt templates, and the exact boundary around every side effect.</p>
+                <p className="mt-7 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">Discover the remote MCP endpoint, native browser WebMCP tools, interactive MCP Apps resources, reusable skills, prompt templates, and the exact boundary around every side effect.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link href="/try" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Open the demo cockpit <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link>
                   <a href={MCP_URL} className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3.5 text-sm text-white/75 transition hover:border-white/45 hover:text-white">MCP endpoint <ArrowRight className="size-4" aria-hidden="true" /></a>
@@ -241,14 +241,14 @@ export default function DocsPage() {
                 [String(WEBMCP_TOOL_DEFINITIONS.length), 'public WebMCP tools'],
                 [String(MCP_RESOURCES.length), 'MCP resources'],
                 [String(skillSummary.count), 'importable skills']
-              ].map(([value, label]) => <div key={label} className="border-b border-white/10 px-4 py-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><p className="text-2xl font-medium tracking-[-0.04em] text-white">{value}</p><p className="mt-1 font-mono text-[9px] uppercase tracking-[0.13em] text-white/35">{label}</p></div>)}
+              ].map(([value, label]) => <div key={label} className="border-b border-white/10 px-4 py-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"><p className="text-2xl font-medium tracking-[-0.04em] text-white">{value}</p><p className="mt-1 font-mono text-[9px] uppercase tracking-[0.13em] text-white/60">{label}</p></div>)}
             </div>
           </div>
         </section>
 
         <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[190px_minmax(0,1fr)] lg:gap-20 lg:px-12">
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">On this page</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/55">On this page</p>
             <nav className="mt-4 grid gap-2 text-xs text-white/50">
               {[
                 ['connection', 'Connect'],
@@ -262,7 +262,7 @@ export default function DocsPage() {
                 ['safety', 'Safety']
               ].map(([href, label]) => <a key={href} href={`#${href}`} className="transition hover:text-[#b6ddcc]">{label}</a>)}
             </nav>
-            <div className="mt-8 border-t border-white/10 pt-5 text-xs leading-5 text-white/35">
+            <div className="mt-8 border-t border-white/10 pt-5 text-xs leading-5 text-white/60">
               <p>Schema source</p>
               <Link href="/api/capabilities" className="mt-1 block break-words text-[#b6ddcc] hover:text-white">/api/capabilities</Link>
               <a href="/openapi.json" className="mt-1 block break-words text-[#b6ddcc] hover:text-white">/openapi.json</a>
@@ -274,7 +274,7 @@ export default function DocsPage() {
               <SectionIntro eyebrow="01 · Connect" title="Start with the remote endpoint">Add Cognistration as a remote HTTPS MCP server. This is a server URL, not a Git repository or marketplace source.</SectionIntro>
               <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
                 <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
-                  <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><TerminalWindow className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">server configuration</span></div>
+                  <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><TerminalWindow className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">server configuration</span></div>
                   <pre className="overflow-x-auto p-5 text-xs leading-6 text-[#d7eadf]"><code>{`{
   "mcpServers": {
     "cognistration": {
@@ -283,15 +283,15 @@ export default function DocsPage() {
   }
 }`}</code></pre>
                 </div>
-                <div className="rounded-2xl border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.045] p-5 text-xs leading-6 text-white/55">
+                <div className="rounded-2xl border border-[#b6ddcc]/15 bg-[#b6ddcc]/[0.045] p-5 text-xs leading-6 text-white/70">
                   <CheckCircle className="size-5 text-[#b6ddcc]" weight="fill" aria-hidden="true" />
                   <p className="mt-3">Compatible hosts can discover the contract from <code className="text-[#d7eadf]">server/discover</code>, then list tools, resources, prompts, and skills.</p>
                   <p className="mt-3 text-white/38">Keep credentials, card data, private session records, and bearer access keys out of tool arguments unless a specific authenticated flow explicitly asks for a scoped token.</p>
                 </div>
               </div>
               <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
-                <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><Code className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">modern tools/list probe</span></div>
-                <pre className="overflow-x-auto p-5 text-[11px] leading-6 text-white/58"><code>{`curl --request POST \
+                <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><Code className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">modern tools/list probe</span></div>
+                <pre className="overflow-x-auto p-5 text-[11px] leading-6 text-white/70"><code>{`curl --request POST \
   --url ${MCP_URL} \
   --header 'Accept: application/json' \
   --header 'Content-Type: application/json' \
@@ -316,23 +316,23 @@ export default function DocsPage() {
               <SectionIntro eyebrow="04 · Native browser" title="WebMCP tools on the visible page">The home and try surfaces progressively register bounded tools with the browser’s native model context. They operate on visible controls and keep audio, account, and payment edges user-controlled.</SectionIntro>
               <div className="grid gap-5 lg:grid-cols-2">
                 <div className="rounded-2xl border border-white/12 bg-[#182723] p-5">
-                  <div className="flex items-start justify-between gap-4"><div><Browser className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Public page bridge</h3></div><span className="font-mono text-[9px] text-white/35">v{WEBMCP_CONTRACT_VERSION}</span></div>
-                  <p className="mt-3 text-xs leading-5 text-white/45"><code>{WEBMCP_CONTRACT_ID}</code> · {WEBMCP_TOOL_DEFINITIONS.length} tools registered on the visible tone machine.</p>
-                  <div className="mt-5 border-t border-white/10 pt-4"><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/30">Registration shape</p><pre className="mt-3 overflow-x-auto text-[10px] leading-5 text-white/55"><code>{`document.modelContext.registerTool({
+                  <div className="flex items-start justify-between gap-4"><div><Browser className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Public page bridge</h3></div><span className="font-mono text-[9px] text-white/60">v{WEBMCP_CONTRACT_VERSION}</span></div>
+                  <p className="mt-3 text-xs leading-5 text-white/65"><code>{WEBMCP_CONTRACT_ID}</code> · {WEBMCP_TOOL_DEFINITIONS.length} tools registered on the visible tone machine.</p>
+                  <div className="mt-5 border-t border-white/10 pt-4"><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Registration shape</p><pre className="mt-3 overflow-x-auto text-[10px] leading-5 text-white/70"><code>{`document.modelContext.registerTool({
   name: "cognistration_generate_tone",
   inputSchema: { type: "object", properties: { intention: { type: "string" } } },
   execute: async (input) => { /* visible bounded action */ }
 })`}</code></pre></div>
                 </div>
                 <div className="rounded-2xl border border-[#e0b493]/20 bg-[#e0b493]/[0.045] p-5">
-                  <div className="flex items-start justify-between gap-4"><div><LockKey className="size-5 text-[#e0b493]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Authenticated member bridge</h3></div><span className="font-mono text-[9px] text-white/35">v{MEMBER_WEBMCP_CONTRACT_VERSION}</span></div>
-                  <p className="mt-3 text-xs leading-5 text-white/45"><code>{MEMBER_WEBMCP_CONTRACT_ID}</code> · {MEMBER_WEBMCP_TOOL_DEFINITIONS.length} tools on the signed-in dashboard.</p>
-                  <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-5 text-white/45">Private workspace reads are scoped to the current member. Creating a private session or starting an audio render requires an explicit confirmation in the current browser context.</p>
+                  <div className="flex items-start justify-between gap-4"><div><LockKey className="size-5 text-[#e0b493]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Authenticated member bridge</h3></div><span className="font-mono text-[9px] text-white/60">v{MEMBER_WEBMCP_CONTRACT_VERSION}</span></div>
+                  <p className="mt-3 text-xs leading-5 text-white/65"><code>{MEMBER_WEBMCP_CONTRACT_ID}</code> · {MEMBER_WEBMCP_TOOL_DEFINITIONS.length} tools on the signed-in dashboard.</p>
+                  <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-5 text-white/65">Private workspace reads are scoped to the current member. Creating a private session or starting an audio render requires an explicit confirmation in the current browser context.</p>
                 </div>
               </div>
               <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{WEBMCP_TOOL_DEFINITIONS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="public WebMCP" />)}</div>
               <details className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
-                <summary className="cursor-pointer list-none px-4 py-4 text-sm text-white/65 [&::-webkit-details-marker]:hidden">Show the {MEMBER_WEBMCP_TOOL_DEFINITIONS.length} authenticated member tools <span className="ml-2 text-white/30">+</span></summary>
+                <summary className="cursor-pointer list-none px-4 py-4 text-sm text-white/65 [&::-webkit-details-marker]:hidden">Show the {MEMBER_WEBMCP_TOOL_DEFINITIONS.length} authenticated member tools <span className="ml-2 text-white/55">+</span></summary>
                 <div className="border-t border-white/10">{MEMBER_WEBMCP_TOOL_DEFINITIONS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="authenticated member WebMCP" />)}</div>
               </details>
             </section>
@@ -350,13 +350,13 @@ export default function DocsPage() {
 
             <section id="prompts" className="scroll-mt-28">
               <SectionIntro eyebrow="07 · Prompt template" title="Prompt templates">Use <code className="text-[#d7eadf]">prompts/get</code> when a host wants a reusable, bounded starting message for the public tone catalog.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/45">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
+              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/65">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
             </section>
 
             <section id="routes" className="scroll-mt-28">
               <SectionIntro eyebrow="08 · HTTP map" title="Public routes around the contract">These are the supported discovery and compatibility routes that surround MCP. Internal audio, database, and admin routes are intentionally not presented as public agent commands.</SectionIntro>
               <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{HTTP_SURFACES.map((route) => <RouteRow key={`${route.method}-${route.path}`} route={route} />)}</div>
-              <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]"><div className="border-b border-white/10 px-4 py-3"><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/35">supporting compatibility families</span></div>{SUPPORTING_ROUTE_FAMILIES.map((route) => <RouteRow key={route.path} route={{ ...route, label: 'Supporting adapter' }} />)}</div>
+              <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]"><div className="border-b border-white/10 px-4 py-3"><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">supporting compatibility families</span></div>{SUPPORTING_ROUTE_FAMILIES.map((route) => <RouteRow key={route.path} route={{ ...route, label: 'Supporting adapter' }} />)}</div>
             </section>
 
             <section id="safety" className="scroll-mt-28">
@@ -367,7 +367,7 @@ export default function DocsPage() {
                   [LockKey, 'Credentials', 'Signup credentials are entered and submitted by the person in the in-platform form. Card data never enters MCP arguments.'],
                   [Database, 'Private data', 'Public tools do not expose diary text, private sessions, arbitrary SQL, or another member’s workspace records.'],
                   [BookOpenText, 'Claims', 'Tone labels and science content are descriptive and educational. They do not make medical, diagnostic, or guaranteed-performance claims.']
-                ].map(([Icon, title, copy]) => <div key={title} className="rounded-2xl border border-white/12 bg-[#182723] p-5"><Icon className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-sm font-medium text-white">{title}</h3><p className="mt-2 text-xs leading-5 text-white/45">{copy}</p></div>)}
+                ].map(([Icon, title, copy]) => <div key={title} className="rounded-2xl border border-white/12 bg-[#182723] p-5"><Icon className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-sm font-medium text-white">{title}</h3><p className="mt-2 text-xs leading-5 text-white/65">{copy}</p></div>)}
               </div>
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5 text-xs text-white/42"><span>Canonical policy: <Link href="/health-warning" className="text-[#b6ddcc] hover:text-white">/health-warning</Link></span><Link href="/agent-instructions.md" className="inline-flex items-center gap-2 text-[#b6ddcc] hover:text-white">Read agent instructions <ArrowRight className="size-3.5" aria-hidden="true" /></Link></div>
             </section>

@@ -204,7 +204,7 @@ export function PacksBrowser() {
   };
 
   return (
-    <div ref={rootRef} className="relative isolate overflow-hidden bg-[#eef1ee] text-[#1d302c]">
+    <div ref={rootRef} className="relative isolate overflow-hidden bg-[#080c0b] text-[#f2f0ea]">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         <div className="absolute left-1/2 top-[-10rem] h-[42rem] w-[70rem] -translate-x-1/2 rounded-full bg-[#b6ddcc]/40 blur-[140px]" />
         <div className="absolute inset-x-0 top-[46rem] h-px bg-gradient-to-r from-transparent via-[#b7c9c0] to-transparent" />
@@ -212,46 +212,46 @@ export function PacksBrowser() {
 
       <section className="mx-auto grid min-h-[92dvh] max-w-[1400px] items-center gap-14 px-5 pb-20 pt-32 md:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-24 lg:pt-36">
         <div className="catalog-reveal opacity-0">
-          <h1 className="max-w-4xl text-5xl font-medium leading-[0.94] tracking-[-0.055em] text-[#1d302c] md:text-7xl lg:text-[5.5rem]">
-            Find the frequency for <span className="text-[#87968f]">right now.</span>
+          <h1 className="max-w-4xl text-5xl font-medium leading-[0.94] tracking-[-0.055em] text-[#f2f0ea] md:text-7xl lg:text-[5.5rem]">
+            Find the frequency for <span className="text-white/50">right now.</span>
           </h1>
-          <p className="mt-8 max-w-2xl text-lg font-light leading-8 text-[#52635f] md:text-xl">
+          <p className="mt-8 max-w-2xl text-lg font-light leading-8 text-white/60 md:text-xl">
             Ten purpose-built collections for the moments when you need to focus, come down, create, sleep, or simply get away from the noise.
           </p>
-          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs text-[#66746f]">
+          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs text-white/55">
             <span className="flex items-center gap-2">
-              <Check weight="bold" className="size-4 text-[#548477]" /> 10 full sessions
+              <Check weight="bold" className="size-4 text-[#b6ddcc]" /> 10 full sessions
             </span>
             <span className="flex items-center gap-2">
-              <Check weight="bold" className="size-4 text-[#548477]" /> About 50 minutes
+              <Check weight="bold" className="size-4 text-[#b6ddcc]" /> About 50 minutes
             </span>
             <span className="flex items-center gap-2">
-              <Check weight="bold" className="size-4 text-[#548477]" /> Yours to keep
+              <Check weight="bold" className="size-4 text-[#b6ddcc]" /> Yours to keep
             </span>
           </div>
           <a
             href="#catalog"
-            className="mt-12 inline-flex items-center gap-3 border-b border-[#315e55]/30 pb-2 text-xs uppercase tracking-[0.24em] text-[#315e55] transition hover:border-[#315e55] hover:text-[#1d302c]"
+            className="mt-12 inline-flex items-center gap-3 border-b border-[#315e55]/30 pb-2 text-xs uppercase tracking-[0.24em] text-[#b6ddcc] transition hover:border-[#315e55] hover:text-[#f2f0ea]"
           >
             Browse the collection <ArrowDown className="size-4" />
           </a>
         </div>
 
         <div className="catalog-reveal relative opacity-0">
-          <div className="relative overflow-hidden rounded-[2rem] border border-[#cbd6cf] bg-white/90 p-6 shadow-[0_40px_100px_-55px_rgba(45,65,59,0.28)] backdrop-blur-sm md:p-9">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.04] p-6 shadow-[0_40px_100px_-55px_rgba(45,65,59,0.28)] backdrop-blur-sm md:p-9">
             <div className="absolute inset-0 bg-[linear-gradient(rgba(84,132,119,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(84,132,119,0.06)_1px,transparent_1px)] bg-[size:44px_44px]" />
             <div className="relative">
-              <div className="flex items-start justify-between border-b border-[#dbe2dd] pb-7">
+              <div className="flex items-start justify-between border-b border-white/10 pb-7">
                 <div>
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-[#71807b]">Frequency map</p>
-                  <p className="mt-2 text-2xl font-medium tracking-tight text-[#1d302c]">Five states. One library.</p>
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/65">Frequency map</p>
+                  <p className="mt-2 text-2xl font-medium tracking-tight text-[#f2f0ea]">Five states. One library.</p>
                 </div>
-                <Waveform weight="thin" className="size-8 text-[#548477]" />
+                <Waveform weight="thin" className="size-8 text-[#b6ddcc]" />
               </div>
               <div className="mt-8 space-y-5">
                 {SIGNAL_STATES.map(([name, range], rowIndex) => (
                   <div key={name} className="grid grid-cols-[4rem_1fr_3.5rem] items-center gap-3">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-[#52635f]">{name}</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/60">{name}</span>
                     <div className="flex h-5 items-center gap-1 overflow-hidden">
                       {Array.from({ length: 15 }).map((_, barIndex) => (
                         <span
@@ -267,19 +267,19 @@ export function PacksBrowser() {
                   </div>
                 ))}
               </div>
-              <div className="mt-10 grid grid-cols-2 gap-4 border-t border-[#dbe2dd] pt-7">
+              <div className="mt-10 grid grid-cols-2 gap-4 border-t border-white/10 pt-7">
                 <div>
-                  <p className="text-3xl font-medium text-[#1d302c]">$5.99</p>
-                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-[#788681]">one time / any pack</p>
+                  <p className="text-3xl font-medium text-[#f2f0ea]">$5.99</p>
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/65">one time / any pack</p>
                 </div>
-                <div className="border-l border-[#dbe2dd] pl-5">
-                  <p className="text-3xl font-medium text-[#1d302c]">30 sec</p>
-                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-[#788681]">preview every pack</p>
+                <div className="border-l border-white/10 pl-5">
+                  <p className="text-3xl font-medium text-[#f2f0ea]">30 sec</p>
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/65">preview every pack</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-[#cbd6cf] bg-white/95 px-5 py-4 shadow-[0_20px_40px_-24px_rgba(45,65,59,0.5)] md:block">
+          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-white/12 bg-[#0b1211] px-5 py-4 shadow-[0_20px_40px_-24px_rgba(45,65,59,0.5)] md:block">
             <p className="text-[9px] uppercase tracking-[0.25em] text-[#60736a]">Headphones recommended</p>
           </div>
         </div>
@@ -296,39 +296,39 @@ export function PacksBrowser() {
       />
 
       {selectedPack && (
-        <section id="pack-details" className="scroll-mt-24 border-t border-[#cbd6cf] px-5 py-24 md:px-10 lg:py-32">
+        <section id="pack-details" className="scroll-mt-24 border-t border-white/12 px-5 py-24 md:px-10 lg:py-32">
           <div className="mx-auto grid max-w-[1400px] gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="rounded-[2rem] border border-[#cbd6cf] bg-white/75 p-7 shadow-[0_24px_70px_-58px_rgba(45,65,59,0.36)] md:p-12">
-              <div className="flex flex-col justify-between gap-8 border-b border-[#dbe2dd] pb-10 sm:flex-row sm:items-start">
+            <div className="rounded-[2rem] border border-white/12 bg-[#0b1211] p-7 shadow-[0_24px_70px_-58px_rgba(45,65,59,0.36)] md:p-12">
+              <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-10 sm:flex-row sm:items-start">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#71807b]">Your selection</p>
-                  <h2 className="mt-4 text-4xl font-medium tracking-[-0.04em] text-[#1d302c] md:text-6xl">{selectedPack.name}</h2>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-white/65">Your selection</p>
+                  <h2 className="mt-4 text-4xl font-medium tracking-[-0.04em] text-[#f2f0ea] md:text-6xl">{selectedPack.name}</h2>
                 </div>
                 <div className="sm:text-right">
-                  <p className="text-4xl font-medium text-[#1d302c]">{selectedPack.price || '$5.99'}</p>
-                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-[#788681]">one-time purchase</p>
+                  <p className="text-4xl font-medium text-[#f2f0ea]">{selectedPack.price || '$5.99'}</p>
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.22em] text-white/65">one-time purchase</p>
                 </div>
               </div>
 
-              <p className="mt-10 max-w-3xl text-lg font-light leading-8 text-[#52635f]">{selectedPack.description}</p>
+              <p className="mt-10 max-w-3xl text-lg font-light leading-8 text-white/60">{selectedPack.description}</p>
 
-              <div className="mt-10 grid gap-8 border-y border-[#dbe2dd] py-8 sm:grid-cols-2">
+              <div className="mt-10 grid gap-8 border-y border-white/10 py-8 sm:grid-cols-2">
                 <div>
-                  <p className="text-[9px] uppercase tracking-[0.24em] text-[#788681]">Built for</p>
+                  <p className="text-[9px] uppercase tracking-[0.24em] text-white/65">Built for</p>
                   <ul className="mt-5 space-y-3">
                     {(selectedPack.bestFor || []).map((item) => (
                       <li key={item} className="flex items-center gap-3 text-sm capitalize text-[#445a53]">
-                        <Check weight="bold" className="size-4 text-[#548477]" />
+                        <Check weight="bold" className="size-4 text-[#b6ddcc]" />
                         {item}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <p className="text-[9px] uppercase tracking-[0.24em] text-[#788681]">Frequency states</p>
+                  <p className="text-[9px] uppercase tracking-[0.24em] text-white/65">Frequency states</p>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {(selectedPack.states || []).map((state) => (
-                      <span key={state.state || state} className="rounded-full border border-[#c7d4cc] bg-[#f4f7f3] px-4 py-2 text-xs text-[#52635f]">
+                      <span key={state.state || state} className="rounded-full border border-[#c7d4cc] bg-[#f4f7f3] px-4 py-2 text-xs text-white/60">
                         {displayState(state)}
                       </span>
                     ))}
@@ -336,7 +336,7 @@ export function PacksBrowser() {
                 </div>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-xs text-[#71807b]">
+              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-xs text-white/65">
                 <span>{selectedPack.trackCount || selectedPack.tracks?.length || 10} full audio sessions</span>
                 <span>{selectedPack.durationLabel || 'About 50 minutes total'}</span>
                 <span>Download after payment</span>
@@ -349,17 +349,17 @@ export function PacksBrowser() {
             >
               <div className="absolute right-0 top-0 size-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#b6ddcc]/40 blur-3xl" />
               <div className="relative">
-                <Sparkle weight="thin" className="size-8 text-[#548477]" />
-                <h2 className="mt-8 text-3xl font-medium tracking-[-0.035em] text-[#1d302c]">Make it yours.</h2>
-                <p className="mt-4 text-sm font-light leading-7 text-[#52635f]">
+                <Sparkle weight="thin" className="size-8 text-[#b6ddcc]" />
+                <h2 className="mt-8 text-3xl font-medium tracking-[-0.035em] text-[#f2f0ea]">Make it yours.</h2>
+                <p className="mt-4 text-sm font-light leading-7 text-white/60">
                   Enter the email where you want the download link. Stripe handles payment, and your pack is delivered immediately. No account needed.
                 </p>
 
-                <label className="mt-8 block text-[9px] uppercase tracking-[0.24em] text-[#66746f]" htmlFor="pack-email">
+                <label className="mt-8 block text-[9px] uppercase tracking-[0.24em] text-white/55" htmlFor="pack-email">
                   Delivery email
                 </label>
                 <div className="mt-3 flex items-center gap-3 border-b border-[#a9c1b5] pb-3 transition focus-within:border-[#315e55]">
-                  <EnvelopeSimple weight="thin" className="size-5 text-[#71807b]" />
+                  <EnvelopeSimple weight="thin" className="size-5 text-white/65" />
                   <input
                     id="pack-email"
                     required
@@ -368,7 +368,7 @@ export function PacksBrowser() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="you@example.com"
-                    className="w-full bg-transparent py-2 text-base font-light text-[#1d302c] outline-none placeholder:text-[#97a69f]"
+                    className="w-full bg-transparent py-2 text-base font-light text-[#f2f0ea] outline-none placeholder:text-[#97a69f]"
                   />
                 </div>
 
@@ -381,8 +381,8 @@ export function PacksBrowser() {
                   <ArrowRight className="size-4" />
                 </button>
 
-                <div className="mt-7 flex items-start gap-3 border-t border-[#c7d6cd] pt-6 text-xs font-light leading-5 text-[#63756d]">
-                  <ShieldCheck weight="thin" className="mt-0.5 size-5 shrink-0 text-[#548477]" />
+                <div className="mt-7 flex items-start gap-3 border-t border-white/12 pt-6 text-xs font-light leading-5 text-[#63756d]">
+                  <ShieldCheck weight="thin" className="mt-0.5 size-5 shrink-0 text-[#b6ddcc]" />
                   One payment. Secure checkout. The audio is an intentional listening tool, not medical treatment or a guaranteed outcome.
                 </div>
               </div>
@@ -391,11 +391,11 @@ export function PacksBrowser() {
         </section>
       )}
 
-      <section className="border-t border-[#cbd6cf] px-5 py-20 md:px-10">
+      <section className="border-t border-white/12 px-5 py-20 md:px-10">
         <div className="mx-auto grid max-w-[1400px] gap-10 md:grid-cols-[0.8fr_1.2fr] md:items-center">
           <div>
-            <Headphones weight="thin" className="size-9 text-[#548477]" />
-            <h2 className="mt-6 text-3xl font-medium tracking-[-0.035em] text-[#1d302c] md:text-4xl">Preview. Choose. Press play.</h2>
+            <Headphones weight="thin" className="size-9 text-[#b6ddcc]" />
+            <h2 className="mt-6 text-3xl font-medium tracking-[-0.035em] text-[#f2f0ea] md:text-4xl">Preview. Choose. Press play.</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-3">
             {[
@@ -403,10 +403,10 @@ export function PacksBrowser() {
               ['02', 'Choose', 'Open the pack that matches the state you want to practice.'],
               ['03', 'Download', 'Pay once and receive the full collection by email.']
             ].map(([number, title, copy]) => (
-              <div key={number} className="border-l border-[#cbd6cf] pl-5">
-                <p className="text-[9px] tracking-[0.2em] text-[#548477]">{number}</p>
+              <div key={number} className="border-l border-white/12 pl-5">
+                <p className="text-[9px] tracking-[0.2em] text-[#b6ddcc]">{number}</p>
                 <p className="mt-4 text-sm text-[#445a53]">{title}</p>
-                <p className="mt-2 text-xs font-light leading-6 text-[#71807b]">{copy}</p>
+                <p className="mt-2 text-xs font-light leading-6 text-white/65">{copy}</p>
               </div>
             ))}
           </div>

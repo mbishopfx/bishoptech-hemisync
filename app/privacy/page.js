@@ -1,6 +1,7 @@
 import { LegalPageShell } from '@/components/legal/LegalPageShell';
 import { PolicySection } from '@/components/legal/PolicySection';
 import { PolicyLink } from '@/components/legal/PolicyLink';
+import { PrivacyChoicesButton } from '@/components/analytics/AnalyticsConsent';
 
 export const metadata = {
   title: { absolute: 'Privacy Policy — Cognistration' },
@@ -27,6 +28,8 @@ export default function PrivacyPage() {
     <LegalPageShell
       title="Cognistration privacy policy"
       activeHref="/privacy"
+      lastUpdated="October 18, 2026"
+      lastUpdatedDate="2026-10-18"
       summary="This policy describes the information Cognistration receives when you create an account, use a session, contact support, make a purchase, or use an AI-assisted feature."
     >
       <PolicySection id="information-you-provide" title="Information you provide">
@@ -34,7 +37,7 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection id="automatic-information" title="Information collected automatically">
-        <p>Depending on how you use the site, hosting and security systems may receive technical information such as browser and device details, IP address, request and page activity, cookies sent with a request, and product analytics events. Your browser may also keep cookies, local-storage values, and playback or preview state on your device. Some of these values are needed for sign-in, playback, public-preview limits, security, or site measurement.</p>
+        <p>Depending on how you use the site, hosting and security systems may receive technical information such as browser and device details, IP address, request and page activity, and cookies sent with a request. Optional Google Analytics events, such as general page views, CTA clicks, form starts, and completed purchases, are collected only after you allow analytics. Prompts, journal entries, health details, and form contents are excluded from those events. Your browser may also keep cookies, local-storage values, and playback or preview state on your device.</p>
       </PolicySection>
 
       <PolicySection id="uses" title="How we use information">
@@ -48,7 +51,7 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection id="providers" title="Service providers">
-        <p>Cognistration relies on service providers for authentication and data storage, hosting, site analytics, payments, email or delivery, and AI processing. For example, Supabase supports authentication and storage, Stripe processes payments, Vercel hosts the site and provides analytics, and AI providers process prompts needed for selected features.</p>
+        <p>Cognistration relies on service providers for authentication and data storage, hosting, site analytics, payments, email or delivery, and AI processing. For example, Supabase supports authentication and storage, Stripe processes payments, Vercel hosts the site and provides site analytics, and Google Analytics receives the limited optional measurement events described above only if you allow analytics. AI providers process prompts needed for selected features.</p>
         <p>Information may be shared with a provider when it is reasonably necessary to perform the service you requested. Those providers may handle information under their own privacy terms.</p>
       </PolicySection>
 
@@ -61,7 +64,7 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection id="cookies-and-storage" title="Cookies and local storage">
-        <p>Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback and preview state, usage limits, and product operation. A short-lived functional cookie can help enforce unauthenticated public-preview limits.</p>
+        <p>Cognistration uses cookies and browser storage for sign-in continuity, preferences, playback and preview state, usage limits, and product operation. A short-lived functional cookie can help enforce unauthenticated public-preview limits. Optional Google Analytics storage stays off until you allow it. You can update your analytics choice at any time using <PrivacyChoicesButton className="underline underline-offset-2" />.</p>
         <p>You can block or remove cookies and local storage through your browser settings. Some features, including sign-in, saved state, playback continuity, and preview-limit enforcement, may not work correctly afterward. The <PolicyLink href="/cookies">Cookie Policy</PolicyLink> has more detail.</p>
       </PolicySection>
 

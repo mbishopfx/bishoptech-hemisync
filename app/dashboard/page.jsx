@@ -17,6 +17,9 @@ import { JournalView } from '@/components/dashboard/JournalView';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { getSubscriptionStatusLabel } from '@/lib/billing/entitlements';
 import { MemberWebMcpBridge } from '@/components/agent/MemberWebMcpBridge';
+import { pushCognistrationEvent } from '@/lib/analytics/client.mjs';
+
+const reportedWorkspaceCheckoutSessions = new Set();
 
 async function readApiResponse(response, fallbackMessage = 'Request failed') {
   const contentType = response.headers.get('content-type') || '';
@@ -114,12 +117,14 @@ export default function DashboardPage() {
         ? new URLSearchParams(window.location.search).get('session_id')
         : null;
 
+      let checkoutCompletionConfirmed = false;
       if (checkoutSessionId) {
         try {
           await authedFetch('/api/checkout/complete', {
             method: 'POST',
             body: JSON.stringify({ sessionId: checkoutSessionId })
           });
+          checkoutCompletionConfirmed = true;
         } catch (syncError) {
           console.warn('Checkout completion sync failed:', syncError?.message || syncError);
         }
@@ -129,6 +134,14 @@ export default function DashboardPage() {
       if (!accessData.access?.granted) {
         router.replace('/login?subscription=required&next=/dashboard');
         return;
+      }
+
+      if (checkoutCompletionConfirmed && checkoutSessionId && !reportedWorkspaceCheckoutSessions.has(checkoutSessionId)) {
+        reportedWorkspaceCheckoutSessions.add(checkoutSessionId);
+        pushCognistrationEvent('purchase', {
+          currency: 'USD',
+          items: [{ item_id: 'workspace_lifetime' }],
+        }, { pagePath: '/checkout/confirmed' });
       }
 
       const workspace = await refreshWorkspace();

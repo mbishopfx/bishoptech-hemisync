@@ -22,6 +22,7 @@
     "seed:demo-community": "node scripts/seed-demo-community.mjs"
   },
   "dependencies": {
+    "@lucasmarkes/hairline": "^0.5.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -65,12 +66,16 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.535",
+    "@remotion/player": "^4.0.535",
+    "@remotion/renderer": "^4.0.535",
     "autoprefixer": "10.4.19",
     "dotenv-cli": "^10.0.0",
     "eslint": "8.57.0",
     "eslint-config-next": "^15.5.14",
     "postcss": "8.4.38",
     "prettier": "3.3.3",
+    "remotion": "^4.0.535",
     "tailwindcss": "3.3.0",
     "typescript": "^5.9.3"
   }
