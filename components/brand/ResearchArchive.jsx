@@ -6,7 +6,8 @@ const DOCUMENTS = [
     detail:
       'A 29-page technical assessment written for the United States Army and held in CIA records. It describes hemispheric synchronisation, frequency-following behaviour, and the use of differing signals in each ear.',
     href: 'https://www.cia.gov/readingroom/docs/CIA-RDP96-00788R001700210016-5.pdf',
-    kind: 'PDF'
+    kind: 'PDF',
+    meta: '29 pages'
   },
   {
     id: 'CREST 0005511478',
@@ -15,7 +16,8 @@ const DOCUMENTS = [
     detail:
       'The catalogue entry for the Gateway assessment in the CIA declassification library — the record itself, unedited, with its release markings intact.',
     href: 'https://www.cia.gov/readingroom/document/0005511478',
-    kind: 'Record'
+    kind: 'Record',
+    meta: 'Release markings intact'
   },
   {
     id: 'STARGATE',
@@ -24,7 +26,8 @@ const DOCUMENTS = [
     detail:
       'Twenty-three years of federally funded research into altered-state perception, released as a document collection after the programme closed.',
     href: 'https://www.cia.gov/readingroom/collection/stargate',
-    kind: 'Collection'
+    kind: 'Collection',
+    meta: '23 years of funding'
   }
 ];
 
@@ -46,35 +49,56 @@ const CITATIONS = [
 export function ResearchArchive() {
   return (
     <div>
-      <div className="grid gap-px bg-white/10 md:grid-cols-3">
+      {/* Ledger header — the archive reads as a record list, not a marketing grid. */}
+      <div className="hidden grid-cols-[8.5rem_1fr_9rem] items-center gap-6 border-b border-white/15 pb-3 font-mono text-[9px] uppercase tracking-[0.26em] text-white/40 md:grid">
+        <span>Released</span>
+        <span>Document</span>
+        <span className="text-right">Source</span>
+      </div>
+
+      <div className="border-t border-white/10 md:border-t-0">
         {DOCUMENTS.map((doc, index) => (
           <a
             key={doc.id}
             href={doc.href}
             target="_blank"
             rel="noreferrer"
-            className="group relative flex flex-col justify-between gap-8 bg-[#080c0b] px-6 py-8 transition hover:bg-[#0d1412] sm:px-7"
+            className="group relative grid grid-cols-1 gap-3 border-b border-white/10 px-1 py-7 transition-colors hover:bg-white/[0.025] md:grid-cols-[8.5rem_1fr_9rem] md:items-start md:gap-6 md:px-2"
           >
-            <div>
-              <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-white/60">
-                <span>{String(index + 1).padStart(2, '0')} / {doc.kind}</span>
-                <span>{doc.year}</span>
-              </div>
-              <h3 className="mt-6 text-[19px] font-medium leading-snug tracking-[-0.02em] text-white">
+            {/* Accent rail on hover — a hairline, not a block */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-y-0 left-0 w-px bg-transparent transition-colors group-hover:bg-[#b6ddcc]/70"
+            />
+
+            <div className="flex items-baseline gap-3 md:block">
+              <span className="font-mono text-[11px] tabular-nums text-[#b6ddcc]/80">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="font-mono text-[13px] tabular-nums tracking-tight text-white/85 md:mt-1 md:block">
+                {doc.year}
+              </span>
+            </div>
+
+            <div className="md:pl-1">
+              <h3 className="text-[18px] font-medium leading-snug tracking-[-0.02em] text-white transition-colors group-hover:text-[#d8efe5]">
                 {doc.title}
               </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-white/65">{doc.detail}</p>
+              <p className="mt-2 max-w-[52ch] text-[13.5px] leading-relaxed text-white/55">{doc.detail}</p>
             </div>
-            <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/60">
-              <span className="truncate">{doc.id}</span>
-              <span className="shrink-0 text-[#b6ddcc] transition group-hover:translate-x-0.5">Open ↗</span>
+
+            <div className="flex items-center justify-between gap-3 md:flex-col md:items-end md:gap-2">
+              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">{doc.meta}</span>
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#b6ddcc] transition group-hover:translate-x-0.5">
+                {doc.kind} <span aria-hidden="true">↗</span>
+              </span>
             </div>
           </a>
         ))}
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/55">Peer-reviewed context</span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">Peer-reviewed context</span>
         {CITATIONS.map((citation) => (
           <a
             key={citation.href}
