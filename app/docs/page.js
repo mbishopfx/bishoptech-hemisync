@@ -273,7 +273,7 @@ export default function DocsPage() {
             <section id="connection" className="scroll-mt-28">
               <SectionIntro eyebrow="01 · Connect" title="Start with the remote endpoint">Add Cognistration as a remote HTTPS MCP server. This is a server URL, not a Git repository or marketplace source.</SectionIntro>
               <div className="min-w-0 grid-cols-1 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
-                <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
+                <div className="overflow-hidden liquid-card rounded-2xl">
                   <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><TerminalWindow className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">server configuration</span></div>
                   <pre className="overflow-x-auto p-5 text-xs leading-6 text-[#d7eadf]"><code>{`{
   "mcpServers": {
@@ -289,7 +289,7 @@ export default function DocsPage() {
                   <p className="mt-3 text-white/38">Keep credentials, card data, private session records, and bearer access keys out of tool arguments unless a specific authenticated flow explicitly asks for a scoped token.</p>
                 </div>
               </div>
-              <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
+              <div className="mt-5 overflow-hidden liquid-card rounded-2xl">
                 <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><Code className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">modern tools/list probe</span></div>
                 <pre className="overflow-x-auto p-5 text-[11px] leading-6 text-white/70"><code>{`curl --request POST \
   --url ${MCP_URL} \
@@ -303,19 +303,19 @@ export default function DocsPage() {
 
             <section id="commands" className="scroll-mt-28">
               <SectionIntro eyebrow="02 · Transport" title="RPC commands and protocol behavior">The endpoint supports the standard initialize handshake plus modern stateless requests with per-request metadata. Legacy protocol versions remain available for older compatible clients.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{PROTOCOL_COMMANDS.map((item) => <CommandRow key={item.command} item={item} />)}</div>
+              <div className="overflow-hidden liquid-card rounded-2xl">{PROTOCOL_COMMANDS.map((item) => <CommandRow key={item.command} item={item} />)}</div>
             </section>
 
             <section id="mcp-tools" className="scroll-mt-28">
               <SectionIntro eyebrow="03 · Remote MCP" title="Every public MCP tool">These definitions are rendered from the live contract in the repository. Open a row to inspect authorization, side-effect classification, consent boundary, arguments, and the output envelope.</SectionIntro>
               <div className="mb-5 flex flex-wrap gap-2 text-xs text-white/42"><span className="rounded-full border border-white/10 px-3 py-2">{MCP_TOOL_COUNT} tools</span><span className="rounded-full border border-white/10 px-3 py-2">server-owned bounds</span><span className="rounded-full border border-white/10 px-3 py-2">no arbitrary code or SQL</span></div>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_TOOLS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="remote MCP" />)}</div>
+              <div className="overflow-hidden liquid-card rounded-2xl">{MCP_TOOLS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="remote MCP" />)}</div>
             </section>
 
             <section id="webmcp" className="scroll-mt-28">
               <SectionIntro eyebrow="04 · Native browser" title="WebMCP tools on the visible page">The home and try surfaces progressively register bounded tools with the browser’s native model context. They operate on visible controls and keep audio, account, and payment edges user-controlled.</SectionIntro>
               <div className="min-w-0 grid-cols-1 grid gap-5 lg:grid-cols-2">
-                <div className="rounded-2xl border border-white/12 bg-[#182723] p-5">
+                <div className="liquid-card rounded-2xl p-5">
                   <div className="flex items-start justify-between gap-4"><div><Browser className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Public page bridge</h3></div><span className="font-mono text-[9px] text-white/60">v{WEBMCP_CONTRACT_VERSION}</span></div>
                   <p className="mt-3 text-xs leading-5 text-white/65"><code>{WEBMCP_CONTRACT_ID}</code> · {WEBMCP_TOOL_DEFINITIONS.length} tools registered on the visible tone machine.</p>
                   <div className="mt-5 border-t border-white/10 pt-4"><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Registration shape</p><pre className="mt-3 overflow-x-auto text-[10px] leading-5 text-white/70"><code>{`document.modelContext.registerTool({
@@ -330,8 +330,8 @@ export default function DocsPage() {
                   <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-5 text-white/65">Private workspace reads are scoped to the current member. Creating a private session or starting an audio render requires an explicit confirmation in the current browser context.</p>
                 </div>
               </div>
-              <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{WEBMCP_TOOL_DEFINITIONS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="public WebMCP" />)}</div>
-              <details className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
+              <div className="mt-5 overflow-hidden liquid-card rounded-2xl">{WEBMCP_TOOL_DEFINITIONS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="public WebMCP" />)}</div>
+              <details className="mt-5 overflow-hidden liquid-card rounded-2xl">
                 <summary className="cursor-pointer list-none px-4 py-4 text-sm text-white/65 [&::-webkit-details-marker]:hidden">Show the {MEMBER_WEBMCP_TOOL_DEFINITIONS.length} authenticated member tools <span className="ml-2 text-white/55">+</span></summary>
                 <div className="border-t border-white/10">{MEMBER_WEBMCP_TOOL_DEFINITIONS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="authenticated member WebMCP" />)}</div>
               </details>
@@ -339,24 +339,24 @@ export default function DocsPage() {
 
             <section id="resources" className="scroll-mt-28">
               <SectionIntro eyebrow="05 · Readable surfaces" title="Resources and interactive UI">Resources are addressable by stable URI. The {MCP_RESOURCES.filter((resource) => resource.uri.startsWith('ui://')).length} <code className="text-[#d7eadf]">ui://</code> entries are MCP Apps resources; they render in a compatible host and keep their user actions inside the declared boundary.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_RESOURCES.map((resource) => <ResourceRow key={resource.uri} resource={resource} />)}</div>
+              <div className="overflow-hidden liquid-card rounded-2xl">{MCP_RESOURCES.map((resource) => <ResourceRow key={resource.uri} resource={resource} />)}</div>
             </section>
 
             <section id="skills" className="scroll-mt-28">
               <SectionIntro eyebrow="06 · Reusable guidance" title="Skills">The server advertises the MCP skills extension. Skills are routing guidance, not authorization; they never grant access to private records, payment credentials, or side effects.</SectionIntro>
               <div className="mb-5 flex flex-wrap gap-2 text-xs text-white/42"><span className="rounded-full border border-white/10 px-3 py-2">{skillSummary.extension}</span><span className="rounded-full border border-white/10 px-3 py-2">catalog v{skillSummary.version}</span></div>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{skills.map((skill) => <SkillRow key={skill.uri} skill={skill} />)}</div>
+              <div className="overflow-hidden liquid-card rounded-2xl">{skills.map((skill) => <SkillRow key={skill.uri} skill={skill} />)}</div>
             </section>
 
             <section id="prompts" className="scroll-mt-28">
               <SectionIntro eyebrow="07 · Prompt template" title="Prompt templates">Use <code className="text-[#d7eadf]">prompts/get</code> when a host wants a reusable, bounded starting message for the public tone catalog.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="min-w-0 grid-cols-1 grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/65">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
+              <div className="overflow-hidden liquid-card rounded-2xl">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="min-w-0 grid-cols-1 grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/65">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
             </section>
 
             <section id="routes" className="scroll-mt-28">
               <SectionIntro eyebrow="08 · HTTP map" title="Public routes around the contract">These are the supported discovery and compatibility routes that surround MCP. Internal audio, database, and admin routes are intentionally not presented as public agent commands.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{HTTP_SURFACES.map((route) => <RouteRow key={`${route.method}-${route.path}`} route={route} />)}</div>
-              <div className="mt-5 overflow-hidden rounded-2xl border border-white/12 bg-[#182723]"><div className="border-b border-white/10 px-4 py-3"><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">supporting compatibility families</span></div>{SUPPORTING_ROUTE_FAMILIES.map((route) => <RouteRow key={route.path} route={{ ...route, label: 'Supporting adapter' }} />)}</div>
+              <div className="overflow-hidden liquid-card rounded-2xl">{HTTP_SURFACES.map((route) => <RouteRow key={`${route.method}-${route.path}`} route={route} />)}</div>
+              <div className="mt-5 overflow-hidden liquid-card rounded-2xl"><div className="border-b border-white/10 px-4 py-3"><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">supporting compatibility families</span></div>{SUPPORTING_ROUTE_FAMILIES.map((route) => <RouteRow key={route.path} route={{ ...route, label: 'Supporting adapter' }} />)}</div>
             </section>
 
             <section id="safety" className="scroll-mt-28">
@@ -367,7 +367,7 @@ export default function DocsPage() {
                   [LockKey, 'Credentials', 'Signup credentials are entered and submitted by the person in the in-platform form. Card data never enters MCP arguments.'],
                   [Database, 'Private data', 'Public tools do not expose diary text, private sessions, arbitrary SQL, or another member’s workspace records.'],
                   [BookOpenText, 'Claims', 'Tone labels and science content are descriptive and educational. They do not make medical, diagnostic, or guaranteed-performance claims.']
-                ].map(([Icon, title, copy]) => <div key={title} className="rounded-2xl border border-white/12 bg-[#182723] p-5"><Icon className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-sm font-medium text-white">{title}</h3><p className="mt-2 text-xs leading-5 text-white/65">{copy}</p></div>)}
+                ].map(([Icon, title, copy]) => <div key={title} className="liquid-card rounded-2xl p-5"><Icon className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-sm font-medium text-white">{title}</h3><p className="mt-2 text-xs leading-5 text-white/65">{copy}</p></div>)}
               </div>
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5 text-xs text-white/42"><span>Canonical policy: <Link href="/health-warning" className="text-[#b6ddcc] hover:text-white">/health-warning</Link></span><Link href="/agent-instructions.md" className="inline-flex items-center gap-2 text-[#b6ddcc] hover:text-white">Read agent instructions <ArrowRight className="size-3.5" aria-hidden="true" /></Link></div>
             </section>

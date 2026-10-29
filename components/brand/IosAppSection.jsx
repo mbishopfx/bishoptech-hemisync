@@ -30,7 +30,7 @@ export function IosAppSection() {
       <div>
         <div className="relative mx-auto w-full max-w-[260px] lg:mx-0">
           <div className="absolute -inset-6 rounded-[38px] bg-[#6f8ff0]/12 blur-2xl" aria-hidden="true" />
-          <div className="relative overflow-hidden rounded-[30px] border border-white/20 shadow-[0_28px_70px_rgba(0,0,0,0.55)]">
+          <div className="liquid-card relative overflow-hidden rounded-[30px] shadow-[0_28px_70px_rgba(0,0,0,0.55)]">
             <Image
               src="/images/brand/cognistration-icon.png"
               alt="The Cognistration iOS app icon"

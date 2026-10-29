@@ -10,7 +10,7 @@ import { LiquidHeader } from '@/components/layout/LiquidHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 import { ScrollRevealHeading } from '@/components/marketing/ScrollRevealHeading';
 import { AppStoreBadge } from '@/components/brand/AppStoreBadge';
-import { HairlineFigure } from '@/components/brand/HairlineFigure';
+import { AudioFigure } from '@/components/brand/AudioFigure';
 import { IosAppSection } from '@/components/brand/IosAppSection';
 import { ResearchArchive } from '@/components/brand/ResearchArchive';
 import { SignalLab } from '@/components/brand/SignalLab';
@@ -147,13 +147,13 @@ export default function LandingPage() {
                   {...fade(0.06)}
                   className="text-[clamp(2.75rem,6vw,5.25rem)] font-medium leading-[0.95] tracking-[-0.055em] lg:max-w-[18ch]"
                 >
-                  Two signals. One difference. That is the whole method.
+                  Two signals enter. Your consciousness makes the third.
                 </motion.h1>
 
                 <motion.p {...fade(0.12)} className="mt-8 max-w-xl text-[17px] leading-8 text-white/60 sm:text-lg">
-                  A pure carrier tone in the left ear, a different one in the right. The offset between them becomes a beat,
-                  and the beat is what you listen to. No narration, no guidance track, no subscription — just a signal you
-                  set, at a pace you choose.
+                  One pure tone arrives at your left ear. A second, offset by a few hertz, arrives at your right. Neither
+                  ear ever hears the beat — your brain constructs it from the difference. That construction is the whole
+                  method: no narrator, no guidance track, no subscription. Just a signal you set, at a pace you choose.
                 </motion.p>
 
                 <motion.div {...fade(0.18)} className="mt-10 flex flex-wrap items-center gap-3">
@@ -188,7 +188,7 @@ export default function LandingPage() {
                   id="session"
                   data-cursor-surface
                   {...fade(0.3)}
-                  className="hero-session-shell mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5"
+                  className="hero-session-shell mt-12 rounded-2xl p-4 sm:p-5"
                 >
                   <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
                     Or describe the moment and let it pick a band
@@ -272,13 +272,13 @@ export default function LandingPage() {
 
             <div className="relative">
               <div className="pointer-events-none absolute -inset-8 rounded-[40px] bg-[#b6ddcc]/5 blur-3xl" aria-hidden="true" />
-              <HairlineFigure
-                figure="terrain"
-                label="An interactive field of eighty-one pillars rising and falling around the pointer"
-                intensity={0.55}
+              <AudioFigure
+                variant="binaural"
+                label="The left carrier plotted against the right carrier. The curve precesses at the beat frequency."
               />
               <p className="mt-4 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
-                Move the pointer across the field — each pillar is a rate you can hold
+                Left carrier against right — the curve precesses at the beat. Left to right moves through the bands; bottom
+                to top sets the carrier.
               </p>
             </div>
           </div>
@@ -292,19 +292,18 @@ export default function LandingPage() {
         >
           <div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[0.9fr_1fr] lg:items-center lg:gap-24 lg:px-12">
             <div className="order-2 relative lg:order-1">
-              <HairlineFigure
-                figure="phosphor"
-                label="A dot matrix that plays a repeating loop and fades where the pointer paints it"
-                intensity={0.6}
+              <AudioFigure
+                variant="interference"
+                label="Both carriers mirrored across a centre line, with the envelope where they meet."
                 palette={{
-                  '--hairline-hi': '#d7eadf',
-                  '--hairline-edge': '#7fa596',
-                  '--hairline-mid': '#2f4a43',
-                  '--hairline-lo': '#101a17'
+                  hi: '#d7eadf',
+                  edge: '#7fa596',
+                  mid: '#2f4a43',
+                  lo: '#101a17'
                 }}
               />
               <p className="mt-4 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
-                A repeating signal, drawn as a trace — paint it with the pointer
+                Both carriers mirrored across the centre line — the envelope is where they meet
               </p>
             </div>
 
@@ -446,13 +445,12 @@ export default function LandingPage() {
 
             <div className="relative">
               <div className="pointer-events-none absolute -inset-8 rounded-[40px] bg-[#b6ddcc]/5 blur-3xl" aria-hidden="true" />
-              <HairlineFigure
-                figure="exploded"
-                label="An app window separated into four layers that open as the pointer crosses them"
-                intensity={0.5}
+              <AudioFigure
+                variant="spectrum"
+                label="A fundamental tone and its partials, split into left and right by the detune amount."
               />
               <p className="mt-4 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
-                Four layers, opened by the pointer — carrier, beat, texture, master
+                One fundamental and its partials — the split widens as the beat widens
               </p>
             </div>
           </div>
@@ -534,7 +532,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-white/12 bg-[#0b1211] p-8 sm:p-10">
+            <div className="liquid-card rounded-[24px] p-8 sm:p-10">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#b6ddcc]">Cognistration platform</p>
               <div className="mt-6 flex items-end gap-3">
                 <span className="text-[clamp(3.5rem,6vw,5rem)] font-medium leading-none tracking-[-0.06em] text-white">

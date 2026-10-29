@@ -6,7 +6,7 @@ import { ArrowRight, Check, Headphones, Pause, Play } from '@phosphor-icons/reac
 import Link from 'next/link';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
-import { HairlineFigure } from '@/components/brand/HairlineFigure';
+import { AudioFigure } from '@/components/brand/AudioFigure';
 import { redirectToStripeCheckout } from '@/lib/frontend/checkout';
 import { isHomepageGeneratedTone } from '@/lib/audio/homepage-tones';
 import { TONE_PACKS, getTonePackPriceId } from '@/lib/audio/tone-packs.db.mjs';
@@ -282,7 +282,7 @@ export default function PricingPage() {
 
               <motion.aside
                 {...fade(0.14)}
-                className="relative rounded-[28px] border border-white/12 bg-[#0b1211] p-8 sm:p-10"
+                className="liquid-card relative rounded-[28px] p-8 sm:p-10"
               >
                 <div className="pointer-events-none absolute -inset-6 rounded-[40px] bg-[#b6ddcc]/5 blur-3xl" aria-hidden="true" />
                 <div className="relative">
@@ -321,13 +321,12 @@ export default function PricingPage() {
           <div className="mx-auto grid max-w-[1400px] gap-12 px-5 sm:px-8 lg:grid-cols-[0.9fr_1fr] lg:items-center lg:gap-20 lg:px-12">
             <div className="relative">
               <div className="pointer-events-none absolute -inset-8 rounded-[40px] bg-[#b6ddcc]/5 blur-3xl" aria-hidden="true" />
-              <HairlineFigure
-                figure="vault"
-                label="A vault door whose locking bolts retract as the pointer crosses it"
-                intensity={0.55}
+              <AudioFigure
+                variant="phase"
+                label="Two arcs running at the two carrier rates. The gap between them is the beat frequency."
               />
               <p className="mt-4 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
-                One unlock — the pointer opens the mechanism
+                Two arcs, one per carrier — the gap between them is the beat
               </p>
             </div>
             <div>
@@ -374,7 +373,7 @@ export default function PricingPage() {
             <form
               data-analytics-form="workshop_checkout"
               onSubmit={handleWorkshopCheckout}
-              className="rounded-[24px] border border-white/12 bg-[#0b1211] p-6 sm:p-8"
+              className="liquid-card rounded-[24px] p-6 sm:p-8"
             >
               <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-6">
                 <div>
@@ -434,7 +433,7 @@ export default function PricingPage() {
               </div>
 
               <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2">
-                <div className="rounded-[22px] border border-white/12 bg-[#0b1211] p-6">
+                <div className="liquid-card rounded-[22px] p-6">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#b6ddcc]">Your current preview</p>
                   {activePreviewTone ? (
                     <>
@@ -458,7 +457,7 @@ export default function PricingPage() {
                   )}
                 </div>
 
-                <div className="rounded-[22px] border border-white/12 bg-white/[0.02] p-6">
+                <div className="liquid-card rounded-[22px] p-6">
                   <div className="flex items-center justify-between gap-4">
                     <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#b6ddcc]">Featured library</p>
                     <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">30-second samples</span>
@@ -535,7 +534,7 @@ export default function PricingPage() {
                 <Link
                   key={pack.slug}
                   href="/packs"
-                  className="group overflow-hidden rounded-[22px] border border-white/12 bg-[#0b1211] transition hover:-translate-y-1 hover:border-[#b6ddcc]/40"
+                  className="liquid-card group overflow-hidden rounded-[22px] transition hover:-translate-y-1"
                 >
                   <div className={`aspect-[1.15] bg-gradient-to-br ${packColors[index]} p-4 text-white`}>
                     <div className="flex h-full flex-col justify-between">
@@ -556,7 +555,7 @@ export default function PricingPage() {
         {/* ── Close ────────────────────────────────────────────── */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
-            <div className="rounded-[28px] border border-white/12 bg-[#0b1211] px-7 py-12 sm:px-12 sm:py-16">
+            <div className="liquid-card rounded-[28px] px-7 py-12 sm:px-12 sm:py-16">
               <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
                 <div>
                   <h2 className="max-w-[20ch] text-[clamp(1.75rem,3vw,2.75rem)] font-medium leading-[1.04] tracking-[-0.045em] text-white">

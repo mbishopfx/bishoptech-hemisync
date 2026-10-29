@@ -194,7 +194,7 @@ export default function ServicesPage() {
           {voiceTrustPoints.map((point) => (
             <article
               key={point.title}
-              className="rounded-[2rem] border border-white/5 bg-zinc-900/35 p-6 backdrop-blur-3xl"
+              className="liquid-card rounded-[2rem] p-6"
             >
               <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">Voice trust</p>
               <h2 className="mt-4 text-2xl font-light tracking-tight text-white">{point.title}</h2>
@@ -207,7 +207,7 @@ export default function ServicesPage() {
           {voiceOutcomes.map((outcome) => (
             <article
               key={outcome.title}
-              className="rounded-[2rem] border border-cyan-500/10 bg-cyan-500/5 p-6 backdrop-blur-3xl"
+              className="liquid-card rounded-[2rem] p-6 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.12),inset_0_1px_0_rgba(255,255,255,0.07)]"
             >
               <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">Why it matters</p>
               <h2 className="mt-4 text-2xl font-light tracking-tight text-white">{outcome.title}</h2>
@@ -223,7 +223,7 @@ export default function ServicesPage() {
             return (
               <article
                 key={offering.title}
-                className="rounded-[2rem] border border-white/5 bg-zinc-900/40 p-6 backdrop-blur-3xl transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.04]"
+                className="liquid-card relative rounded-[2rem] p-6 transition-transform duration-300 hover:-translate-y-1"
               >
                 <div className="mb-5 inline-flex size-11 items-center justify-center rounded-2xl border border-cyan-500/15 bg-cyan-500/10 text-cyan-300">
                   <Icon className="size-5" />
@@ -236,15 +236,15 @@ export default function ServicesPage() {
         </section>
 
         <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[2rem] border border-white/5 bg-zinc-900/40 p-8 backdrop-blur-3xl">
+          <div className="liquid-card rounded-[2rem] p-8">
             <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">Working approach</p>
             <h2 className="mt-3 text-3xl md:text-4xl font-light tracking-tight text-white">
               The goal is less friction, more finished product.
             </h2>
             <div className="mt-8 space-y-4">
               {processSteps.map((step, index) => (
-                <div key={step} className="flex gap-4 rounded-2xl border border-white/5 bg-black/20 p-4">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
+                <div key={step} className="flex gap-4 rounded-2xl bg-black/25 p-4">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
                     0{index + 1}
                   </div>
                   <p className="text-sm leading-7 text-white/55">{step}</p>
@@ -253,7 +253,7 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          <aside className="rounded-[2rem] border border-white/5 bg-zinc-900/40 p-8 backdrop-blur-3xl">
+          <aside className="liquid-card rounded-[2rem] p-8">
             <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-cyan-400">Good fit for</p>
             <ul className="mt-5 space-y-4 text-sm leading-7 text-white/55">
               <li>Founders who want a calm technical partner instead of a hype-first agency.</li>
@@ -263,7 +263,7 @@ export default function ServicesPage() {
               <li>Projects where trust, clarity, and consistency matter more than flashy claims.</li>
             </ul>
 
-            <div className="mt-8 rounded-2xl border border-cyan-500/15 bg-cyan-500/5 p-5">
+            <div className="mt-8 rounded-2xl bg-cyan-500/[0.06] p-5 shadow-[inset_0_0_0_1px_rgba(34,211,238,0.14)]">
               <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Need a direct next step?</p>
               <p className="mt-3 text-sm leading-7 text-white/55">
                 Send a short project note and BishopTech will reply through the published contact path.

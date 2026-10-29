@@ -397,6 +397,53 @@ main section[id] {
   pointer-events: none;
 }
 
+/* Content cards use the same liquid-glass language as the cockpit panels, but
+ * at a lighter blur so a page full of them stays cheap to composite. Crucially
+ * there is no 1px border: definition comes from the ::before gradient ring,
+ * which brightens at the top and bottom edges the way a real glass edge catches
+ * light, instead of drawing a uniform hairline the eye reads as a box. */
+.liquid-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgba(215, 234, 223, 0.07), transparent 46%),
+    linear-gradient(155deg, rgba(34, 56, 49, 0.55), rgba(9, 22, 19, 0.58));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -24px 48px rgba(3, 12, 10, 0.18),
+    0 26px 80px -60px rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+
+.liquid-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.2px;
+  background: linear-gradient(
+    170deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.1) 14%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0) 62%,
+    rgba(182, 221, 204, 0.12) 86%,
+    rgba(182, 221, 204, 0.24) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.liquid-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* The menu is a viewport layer, not part of the fixed header's layout. The
  * shared glass surface needs a positioned containing block for its highlight,
  * but must not override the menu's fixed placement or scroll surface. */

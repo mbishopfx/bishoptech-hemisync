@@ -139,7 +139,7 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
               ref={(element) => {
                 cardRefs.current[index] = element;
               }}
-              className={`relative flex min-h-[35rem] w-[min(82vw,360px)] shrink-0 snap-center flex-col rounded-[1.75rem] border bg-white/[0.06] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_18px_42px_rgba(45,65,59,0.08)] backdrop-blur-xl transition-[border-color,box-shadow,transform] duration-[240ms] sm:w-[360px] ${isSelected ? 'border-[#b6ddcc]/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.94),0_24px_68px_rgba(45,65,59,0.16)]' : 'border-white/12'}`}
+              className={`liquid-card relative flex min-h-[35rem] w-[min(82vw,360px)] shrink-0 snap-center flex-col rounded-[1.75rem] p-3 transition-[box-shadow,transform] duration-[240ms] sm:w-[360px] ${isSelected ? 'shadow-[inset_0_0_0_1px_rgba(182,221,204,0.45),0_24px_68px_rgba(0,0,0,0.45)]' : ''}`}
             >
               <div className={`relative aspect-square overflow-hidden rounded-[1.25rem] bg-gradient-to-br ${COVER_STYLES[index % COVER_STYLES.length]} p-6`}>
                 <div

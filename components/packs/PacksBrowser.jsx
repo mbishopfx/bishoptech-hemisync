@@ -238,7 +238,7 @@ export function PacksBrowser() {
         </div>
 
         <div className="catalog-reveal relative opacity-0">
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.04] p-6 shadow-[0_40px_100px_-55px_rgba(45,65,59,0.28)] backdrop-blur-sm md:p-9">
+          <div className="liquid-card relative overflow-hidden rounded-[2rem] p-6 md:p-9">
             <div className="absolute inset-0 bg-[linear-gradient(rgba(84,132,119,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(84,132,119,0.06)_1px,transparent_1px)] bg-[size:44px_44px]" />
             <div className="relative">
               <div className="flex items-start justify-between border-b border-white/10 pb-7">
@@ -298,7 +298,7 @@ export function PacksBrowser() {
       {selectedPack && (
         <section id="pack-details" className="scroll-mt-24 border-t border-white/12 px-5 py-24 md:px-10 lg:py-32">
           <div className="mx-auto grid max-w-[1400px] gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="rounded-[2rem] border border-white/12 bg-[#0b1211] p-7 shadow-[0_24px_70px_-58px_rgba(45,65,59,0.36)] md:p-12">
+            <div className="liquid-card rounded-[2rem] p-7 md:p-12">
               <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-10 sm:flex-row sm:items-start">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.3em] text-white/65">Your selection</p>

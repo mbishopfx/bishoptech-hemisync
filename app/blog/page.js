@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpenText } from '@phosphor-icons/react/dist/ssr';
-import { RecentPostsCarousel } from '@/components/blog/recent-posts-carousel';
-import { getRecentBlogPosts } from '@/lib/blog/posts';
+import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
+import { blogPosts } from '@/lib/blog/posts';
 import { buildAbsoluteUrl } from '@/lib/seo';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
@@ -43,35 +42,17 @@ const blogJsonLd = {
   }
 };
 
-function BlogCard({ post }) {
-  return (
-    <article className="group flex h-full flex-col rounded-[1.75rem] border border-white/12 bg-white/[0.05] p-6 shadow-[0_16px_42px_rgba(45,65,59,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#9db9aa] hover:bg-white/[0.06]">
-      <div className="flex items-center justify-between gap-4 text-xs text-white/50">
-        <span className="font-medium">{post.category}</span>
-        <span>{post.readTime}</span>
-      </div>
-      <h2 className="mt-5 text-2xl font-medium leading-tight tracking-[-0.04em] text-[#f2f0ea]">
-        {post.title}
-      </h2>
-      <p className="mt-4 flex-1 text-sm leading-7 text-white/60">{post.excerpt}</p>
-      <div className="mt-7 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
-        <span className="text-xs text-white/50">
-          {new Date(post.publishedAt).toLocaleDateString()}
-        </span>
-        <Link
-          className="inline-flex items-center gap-2 text-sm font-medium text-[#b6ddcc] transition group-hover:text-[#f2f0ea]"
-          href={post.path}
-        >
-          Read post <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" weight="bold" />
-        </Link>
-      </div>
-    </article>
-  );
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Deterministic formatting so the server and client never disagree on locale.
+function formatDate(iso) {
+  const [year, month, day] = String(iso).split('-').map(Number);
+  if (!year || !month || !day) return '';
+  return `${day} ${MONTHS[month - 1]} ${year}`;
 }
 
 export default function BlogArchivePage() {
-  const recentPosts = getRecentBlogPosts(6);
-  const featuredPosts = getRecentBlogPosts(12);
+  const posts = [...blogPosts].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
   return (
     <div className="blog-light-theme min-h-[100dvh] overflow-x-hidden bg-[#080c0b] text-[#f2f0ea] selection:bg-[#b6ddcc]/60">
@@ -81,69 +62,93 @@ export default function BlogArchivePage() {
       />
       <PublicHeader theme="dark" />
 
-      <main className="relative mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
-        <section className="border-b border-white/12 pb-16 sm:pb-20">
-          <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-24">
-            <div className="max-w-4xl">
-              <h1 className="max-w-4xl text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-7xl">
-                Ideas for making attention feel more deliberate.
-              </h1>
-              <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">
-                Clear writing on consciousness mechanics, listening practice, and the choices behind Cognistration. Read at your own pace, then take one useful idea back into the day.
-              </p>
-              <div className="mt-9 flex flex-wrap gap-4">
-                <Link href="/tutorial" className="inline-flex items-center gap-2 rounded-full bg-[#1d302c] px-5 py-3.5 text-sm font-medium text-white transition hover:bg-[#315e55] active:translate-y-px">
-                  Start with the tutorial <ArrowRight className="size-4" weight="bold" />
-                </Link>
-                <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-[#b6ddcc] underline decoration-[#315e55]/30 underline-offset-8 transition hover:text-[#f2f0ea]">
-                  Explore Cognistration
-                </Link>
-              </div>
-            </div>
+      <main className="relative mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
+        <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-white/12 pb-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">The archive</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+            {posts.length} articles · newest first
+          </p>
+        </div>
 
-            <div className="border-l border-white/12 pl-7 lg:pl-10">
-              <BookOpenText className="size-9 text-[#b6ddcc]" weight="duotone" aria-hidden="true" />
-              <p className="mt-7 max-w-sm text-lg leading-8 text-white/70">
-                The archive moves between practical routines and the research questions that make those routines worth examining.
-              </p>
-              <p className="mt-5 max-w-sm text-sm leading-7 text-white/50">
-                Evidence-aware does not mean distant. It means being precise about what a session can support and what it cannot prove.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <RecentPostsCarousel posts={recentPosts} />
-
-        <section className="space-y-8">
-          <div className="flex flex-col gap-4 border-b border-white/12 pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#b6ddcc]">The archive</p>
-              <h2 className="mt-2 text-4xl font-medium leading-tight tracking-[-0.055em] text-[#f2f0ea] sm:text-5xl">All posts, newest first.</h2>
-            </div>
-            <p className="max-w-md text-sm leading-7 text-white/65 sm:text-right">
-              Practical guides, product thinking, and long-form notes about how attention, sensation, and context shape a moment.
-            </p>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {featuredPosts.map((post) => (
-              <BlogCard key={post.slug} post={post} />
+        <table className="w-full border-collapse text-left">
+          <caption className="sr-only">All Cognistration articles, newest first</caption>
+          <thead>
+            <tr className="border-b border-white/12">
+              <th
+                scope="col"
+                className="py-4 pr-6 text-left font-mono text-[10px] font-normal uppercase tracking-[0.22em] text-white/40"
+              >
+                Article
+              </th>
+              <th
+                scope="col"
+                className="hidden py-4 pr-6 text-left font-mono text-[10px] font-normal uppercase tracking-[0.22em] text-white/40 md:table-cell"
+              >
+                Category
+              </th>
+              <th
+                scope="col"
+                className="hidden py-4 pr-6 text-left font-mono text-[10px] font-normal uppercase tracking-[0.22em] text-white/40 sm:table-cell"
+              >
+                Read
+              </th>
+              <th
+                scope="col"
+                className="py-4 text-right font-mono text-[10px] font-normal uppercase tracking-[0.22em] text-white/40"
+              >
+                Published
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {posts.map((post) => (
+              <tr
+                key={post.slug}
+                className="group border-b border-white/[0.08] align-top transition-colors hover:bg-white/[0.03]"
+              >
+                <td className="py-5 pr-6">
+                  <Link
+                    href={post.path}
+                    className="inline-flex items-start gap-2 text-[15px] font-medium leading-snug text-[#f2f0ea] transition-colors group-hover:text-[#b6ddcc] sm:text-base"
+                  >
+                    <span>{post.title}</span>
+                    <ArrowRight
+                      className="mt-1 size-3.5 shrink-0 -translate-x-1 opacity-0 transition duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+                      weight="bold"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                  <p className="mt-1.5 max-w-[68ch] text-[13px] leading-6 text-white/40">{post.excerpt}</p>
+                </td>
+                <td className="hidden py-5 pr-6 md:table-cell">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/45">{post.category}</span>
+                </td>
+                <td className="hidden whitespace-nowrap py-5 pr-6 font-mono text-[11px] tabular-nums text-white/45 sm:table-cell">
+                  {post.readTime}
+                </td>
+                <td className="whitespace-nowrap py-5 text-right font-mono text-[11px] tabular-nums text-white/45">
+                  {formatDate(post.publishedAt)}
+                </td>
+              </tr>
             ))}
-          </div>
-        </section>
+          </tbody>
+        </table>
 
-        <section className="border-t border-white/12 pt-16">
-          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
-              <h2 className="max-w-2xl text-3xl font-medium leading-tight tracking-[-0.045em] sm:text-4xl">Read a little. Listen a little. Keep what helps.</h2>
-              <p className="mt-4 max-w-xl text-base leading-7 text-white/60">When you are ready to move from an idea into a session, the public tone library is open to explore.</p>
-            </div>
-            <Link href="/packs" className="inline-flex items-center gap-2 text-sm font-medium text-[#b6ddcc] underline decoration-[#315e55]/30 underline-offset-8 transition hover:text-[#f2f0ea]">
-              Browse the tone library <ArrowRight className="size-4" weight="bold" />
-            </Link>
-          </div>
-        </section>
+        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/12 pt-6 font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+          <span>Read at your own pace</span>
+          <Link
+            href="/tutorial"
+            className="text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4 transition hover:decoration-[#b6ddcc]"
+          >
+            Start with the tutorial
+          </Link>
+          <Link
+            href="/packs"
+            className="text-[#b6ddcc] underline decoration-[#b6ddcc]/30 underline-offset-4 transition hover:decoration-[#b6ddcc]"
+          >
+            Browse the tone library
+          </Link>
+        </div>
       </main>
 
       <PublicTrustFooter />

@@ -115,7 +115,7 @@ const resources = [
 
 function Section({ title, paragraphs = [], callout, subheading, subparagraphs = [] }) {
   return (
-    <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+    <section className="space-y-6 liquid-card rounded-3xl p-7 md:p-8">
       <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
         {title}
       </h2>
@@ -165,7 +165,7 @@ function ResourceCard({ title, note, href }) {
 export default function CalmFirstSessionSetupPost() {
   return (
     <article className="space-y-12">
-      <header className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
+      <header className="relative overflow-hidden liquid-card rounded-3xl px-7 py-10 md:px-10 md:py-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
@@ -182,7 +182,7 @@ export default function CalmFirstSessionSetupPost() {
         </div>
       </header>
 
-      <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <section className="space-y-6 liquid-card rounded-3xl p-7 md:p-8">
         <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           A good first session should feel easy to understand
         </h2>
@@ -199,7 +199,7 @@ export default function CalmFirstSessionSetupPost() {
         ))}
       </div>
 
-      <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <section className="space-y-6 liquid-card rounded-3xl p-7 md:p-8">
         <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           Useful pages to keep nearby
         </h2>
@@ -210,7 +210,7 @@ export default function CalmFirstSessionSetupPost() {
         </div>
       </section>
 
-      <section className="grid gap-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:grid-cols-[1.2fr_0.8fr] md:p-8">
+      <section className="grid gap-6 liquid-card rounded-3xl p-7 md:grid-cols-[1.2fr_0.8fr] md:p-8">
         <div className="space-y-4">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400">
             Try this
@@ -235,7 +235,7 @@ export default function CalmFirstSessionSetupPost() {
         </div>
       </section>
 
-      <section className="space-y-5 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <section className="space-y-5 liquid-card rounded-3xl p-7 md:p-8">
         <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           The real goal is a routine you can trust
         </h2>
@@ -252,7 +252,7 @@ export default function CalmFirstSessionSetupPost() {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-white/5 bg-gradient-to-br from-cyan-500/10 to-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <section className="liquid-card rounded-3xl shadow-[inset_0_0_0_1px_rgba(34,211,238,0.12)] p-7 md:p-8">
         <div className="max-w-3xl space-y-6">
           <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-300">
             Next step

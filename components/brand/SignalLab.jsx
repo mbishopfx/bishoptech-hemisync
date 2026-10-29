@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const STATES = [
   { id: 'delta', label: 'Delta', beat: 2.5, note: 'Deep rest' },
@@ -11,114 +11,349 @@ const STATES = [
   { id: 'gamma', label: 'Gamma', beat: 38, note: 'Fast binding' }
 ];
 
-const LANE = { width: 640, height: 74 };
-const POINTS = 240;
+const LEFT_TONE = [182, 221, 204];
+const RIGHT_TONE = [232, 220, 192];
 
-function wavePath({ phase, cycles, amplitude, y }) {
-  const mid = y;
-  let d = '';
-  for (let i = 0; i <= POINTS; i += 1) {
-    const x = (i / POINTS) * LANE.width;
-    const t = i / POINTS;
-    const value = Math.sin(2 * Math.PI * (cycles * t + phase));
-    const yv = mid - value * amplitude;
-    d += `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${yv.toFixed(2)}`;
-  }
-  return d;
-}
+const clamp = (value, lo, hi) => Math.max(lo, Math.min(hi, value));
 
-function beatPath({ phase, cycles, amplitude, y }) {
-  const mid = y;
-  let d = '';
-  for (let i = 0; i <= POINTS; i += 1) {
-    const x = (i / POINTS) * LANE.width;
-    const t = i / POINTS;
-    const envelope = 0.42 + 0.58 * Math.abs(Math.sin(Math.PI * (cycles * t + phase)));
-    const value = Math.sin(2 * Math.PI * (cycles * 3 * t + phase)) * envelope;
-    d += `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${(mid - value * amplitude).toFixed(2)}`;
-  }
-  return d;
-}
-
+/**
+ * Stereo oscilloscope for the hero.
+ *
+ * Two carriers are drawn on top of each other, left in mint and right in warm
+ * cream. Because the right carrier runs a few hertz fast, the two traces drift
+ * in and out of phase and the beat appears as a widening and closing envelope
+ * rather than as a decorative wave. A Lissajous inset in the corner plots left
+ * against right, which is the same relationship rotated ninety degrees.
+ *
+ * Everything is painted to canvas so the trace can carry a phosphor trail and
+ * a glow without thousands of DOM nodes. The animation loop writes to a ref and
+ * never triggers a React render.
+ */
 export function SignalLab() {
   const [stateId, setStateId] = useState('theta');
   const [carrier, setCarrier] = useState(200);
-  const [phase, setPhase] = useState(0);
-  const frame = useRef(0);
-  const last = useRef(0);
+
+  const canvasRef = useRef(null);
+  const hostRef = useRef(null);
+  const paramsRef = useRef({ carrier: 200, beat: 6 });
+  const phaseRef = useRef(0);
+  const frameRef = useRef(0);
+  const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
+  // assigning canvas.width clears the bitmap, so resizing has to repaint
+  const repaintRef = useRef(() => {});
 
   const active = STATES.find((state) => state.id === stateId) ?? STATES[1];
   const beat = active.beat;
   const right = carrier + beat;
 
+  // keep the render loop's copy of the params current without re-subscribing rAF
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reduced.matches) return undefined;
+    paramsRef.current = { carrier, beat };
+  }, [carrier, beat]);
 
-    const tick = (now) => {
-      const previous = last.current || now;
-      const delta = Math.min((now - previous) / 1000, 0.05);
-      last.current = now;
-      setPhase((value) => (value + delta * 0.5) % 1);
-      frame.current = requestAnimationFrame(tick);
+  const resize = useCallback(() => {
+    const canvas = canvasRef.current;
+    const host = hostRef.current;
+    if (!canvas || !host) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = host.getBoundingClientRect();
+    const w = Math.max(rect.width, 1);
+    const h = Math.max(rect.height, 1);
+    sizeRef.current = { w, h, dpr };
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+    repaintRef.current();
+  }, []);
+
+  useEffect(() => {
+    resize();
+    const observer = new ResizeObserver(resize);
+    if (hostRef.current) observer.observe(hostRef.current);
+    return () => observer.disconnect();
+  }, [resize]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return undefined;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const clear = () => {
+      const { w, h, dpr } = sizeRef.current;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
     };
 
-    frame.current = requestAnimationFrame(tick);
+    const paintGrid = () => {
+      const { w, h } = sizeRef.current;
+      ctx.save();
+      ctx.lineWidth = 1;
+
+      // horizontal divisions
+      for (let i = 1; i < 4; i += 1) {
+        const y = (h / 4) * i;
+        ctx.strokeStyle = i === 2 ? 'rgba(255,255,255,0.13)' : 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // vertical divisions
+      for (let i = 1; i < 12; i += 1) {
+        const x = (w / 12) * i;
+        ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      // centre tick marks along the middle rail
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      for (let i = 0; i <= 24; i += 1) {
+        const x = (w / 24) * i;
+        const tall = i % 6 === 0;
+        ctx.beginPath();
+        ctx.moveTo(x, h / 2 - (tall ? 5 : 2.5));
+        ctx.lineTo(x, h / 2 + (tall ? 5 : 2.5));
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+
+    const traceCarrier = ({ colour, cycles, phase, amp, glow }) => {
+      const { w, h } = sizeRef.current;
+      const mid = h / 2;
+      const steps = Math.min(720, Math.max(280, Math.round(w / 2)));
+
+      ctx.save();
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i += 1) {
+        const t = i / steps;
+        const x = t * w;
+        const y = mid - Math.sin(2 * Math.PI * (cycles * t + phase)) * amp;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = colour;
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 14;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = colour;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const paintEnvelope = ({ beatHz, phase }) => {
+      const { w, h } = sizeRef.current;
+      const mid = h / 2;
+      const amp = h * 0.3;
+      const steps = Math.min(600, Math.max(220, Math.round(w / 2)));
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, mid);
+      for (let i = 0; i <= steps; i += 1) {
+        const t = i / steps;
+        const x = t * w;
+        const e = Math.abs(Math.cos(Math.PI * (beatHz * t + phase)));
+        ctx.lineTo(x, mid - e * amp);
+      }
+      ctx.lineTo(w, mid);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(182, 221, 204, 0.055)';
+      ctx.fill();
+
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i += 1) {
+        const t = i / steps;
+        const x = t * w;
+        const e = Math.abs(Math.cos(Math.PI * (beatHz * t + phase)));
+        const y = mid - e * amp;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(182, 221, 204, 0.32)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 5]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    };
+
+    const paintLissajous = ({ beatHz, phase }) => {
+      const { w, h } = sizeRef.current;
+      const radius = Math.min(w, h) * 0.16;
+      const cx = w - radius - 22;
+      const cy = h - radius - 20;
+      const drift = beatHz / 14;
+
+      ctx.save();
+      // Opaque backing plate: the carriers sweep through this corner, and
+      // without it the inset reads as noise on top of the trace rather than as
+      // a separate instrument.
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(5, 14, 12, 0.94)';
+      ctx.fill();
+
+      // frame
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(182,221,204,0.22)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.beginPath();
+      const steps = 360;
+      for (let i = 0; i <= steps; i += 1) {
+        const t = i / steps;
+        const x = cx + Math.sin(2 * Math.PI * (3 * t) + phase) * radius * 0.82;
+        const y = cy + Math.sin(2 * Math.PI * ((3 + drift) * t)) * radius * 0.82;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(233,245,238,0.75)';
+      ctx.lineWidth = 1;
+      ctx.shadowColor = 'rgba(182,221,204,0.55)';
+      ctx.shadowBlur = 10;
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const paintCursor = ({ phase }) => {
+      const { w, h } = sizeRef.current;
+      const x = ((phase * 2.2) % 1) * w;
+      ctx.save();
+      const grad = ctx.createLinearGradient(x, 0, x, h);
+      grad.addColorStop(0, 'rgba(182,221,204,0)');
+      grad.addColorStop(0.5, 'rgba(182,221,204,0.28)');
+      grad.addColorStop(1, 'rgba(182,221,204,0)');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const draw = () => {
+      const { w, h } = sizeRef.current;
+      if (!w || !h) return;
+      const { carrier: hz, beat: bHz } = paramsRef.current;
+      const phase = phaseRef.current;
+
+      clear();
+      paintGrid();
+      paintEnvelope({ beatHz: bHz, phase: phase * 0.5 });
+
+      // visual cycles: keep the trace readable, scaled from the real carrier
+      const cycles = clamp(Math.round(hz / 26), 3, 11);
+      const amp = h * 0.3;
+
+      traceCarrier({
+        colour: `rgba(${LEFT_TONE.join(',')},0.95)`,
+        cycles,
+        phase,
+        amp,
+        glow: 'rgba(182,221,204,0.55)'
+      });
+      traceCarrier({
+        colour: `rgba(${RIGHT_TONE.join(',')},0.8)`,
+        cycles: cycles + bHz / 26,
+        phase: phase * 1.04,
+        amp: amp * 0.92,
+        glow: 'rgba(232,220,192,0.4)'
+      });
+
+      // cursor first so the inset's backing plate stays clean on top of it
+      paintCursor({ phase });
+      paintLissajous({ beatHz: bHz, phase });
+    };
+
+    repaintRef.current = draw;
+
+    // Paint the first frame synchronously. Waiting for requestAnimationFrame
+    // leaves the scope empty whenever the frame clock is throttled — offscreen
+    // tabs, some headless renderers, and print/PDF all show a blank box until
+    // the first tick, which can be seconds or never.
+    draw();
+
+    if (reduced.matches) {
+      return undefined;
+    }
+
+    let lastTime = 0;
+    const tick = (now) => {
+      const previous = lastTime || now;
+      const delta = Math.min((now - previous) / 1000, 0.05);
+      lastTime = now;
+      phaseRef.current = (phaseRef.current + delta * 0.22) % 1;
+      draw();
+      frameRef.current = requestAnimationFrame(tick);
+    };
+
+    frameRef.current = requestAnimationFrame(tick);
     return () => {
-      cancelAnimationFrame(frame.current);
-      last.current = 0;
+      cancelAnimationFrame(frameRef.current);
+      lastTime = 0;
     };
   }, []);
 
-  const lanes = useMemo(() => {
-    const carrierCycles = Math.max(4, Math.min(16, Math.round(carrier / 24)));
-    const beatCycles = Math.max(2, Math.min(9, Math.round(beat)));
-    return {
-      left: wavePath({ phase, cycles: carrierCycles, amplitude: 26, y: LANE.height / 2 }),
-      right: wavePath({ phase: phase * 1.04, cycles: carrierCycles, amplitude: 26, y: LANE.height / 2 }),
-      beat: beatPath({ phase: phase * 0.5, cycles: beatCycles, amplitude: 24, y: LANE.height / 2 })
-    };
-  }, [phase, carrier, beat]);
-
   return (
-    <div className="relative overflow-hidden rounded-[20px] border border-white/12 bg-[#0b1211]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-3.5 sm:px-7">
+    <div className="liquid-glass relative overflow-hidden rounded-[22px]">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 pb-3 pt-4 sm:px-7">
         <div className="flex items-center gap-2.5">
-          <span aria-hidden="true" className="size-1.5 rounded-full bg-[#b6ddcc] shadow-[0_0_10px_2px_rgba(182,221,204,0.5)]" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/55">Signal lab · live</span>
+          <span
+            aria-hidden="true"
+            className="size-1.5 rounded-full bg-[#b6ddcc] shadow-[0_0_10px_2px_rgba(182,221,204,0.5)]"
+          />
+          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/60">Signal lab · live</span>
         </div>
-        <span className="font-mono text-[11px] tracking-[0.14em] text-white/60">headphones required</span>
+        <span className="font-mono text-[11px] tracking-[0.14em] text-white/50">headphones required</span>
       </div>
 
-      <div className="grid gap-px bg-white/8 sm:grid-cols-3">
+      <div
+        ref={hostRef}
+        className="relative mx-3 h-[168px] overflow-hidden rounded-[16px] bg-[#07100e] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-22px_44px_rgba(0,0,0,0.38)] sm:mx-5 sm:h-[190px]"
+      >
+        <canvas ref={canvasRef} className="block h-full w-full" aria-hidden="true" />
+        {/* The readout row below carries the values; keeping text off the glass
+            stops the carriers from striking through the labels. */}
+        <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">
+          2 ch · 1 diff
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-px px-3 pt-3 sm:px-5">
         {[
-          { key: 'left', label: 'Left ear', value: `${carrier} Hz`, tone: '#b6ddcc', path: lanes.left },
-          { key: 'right', label: 'Right ear', value: `${right} Hz`, tone: '#e8dcc0', path: lanes.right },
-          { key: 'beat', label: 'Perceived beat', value: `${beat.toFixed(1)} Hz`, tone: '#d7eadf', path: lanes.beat }
+          { key: 'left', label: 'Left', value: `${carrier} Hz`, tone: '#b6ddcc' },
+          { key: 'right', label: 'Right', value: `${right} Hz`, tone: '#e8dcc0' },
+          { key: 'beat', label: 'Beat', value: `${beat.toFixed(1)} Hz`, tone: '#d7eadf' }
         ].map((lane) => (
-          <div key={lane.key} className="bg-[#0b1211] px-4 pb-4 pt-5 sm:px-5">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">{lane.label}</span>
-              <span className="font-mono text-[13px] tabular-nums" style={{ color: lane.tone }}>{lane.value}</span>
+          <div key={lane.key} className="px-2 py-1.5">
+            <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/45">{lane.label}</div>
+            <div className="mt-1 font-mono text-[13px] tabular-nums" style={{ color: lane.tone }}>
+              {lane.value}
             </div>
-            <svg
-              viewBox={`0 0 ${LANE.width} ${LANE.height}`}
-              className="mt-3 w-full"
-              style={{ height: 74 }}
-              role="img"
-              aria-label={`${lane.label} sine wave at ${lane.value}`}
-              preserveAspectRatio="none"
-            >
-              <line x1="0" y1={LANE.height / 2} x2={LANE.width} y2={LANE.height / 2} stroke="#ffffff" strokeOpacity="0.08" />
-              <path d={lane.path} fill="none" stroke={lane.tone} strokeWidth="1.6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-            </svg>
           </div>
         ))}
       </div>
 
-      <div className="border-t border-white/10 px-5 py-6 sm:px-7">
+      <div className="px-5 pb-6 pt-4 sm:px-7">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">Target band</span>
+          <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">Target band</span>
           {STATES.map((state) => {
             const selected = state.id === stateId;
             return (
@@ -127,10 +362,10 @@ export function SignalLab() {
                 type="button"
                 onClick={() => setStateId(state.id)}
                 aria-pressed={selected}
-                className={`rounded-full border px-3.5 py-1.5 font-mono text-[11px] tracking-[0.06em] transition ${
+                className={`rounded-full border px-3 py-1.5 font-mono text-[11px] tracking-[0.06em] transition ${
                   selected
-                    ? 'border-[#b6ddcc] bg-[#b6ddcc] text-[#0b1211]'
-                    : 'border-white/15 text-white/60 hover:border-white/40 hover:text-white'
+                    ? 'border-[#b6ddcc]/70 bg-[#b6ddcc]/90 text-[#06100d]'
+                    : 'border-white/10 text-white/55 hover:border-[#b6ddcc]/40 hover:text-white'
                 }`}
               >
                 {state.label} · {state.beat}
@@ -142,10 +377,10 @@ export function SignalLab() {
         <div className="mt-6 grid gap-5 sm:grid-cols-[1fr_auto] sm:items-end">
           <div>
             <div className="flex items-baseline justify-between">
-              <label htmlFor="carrier" className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
+              <label htmlFor="carrier" className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
                 Carrier frequency
               </label>
-              <span className="font-mono text-[11px] tabular-nums text-white/50">{carrier} Hz</span>
+              <span className="font-mono text-[11px] tabular-nums text-white/40">{carrier} Hz</span>
             </div>
             <input
               id="carrier"
@@ -155,15 +390,15 @@ export function SignalLab() {
               step="2"
               value={carrier}
               onChange={(event) => setCarrier(Number(event.target.value))}
-              className="mt-3 h-1 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-[#b6ddcc]"
+              className="mt-3 h-1 w-full cursor-pointer appearance-none rounded-full bg-white/12 accent-[#b6ddcc]"
             />
           </div>
-          <p className="max-w-[15rem] font-mono text-[11px] leading-relaxed text-white/60">
+          <p className="max-w-[15rem] font-mono text-[11px] leading-relaxed text-white/50">
             {active.label} · {active.note}
           </p>
         </div>
 
-        <p className="mt-5 border-t border-white/10 pt-4 text-[13px] leading-relaxed text-white/65">
+        <p className="mt-5 border-t border-white/[0.07] pt-4 text-[13px] leading-relaxed text-white/55">
           Two pure carriers, separated by {beat.toFixed(1)} Hz. The brain hears the difference as a pulse — not the tones.
           That pulse is the rhythm you sit inside.
         </p>

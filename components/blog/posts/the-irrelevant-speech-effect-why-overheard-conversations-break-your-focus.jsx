@@ -102,7 +102,7 @@ const evidence = [
 
 function Section({ title, paragraphs = [], callout, subheading, subparagraphs = [] }) {
   return (
-    <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+    <section className="space-y-6 liquid-card rounded-3xl p-7 md:p-8">
       <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
         {title}
       </h2>
@@ -154,7 +154,7 @@ function EvidenceCard({ title, note, href }) {
 export default function TheIrrelevantSpeechEffectWhyOverheardConversationsBreakYourFocusPost() {
   return (
     <article className="space-y-12">
-      <header className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl px-7 py-10 shadow-2xl md:px-10 md:py-12">
+      <header className="relative overflow-hidden liquid-card rounded-3xl px-7 py-10 md:px-10 md:py-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(6,182,212,0.03),transparent_35%)] pointer-events-none" />
         <div className="relative max-w-4xl space-y-6">
           <h1 className="text-balance text-4xl font-light tracking-tight text-white md:text-6xl md:leading-[0.95]">
@@ -171,7 +171,7 @@ export default function TheIrrelevantSpeechEffectWhyOverheardConversationsBreakY
         </div>
       </header>
 
-      <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <section className="space-y-6 liquid-card rounded-3xl p-7 md:p-8">
         <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           A calm reset starts before the first sentence
         </h2>
@@ -188,7 +188,7 @@ export default function TheIrrelevantSpeechEffectWhyOverheardConversationsBreakY
         ))}
       </div>
 
-      <section className="space-y-6 rounded-3xl border border-white/5 bg-zinc-900/40 backdrop-blur-3xl p-7 shadow-xl md:p-8">
+      <section className="space-y-6 liquid-card rounded-3xl p-7 md:p-8">
         <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl leading-tight">
           Evidence and references
         </h2>
