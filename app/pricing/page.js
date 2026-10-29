@@ -421,8 +421,8 @@ export default function PricingPage() {
         {/* ── Listen ───────────────────────────────────────────── */}
         <section id="listen" className="border-b border-white/10 py-20 sm:py-24">
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
-            <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
-              <div className="max-w-md">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
+              <div className="min-w-0 max-w-md">
                 <Headphones className="size-8 text-[#b6ddcc]" weight="duotone" aria-hidden="true" />
                 <h2 className="mt-6 text-[clamp(2rem,3.6vw,3rem)] font-medium leading-[1.02] tracking-[-0.05em]">
                   Listen before you choose.
@@ -433,7 +433,7 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2">
                 <div className="rounded-[22px] border border-white/12 bg-[#0b1211] p-6">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#b6ddcc]">Your current preview</p>
                   {activePreviewTone ? (

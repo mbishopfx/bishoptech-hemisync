@@ -137,13 +137,13 @@ function SchemaTable({ schema, emptyLabel }) {
 function ToolRow({ tool, index, kind }) {
   return (
     <details className="group border-b border-white/10 last:border-b-0">
-      <summary className="grid cursor-pointer list-none gap-3 px-4 py-4 transition hover:bg-white/[0.035] [&::-webkit-details-marker]:hidden sm:grid-cols-[42px_minmax(0,1.1fr)_minmax(0,1.8fr)_auto] sm:items-start">
+      <summary className="min-w-0 grid-cols-1 grid cursor-pointer list-none gap-3 px-4 py-4 transition hover:bg-white/[0.035] [&::-webkit-details-marker]:hidden sm:grid-cols-[42px_minmax(0,1.1fr)_minmax(0,1.8fr)_auto] sm:items-start">
         <span className="font-mono text-[10px] text-white/55">{String(index + 1).padStart(2, '0')}</span>
         <code className="break-words text-xs text-[#d7eadf]">{tool.name}</code>
         <span className="text-xs leading-5 text-white/52">{tool.description}</span>
         <span className="flex items-center gap-2 text-white/55"><AuthTag value={tool.authorization || kind} /><span className="text-lg leading-none transition group-open:rotate-45">+</span></span>
       </summary>
-      <div className="grid gap-6 border-t border-white/10 bg-black/10 px-4 py-5 sm:grid-cols-[minmax(150px,0.55fr)_minmax(0,1fr)_minmax(0,1fr)] sm:pl-[58px]">
+      <div className="min-w-0 grid-cols-1 grid gap-6 border-t border-white/10 bg-black/10 px-4 py-5 sm:grid-cols-[minmax(150px,0.55fr)_minmax(0,1fr)_minmax(0,1fr)] sm:pl-[58px]">
         <div className="space-y-3">
           <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Contract</p><p className="mt-1 text-xs text-white/72">{kind}</p></div>
           <div><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/55">Side effect</p><p className="mt-1 text-xs leading-5 text-white/70">{tool.sideEffect || 'not declared'}</p></div>
@@ -158,7 +158,7 @@ function ToolRow({ tool, index, kind }) {
 
 function RouteRow({ route }) {
   return (
-    <div className="grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[120px_minmax(220px,0.7fr)_minmax(0,1.5fr)] sm:gap-5">
+    <div className="min-w-0 grid-cols-1 grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[120px_minmax(220px,0.7fr)_minmax(0,1.5fr)] sm:gap-5">
       <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#b6ddcc]">{route.method}</span>
       <code className="break-words text-xs text-[#d7eadf]">{route.path}</code>
       <div><p className="text-xs text-white/70">{route.label}</p><p className="mt-1 text-xs leading-5 text-white/42">{route.description}</p></div>
@@ -168,7 +168,7 @@ function RouteRow({ route }) {
 
 function CommandRow({ item }) {
   return (
-    <div className="grid gap-2 border-b border-white/10 px-4 py-3.5 last:border-b-0 sm:grid-cols-[150px_72px_minmax(0,1fr)] sm:items-start sm:gap-5">
+    <div className="min-w-0 grid-cols-1 grid gap-2 border-b border-white/10 px-4 py-3.5 last:border-b-0 sm:grid-cols-[150px_72px_minmax(0,1fr)] sm:items-start sm:gap-5">
       <code className="text-xs text-[#d7eadf]">{item.command}</code>
       <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-white/32">{item.access}</span>
       <span className="text-xs leading-5 text-white/48">{item.description}</span>
@@ -178,7 +178,7 @@ function CommandRow({ item }) {
 
 function ResourceRow({ resource }) {
   return (
-    <div className="grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[minmax(230px,0.9fr)_minmax(0,1.2fr)_auto] sm:items-start sm:gap-5">
+    <div className="min-w-0 grid-cols-1 grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[minmax(230px,0.9fr)_minmax(0,1.2fr)_auto] sm:items-start sm:gap-5">
       <code className="break-all text-xs text-[#d7eadf]">{resource.uri}</code>
       <div><p className="text-xs text-white/70">{resource.name}</p><p className="mt-1 text-xs leading-5 text-white/42">{resource.description}</p></div>
       <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-white/55">{resource.mimeType}</span>
@@ -188,7 +188,7 @@ function ResourceRow({ resource }) {
 
 function SkillRow({ skill }) {
   return (
-    <div className="grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[minmax(250px,0.95fr)_minmax(0,1.3fr)] sm:gap-5">
+    <div className="min-w-0 grid-cols-1 grid gap-2 border-b border-white/10 px-4 py-4 last:border-b-0 sm:grid-cols-[minmax(250px,0.95fr)_minmax(0,1.3fr)] sm:gap-5">
       <code className="break-all text-xs text-[#d7eadf]">{skill.uri}</code>
       <div><p className="text-xs text-white/70">{skill.frontmatter.name}</p><p className="mt-1 text-xs leading-5 text-white/42">{skill.frontmatter.description}</p></div>
     </div>
@@ -218,7 +218,7 @@ export default function DocsPage() {
           <div className="pointer-events-none absolute -left-32 top-10 size-[28rem] rounded-full bg-[#b6ddcc]/10 blur-3xl" aria-hidden="true" />
           <div className="pointer-events-none absolute right-[-8rem] top-0 size-[30rem] rounded-full bg-[#e0b493]/[0.08] blur-3xl" aria-hidden="true" />
           <div className="relative mx-auto max-w-[1400px]">
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(270px,0.7fr)] lg:items-end">
+            <div className="min-w-0 grid-cols-1 grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(270px,0.7fr)] lg:items-end">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#b6ddcc]">Cognistration SDK reference</p>
                 <h1 className="mt-6 max-w-4xl text-5xl font-medium leading-[0.96] tracking-[-0.075em] sm:text-7xl">One public contract for people and agents.</h1>
@@ -235,7 +235,7 @@ export default function DocsPage() {
                 <p className="mt-5 text-xs leading-6 text-white/42">The public registry is intentionally bounded. Private member tools are documented separately and require a signed-in member context.</p>
               </div>
             </div>
-            <div className="mt-14 grid border-y border-white/15 sm:grid-cols-4">
+            <div className="min-w-0 grid-cols-1 mt-14 grid border-y border-white/15 sm:grid-cols-4">
               {[
                 [String(MCP_TOOL_COUNT), 'remote MCP tools'],
                 [String(WEBMCP_TOOL_DEFINITIONS.length), 'public WebMCP tools'],
@@ -246,7 +246,7 @@ export default function DocsPage() {
           </div>
         </section>
 
-        <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[190px_minmax(0,1fr)] lg:gap-20 lg:px-12">
+        <div className="min-w-0 grid-cols-1 mx-auto grid max-w-[1400px] gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[190px_minmax(0,1fr)] lg:gap-20 lg:px-12">
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/55">On this page</p>
             <nav className="mt-4 grid gap-2 text-xs text-white/50">
@@ -272,7 +272,7 @@ export default function DocsPage() {
           <div className="min-w-0 space-y-20">
             <section id="connection" className="scroll-mt-28">
               <SectionIntro eyebrow="01 · Connect" title="Start with the remote endpoint">Add Cognistration as a remote HTTPS MCP server. This is a server URL, not a Git repository or marketplace source.</SectionIntro>
-              <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
+              <div className="min-w-0 grid-cols-1 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
                 <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">
                   <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><TerminalWindow className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">server configuration</span></div>
                   <pre className="overflow-x-auto p-5 text-xs leading-6 text-[#d7eadf]"><code>{`{
@@ -314,7 +314,7 @@ export default function DocsPage() {
 
             <section id="webmcp" className="scroll-mt-28">
               <SectionIntro eyebrow="04 · Native browser" title="WebMCP tools on the visible page">The home and try surfaces progressively register bounded tools with the browser’s native model context. They operate on visible controls and keep audio, account, and payment edges user-controlled.</SectionIntro>
-              <div className="grid gap-5 lg:grid-cols-2">
+              <div className="min-w-0 grid-cols-1 grid gap-5 lg:grid-cols-2">
                 <div className="rounded-2xl border border-white/12 bg-[#182723] p-5">
                   <div className="flex items-start justify-between gap-4"><div><Browser className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Public page bridge</h3></div><span className="font-mono text-[9px] text-white/60">v{WEBMCP_CONTRACT_VERSION}</span></div>
                   <p className="mt-3 text-xs leading-5 text-white/65"><code>{WEBMCP_CONTRACT_ID}</code> · {WEBMCP_TOOL_DEFINITIONS.length} tools registered on the visible tone machine.</p>
@@ -350,7 +350,7 @@ export default function DocsPage() {
 
             <section id="prompts" className="scroll-mt-28">
               <SectionIntro eyebrow="07 · Prompt template" title="Prompt templates">Use <code className="text-[#d7eadf]">prompts/get</code> when a host wants a reusable, bounded starting message for the public tone catalog.</SectionIntro>
-              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/65">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
+              <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#182723]">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="min-w-0 grid-cols-1 grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/65">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
             </section>
 
             <section id="routes" className="scroll-mt-28">
@@ -361,7 +361,7 @@ export default function DocsPage() {
 
             <section id="safety" className="scroll-mt-28">
               <SectionIntro eyebrow="09 · Boundary" title="What agents must keep user-controlled">Cognistration is designed for visible, consent-aware orchestration. The machine can recommend and stage a session; it cannot silently turn a recommendation into audio, a signup into an account, or a checkout into a payment.</SectionIntro>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="min-w-0 grid-cols-1 grid gap-4 sm:grid-cols-2">
                 {[
                   [Compass, 'Audio', 'No public tool starts local audio automatically. Browser preview requires an explicit confirmation and remains visible to the listener.'],
                   [LockKey, 'Credentials', 'Signup credentials are entered and submitted by the person in the in-platform form. Card data never enters MCP arguments.'],
