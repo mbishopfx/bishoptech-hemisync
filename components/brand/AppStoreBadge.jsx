@@ -16,7 +16,7 @@ export function AppStoreBadge({
       aria-label={label}
       data-analytics-cta="app_store"
       data-analytics-placement="homepage_ios"
-      className={`group inline-flex items-center gap-3 rounded-[14px] border border-white/25 bg-black px-4 py-2.5 transition hover:border-white/60 hover:bg-[#0b0b0b] ${className}`}
+      className={`group inline-flex items-center gap-3 rounded-[14px] border border-white/45 bg-black px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_8px_24px_rgba(0,0,0,0.55)] transition hover:border-white/80 hover:bg-[#0b0b0b] ${className}`}
     >
       <svg viewBox="0 0 22 22" className="size-7 shrink-0 fill-white" aria-hidden="true">
         <path d={APPLE_PATH} />
