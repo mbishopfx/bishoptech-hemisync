@@ -79,7 +79,7 @@ export default function BlogArchivePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
       />
-      <PublicHeader />
+      <PublicHeader theme="dark" />
 
       <main className="relative mx-auto flex w-full max-w-[1400px] flex-col gap-20 px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
         <section className="border-b border-white/12 pb-16 sm:pb-20">

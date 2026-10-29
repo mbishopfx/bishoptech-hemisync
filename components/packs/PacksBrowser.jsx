@@ -328,7 +328,7 @@ export function PacksBrowser() {
                   <p className="text-[9px] uppercase tracking-[0.24em] text-white/65">Frequency states</p>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {(selectedPack.states || []).map((state) => (
-                      <span key={state.state || state} className="rounded-full border border-[#c7d4cc] bg-[#f4f7f3] px-4 py-2 text-xs text-white/60">
+                      <span key={state.state || state} className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-xs text-white/70">
                         {displayState(state)}
                       </span>
                     ))}

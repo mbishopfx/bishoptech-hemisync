@@ -27,7 +27,7 @@ export function LegalPageShell({
       >
         Skip to content
       </a>
-      <PublicHeader theme="light" />
+      <PublicHeader theme="dark" />
 
       <div className="policy-page__wash pointer-events-none absolute inset-x-0 top-0 z-0" aria-hidden="true" />
 

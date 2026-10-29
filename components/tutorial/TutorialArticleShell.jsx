@@ -8,7 +8,7 @@ import { TutorialBreadcrumbs } from '@/components/tutorial/TutorialBreadcrumbs';
 export function TutorialArticleShell({ title, description, canonical, sources, children }) {
   return (
     <div className="tutorial-light-theme min-h-[100dvh] overflow-x-hidden bg-[#080c0b] text-[#f2f0ea] selection:bg-[#b6ddcc]/60">
-      <PublicHeader />
+      <PublicHeader theme="dark" />
       <main>
         <header className="border-b border-white/12 bg-[#080c0b] px-5 pb-20 pt-32 md:px-10 md:pb-24 md:pt-36">
           <div className="mx-auto max-w-5xl">

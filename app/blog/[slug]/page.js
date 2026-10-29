@@ -161,7 +161,7 @@ export default async function BlogPostPage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildArticleJsonLd(post)) }}
         />
       ) : null}
-      <PublicHeader />
+      <PublicHeader theme="dark" />
 
       <main className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
         <div className="mx-auto w-full max-w-5xl space-y-8 research-paper-style">

@@ -73,7 +73,7 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
   };
 
   return (
-    <section id="catalog" className="relative scroll-mt-20 overflow-hidden border-t border-white/12 bg-[#e5ebe6] py-20 text-[#f2f0ea] md:py-28">
+    <section id="catalog" className="relative scroll-mt-20 overflow-hidden border-t border-white/10 bg-[#0a100e] py-20 text-[#f2f0ea] md:py-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(84,132,119,0.09),transparent_46%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(63,95,83,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(63,95,83,0.045)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(circle_at_center,black,transparent_76%)]" />
 
@@ -181,7 +181,7 @@ export function CylinderPackCatalog({ packs, loading, selectedSlug, activeTrackK
                       disabled={!previewTrack || !trackUrl(previewTrack)}
                       data-track-key={previewKey || undefined}
                       onClick={() => onPreview(pack, previewTrack)}
-                      className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full border border-white/15 px-4 py-3 text-sm font-medium text-[#b6ddcc] transition hover:border-[#b6ddcc]/60 hover:bg-[#f0f5f1] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-full border border-white/15 px-4 py-3 text-sm font-medium text-[#b6ddcc] transition hover:border-[#b6ddcc]/60 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-50"
                       aria-label={`${isPlaying ? 'Stop' : 'Play'} 30-second preview of ${pack.name}`}
                     >
                       {isPlaying ? <Pause className="size-4" weight="fill" aria-hidden="true" /> : <Play className="size-4" weight="fill" aria-hidden="true" />}

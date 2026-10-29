@@ -75,7 +75,7 @@ export default function TutorialPage() {
   return (
     <div className="tutorial-light-theme min-h-[100dvh] overflow-x-hidden bg-[#080c0b] text-[#f2f0ea] selection:bg-[#b6ddcc]/60">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(tutorialJsonLd) }} />
-      <PublicHeader />
+      <PublicHeader theme="dark" />
 
       <TutorialMotion>
         <main>
