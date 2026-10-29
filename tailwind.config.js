@@ -40,5 +40,25 @@ module.exports = {
       }
     }
   },
-  plugins: []
+  plugins: [
+    // Tailwind 3.4 introduced `size-*` as a shorthand for `width` + `height`.
+    // This project is pinned to 3.3, where the class does not exist, so every
+    // `size-N` in the codebase was an unknown token that emitted no CSS — SVGs
+    // and icon buttons kept their intrinsic size and stretched their flex
+    // containers instead of rendering at the intended square. Emit the same
+    // utilities here so the existing markup resolves without a major upgrade.
+    function ({ addUtilities, theme, matchUtilities }) {
+      const spacing = theme('spacing');
+      const square = {};
+      Object.entries(spacing).forEach(([key, value]) => {
+        square[`.size-${key}`] = { width: value, height: value };
+      });
+      addUtilities(square);
+
+      matchUtilities(
+        { size: (value) => ({ width: value, height: value }) },
+        { values: spacing }
+      );
+    }
+  ]
 };

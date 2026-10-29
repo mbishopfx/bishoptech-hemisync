@@ -16,14 +16,14 @@ export function AppStoreBadge({
       aria-label={label}
       data-analytics-cta="app_store"
       data-analytics-placement="homepage_ios"
-      className={`group inline-flex items-center gap-3 rounded-[14px] border border-white/45 bg-black px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_8px_24px_rgba(0,0,0,0.55)] transition hover:border-white/80 hover:bg-[#0b0b0b] ${className}`}
+      className={`group inline-flex w-auto shrink-0 items-center gap-3 whitespace-nowrap rounded-[14px] border border-white/45 bg-black px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_8px_24px_rgba(0,0,0,0.55)] transition hover:border-white/80 hover:bg-[#0b0b0b] ${className}`}
     >
       <svg viewBox="0 0 22 22" className="size-7 shrink-0 fill-white" aria-hidden="true">
         <path d={APPLE_PATH} />
       </svg>
-      <span className="flex flex-col leading-none">
-        <span className="text-[10px] font-normal tracking-[0.02em] text-white/70">Download on the</span>
-        <span className="mt-1 text-[19px] font-medium leading-none tracking-[-0.02em] text-white">App Store</span>
+      <span className="flex shrink-0 flex-col whitespace-nowrap leading-none">
+        <span className="whitespace-nowrap text-[10px] font-normal tracking-[0.02em] text-white/70">Download on the</span>
+        <span className="mt-1 whitespace-nowrap text-[19px] font-medium leading-none tracking-[-0.02em] text-white">App Store</span>
       </span>
     </a>
   );
