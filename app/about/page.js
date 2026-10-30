@@ -15,8 +15,7 @@ export default function AboutPage() {
 
       <main className="px-6 pb-24 pt-32 text-[#f2f0ea] sm:px-10 sm:pt-36 lg:px-16">
         <div className="mx-auto max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.24em] text-[#b6ddcc]">About Cognistration</p>
-          <h1 className="mt-6 text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-7xl">A listening practice you can shape.</h1>
+          <h1 className="text-5xl font-medium leading-[0.98] tracking-[-0.065em] sm:text-7xl">A listening practice you can shape.</h1>
           <div className="mt-10 space-y-6 text-base leading-8 text-white/55 sm:text-lg">
             <p>Cognistration is a personal listening platform by BishopTech. It gives people a deliberate auditory cue for focus, rest, reflection, and intentional reset, then keeps the underlying choices visible and adjustable.</p>
             <p>Every brain and every day is different. The product therefore treats its tones as a free-will generator: a person can explore a direction, change the carrier, rhythm, volume, layers, and duration, notice what feels useful, and save a repeatable starting point for a later session. It does not force a frequency, prescribe a mental state, or claim to replace care.</p>

@@ -28,8 +28,7 @@ export default function TryPage() {
           <div className="pointer-events-none absolute right-0 top-0 size-[28rem] rounded-full bg-[#d7c7aa]/[0.08] blur-3xl" aria-hidden="true" />
           <div className="relative mx-auto max-w-[1400px]">
             <div className="max-w-3xl">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#b6ddcc]">WebMCP challenge cockpit</p>
-              <h1 className="mt-6 max-w-3xl text-5xl font-medium leading-[0.98] tracking-[-0.07em] sm:text-7xl">From an intention to a session you can actually try.</h1>
+              <h1 className="max-w-3xl text-5xl font-medium leading-[0.98] tracking-[-0.07em] sm:text-7xl">From an intention to a session you can actually try.</h1>
               <p className="mt-7 max-w-2xl text-base leading-8 text-white/60 sm:text-lg">Co-compose a visible full-spectrum frequency score with an agent: route 50–2,000 Hz carriers, 0.1–40 Hz differentials, signal modes, breath pacing, ambience metadata, and fades into a technical recipe while keeping preview audio under human control.</p>
               <div className="mt-8 flex flex-wrap gap-4 text-sm">
                 <a href="#cockpit" className="glass-action glass-action--primary inline-flex items-center gap-2 rounded-full px-5 py-3.5 font-medium">Run the flow <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></a>

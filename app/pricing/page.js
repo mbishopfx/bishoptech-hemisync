@@ -229,18 +229,7 @@ export default function PricingPage() {
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(120,170,150,0.16),transparent_60%)]"
           />
           <div className="relative mx-auto max-w-[1400px] px-5 pb-20 sm:px-8 lg:px-12">
-            <motion.div
-              {...fade(0)}
-              className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.28em] text-white/60"
-            >
-              <span className="text-[#b6ddcc]">Pricing</span>
-              <span aria-hidden="true">/</span>
-              <span>One payment</span>
-              <span aria-hidden="true">/</span>
-              <span>No membership</span>
-            </motion.div>
-
-            <div className="mt-10 grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-20">
+            <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-20">
               <div className="max-w-2xl">
                 <motion.h1
                   {...fade(0.06)}
@@ -288,8 +277,7 @@ export default function PricingPage() {
                 <div className="relative">
                   <div className="flex items-start justify-between gap-5 border-b border-white/10 pb-7">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#b6ddcc]">Cognistration platform</p>
-                      <h2 className="mt-3 text-2xl font-medium tracking-[-0.04em] text-white">Lifetime workspace</h2>
+                      <h2 className="text-2xl font-medium tracking-[-0.04em] text-white">Lifetime workspace</h2>
                       <p className="mt-2 text-sm leading-6 text-white/65">Everything needed to make sessions your own.</p>
                     </div>
                     <div className="text-right">
@@ -330,8 +318,7 @@ export default function PricingPage() {
               </p>
             </div>
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">What you are buying</span>
-              <h2 className="mt-6 max-w-[17ch] text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.02] tracking-[-0.045em]">
+              <h2 className="max-w-[17ch] text-[clamp(2rem,4vw,3.25rem)] font-medium leading-[1.02] tracking-[-0.045em]">
                 A signal generator, not a content subscription.
               </h2>
               <p className="mt-7 max-w-lg text-[16px] leading-8 text-white/55">
@@ -358,8 +345,7 @@ export default function PricingPage() {
         <section id="machine-workshop" className="border-b border-white/10 py-20 sm:py-24">
           <div className="mx-auto grid max-w-[1400px] gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-20 lg:px-12">
             <div className="max-w-xl">
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">The machine</span>
-              <h2 className="mt-6 text-[clamp(2rem,3.6vw,3rem)] font-medium leading-[1.02] tracking-[-0.05em]">
+              <h2 className="text-[clamp(2rem,3.6vw,3rem)] font-medium leading-[1.02] tracking-[-0.05em]">
                 A full hour in the machine, whenever you need a deeper session.
               </h2>
               <p className="mt-6 text-[16px] leading-8 text-white/55">
@@ -513,8 +499,7 @@ export default function PricingPage() {
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
             <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
               <div className="max-w-2xl">
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">Tone packs</span>
-                <h2 className="mt-6 text-[clamp(2rem,3.6vw,3rem)] font-medium leading-[1.02] tracking-[-0.05em]">
+                <h2 className="text-[clamp(2rem,3.6vw,3rem)] font-medium leading-[1.02] tracking-[-0.05em]">
                   Finished sessions when you want a place to start.
                 </h2>
                 <p className="mt-5 text-[16px] leading-8 text-white/55">

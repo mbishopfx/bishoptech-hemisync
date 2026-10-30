@@ -195,11 +195,13 @@ function SkillRow({ skill }) {
   );
 }
 
-function SectionIntro({ eyebrow, title, children }) {
+// No eyebrow above the heading. A small uppercase label sitting over every
+// section title is the single strongest "generated template" tell on a page,
+// and the heading already says what the section is.
+function SectionIntro({ title, children }) {
   return (
     <div className="mb-6">
-      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#b6ddcc]">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-medium tracking-[-0.05em] text-white sm:text-4xl">{title}</h2>
+      <h2 className="text-3xl font-medium tracking-[-0.05em] text-white sm:text-4xl">{title}</h2>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-white/50">{children}</p>
     </div>
   );
@@ -220,8 +222,7 @@ export default function DocsPage() {
           <div className="relative mx-auto max-w-[1400px]">
             <div className="min-w-0 grid-cols-1 grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(270px,0.7fr)] lg:items-end">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#b6ddcc]">Cognistration SDK reference</p>
-                <h1 className="mt-6 max-w-4xl text-5xl font-medium leading-[0.96] tracking-[-0.075em] sm:text-7xl">One public contract for people and agents.</h1>
+                <h1 className="max-w-4xl text-5xl font-medium leading-[0.96] tracking-[-0.075em] sm:text-7xl">One public contract for people and agents.</h1>
                 <p className="mt-7 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">Discover the remote MCP endpoint, native browser WebMCP tools, interactive MCP Apps resources, reusable skills, prompt templates, and the exact boundary around every side effect.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link href="/try" className="inline-flex items-center gap-2 rounded-full bg-[#d7eadf] px-5 py-3.5 text-sm font-medium text-[#17332e] transition hover:bg-white">Open the demo cockpit <ArrowRight className="size-4" weight="bold" aria-hidden="true" /></Link>
@@ -271,7 +272,7 @@ export default function DocsPage() {
 
           <div className="min-w-0 space-y-20">
             <section id="connection" className="scroll-mt-28">
-              <SectionIntro eyebrow="01 · Connect" title="Start with the remote endpoint">Add Cognistration as a remote HTTPS MCP server. This is a server URL, not a Git repository or marketplace source.</SectionIntro>
+              <SectionIntro title="Start with the remote endpoint">Add Cognistration as a remote HTTPS MCP server. This is a server URL, not a Git repository or marketplace source.</SectionIntro>
               <div className="min-w-0 grid-cols-1 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
                 <div className="overflow-hidden liquid-card rounded-2xl">
                   <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><TerminalWindow className="size-4 text-[#b6ddcc]" aria-hidden="true" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">server configuration</span></div>
@@ -302,18 +303,18 @@ export default function DocsPage() {
             </section>
 
             <section id="commands" className="scroll-mt-28">
-              <SectionIntro eyebrow="02 · Transport" title="RPC commands and protocol behavior">The endpoint supports the standard initialize handshake plus modern stateless requests with per-request metadata. Legacy protocol versions remain available for older compatible clients.</SectionIntro>
+              <SectionIntro title="RPC commands and protocol behavior">The endpoint supports the standard initialize handshake plus modern stateless requests with per-request metadata. Legacy protocol versions remain available for older compatible clients.</SectionIntro>
               <div className="overflow-hidden liquid-card rounded-2xl">{PROTOCOL_COMMANDS.map((item) => <CommandRow key={item.command} item={item} />)}</div>
             </section>
 
             <section id="mcp-tools" className="scroll-mt-28">
-              <SectionIntro eyebrow="03 · Remote MCP" title="Every public MCP tool">These definitions are rendered from the live contract in the repository. Open a row to inspect authorization, side-effect classification, consent boundary, arguments, and the output envelope.</SectionIntro>
+              <SectionIntro title="Every public MCP tool">These definitions are rendered from the live contract in the repository. Open a row to inspect authorization, side-effect classification, consent boundary, arguments, and the output envelope.</SectionIntro>
               <div className="mb-5 flex flex-wrap gap-2 text-xs text-white/42"><span className="rounded-full border border-white/10 px-3 py-2">{MCP_TOOL_COUNT} tools</span><span className="rounded-full border border-white/10 px-3 py-2">server-owned bounds</span><span className="rounded-full border border-white/10 px-3 py-2">no arbitrary code or SQL</span></div>
               <div className="overflow-hidden liquid-card rounded-2xl">{MCP_TOOLS.map((tool, index) => <ToolRow key={tool.name} tool={tool} index={index} kind="remote MCP" />)}</div>
             </section>
 
             <section id="webmcp" className="scroll-mt-28">
-              <SectionIntro eyebrow="04 · Native browser" title="WebMCP tools on the visible page">The home and try surfaces progressively register bounded tools with the browser’s native model context. They operate on visible controls and keep audio, account, and payment edges user-controlled.</SectionIntro>
+              <SectionIntro title="WebMCP tools on the visible page">The home and try surfaces progressively register bounded tools with the browser’s native model context. They operate on visible controls and keep audio, account, and payment edges user-controlled.</SectionIntro>
               <div className="min-w-0 grid-cols-1 grid gap-5 lg:grid-cols-2">
                 <div className="liquid-card rounded-2xl p-5">
                   <div className="flex items-start justify-between gap-4"><div><Browser className="size-5 text-[#b6ddcc]" aria-hidden="true" /><h3 className="mt-4 text-lg font-medium text-white">Public page bridge</h3></div><span className="font-mono text-[9px] text-white/60">v{WEBMCP_CONTRACT_VERSION}</span></div>
@@ -338,29 +339,29 @@ export default function DocsPage() {
             </section>
 
             <section id="resources" className="scroll-mt-28">
-              <SectionIntro eyebrow="05 · Readable surfaces" title="Resources and interactive UI">Resources are addressable by stable URI. The {MCP_RESOURCES.filter((resource) => resource.uri.startsWith('ui://')).length} <code className="text-[#d7eadf]">ui://</code> entries are MCP Apps resources; they render in a compatible host and keep their user actions inside the declared boundary.</SectionIntro>
+              <SectionIntro title="Resources and interactive UI">Resources are addressable by stable URI. The {MCP_RESOURCES.filter((resource) => resource.uri.startsWith('ui://')).length} <code className="text-[#d7eadf]">ui://</code> entries are MCP Apps resources; they render in a compatible host and keep their user actions inside the declared boundary.</SectionIntro>
               <div className="overflow-hidden liquid-card rounded-2xl">{MCP_RESOURCES.map((resource) => <ResourceRow key={resource.uri} resource={resource} />)}</div>
             </section>
 
             <section id="skills" className="scroll-mt-28">
-              <SectionIntro eyebrow="06 · Reusable guidance" title="Skills">The server advertises the MCP skills extension. Skills are routing guidance, not authorization; they never grant access to private records, payment credentials, or side effects.</SectionIntro>
+              <SectionIntro title="Skills">The server advertises the MCP skills extension. Skills are routing guidance, not authorization; they never grant access to private records, payment credentials, or side effects.</SectionIntro>
               <div className="mb-5 flex flex-wrap gap-2 text-xs text-white/42"><span className="rounded-full border border-white/10 px-3 py-2">{skillSummary.extension}</span><span className="rounded-full border border-white/10 px-3 py-2">catalog v{skillSummary.version}</span></div>
               <div className="overflow-hidden liquid-card rounded-2xl">{skills.map((skill) => <SkillRow key={skill.uri} skill={skill} />)}</div>
             </section>
 
             <section id="prompts" className="scroll-mt-28">
-              <SectionIntro eyebrow="07 · Prompt template" title="Prompt templates">Use <code className="text-[#d7eadf]">prompts/get</code> when a host wants a reusable, bounded starting message for the public tone catalog.</SectionIntro>
+              <SectionIntro title="Prompt templates">Use <code className="text-[#d7eadf]">prompts/get</code> when a host wants a reusable, bounded starting message for the public tone catalog.</SectionIntro>
               <div className="overflow-hidden liquid-card rounded-2xl">{MCP_PROMPTS.map((prompt) => <div key={prompt.name} className="min-w-0 grid-cols-1 grid gap-3 px-4 py-5 sm:grid-cols-[210px_minmax(0,1fr)] sm:gap-5"><code className="text-xs text-[#d7eadf]">{prompt.name}</code><div><p className="text-xs text-white/70">{prompt.title}</p><p className="mt-1 text-xs leading-5 text-white/65">{prompt.description}</p><p className="mt-3 font-mono text-[10px] text-[#b6ddcc]">required argument: {prompt.arguments?.map((argument) => argument.name).join(', ') || 'none'}</p></div></div>)}</div>
             </section>
 
             <section id="routes" className="scroll-mt-28">
-              <SectionIntro eyebrow="08 · HTTP map" title="Public routes around the contract">These are the supported discovery and compatibility routes that surround MCP. Internal audio, database, and admin routes are intentionally not presented as public agent commands.</SectionIntro>
+              <SectionIntro title="Public routes around the contract">These are the supported discovery and compatibility routes that surround MCP. Internal audio, database, and admin routes are intentionally not presented as public agent commands.</SectionIntro>
               <div className="overflow-hidden liquid-card rounded-2xl">{HTTP_SURFACES.map((route) => <RouteRow key={`${route.method}-${route.path}`} route={route} />)}</div>
               <div className="mt-5 overflow-hidden liquid-card rounded-2xl"><div className="border-b border-white/10 px-4 py-3"><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/60">supporting compatibility families</span></div>{SUPPORTING_ROUTE_FAMILIES.map((route) => <RouteRow key={route.path} route={{ ...route, label: 'Supporting adapter' }} />)}</div>
             </section>
 
             <section id="safety" className="scroll-mt-28">
-              <SectionIntro eyebrow="09 · Boundary" title="What agents must keep user-controlled">Cognistration is designed for visible, consent-aware orchestration. The machine can recommend and stage a session; it cannot silently turn a recommendation into audio, a signup into an account, or a checkout into a payment.</SectionIntro>
+              <SectionIntro title="What agents must keep user-controlled">Cognistration is designed for visible, consent-aware orchestration. The machine can recommend and stage a session; it cannot silently turn a recommendation into audio, a signup into an account, or a checkout into a payment.</SectionIntro>
               <div className="min-w-0 grid-cols-1 grid gap-4 sm:grid-cols-2">
                 {[
                   [Compass, 'Audio', 'No public tool starts local audio automatically. Browser preview requires an explicit confirmation and remains visible to the listener.'],

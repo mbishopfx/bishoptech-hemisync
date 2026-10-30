@@ -11,6 +11,7 @@ import { PublicTrustFooter } from '@/components/layout/PublicTrustFooter';
 import { ScrollRevealHeading } from '@/components/marketing/ScrollRevealHeading';
 import { AppStoreBadge } from '@/components/brand/AppStoreBadge';
 import { AudioFigure } from '@/components/brand/AudioFigure';
+import { HeroHeadline } from '@/components/brand/HeroHeadline';
 import { IosAppSection } from '@/components/brand/IosAppSection';
 import { ResearchArchive } from '@/components/brand/ResearchArchive';
 import { SignalLab } from '@/components/brand/SignalLab';
@@ -129,110 +130,86 @@ export default function LandingPage() {
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,rgba(120,170,150,0.18),transparent_60%)]"
           />
           <div className="relative mx-auto max-w-[1400px] px-5 pb-16 sm:px-8 lg:px-12">
-            <motion.div
-              {...fade(0)}
-              className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.28em] text-white/60"
-            >
-              <span className="text-[#b6ddcc]">Cognistration</span>
-              <span aria-hidden="true">/</span>
-              <span>Frequency training</span>
-              <span aria-hidden="true">/</span>
-              <span>No narrator</span>
-            </motion.div>
+            <div className="mx-auto max-w-3xl text-center">
+              <HeroHeadline id="hero-title">Your brain builds the beat.</HeroHeadline>
 
-            <div className="mt-8 grid gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:items-start lg:gap-16">
-              <div className="max-w-2xl">
-                <motion.h1
-                  id="hero-title"
-                  {...fade(0.06)}
-                  className="text-[clamp(2.75rem,6vw,5.25rem)] font-medium leading-[0.95] tracking-[-0.055em] lg:max-w-[18ch]"
+              <motion.p {...fade(0.12)} className="mx-auto mt-8 max-w-2xl text-[17px] leading-8 text-white/60 sm:text-lg">
+                One pure tone arrives at your left ear. A second, offset by a few hertz, arrives at your right. Nothing in
+                the audio contains the beat — your brain constructs it from the difference. That construction is the whole
+                method: no narrator, no guidance track, no subscription. Just a signal you set, at a pace you choose.
+              </motion.p>
+
+              <motion.div {...fade(0.18)} className="mt-10 flex flex-wrap items-center justify-center gap-3">
+                <a
+                  href="#method"
+                  data-analytics-cta="open_signal_lab"
+                  data-analytics-placement="homepage_hero"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#b6ddcc] px-6 py-3.5 text-sm font-medium text-[#0a1211] transition hover:bg-[#d5ece2]"
                 >
-                  Two signals enter. Your consciousness makes the third.
-                </motion.h1>
-
-                <motion.p {...fade(0.12)} className="mt-8 max-w-xl text-[17px] leading-8 text-white/60 sm:text-lg">
-                  One pure tone arrives at your left ear. A second, offset by a few hertz, arrives at your right. Neither
-                  ear ever hears the beat — your brain constructs it from the difference. That construction is the whole
-                  method: no narrator, no guidance track, no subscription. Just a signal you set, at a pace you choose.
-                </motion.p>
-
-                <motion.div {...fade(0.18)} className="mt-10 flex flex-wrap items-center gap-3">
-                  <a
-                    href="#method"
-                    data-analytics-cta="open_signal_lab"
-                    data-analytics-placement="homepage_hero"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#b6ddcc] px-6 py-3.5 text-sm font-medium text-[#0a1211] transition hover:bg-[#d5ece2]"
-                  >
-                    Open the signal lab <ArrowRight className="size-4" weight="bold" aria-hidden="true" />
-                  </a>
-                  <a
-                    href="#record"
-                    data-analytics-cta="read_record"
-                    data-analytics-placement="homepage_hero"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3.5 text-sm text-white/80 transition hover:border-white/45 hover:text-white"
-                  >
-                    Read the declassified record
-                  </a>
-                </motion.div>
-
-                <motion.div
-                  {...fade(0.24)}
-                  className="mt-8 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-white/60"
+                  Open the signal lab <ArrowRight className="size-4" weight="bold" aria-hidden="true" />
+                </a>
+                <a
+                  href="#record"
+                  data-analytics-cta="read_record"
+                  data-analytics-placement="homepage_hero"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3.5 text-sm text-white/80 transition hover:border-white/45 hover:text-white"
                 >
-                  <Headphones className="size-4 text-[#b6ddcc]" aria-hidden="true" />
-                  Stereo headphones required — the effect only exists in separation
-                </motion.div>
-
-                {/* Agent console — keeps the natural-language entry point */}
-                <motion.div
-                  id="session"
-                  data-cursor-surface
-                  {...fade(0.3)}
-                  className="hero-session-shell mt-12 rounded-2xl p-4 sm:p-5"
-                >
-                  <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-white/60">
-                    Or describe the moment and let it pick a band
-                  </p>
-                  <Omnibar onGenerate={handleGenerate} isLoading={isLoading} agentMessage={agentMessage} />
-                  {agentTone && (
-                    <div className="mt-5 border-t border-white/10 pt-5">
-                      <div className="flex items-start justify-between gap-5">
-                        <div>
-                          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#b6ddcc]">Ready to preview</p>
-                          <h2 className="mt-2 text-lg font-medium tracking-[-0.02em] text-white">{agentTone.name}</h2>
-                          <p className="mt-2 text-sm leading-6 text-white/50">
-                            {agentTone.summary || 'A public Cognistration session.'}
-                          </p>
-                        </div>
-                        <span className="rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/65">
-                          {agentTone.state || 'session'}
-                        </span>
-                      </div>
-                      {(agentTone.wavUrl || agentTone.webmUrl || agentTone.mp3Url) && (
-                        <audio
-                          className="mt-4 h-10 w-full"
-                          controls
-                          preload="none"
-                          src={agentTone.wavUrl || agentTone.webmUrl || agentTone.mp3Url}
-                          aria-label={`Preview ${agentTone.name}`}
-                        />
-                      )}
-                    </div>
-                  )}
-                </motion.div>
-              </div>
-
-              <motion.div {...fade(0.14)} className="lg:sticky lg:top-28">
-                <SignalLab />
+                  Read the declassified record
+                </a>
               </motion.div>
             </div>
 
+            <motion.div {...fade(0.2)} className="mx-auto mt-16 w-full max-w-[1000px]">
+              <SignalLab />
+              <p className="mt-5 flex items-center justify-center gap-3 text-center font-mono text-[11px] uppercase tracking-[0.16em] text-white/60">
+                <Headphones className="size-4 shrink-0 text-[#b6ddcc]" aria-hidden="true" />
+                Stereo headphones required — the effect only exists in separation
+              </p>
+            </motion.div>
+
+            {/* Agent console — keeps the natural-language entry point */}
+            <motion.div
+              id="session"
+              data-cursor-surface
+              {...fade(0.26)}
+              className="hero-session-shell mx-auto mt-12 max-w-2xl rounded-2xl p-4 sm:p-5"
+            >
+              <p className="mb-3 text-[13px] leading-6 text-white/55">
+                Or describe the moment and let it pick a band.
+              </p>
+              <Omnibar onGenerate={handleGenerate} isLoading={isLoading} agentMessage={agentMessage} />
+              {agentTone && (
+                <div className="mt-5 border-t border-white/10 pt-5">
+                  <div className="flex items-start justify-between gap-5">
+                    <div>
+                      <h2 className="text-lg font-medium tracking-[-0.02em] text-white">{agentTone.name}</h2>
+                      <p className="mt-2 text-sm leading-6 text-white/50">
+                        {agentTone.summary || 'A public Cognistration session.'}
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/65">
+                      {agentTone.state || 'session'}
+                    </span>
+                  </div>
+                  {(agentTone.wavUrl || agentTone.webmUrl || agentTone.mp3Url) && (
+                    <audio
+                      className="mt-4 h-10 w-full"
+                      controls
+                      preload="none"
+                      src={agentTone.wavUrl || agentTone.webmUrl || agentTone.mp3Url}
+                      aria-label={`Preview ${agentTone.name}`}
+                    />
+                  )}
+                </div>
+              )}
+            </motion.div>
+
             <motion.dl
               {...fade(0.34)}
-              className="mt-16 grid grid-cols-2 gap-px border-t border-white/10 bg-white/10 sm:grid-cols-4"
+              className="mx-auto mt-16 grid max-w-[1000px] grid-cols-2 gap-px border-t border-white/10 bg-white/10 sm:grid-cols-4"
             >
               {SPECS.map(([label, value]) => (
-                <div key={label} className="bg-[#080c0b] px-1 py-5 sm:px-2">
+                <div key={label} className="bg-[#080c0b] px-4 py-5 text-center sm:px-6">
                   <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">{label}</dt>
                   <dd className="mt-2 text-lg font-medium tracking-[-0.02em] text-white">{value}</dd>
                 </div>
@@ -245,10 +222,9 @@ export default function LandingPage() {
         <section id="method" aria-labelledby="method-title" className="border-b border-white/10 py-24 sm:py-32">
           <div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-24 lg:px-12">
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">01 — The method</span>
               <ScrollRevealHeading
                 id="method-title"
-                className="mt-6 max-w-[16ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
+                className="max-w-[16ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
               >
                 A controlled signal, not a guided experience.
               </ScrollRevealHeading>
@@ -308,10 +284,9 @@ export default function LandingPage() {
             </div>
 
             <div className="order-1 lg:order-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">02 — The mechanism</span>
               <ScrollRevealHeading
                 id="mechanism-title"
-                className="mt-6 max-w-[17ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
+                className="max-w-[17ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
               >
                 Hemispheric synchronisation, stated without decoration.
               </ScrollRevealHeading>
@@ -361,10 +336,9 @@ export default function LandingPage() {
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
             <div className="grid gap-12 lg:grid-cols-[0.85fr_1fr] lg:gap-20">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">03 — The record</span>
                 <ScrollRevealHeading
                   id="record-title"
-                  className="mt-6 max-w-[15ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
+                  className="max-w-[15ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
                 >
                   The government classified this, then paid to study it.
                 </ScrollRevealHeading>
@@ -395,10 +369,9 @@ export default function LandingPage() {
         >
           <div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_0.85fr] lg:items-center lg:gap-24 lg:px-12">
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">04 — The machine</span>
               <ScrollRevealHeading
                 id="machine-title"
-                className="mt-6 max-w-[17ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
+                className="max-w-[17ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
               >
                 Build the hour. Keep the file.
               </ScrollRevealHeading>
@@ -461,10 +434,9 @@ export default function LandingPage() {
           <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">05 — In your pocket</span>
                 <ScrollRevealHeading
                   id="ios-title"
-                  className="mt-6 max-w-[18ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
+                  className="max-w-[18ch] text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
                 >
                   The same signal, generated on your phone.
                 </ScrollRevealHeading>
@@ -484,10 +456,9 @@ export default function LandingPage() {
         <section id="access" aria-labelledby="access-title" className="py-24 sm:py-32">
           <div className="mx-auto grid max-w-[1400px] gap-14 px-5 sm:px-8 lg:grid-cols-[1fr_0.7fr] lg:items-center lg:gap-24 lg:px-12">
             <div className="max-w-xl">
-              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">06 — Access</span>
               <ScrollRevealHeading
                 id="access-title"
-                className="mt-6 text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
+                className="text-[clamp(2rem,4vw,3.5rem)] font-medium leading-[1.02] tracking-[-0.045em]"
               >
                 One price. No membership.
               </ScrollRevealHeading>
@@ -533,8 +504,7 @@ export default function LandingPage() {
             </div>
 
             <div className="liquid-card rounded-[24px] p-8 sm:p-10">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#b6ddcc]">Cognistration platform</p>
-              <div className="mt-6 flex items-end gap-3">
+                            <div className="mt-6 flex items-end gap-3">
                 <span className="text-[clamp(3.5rem,6vw,5rem)] font-medium leading-none tracking-[-0.06em] text-white">
                   {LIFETIME_PLAN.priceLabel}
                 </span>

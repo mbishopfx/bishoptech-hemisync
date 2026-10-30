@@ -13,21 +13,26 @@ const STATES = [
 
 const LEFT_TONE = [182, 221, 204];
 const RIGHT_TONE = [232, 220, 192];
+const MINT = [182, 221, 204];
 
 const clamp = (value, lo, hi) => Math.max(lo, Math.min(hi, value));
 
 /**
  * Stereo oscilloscope for the hero.
  *
- * Two carriers are drawn on top of each other, left in mint and right in warm
- * cream. Because the right carrier runs a few hertz fast, the two traces drift
- * in and out of phase and the beat appears as a widening and closing envelope
- * rather than as a decorative wave. A Lissajous inset in the corner plots left
- * against right, which is the same relationship rotated ninety degrees.
+ * Three readings of the same two-carrier pair, painted to one canvas:
  *
- * Everything is painted to canvas so the trace can carry a phosphor trail and
- * a glow without thousands of DOM nodes. The animation loop writes to a ref and
- * never triggers a React render.
+ *   1. The traces themselves, left mint and right cream, drifting in and out of
+ *      phase because the right carrier runs the beat frequency fast. Where they
+ *      cross is a moment of coincidence; where they pull apart is the trough.
+ *   2. The beat envelope, filled under the traces, so the pulse the ear reports
+ *      is visible as a shape rather than inferred from the crossings.
+ *   3. A Lissajous inset plotting left against right. Two carriers at exactly
+ *      the same rate draw a line; a rate offset opens it into the figure you
+ *      see, so the inset is a direct readout of the detune.
+ *
+ * Everything is painted in one pass per frame to a single canvas. The loop
+ * writes only to refs and never triggers a React render.
  */
 export function SignalLab() {
   const [stateId, setStateId] = useState('theta');
@@ -93,71 +98,42 @@ export function SignalLab() {
       ctx.save();
       ctx.lineWidth = 1;
 
-      // horizontal divisions
       for (let i = 1; i < 4; i += 1) {
         const y = (h / 4) * i;
-        ctx.strokeStyle = i === 2 ? 'rgba(255,255,255,0.13)' : 'rgba(255,255,255,0.05)';
+        ctx.strokeStyle = i === 2 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.035)';
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(w, y);
         ctx.stroke();
       }
 
-      // vertical divisions
       for (let i = 1; i < 12; i += 1) {
         const x = (w / 12) * i;
-        ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.025)';
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, h);
         ctx.stroke();
       }
 
-      // centre tick marks along the middle rail
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
       for (let i = 0; i <= 24; i += 1) {
         const x = (w / 24) * i;
         const tall = i % 6 === 0;
         ctx.beginPath();
-        ctx.moveTo(x, h / 2 - (tall ? 5 : 2.5));
-        ctx.lineTo(x, h / 2 + (tall ? 5 : 2.5));
+        ctx.moveTo(x, h / 2 - (tall ? 4 : 2));
+        ctx.lineTo(x, h / 2 + (tall ? 4 : 2));
         ctx.stroke();
       }
       ctx.restore();
     };
 
-    const traceCarrier = ({ colour, cycles, phase, amp, glow }) => {
-      const { w, h } = sizeRef.current;
-      const mid = h / 2;
-      const steps = Math.min(720, Math.max(280, Math.round(w / 2)));
-
-      ctx.save();
-      ctx.beginPath();
-      for (let i = 0; i <= steps; i += 1) {
-        const t = i / steps;
-        const x = t * w;
-        const y = mid - Math.sin(2 * Math.PI * (cycles * t + phase)) * amp;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = colour;
-      ctx.lineWidth = 1.5;
-      ctx.lineJoin = 'round';
-      ctx.lineCap = 'round';
-      ctx.shadowColor = glow;
-      ctx.shadowBlur = 14;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-      ctx.strokeStyle = colour;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.restore();
-    };
-
+    // The beat envelope, drawn as a filled band with a soft top edge. This is
+    // what turns two flat sine taps into something that visibly breathes.
     const paintEnvelope = ({ beatHz, phase }) => {
       const { w, h } = sizeRef.current;
       const mid = h / 2;
-      const amp = h * 0.3;
+      const amp = h * 0.34;
       const steps = Math.min(600, Math.max(220, Math.round(w / 2)));
 
       ctx.save();
@@ -165,37 +141,83 @@ export function SignalLab() {
       ctx.moveTo(0, mid);
       for (let i = 0; i <= steps; i += 1) {
         const t = i / steps;
-        const x = t * w;
         const e = Math.abs(Math.cos(Math.PI * (beatHz * t + phase)));
-        ctx.lineTo(x, mid - e * amp);
+        ctx.lineTo(t * w, mid - e * amp);
       }
       ctx.lineTo(w, mid);
       ctx.closePath();
-      ctx.fillStyle = 'rgba(182, 221, 204, 0.055)';
+
+      const fill = ctx.createLinearGradient(0, mid - amp, 0, mid);
+      fill.addColorStop(0, 'rgba(182, 221, 204, 0.16)');
+      fill.addColorStop(1, 'rgba(182, 221, 204, 0.02)');
+      ctx.fillStyle = fill;
       ctx.fill();
 
       ctx.beginPath();
       for (let i = 0; i <= steps; i += 1) {
         const t = i / steps;
-        const x = t * w;
         const e = Math.abs(Math.cos(Math.PI * (beatHz * t + phase)));
+        const x = t * w;
         const y = mid - e * amp;
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = 'rgba(182, 221, 204, 0.32)';
+      ctx.strokeStyle = 'rgba(182, 221, 204, 0.34)';
       ctx.lineWidth = 1;
-      ctx.setLineDash([3, 5]);
+      ctx.setLineDash([2, 5]);
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.restore();
     };
 
+    // One carrier, drawn twice: a wide soft pass for the phosphor bloom, then a
+    // crisp pass on top. The bloom is what makes it read as a lit trace on a
+    // dark screen instead of a 1px line on a web page.
+    const traceCarrier = ({ rgb, cycles, phase, amp, glow, weight }) => {
+      const { w, h } = sizeRef.current;
+      const mid = h / 2;
+      const steps = Math.min(720, Math.max(280, Math.round(w / 2)));
+
+      const path = () => {
+        ctx.beginPath();
+        for (let i = 0; i <= steps; i += 1) {
+          const t = i / steps;
+          const x = t * w;
+          const y = mid - Math.sin(2 * Math.PI * (cycles * t + phase)) * amp;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      };
+
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      path();
+      ctx.strokeStyle = `rgba(${rgb.join(',')},0.18)`;
+      ctx.lineWidth = weight * 5;
+      ctx.stroke();
+
+      path();
+      ctx.strokeStyle = `rgba(${rgb.join(',')},0.38)`;
+      ctx.lineWidth = weight * 2.4;
+      ctx.stroke();
+
+      path();
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 12;
+      ctx.strokeStyle = `rgba(${rgb.join(',')},0.96)`;
+      ctx.lineWidth = weight;
+      ctx.stroke();
+
+      ctx.restore();
+    };
+
     const paintLissajous = ({ beatHz, phase }) => {
       const { w, h } = sizeRef.current;
-      const radius = Math.min(w, h) * 0.16;
-      const cx = w - radius - 22;
-      const cy = h - radius - 20;
+      const radius = Math.min(w, h) * 0.155;
+      const cx = w - radius - 24;
+      const cy = h - radius - 22;
       const drift = beatHz / 14;
 
       ctx.save();
@@ -203,41 +225,45 @@ export function SignalLab() {
       // without it the inset reads as noise on top of the trace rather than as
       // a separate instrument.
       ctx.beginPath();
-      ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(5, 14, 12, 0.94)';
+      ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(5, 14, 12, 0.95)';
       ctx.fill();
 
-      // frame
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(182,221,204,0.22)';
+      ctx.strokeStyle = 'rgba(182,221,204,0.16)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
       ctx.beginPath();
-      const steps = 360;
+      const steps = 420;
       for (let i = 0; i <= steps; i += 1) {
         const t = i / steps;
-        const x = cx + Math.sin(2 * Math.PI * (3 * t) + phase) * radius * 0.82;
-        const y = cy + Math.sin(2 * Math.PI * ((3 + drift) * t)) * radius * 0.82;
+        const x = cx + Math.sin(2 * Math.PI * 3 * t + phase) * radius * 0.84;
+        const y = cy + Math.sin(2 * Math.PI * (3 + drift) * t) * radius * 0.84;
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = 'rgba(233,245,238,0.75)';
+      ctx.strokeStyle = 'rgba(233,245,238,0.22)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(233,245,238,0.85)';
       ctx.lineWidth = 1;
-      ctx.shadowColor = 'rgba(182,221,204,0.55)';
-      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'rgba(182,221,204,0.6)';
+      ctx.shadowBlur = 9;
       ctx.stroke();
       ctx.restore();
     };
 
+    // A single vertical cursor sweeping the frame, tying the still image to the
+    // fact that this is a live signal rather than a chart.
     const paintCursor = ({ phase }) => {
       const { w, h } = sizeRef.current;
       const x = ((phase * 2.2) % 1) * w;
       ctx.save();
       const grad = ctx.createLinearGradient(x, 0, x, h);
       grad.addColorStop(0, 'rgba(182,221,204,0)');
-      grad.addColorStop(0.5, 'rgba(182,221,204,0.28)');
+      grad.addColorStop(0.5, 'rgba(182,221,204,0.26)');
       grad.addColorStop(1, 'rgba(182,221,204,0)');
       ctx.strokeStyle = grad;
       ctx.lineWidth = 1.5;
@@ -263,18 +289,20 @@ export function SignalLab() {
       const amp = h * 0.3;
 
       traceCarrier({
-        colour: `rgba(${LEFT_TONE.join(',')},0.95)`,
+        rgb: LEFT_TONE,
         cycles,
         phase,
         amp,
-        glow: 'rgba(182,221,204,0.55)'
+        glow: 'rgba(182,221,204,0.6)',
+        weight: 1.5
       });
       traceCarrier({
-        colour: `rgba(${RIGHT_TONE.join(',')},0.8)`,
+        rgb: RIGHT_TONE,
         cycles: cycles + bHz / 26,
         phase: phase * 1.04,
-        amp: amp * 0.92,
-        glow: 'rgba(232,220,192,0.4)'
+        amp: amp * 0.9,
+        glow: 'rgba(232,220,192,0.45)',
+        weight: 1.4
       });
 
       // cursor first so the inset's backing plate stays clean on top of it
@@ -312,7 +340,7 @@ export function SignalLab() {
   }, []);
 
   return (
-    <div className="liquid-glass relative overflow-hidden rounded-[22px]">
+    <div className="liquid-card rounded-[22px]">
       <div className="flex flex-wrap items-center justify-between gap-3 px-5 pb-3 pt-4 sm:px-7">
         <div className="flex items-center gap-2.5">
           <span
@@ -326,7 +354,7 @@ export function SignalLab() {
 
       <div
         ref={hostRef}
-        className="relative mx-3 h-[168px] overflow-hidden rounded-[16px] bg-[#07100e] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-22px_44px_rgba(0,0,0,0.38)] sm:mx-5 sm:h-[190px]"
+        className="relative mx-3 h-[168px] overflow-hidden rounded-[16px] bg-[#050d0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.045),inset_0_-22px_44px_rgba(0,0,0,0.42)] sm:mx-5 sm:h-[190px]"
       >
         <canvas ref={canvasRef} className="block h-full w-full" aria-hidden="true" />
         {/* The readout row below carries the values; keeping text off the glass
@@ -362,10 +390,10 @@ export function SignalLab() {
                 type="button"
                 onClick={() => setStateId(state.id)}
                 aria-pressed={selected}
-                className={`rounded-full border px-3 py-1.5 font-mono text-[11px] tracking-[0.06em] transition ${
+                className={`rounded-full px-3 py-1.5 font-mono text-[11px] tracking-[0.06em] transition ${
                   selected
-                    ? 'border-[#b6ddcc]/70 bg-[#b6ddcc]/90 text-[#06100d]'
-                    : 'border-white/10 text-white/55 hover:border-[#b6ddcc]/40 hover:text-white'
+                    ? 'bg-[#b6ddcc]/90 text-[#06100d] shadow-[0_0_18px_-4px_rgba(182,221,204,0.6)]'
+                    : 'text-white/55 hover:bg-white/[0.06] hover:text-white'
                 }`}
               >
                 {state.label} · {state.beat}

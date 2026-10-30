@@ -444,6 +444,83 @@ main section[id] {
   z-index: 1;
 }
 
+/* ── Hero headline ────────────────────────────────────────────────────────
+ * Words rise out of a clipping mask, then a highlight travels along the line
+ * word by word, so the sentence reads as a signal moving through the text
+ * rather than as a decorative gradient sitting on top of it.
+ *
+ * The mask needs the bottom padding trick so descenders (y, g, p) are not cut
+ * off by overflow:hidden, which is why padding is added and then cancelled with
+ * an equal negative margin.
+ *
+ * The travelling highlight animates `color`, not a background gradient clipped
+ * to the text. background-clip:text was tried first and abandoned: it renders
+ * nothing at all once the element is composited (an active transform animation
+ * or will-change on the layer is enough), which turns the h1 into an invisible
+ * block while every computed style still reads "correct". A colour keyframe
+ * cannot fail that way — if the words paint at all, they paint the highlight.
+ *
+ * Both animations are behaviourally safe on their own: the rise lands on
+ * translateY(0) via fill-mode both, and the pulse returns to the base ink so a
+ * stalled animation still leaves readable text. */
+.hero-headline {
+  color: #f2f0ea;
+  text-wrap: balance;
+}
+
+.hero-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+  vertical-align: bottom;
+}
+
+.hero-word {
+  display: inline-block;
+  color: #f2f0ea;
+  animation:
+    hero-word-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    hero-word-pulse 7s ease-in-out infinite;
+  animation-delay: var(--rise-delay, 0ms), var(--sheen-delay, 0ms);
+}
+
+@keyframes hero-word-rise {
+  from {
+    transform: translateY(108%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* A brief mint flash that travels across the words, one after another. The
+ * long flat tail keeps most of the cycle on plain ink so the effect reads as a
+ * signal passing through, not as text that never stops changing. */
+@keyframes hero-word-pulse {
+  0%,
+  62%,
+  100% {
+    color: #f2f0ea;
+  }
+  70% {
+    color: #ffffff;
+  }
+  76% {
+    color: #b6ddcc;
+  }
+  84% {
+    color: #f2f0ea;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word {
+    animation: none;
+    color: #f2f0ea;
+  }
+}
+
 /* The menu is a viewport layer, not part of the fixed header's layout. The
  * shared glass surface needs a positioned containing block for its highlight,
  * but must not override the menu's fixed placement or scroll surface. */

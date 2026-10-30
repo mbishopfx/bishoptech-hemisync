@@ -64,7 +64,6 @@ export default function BlogArchivePage() {
 
       <main className="relative mx-auto w-full max-w-[1400px] px-5 pb-24 pt-32 sm:px-8 lg:px-12 lg:pt-36">
         <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-white/12 pb-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#b6ddcc]">The archive</p>
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
             {posts.length} articles · newest first
           </p>
